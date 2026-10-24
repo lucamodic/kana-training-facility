@@ -366,6 +366,473 @@ const words = wordRows.split('\n').map((line, i) => {
   return { id: `word:${i}`, kana, answer: meanings.split(';')[0], meanings: meanings.split(';'), readings: readings.split(','), kind: 'word' };
 });
 
+// Interface translations live alongside the English source strings. Spanish is optional:
+// a new visitor always starts in English; the chosen language is saved locally.
+const ES_STATIC = {
+  'your little Japanese study space':'tu rinconcito para estudiar japonés',
+  'In a regular font':'Con una fuente normal', 'Check ↵':'Comprobar ↵', "I don't know":'No sé',
+  'Finish lesson & view results':'Terminar y ver resultados',
+  'Select all':'Seleccionar todo', 'Clear all':'Borrar todo','Random 10':'10 al azar',
+  'Close':'Cerrar', 'Hide clock':'Ocultar reloj','Show clock':'Mostrar reloj',
+  'One tiny study session at a time.':'Una sesión cortita a la vez.',
+  'LOCAL SETTINGS · OFFLINE READY':'AJUSTES LOCALES · SIN CONEXIÓN',
+  'Theme:':'Tema:', '● ready':'● listo', 'CHOOSE A THEME':'ELEGÍ UN TEMA',
+  'Lavender':'Lavanda', 'Mint':'Menta', 'Peach':'Durazno', 'Sky':'Cielo',
+  'Burgundy':'Bordó', 'Midnight':'Medianoche', 'Language':'Idioma',
+  'Word Challenge':'Desafío de palabras',
+  'Click a character, or click and drag across several to select or deselect them.':'Hacé clic en un carácter o arrastrá para seleccionar o deseleccionar varios.',
+  'Select all':'Seleccionar todo', 'Clear all':'Borrar todo', 'Random 10':'10 al azar',
+  'characters on this tab':'caracteres en esta pestaña',
+  'YOUR SELECTION':'TU SELECCIÓN', 'YOUR LITTLE STUDY TIMER':'TU TEMPORIZADOR',
+  'Focus time':'Tiempo de estudio', 'Custom countdown':'Cuenta regresiva personalizada',
+  'No countdown':'Sin cuenta regresiva', 'Stopwatch (count up)':'Cronómetro',
+  '5-minute countdown':'5 minutos', '10-minute countdown':'10 minutos', '15-minute countdown':'15 minutos',
+  'Hours':'Horas', 'Minutes':'Minutos', 'Please choose between 00:01 and 99:59.':'Elegí un tiempo entre 00:01 y 99:59.',
+  'Countdowns end your lesson at zero. Pause anytime.':'Al llegar a cero, la lección termina. Podés pausar cuando quieras.',
+  'Learn my selection →':'Aprender mi selección →',
+  '3 guided passes showing the answer, followed by 3 memory-test passes.':'3 vueltas guiadas con las respuestas y 3 vueltas para practicar de memoria.',
+  'Infinite character practice →':'Práctica infinita de caracteres →',
+  'Shuffled questions until you decide to finish.':'Preguntas mezcladas hasta que decidas terminar.',
+  '← Finish lesson':'← Terminar lección', 'Pause':'Pausar',
+  'Answered':'Respondidas', 'Correct':'Correctas', 'Accuracy':'Precisión',
+  'In a regular font':'Con una fuente normal', 'Your answer in romaji':'Tu respuesta en romaji',
+  'Check ↵':'Comprobar ↵', "I don't know":'No sé',
+  'Finish lesson & view results':'Terminar y ver resultados',
+  "Here's how you did.":'Así te fue.',
+  'Your trickiest items':'Los que más te costaron',
+  'Ranked by mistakes and “I don\'t know” answers.':'Ordenados por errores y respuestas «No sé».',
+  'Back to selection':'Volver a la selección', 'Try again →':'Volver a intentar →',
+  'Practice my toughest items →':'Practicar los que más me costaron →',
+  'Made for curious minds · No tracking · Works offline':'Para mentes curiosas · Sin seguimiento · Funciona sin conexión',
+  'VOCABULARY PRACTICE':'PRÁCTICA DE VOCABULARIO',
+  'words unlocked':'palabras disponibles',
+  'What would you like to guess?':'¿Qué querés adivinar?',
+  'English meaning':'Significado en inglés', 'Romaji reading':'Lectura en romaji',
+  'Only vocabulary using your selected characters will appear. Your current timer setting also applies.':'Solo aparecen palabras que usan tus caracteres seleccionados. Se aplica el temporizador actual.',
+  'Cancel':'Cancelar', 'Start word practice →':'Empezar con palabras →',
+  'A LITTLE EXTRA PRACTICE':'UN POCO MÁS DE PRÁCTICA',
+  'Review your toughest items':'Repasá lo que más te costó',
+  "Uncheck anything you don't want to practice right now. Your regular selections won't change.":'Desmarcá lo que no quieras practicar ahora. Tu selección habitual no cambia.',
+  'Select all':'Seleccionar todo', 'Clear':'Borrar', 'Start review →':'Empezar repaso →',
+  'Guided learning':'Aprendizaje guiado', 'Say the reading out loud.':'Decí la lectura en voz alta.',
+  'Enter to check / continue · Esc to finish':'Enter para comprobar / continuar · Esc para terminar',
+  'Search character, reading, or meaning…':'Buscar carácter, lectura o significado…',
+  'Decorative browser bar':'Barra de navegador decorativa',
+  'Timer':'Temporizador',
+  'Cancel':'Cancelar',
+  'Choose your hiragana':'Elegí tus hiragana',
+  'Your answer in romaji':'Tu respuesta en romaji',
+  'Read the character and its sound out loud.':'Leé el carácter y pronunciá su sonido en voz alta.',
+  'Filter characters':'Filtrar caracteres',
+  'Change color theme':'Cambiar tema de color',
+  'Color theme':'Tema de color',
+  'Writing system':'Sistema de escritura',
+  'Choose study material':'Elegir qué estudiar',
+  'Session options':'Opciones de sesión',
+  'Study session':'Sesión de estudio',
+  'Session results':'Resultados de la sesión',
+  'Close Word Challenge':'Cerrar desafío de palabras',
+  'Close review dialog':'Cerrar ventana de repaso',
+  'Custom countdown duration':'Duración personalizada',
+  'Timer mode':'Modo del temporizador',
+  'Lesson progress':'Progreso de la lección',
+  'Kana Training Facility, go to selection':'Kana Training Facility, ir a selección',
+  'Replace the current selection with up to 10 random visible characters':'Reemplazar la selección por hasta 10 caracteres visibles al azar',
+};
+const UI_EN = {
+  selectedDesc:'{count} selected · ready to study.', emptySelection:'Pick at least one character to begin.',
+  wordReady:'Ready to practice {count} {word} using your current character selection.',
+  wordLocked:'No words unlocked yet. Try choosing ね and こ in Hiragana to unlock ねこ (cat), or 日 and 本 in Kanji to unlock 日本 (Japan).',
+  choose:'Choose your {script}', chooseVisible:'Select visible', clearVisible:'Clear visible',
+  noneFound:'No characters match this search.', groupSelect:'Select', groupClear:'Clear', selected:'selected', notSelected:'not selected',
+  timerNone:'✧ Infinite Practice shows an optional study clock.', timerUp:'✧ Every little minute counts.', timerReady:'✧ You’ve got this!',
+  toastSelect:'{count} randomly chosen characters selected.', toastEmpty:'Please select at least one eligible item first.',
+  toastBadTimer:'Please enter a valid custom countdown.', toastBadTimerBefore:'Please enter a valid custom countdown before starting.',
+  themeAria:'Change color theme, current {name}',
+  quizItems:'{label} · {count} {item}{mode}', words:'Vocabulary', learnSuffix:' · Learn', reviewSuffix:' · Review',
+  learnPass:'{stage} · Pass {pass} of 3 · Item {item} of {total}', round:'Round {round} · Item {item} of {total}',
+  guided:'Guided learning', memory:'Memory practice', headGuided:'Look closely and learn this character',
+  headWordsMeaning:'What does this word mean in English?', headWordsReading:'How do you read this word?',
+  headCharacter:'How do you read this character?', hintGuided:'Enter to continue · Esc to finish', hintQuiz:'Enter to check / continue · Esc to finish',
+  progressGuided:'Stage 1/2 · Guided learning', progressMemory:'Stage 2/2 · Memory practice',
+  passCount:'Pass {pass} of 6', guideCaption:'Reading / meaning',
+  guideTip1:'Read the character and its sound out loud.',guideTip2:'Try to recall the sound before looking below.',guideTip3:'Say the reading from memory, then double-check it.',
+  guideNext:'Got it, next →', guideMemory:'Start memory practice →',
+  answerWordsMeaning:'Your answer in English', answerRomaji:'Your answer in romaji',
+  answerWordsExample:'e.g. cat, mountain, hello…', answerRomajiWordExample:'e.g. neko, yama…',answerRomajiExample:'e.g. ka, shi, tsu…',
+  seeResults:'View results →',next:'Next →',alsoAccepted:' Also accepted: {answers}.',
+  correctFeedback:'Correct! {kana} = {answer}{extra}.{alt}',wrongFeedback:'The answer was {answer} ({kana}){extra}.{alt}',
+  pause:'Pause', resume:'Resume', timeUp:'Time is up!',lessonComplete:'Lesson complete!',sessionFinished:'Session finished',
+  summaryLearn:'Only your memory-test answers count toward accuracy; the three guided passes are for learning.',
+  summaryOther:'These results include answers from the session you just finished.',
+  timing:' · Time: {time} elapsed',completed:'Completed',reached:'Reached',
+  summaryLearning:'{progress} pass {round} of 6{timing}.',summaryReview:'Focused review of {count} item(s){timing}.',summaryDuration:'Session duration{timing}.',
+  attemptsCorrect:'{attempts} {attemptLabel} · {correct} correct',errors:'{count} {label}',
+  showingSome:'Showing 10 of {count} missed items. All are available in the review dialog.',
+  flawless:'Amazing! You had no mistakes this time.',emptySummary:'No answers yet. Try a round to discover what needs practice.',
+  repeatLesson:'Repeat lesson →',repeatPractice:'Practice again →',reviewLine:'{errors} {errorLabel} · {attempts} attempts',
+  selectedCount:'{count} selected',clockHide:'Hide clock',clockShow:'Show clock',wordSingular:'word',wordPlural:'words',
+  itemSingular:'item',itemPlural:'items',attemptSingular:'attempt',attemptPlural:'attempts',mistakeSingular:'mistake',mistakePlural:'mistakes',
+};
+const UI_ES = {
+  selectedDesc:'{count} seleccionados · listos para estudiar.', emptySelection:'Elegí al menos un carácter para empezar.',
+  wordReady:'Tenés {count} {word} para practicar con tu selección actual.',
+  wordLocked:'Todavía no hay palabras disponibles. Elegí ね y こ en Hiragana para desbloquear ねこ (gato), o 日 y 本 en Kanji para desbloquear 日本 (Japón).',
+  choose:'Elegí tus caracteres de {script}', chooseVisible:'Seleccionar visibles', clearVisible:'Borrar visibles',
+  noneFound:'No hay caracteres que coincidan con la búsqueda.', groupSelect:'Seleccionar', groupClear:'Borrar', selected:'seleccionado', notSelected:'sin seleccionar',
+  timerNone:'✧ En práctica infinita aparece un reloj opcional.', timerUp:'✧ Cada minutito cuenta.', timerReady:'✧ ¡Vos podés!',
+  toastSelect:'Seleccionaste {count} caracteres al azar.',toastEmpty:'Primero seleccioná al menos un elemento.',
+  toastBadTimer:'Ingresá un tiempo válido para la cuenta regresiva.',toastBadTimerBefore:'Ingresá un tiempo válido antes de empezar.',
+  themeAria:'Cambiar tema de color, actual: {name}',
+  quizItems:'{label} · {count} {item}{mode}', words:'Vocabulario',learnSuffix:' · Aprender',reviewSuffix:' · Repaso',
+  learnPass:'{stage} · Vuelta {pass} de 3 · Elemento {item} de {total}',round:'Vuelta {round} · Elemento {item} de {total}',
+  guided:'Aprendizaje guiado',memory:'Práctica de memoria',headGuided:'Observá y aprendé este carácter',
+  headWordsMeaning:'¿Qué significa esta palabra en español?',headWordsReading:'¿Cómo se lee esta palabra?',
+  headCharacter:'¿Cómo se lee este carácter?',hintGuided:'Enter para continuar · Esc para terminar',hintQuiz:'Enter para comprobar / continuar · Esc para terminar',
+  progressGuided:'Etapa 1/2 · Aprendizaje guiado',progressMemory:'Etapa 2/2 · Práctica de memoria',
+  passCount:'Vuelta {pass} de 6',guideCaption:'Lectura / significado',
+  guideTip1:'Leé el carácter y pronunciá su sonido en voz alta.',guideTip2:'Intentá recordar el sonido antes de mirar la respuesta.',guideTip3:'Decí la lectura de memoria y después comprobala.',
+  guideNext:'Entendido, siguiente →',guideMemory:'Empezar práctica de memoria →',
+  answerWordsMeaning:'Tu respuesta en español',answerRomaji:'Tu respuesta en romaji',
+  answerWordsExample:'Ej.: gato, montaña, hola…',answerRomajiWordExample:'Ej.: neko, yama…',answerRomajiExample:'Ej.: ka, shi, tsu…',
+  seeResults:'Ver resultados →',next:'Siguiente →',alsoAccepted:' También se acepta: {answers}.',
+  correctFeedback:'¡Correcto! {kana} = {answer}{extra}.{alt}',wrongFeedback:'La respuesta era {answer} ({kana}){extra}.{alt}',
+  pause:'Pausar',resume:'Reanudar',timeUp:'¡Se terminó el tiempo!',lessonComplete:'¡Lección completada!',sessionFinished:'Sesión terminada',
+  summaryLearn:'Solo cuentan las respuestas de memoria para la precisión; las tres primeras vueltas son guiadas.',
+  summaryOther:'Estos resultados corresponden a la sesión que acabás de terminar.',
+  timing:' · Tiempo transcurrido: {time}',completed:'Completaste',reached:'Llegaste a',
+  summaryLearning:'{progress} la vuelta {round} de 6{timing}.',summaryReview:'Repaso de {count} elementos{timing}.',summaryDuration:'Duración de la sesión{timing}.',
+  attemptsCorrect:'{attempts} {attemptLabel} · {correct} correctas',errors:'{count} {label}',
+  showingSome:'Se muestran 10 de {count} elementos con errores. Podés repasarlos todos en la ventana de repaso.',
+  flawless:'¡Genial! No tuviste errores esta vez.',emptySummary:'Todavía no respondiste. Probá una vuelta para descubrir qué necesitás practicar.',
+  repeatLesson:'Repetir lección →',repeatPractice:'Practicar otra vez →',reviewLine:'{errors} {errorLabel} · {attempts} intentos',
+  selectedCount:'{count} seleccionados',clockHide:'Ocultar reloj',clockShow:'Mostrar reloj',wordSingular:'palabra',wordPlural:'palabras',
+  itemSingular:'elemento',itemPlural:'elementos',attemptSingular:'intento',attemptPlural:'intentos',mistakeSingular:'error',mistakePlural:'errores',
+};
+function t(key, args={}) {
+  const pattern = (state.language === 'es' ? UI_ES[key] : UI_EN[key]) ?? UI_EN[key] ?? key;
+  return String(pattern).replace(/\{([a-zA-Z]+)\}/g, (_, name) => String(args[name] ?? ''));
+}
+const glossTable = `
+I|yo
+above|arriba
+adult|adulto
+after|después
+afternoon|tarde
+ahead|adelante
+air|aire
+am|a. m.
+anime|anime
+apple|manzana
+ask|preguntar
+autumn|otoño
+before|antes
+behind|atrás
+below|abajo
+big|grande
+bird|pájaro
+birth|nacimiento
+black|negro
+blue|azul
+boat|bote
+book|libro
+box|caja
+boy|chico
+bread|pan
+bright|brillante
+bug|bicho
+bus|colectivo
+buy|comprar
+bye|chau
+cake|torta
+camera|cámara
+candy|caramelo
+car|auto
+cat|gato
+cell phone|celular
+character|carácter
+cheap|barato
+cherry blossom|flor de cerezo
+child|niño
+clock|reloj
+close|cerca
+cloud|nube
+coffee|café
+come|venir
+comic|historieta
+country|país
+cow|vaca
+day|día
+daytime|día
+desk|escritorio
+dog|perro
+down|abajo
+dream|sueño
+drink|beber
+ear|oreja
+earth|tierra
+east|este
+eat|comer
+egg|huevo
+eight|ocho
+electricity|electricidad
+empty|vacío
+enter|entrar
+exit|salir
+eye|ojo
+face|cara
+fall|otoño
+family|familia
+father|padre
+fire|fuego
+fish|pescado
+five|cinco
+flower|flor
+food|comida
+foot|pie
+four|cuatro
+friend|amigo
+front|frente
+game|juego
+girl|chica
+go|ir
+gold|oro
+good afternoon|buenas tardes
+good morning|buen día
+good night|buenas noches
+goodbye|adiós
+grass|pasto
+half|mitad
+hand|mano
+hear|oír
+heaven|cielo
+hello|hola
+here|acá
+high|alto
+home|hogar
+hotel|hotel
+hour|hora
+house|casa
+hundred|cien
+i|yo
+ice cream|helado
+insect|insecto
+inside|adentro
+interval|intervalo
+island|isla
+japan|Japón
+japanese|japonés
+japanese language|idioma japonés
+language|idioma
+leave|irse
+left|izquierda
+leg|pierna
+letter|carta
+life|vida
+like|gustar
+listen|escuchar
+long|largo
+love|amor
+man|hombre
+manga|manga
+me|mí
+meat|carne
+middle|medio
+minute|minuto
+mobile phone|celular
+money|dinero
+month|mes
+moon|luna
+morning|mañana
+mother|madre
+mountain|montaña
+mouth|boca
+name|nombre
+near|cerca
+new|nuevo
+night|noche
+nine|nueve
+noon|mediodía
+north|norte
+nose|nariz
+now|ahora
+ocean|océano
+octopus|pulpo
+old|viejo
+one|uno
+origin|origen
+outside|afuera
+paper|papel
+part|parte
+path|camino
+peaceful|tranquilo
+peach|durazno
+person|persona
+plural suffix|sufijo plural
+pm|p. m.
+previous|anterior
+radio|radio
+rain|lluvia
+ramen|ramen
+reach|alcanzar
+read|leer
+red|rojo
+rest|descansar
+restaurant|restaurante
+return|volver
+rice field|campo de arroz
+right|derecha
+river|río
+road|camino
+robot|robot
+room|habitación
+salt|sal
+sand|arena
+school|escuela
+sea|mar
+see|ver
+sentence|oración
+seven|siete
+ship|barco
+shoes|zapatos
+shop|tienda
+six|seis
+sky|cielo
+small|pequeño
+smartphone|celular
+snack|merienda
+snow|nieve
+soil|suelo
+song|canción
+soup|sopa
+south|sur
+speak|hablar
+spirit|espíritu
+spring|primavera
+star|estrella
+station|estación
+stone|piedra
+store|negocio
+story|historia
+strength|fuerza
+student|estudiante
+study|estudiar
+summer|verano
+sun|sol
+supermarket|supermercado
+sushi|sushi
+sweets|dulces
+tall|alto
+taxi|taxi
+tea|té
+teacher|profesor
+television|televisión
+ten|diez
+ten thousand|diez mil
+thank you|gracias
+thanks|gracias
+thousand|mil
+three|tres
+time|tiempo
+today|hoy
+tomato|tomate
+tomorrow|mañana
+top|parte superior
+town|pueblo
+train|tren
+tree|árbol
+tribe|tribu
+tv|televisión
+two|dos
+umbrella|paraguas
+under|debajo
+up|arriba
+vehicle|vehículo
+voice|voz
+volcano|volcán
+watch|reloj
+water|agua
+way|camino
+week|semana
+weekday|día de la semana
+west|oeste
+what|qué
+white|blanco
+wind|viento
+winter|invierno
+woman|mujer
+wood|madera
+word|palabra
+write|escribir
+writing|escritura
+year|año
+yen|yen
+yesterday|ayer
+`.trim();
+const ES_GLOSS = Object.fromEntries(glossTable.split('\n').map(s => s.split('|')));
+const toSpanish = english => english.split(';').map(term => ES_GLOSS[term.trim()] || term.trim()).join('; ');
+const itemMeaning = item => !item.meaning ? '' : (state.language === 'es' ? toSpanish(item.meaning) : item.meaning);
+const wordMeanings = item => state.language === 'es' ? item.meanings.map(term => ES_GLOSS[term] || term) : item.meanings;
+const localCategory = {basic:['Kana básicos','Los sonidos esenciales'],voiced:['Sonidos sonoros','Sonidos como ga, za, ba y pa'],
+  combo:['Combinaciones','Sonidos como kya, sha y cho'],historical:['Históricos','Poco usados en japonés moderno'],
+  extra:['Katakana extendido','Frecuentes en palabras extranjeras']};
+const localKanjiCategory = {
+  'Numbers':['Números','Cantidades y números'],
+  'People & learning':['Personas y aprendizaje','Familia, estudio y personas'],
+  'Nature':['Naturaleza','El mundo que te rodea'],
+  'Time & calendar':['Tiempo y calendario','Días, estaciones y horas'],
+  'Places & directions':['Lugares y direcciones','Para orientarte'],
+  'Everyday life':['Vida cotidiana','Sustantivos, verbos y adjetivos frecuentes']
+};
+const STATIC_SELECTOR = [
+  '#brandSubtitle','#offlineText','#themeCaption','#browserReady','.theme-menu-label','.palette-name','#languageCaption',
+  '#wordsLaunchText','#dragHint','#randomTen','#selectedUnit','.side-label','.timer-card-title',
+  '#printedLabel','#checkButton','#skipButton','#guidedCaption','#finishLessonButton',
+  '#timerSetting option','.time-caption','#customTimerError','#countdownHelp','#learnButton','#learnHelp','#startButton','#practiceHelp',
+  '.stat-answered','.stat-correct','.stat-accuracy','#finishLessonButton','#summaryTitle','#hardestHeading','#hardestHelp',
+  '#backToSelection','#reviewMistakesButton','#footerText','#wordsDialog .eyebrow','#wordsDialogTitle','#wordsUnlockedUnit',
+  '#wordsDialog .small-label','#wordAnswerMode option','#wordsDialogHelp','#cancelWordsDialog','#wordsButton',
+  '#reviewDialog .eyebrow','#reviewTitle','#reviewDialogHelp','#reviewSelectAll','#reviewClearAll','#cancelReview','#beginReview'
+].join(',');
+const STATIC_ATTRIBUTES = [
+  ['#search','placeholder'], ['#search','aria-label'], ['#themeMenu','aria-label'],
+  ['.tabs','aria-label'], ['#setupScreen','aria-label'], ['#sidePanel','aria-label'], ['.side-panel','aria-label'],
+  ['#quizScreen','aria-label'], ['#summaryScreen','aria-label'], ['#homeLink','aria-label'],
+  ['#randomTen','title'],['#closeWordsDialog','aria-label'],['#closeReview','aria-label'],
+  ['#customTimerFields','aria-label'], ['#timerSetting','aria-label'],['#progressTrack','aria-label'],
+  ['#timerDisplay','aria-label'], ['.retro-browser','aria-label']
+];
+const originalText = new WeakMap();
+const originalAttrs = new WeakMap();
+function translateStatic() {
+  document.querySelectorAll(STATIC_SELECTOR).forEach(el => {
+    if (!originalText.has(el)) originalText.set(el, el.textContent);
+    const source = originalText.get(el);
+    el.textContent = state.language === 'es' ? (ES_STATIC[source] || source) : source;
+  });
+  for (const [selector,attribute] of STATIC_ATTRIBUTES) document.querySelectorAll(selector).forEach(el => {
+    let originals = originalAttrs.get(el);
+    if (!originals) { originals = {}; originalAttrs.set(el,originals); }
+    if (!(attribute in originals)) originals[attribute] = el.getAttribute(attribute);
+    const source=originals[attribute];
+    if (source !== null) el.setAttribute(attribute,state.language === 'es' ? (ES_STATIC[source] || source) : source);
+  });
+}
+function localThemeName(name) { return state.language === 'es' ? (ES_STATIC[name] || name) : name; }
+function changeLanguage(language, persist=true) {
+  if (!['en','es'].includes(language)) return;
+  state.language = language;
+  document.documentElement.lang = language;
+  $('languageSelect').value = language;
+  translateStatic();
+  applyTheme(state.theme);
+  updateCustomTimerVisibility();
+  render();
+  if (state.quiz) refreshQuizLanguage();
+  if (state.lastSummary && !$('summaryScreen').hidden) renderSummary(state.lastSummary);
+  if (persist) save();
+}
+
 const STORAGE_KEY = 'kana-training-facility-v2';
 const OLD_STORAGE_KEY = 'kana-lab-selection-v1';
 const PALETTES = ['pastel', 'mint', 'peach', 'blue', 'burgundy', 'night'];
@@ -375,6 +842,7 @@ const $ = id => document.getElementById(id);
 const state = {
   script: 'hiragana', selected: { hiragana: new Set(), katakana: new Set(), kanji: new Set() },
   theme: 'pastel', timerSetting: 'custom', customHours: 0, customMinutes: 5, wordAnswerMode: 'meaning',
+  language: 'en', showElapsedClock: true,
   storageOk: true, quiz: null, lastSummary: null, reviewSelection: new Set()
 };
 const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -397,8 +865,8 @@ function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   document.querySelector('meta[name="theme-color"]').content = ({night:'#25283f',burgundy:'#712b4b'})[theme] || '#d9cae9';
   document.querySelectorAll('[data-palette]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.palette === theme)));
-  $('currentThemeName').textContent = THEME_NAMES[theme];
-  $('themeToggle').setAttribute('aria-label', `Change color theme, current ${THEME_NAMES[theme]}`);
+  $('currentThemeName').textContent = localThemeName(THEME_NAMES[theme]);
+  $('themeToggle').setAttribute('aria-label', t('themeAria',{name: localThemeName(THEME_NAMES[theme])}));
 }
 function setThemeMenu(open) {
   $('themeMenu').hidden = !open;
@@ -406,7 +874,7 @@ function setThemeMenu(open) {
 }
 function payload() {
   return { version: 3, script: state.script, theme: state.theme, timerSetting: state.timerSetting,
-    customHours: state.customHours, customMinutes: state.customMinutes,
+    customHours: state.customHours, customMinutes: state.customMinutes, language: state.language, showElapsedClock: state.showElapsedClock,
     wordAnswerMode: state.wordAnswerMode, selected: Object.fromEntries(SCRIPTS.map(script => [script, [...state.selected[script]]])) };
 }
 function applySavedData(data) {
@@ -439,6 +907,8 @@ function applySavedData(data) {
     state.customMinutes = Number.isInteger(Number(data.customMinutes)) && data.customMinutes !== '' && Number(data.customMinutes) >= 0 && Number(data.customMinutes) <= 59 ? Number(data.customMinutes) : 5;
   }
   state.wordAnswerMode = ['meaning','reading'].includes(data.wordAnswerMode) ? data.wordAnswerMode : 'meaning';
+  state.language = ['en','es'].includes(data.language) ? data.language : 'en';
+  state.showElapsedClock = data.showElapsedClock !== false;
   $('timerSetting').value = state.timerSetting;
   $('customHours').value = state.customHours;
   $('customMinutes').value = state.customMinutes;
@@ -448,9 +918,9 @@ function applySavedData(data) {
 function updateCustomTimerVisibility() {
   $('customTimerFields').hidden = state.timerSetting !== 'custom';
   $('customTimerError').hidden = true;
-  $('timerFootnote').textContent = state.timerSetting === 'off' ? '✧ No rush — take your time.'
-    : state.timerSetting === 'up' ? '✧ Every little minute counts.'
-    : '✧ You’ve got this!';
+  $('timerFootnote').textContent = state.timerSetting === 'off' ? t('timerNone')
+    : state.timerSetting === 'up' ? t('timerUp')
+    : t('timerReady');
 }
 function customTimerSeconds() {
   const hourString = $('customHours').value;
@@ -510,9 +980,9 @@ function render() {
     $(({hiragana:'hCount',katakana:'kCount',kanji:'jCount'})[s]).textContent = state.selected[s].size;
   });
   $('characterPanel').setAttribute('aria-labelledby', `tab${script[0].toUpperCase()}${script.slice(1)}`);
-  $('selectionHeading').textContent = `Choose your ${script}`;
+  $('selectionHeading').textContent = t('choose',{script:script[0].toUpperCase()+script.slice(1)});
   $('selectedCount').textContent = selected.size;
-  $('selectedDescription').textContent = selected.size ? `${selected.size} selected · ready to study.` : 'Pick at least one character to begin.';
+  $('selectedDescription').textContent = selected.size ? t('selectedDesc',{count:selected.size}) : t('emptySelection');
   $('learnButton').disabled = !selected.size;
   $('startButton').disabled = !selected.size;
   const unlocked = eligibleWords();
@@ -520,12 +990,12 @@ function render() {
   $('wordAvailableCount').textContent = unlocked.length;
   $('wordDialogCount').textContent = unlocked.length;
   $('wordCountDescription').textContent = unlocked.length
-    ? `Ready to practice ${unlocked.length} word${unlocked.length === 1 ? '' : 's'} using your current character selection.`
-    : 'No words unlocked yet. Try choosing ね and こ in Hiragana to unlock ねこ (cat), or 日 and 本 in Kanji to unlock 日本 (Japan).';
+    ? t('wordReady',{count:unlocked.length,word:unlocked.length===1?t('wordSingular'):t('wordPlural')})
+    : t('wordLocked');
   const visible = currentVisible();
   const filtered = !!$('search').value.trim();
-  $('selectAll').textContent = filtered ? 'Select visible' : 'Select all';
-  $('clearAll').textContent = filtered ? 'Clear visible' : 'Clear all';
+  $('selectAll').textContent = filtered ? t('chooseVisible') : (state.language==='es'?'Seleccionar todo':'Select all');
+  $('clearAll').textContent = filtered ? t('clearVisible') : (state.language==='es'?'Borrar todo':'Clear all');
   $('randomTen').disabled = !visible.length;
   const categoryNames = script === 'kanji' ? LABELS_KANJI : Object.fromEntries(Object.entries(labels).filter(([key]) => key !== 'extra' || script === 'katakana'));
   let html = '';
@@ -533,11 +1003,12 @@ function render() {
     const entries = visible.filter(item => item.category === category);
     if (!entries.length) continue;
     const count = entries.filter(item => selected.has(item.kana)).length;
-    html += `<section class="category" aria-label="${escapeHtml(title)}"><div class="category-heading"><div><h3>${escapeHtml(title)} <small>${count}/${entries.length} · ${escapeHtml(description)}</small></h3></div><div class="category-actions"><button class="ghost-button" type="button" data-action="add-group" data-category="${escapeHtml(category)}">Select</button><button class="ghost-button" type="button" data-action="clear-group" data-category="${escapeHtml(category)}">Clear</button></div></div><div class="kana-grid">`;
-    html += entries.map(item => `<button type="button" class="kana-tile ${script === 'kanji' ? 'kanji-tile' : ''}" data-action="toggle" data-kana="${escapeHtml(item.kana)}" aria-pressed="${selected.has(item.kana)}" aria-label="${escapeHtml(item.kana+', '+item.answer+(item.meaning ? ', '+item.meaning : '')+', '+(selected.has(item.kana) ? 'selected' : 'not selected'))}"><span class="glyph" aria-hidden="true">${escapeHtml(item.kana)}</span><span class="roman" aria-hidden="true">${escapeHtml(item.answer)}</span>${item.meaning ? `<span class="tile-meaning" aria-hidden="true">${escapeHtml(item.meaning.split(';')[0])}</span>` : ''}</button>`).join('');
+    const [heading, desc] = state.language === 'es' ? (script === 'kanji' ? localKanjiCategory[category] : localCategory[category]) || [title,description] : [title,description];
+    html += `<section class="category" aria-label="${escapeHtml(heading)}"><div class="category-heading"><div><h3>${escapeHtml(heading)} <small>${count}/${entries.length} · ${escapeHtml(desc)}</small></h3></div><div class="category-actions"><button class="ghost-button" type="button" data-action="add-group" data-category="${escapeHtml(category)}">${t('groupSelect')}</button><button class="ghost-button" type="button" data-action="clear-group" data-category="${escapeHtml(category)}">${t('groupClear')}</button></div></div><div class="kana-grid">`;
+    html += entries.map(item => `<button type="button" class="kana-tile ${script === 'kanji' ? 'kanji-tile' : ''}" data-action="toggle" data-kana="${escapeHtml(item.kana)}" aria-pressed="${selected.has(item.kana)}" aria-label="${escapeHtml(item.kana+', '+item.answer+(item.meaning ? ', '+itemMeaning(item) : '')+', '+(selected.has(item.kana) ? t('selected') : t('notSelected')))}"><span class="glyph" aria-hidden="true">${escapeHtml(item.kana)}</span><span class="roman" aria-hidden="true">${escapeHtml(item.answer)}</span>${item.meaning ? `<span class="tile-meaning" aria-hidden="true">${escapeHtml(itemMeaning(item).split(';')[0])}</span>` : ''}</button>`).join('');
     html += '</div></section>';
   }
-  $('categories').innerHTML = html || '<p class="empty">No characters match this search.</p>';
+  $('categories').innerHTML = html || `<p class="empty">${t('noneFound')}</p>`;
 }
 function selectScript(script) {
   if (!SCRIPTS.includes(script)) return;
@@ -557,16 +1028,16 @@ function updateSelection(characters, mode) {
 }
 
 function answersFor(quiz, item) {
-  if (quiz.kind === 'words') return quiz.wordAnswerMode === 'reading' ? item.readings : item.meanings;
+  if (quiz.kind === 'words') return quiz.wordAnswerMode === 'reading' ? item.readings : wordMeanings(item);
   return item.answers;
 }
 function displayAnswer(quiz, item) {
-  if (quiz.kind === 'words') return quiz.wordAnswerMode === 'reading' ? item.readings[0] : item.meanings[0];
+  if (quiz.kind === 'words') return quiz.wordAnswerMode === 'reading' ? item.readings[0] : wordMeanings(item)[0];
   return item.answer;
 }
 function itemDetail(item, wordMode) {
-  if (item.kind === 'word') return `${item.readings[0]} · ${item.meanings[0]}`;
-  return `${item.answer}${item.meaning ? ' · '+item.meaning : ''}`;
+  if (item.kind === 'word') return `${item.readings[0]} · ${wordMeanings(item)[0]}`;
+  return `${item.answer}${item.meaning ? ' · '+itemMeaning(item) : ''}`;
 }
 // Center the active exercise when a session opens, without scrolling to the page header.
 // For tall cards (especially on phones), show the top of the card rather than
@@ -592,32 +1063,41 @@ function centerActiveExercise(quiz) {
 function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, wordModeOverride = null) {
   const kind = kindOverride || (mode === 'words' ? 'words' : 'characters');
   const pool = suppliedPool ? [...suppliedPool] : (kind === 'words' ? eligibleWords() : catalog[state.script].filter(e => state.selected[state.script].has(e.kana)));
-  if (!pool.length) { toast('Please select at least one eligible item first.'); return; }
+  if (!pool.length) { toast(t('toastEmpty')); return; }
   const timerMode = state.timerSetting === 'custom' ? customTimerSeconds() : state.timerSetting;
-  if (timerMode === null) { toast('Please enter a valid custom countdown.'); $('customMinutes').focus(); return; }
+  if (timerMode === null) { toast(t('toastBadTimer')); $('customMinutes').focus(); return; }
   if (state.quiz) clearQuizTimers(state.quiz);
   const quiz = { mode, kind, script: state.script, pool, deck: [], current: null, last: null,
     attempts: 0, correct: 0, round: 0, seenInRound: 0, phase: 'question', perItem: new Map(),
     wordAnswerMode: wordModeOverride || state.wordAnswerMode, transitionTimeout: null,
-    timerInterval: null, timerMode: String(timerMode), elapsedMs: 0, lastTick: performance.now(), paused: false };
+    timerInterval: null, timerMode: String(timerMode === 'off' && mode === 'practice' && kind === 'characters' ? 'elapsed' : timerMode),
+    elapsedMs: 0, lastTick: performance.now(), paused: false, lastCorrect: null };
   state.quiz = quiz;
   $('setupScreen').hidden = true;
   $('summaryScreen').hidden = true;
   $('quizScreen').hidden = false;
   $('kanaDisplay').classList.remove('is-exiting', 'is-entering');
   $('quizPanel').classList.remove('is-paused');
-  $('quizPoolLabel').textContent = `${kind === 'words' ? 'Vocabulary' : quiz.script[0].toUpperCase()+quiz.script.slice(1)} · ${pool.length} item${pool.length === 1 ? '' : 's'}${mode === 'learn' ? ' · Learn' : mode === 'review' ? ' · Review' : ''}`;
-  $('stopButton').textContent = '← Finish lesson';
+  $('quizPoolLabel').textContent = t('quizItems',{label:kind==='words'?t('words'):quiz.script[0].toUpperCase()+quiz.script.slice(1),count:pool.length,item:pool.length===1?t('itemSingular'):t('itemPlural'),mode:mode==='learn'?t('learnSuffix'):mode==='review'?t('reviewSuffix'):''});
+  $('stopButton').textContent = state.language === 'es' ? '← Terminar lección' : '← Finish lesson';
   $('learningProgress').hidden = mode !== 'learn';
   initTimer(quiz);
   nextQuestion();
   centerActiveExercise(quiz);
 }
+function syncElapsedClock(quiz) {
+  const toggle = $('elapsedToggle');
+  const canToggle = quiz.mode === 'practice' && quiz.kind === 'characters' && (quiz.timerMode === 'elapsed' || quiz.timerMode === 'up');
+  toggle.hidden = !canToggle;
+  toggle.textContent = state.showElapsedClock ? t('clockHide') : t('clockShow');
+  toggle.setAttribute('aria-pressed',String(state.showElapsedClock));
+  $('timerArea').hidden = quiz.timerMode === 'off' || (canToggle && !state.showElapsedClock);
+}
 function initTimer(quiz) {
   const enabled = quiz.timerMode !== 'off';
-  $('timerArea').hidden = !enabled;
-  $('pauseTimerButton').textContent = 'Pause';
+  $('pauseTimerButton').textContent = t('pause');
   $('pauseTimerButton').setAttribute('aria-pressed', 'false');
+  syncElapsedClock(quiz);
   if (!enabled) return;
   updateTimer(quiz);
   quiz.lastTick = performance.now();
@@ -627,7 +1107,7 @@ function initTimer(quiz) {
     quiz.elapsedMs += Math.max(0, now - quiz.lastTick);
     quiz.lastTick = now;
     updateTimer(quiz);
-    if (quiz.timerMode !== 'up' && quiz.elapsedMs >= Number(quiz.timerMode) * 1000) stopQuiz(false, true);
+    if (!['up','elapsed'].includes(quiz.timerMode) && quiz.elapsedMs >= Number(quiz.timerMode) * 1000) stopQuiz(false, true);
   }, 150);
 }
 function formatDuration(totalSeconds) {
@@ -640,10 +1120,10 @@ function formatDuration(totalSeconds) {
 }
 function updateTimer(quiz) {
   if (quiz.timerMode === 'off') return;
-  const seconds = quiz.timerMode === 'up' ? Math.floor(quiz.elapsedMs/1000)
+  const seconds = ['up','elapsed'].includes(quiz.timerMode) ? Math.floor(quiz.elapsedMs/1000)
     : Math.max(0, Number(quiz.timerMode) - quiz.elapsedMs/1000);
   $('timerDisplay').textContent = formatDuration(seconds);
-  $('timerArea').classList.toggle('timer-urgent', quiz.timerMode !== 'up' && seconds <= 30);
+  $('timerArea').classList.toggle('timer-urgent', !['up','elapsed'].includes(quiz.timerMode) && seconds <= 30);
 }
 function toggleTimerPause() {
   const quiz = state.quiz;
@@ -656,7 +1136,7 @@ function toggleTimerPause() {
     quiz.lastTick = performance.now();
     quiz.paused = false;
   }
-  $('pauseTimerButton').textContent = quiz.paused ? 'Resume' : 'Pause';
+  $('pauseTimerButton').textContent = quiz.paused ? t('resume') : t('pause');
   $('pauseTimerButton').setAttribute('aria-pressed', String(quiz.paused));
   $('quizPanel').classList.toggle('is-paused', quiz.paused);
   updateTimer(quiz);
@@ -686,44 +1166,30 @@ function nextQuestion() {
   quiz.phase = guided ? 'guided' : 'question';
   $('quizSymbol').textContent = quiz.current.kana;
   $('printedKana').textContent = quiz.current.kana;
-  $('printedLabel').textContent = 'In a regular font';
-  $('roundLabel').textContent = quiz.mode === 'learn'
-    ? `${guided ? 'Guided learning' : 'Memory practice'} · Pass ${guided ? quiz.round : quiz.round - 3} of 3 · Item ${quiz.seenInRound} of ${quiz.pool.length}`
-    : `Round ${quiz.round} · Item ${quiz.seenInRound} of ${quiz.pool.length}`;
-  $('quizHead').textContent = guided ? 'Look closely and learn this character'
-    : quiz.kind === 'words' ? (quiz.wordAnswerMode === 'meaning' ? 'What does this word mean in English?' : 'How do you read this word?')
-    : 'How do you read this character?';
+  $('printedLabel').textContent = state.language === 'es' ? 'Con una fuente normal' : 'In a regular font';
   $('guidedBlock').hidden = !guided;
   $('answerArea').hidden = guided;
   $('quizStats').hidden = guided;
-  $('quizHint').textContent = guided ? 'Enter to continue · Esc to finish'
-    : 'Enter to check / continue · Esc to finish';
+  updateQuestionLanguage(quiz);
   if (quiz.mode === 'learn') {
-    $('learningStage').textContent = guided ? 'Stage 1/2 · Guided learning' : 'Stage 2/2 · Memory practice';
-    $('learningCount').textContent = `Pass ${quiz.round} of 6`;
     const progress = Math.round(((quiz.round-1)*quiz.pool.length + quiz.seenInRound-1) / (6*quiz.pool.length)*100);
     $('progressFill').style.width = progress+'%';
     $('progressTrack').setAttribute('aria-valuenow', String(progress));
   }
   if (guided) {
-    $('guidedReading').textContent = `${quiz.current.answer}${quiz.current.meaning ? ' · '+quiz.current.meaning : ''}`;
-    $('guidedCaption').textContent = 'Reading / meaning';
-    $('guidedTip').textContent = [
-      'Read the character and its sound out loud.',
-      'Try to recall the sound before looking below.',
-      'Say the reading from memory, then double-check it.'
-    ][quiz.round-1];
-    $('guidedNext').textContent = quiz.round === 3 && !quiz.deck.length ? 'Start memory practice →' : 'Got it, next →';
+    $('guidedReading').textContent = `${quiz.current.answer}${quiz.current.meaning ? ' · '+itemMeaning(quiz.current) : ''}`;
+    $('guidedCaption').textContent = t('guideCaption');
+    $('guidedTip').textContent = t('guideTip'+quiz.round);
+    $('guidedNext').textContent = t(quiz.round === 3 && !quiz.deck.length ? 'guideMemory' : 'guideNext');
     $('guidedNext').disabled = false;
     if (!quiz.paused) $('guidedNext').focus({preventScroll:true});
   } else {
-    $('answerLabel').textContent = quiz.kind === 'words' ? (quiz.wordAnswerMode === 'meaning' ? 'Your answer in English' : 'Your answer in romaji') : 'Your answer in romaji';
-    $('answerInput').placeholder = quiz.kind === 'words' ? (quiz.wordAnswerMode === 'meaning' ? 'e.g. cat, mountain, hello…' : 'e.g. neko, yama…') : 'e.g. ka, shi, tsu…';
+    setAnswerLabels(quiz);
     $('answerInput').value = '';
     $('answerInput').disabled = false;
     $('feedback').hidden = true;
     $('feedback').className = 'feedback';
-    $('checkButton').textContent = 'Check ↵';
+    $('checkButton').textContent = state.language === 'es' ? 'Comprobar ↵' : 'Check ↵';
     $('checkButton').classList.remove('result-correct', 'result-wrong');
     $('checkButton').disabled = false;
     $('skipButton').hidden = false;
@@ -775,13 +1241,8 @@ function reveal(skipped = false) {
   $('answerInput').disabled = true;
   $('feedback').hidden = false;
   $('feedback').className = 'feedback '+(correct ? 'correct':'wrong');
-  const answer = displayAnswer(quiz,item);
-  const alternative = quiz.kind === 'characters' && item.answers.length > 1 ? ` Also accepted: ${item.answers.slice(1).join(', ')}.` : '';
-  const extra = quiz.kind === 'words' ? ` · ${item.readings[0]} · ${item.meanings[0]}` : (item.meaning ? ` · ${item.meaning}` : '');
-  $('feedback').textContent = correct
-    ? `Correct! ${item.kana} = ${answer}${extra && quiz.kind === 'words' ? ' ('+item.readings[0]+')' : ''}.${alternative}`
-    : `The answer was ${answer} (${item.kana})${extra ? ' · '+extra.replace(/^ · /,'') : ''}.${alternative}`;
-  $('checkButton').textContent = quiz.mode === 'learn' && quiz.round === 6 && quiz.deck.length === 0 ? 'View results →' : 'Next →';
+  quiz.lastCorrect = correct;
+  showFeedback(quiz);
   $('checkButton').classList.add(correct ? 'result-correct' : 'result-wrong');
   $('skipButton').hidden = true;
   updateStats();
@@ -792,34 +1253,84 @@ function stopQuiz(completed = false, timedOut = false) {
   if (!quiz) return;
   clearQuizTimers(quiz);
   $('kanaDisplay').classList.remove('is-exiting','is-entering');
-  const learning = quiz.mode === 'learn';
-  $('summaryEyebrow').textContent = timedOut ? 'Time is up!' : completed ? 'Lesson complete!' : 'Session finished';
-  $('summaryDescription').textContent = learning
-    ? 'Only your memory-test answers count toward accuracy; the three guided passes are for learning.'
-    : 'These results include answers from the session you just finished.';
-  const timing = quiz.timerMode === 'off' ? '' : ` · Time: ${formatDuration(Math.floor(quiz.elapsedMs/1000))} elapsed`;
-  $('summaryProgress').hidden = !(learning || timing || quiz.mode === 'review');
-  $('summaryProgress').textContent = learning
-    ? `${completed ? 'Completed' : 'Reached'} pass ${quiz.round} of 6${timing}.`
-    : quiz.mode === 'review' ? `Focused review of ${quiz.pool.length} item(s)${timing}.` : timing ? `Session duration${timing}.` : '';
-  $('summaryAttempts').textContent = quiz.attempts;
-  $('summaryCorrect').textContent = quiz.correct;
-  $('summaryAccuracy').textContent = quiz.attempts ? Math.round(quiz.correct/quiz.attempts*100)+'%' : '—';
   const hardest = [...quiz.perItem.values()].filter(x => x.errors > 0)
     .sort((a,b) => b.errors-a.errors || a.correct/a.attempts-b.correct/b.attempts || b.attempts-a.attempts);
-  if (hardest.length) {
-    $('hardestResults').innerHTML = `<ol class="hardest-list">${hardest.slice(0,10).map(x => `<li class="hardest-item"><span class="hardest-glyph" aria-hidden="true">${escapeHtml(x.item.kana)}</span><div class="hardest-info"><strong>${escapeHtml(itemDetail(x.item, quiz.wordAnswerMode))}</strong><span>${x.attempts} attempt${x.attempts === 1 ? '' : 's'} · ${x.correct} correct</span></div><span class="hardest-count">${x.errors} mistake${x.errors === 1 ? '' : 's'}</span></li>`).join('')}</ol>${hardest.length > 10 ? `<p class="note">Showing 10 of ${hardest.length} missed items. All are available in the review dialog.</p>` : ''}`;
-  } else {
-    $('hardestResults').innerHTML = `<p class="summary-empty">${quiz.attempts ? 'Amazing! You had no mistakes this time.' : 'No answers yet. Try a round to discover what needs practice.'}</p>`;
-  }
-  $('reviewMistakesButton').hidden = hardest.length === 0;
-  $('practiceAgain').textContent = learning ? 'Repeat lesson →' : 'Practice again →';
-  state.lastSummary = { hardest, kind:quiz.kind, mode:quiz.mode, pool:[...quiz.pool], script:quiz.script, wordAnswerMode:quiz.wordAnswerMode };
+  state.lastSummary = { hardest, kind:quiz.kind, mode:quiz.mode, pool:[...quiz.pool], script:quiz.script,
+    wordAnswerMode:quiz.wordAnswerMode, timedOut, completed, round:quiz.round,
+    attempts:quiz.attempts, correct:quiz.correct, timerMode:quiz.timerMode,
+    elapsedMs:quiz.elapsedMs };
+  renderSummary(state.lastSummary);
   state.quiz = null;
   $('quizScreen').hidden = true;
   $('setupScreen').hidden = true;
   $('summaryScreen').hidden = false;
   window.scrollTo({top:0,behavior:'instant'});
+}
+function setAnswerLabels(quiz) {
+  $('answerLabel').textContent = quiz.kind === 'words' && quiz.wordAnswerMode === 'meaning' ? t('answerWordsMeaning') : t('answerRomaji');
+  $('answerInput').placeholder = quiz.kind === 'words'
+    ? (quiz.wordAnswerMode === 'meaning' ? t('answerWordsExample') : t('answerRomajiWordExample')) : t('answerRomajiExample');
+}
+function updateQuestionLanguage(quiz) {
+  if (!quiz.current) return;
+  const guided = quiz.mode === 'learn' && quiz.round <= 3;
+  $('printedLabel').textContent = state.language === 'es' ? 'Con una fuente normal' : 'In a regular font';
+  $('roundLabel').textContent = quiz.mode === 'learn'
+    ? t('learnPass',{stage:t(guided?'guided':'memory'),pass:guided?quiz.round:quiz.round-3,item:quiz.seenInRound,total:quiz.pool.length})
+    : t('round',{round:quiz.round,item:quiz.seenInRound,total:quiz.pool.length});
+  $('quizHead').textContent = guided ? t('headGuided')
+    : quiz.kind === 'words' ? t(quiz.wordAnswerMode === 'meaning'?'headWordsMeaning':'headWordsReading') : t('headCharacter');
+  $('quizHint').textContent = t(guided?'hintGuided':'hintQuiz');
+  $('learningStage').textContent = t(guided?'progressGuided':'progressMemory');
+  $('learningCount').textContent = t('passCount',{pass:quiz.round});
+  $('guidedCaption').textContent = t('guideCaption');
+  if (guided) {
+    $('guidedReading').textContent = `${quiz.current.answer}${quiz.current.meaning ? ' · '+itemMeaning(quiz.current) : ''}`;
+    $('guidedTip').textContent = t('guideTip'+quiz.round);
+    $('guidedNext').textContent = t(quiz.round === 3 && !quiz.deck.length ? 'guideMemory' : 'guideNext');
+  }
+  setAnswerLabels(quiz);
+}
+function showFeedback(quiz) {
+  if (!quiz.current || quiz.phase !== 'result') return;
+  const item = quiz.current;
+  const correct = quiz.lastCorrect;
+  const answer = displayAnswer(quiz,item);
+  const alt = quiz.kind === 'characters' && item.answers.length > 1 ? t('alsoAccepted',{answers:item.answers.slice(1).join(', ')}) : '';
+  const extra = quiz.kind === 'words'
+    ? ` · ${item.readings[0]} · ${wordMeanings(item)[0]}` : (item.meaning ? ` · ${itemMeaning(item)}` : '');
+  $('feedback').textContent = correct
+    ? t('correctFeedback',{kana:item.kana,answer,extra:quiz.kind==='words' ? ` (${item.readings[0]})` : '',alt})
+    : t('wrongFeedback',{kana:item.kana,answer,extra,alt});
+  $('checkButton').textContent = quiz.mode === 'learn' && quiz.round === 6 && quiz.deck.length === 0 ? t('seeResults') : t('next');
+}
+function refreshQuizLanguage() {
+  const quiz = state.quiz;
+  if (!quiz) return;
+  $('quizPoolLabel').textContent = t('quizItems',{label:quiz.kind==='words'?t('words'):quiz.script[0].toUpperCase()+quiz.script.slice(1),count:quiz.pool.length,item:quiz.pool.length===1?t('itemSingular'):t('itemPlural'),mode:quiz.mode==='learn'?t('learnSuffix'):quiz.mode==='review'?t('reviewSuffix'):''});
+  $('stopButton').textContent = state.language === 'es' ? '← Terminar lección' : '← Finish lesson';
+  $('pauseTimerButton').textContent = quiz.paused ? t('resume') : t('pause');
+  syncElapsedClock(quiz);
+  updateQuestionLanguage(quiz);
+  if (quiz.phase === 'question') $('checkButton').textContent = state.language==='es'?'Comprobar ↵':'Check ↵';
+  if (quiz.phase === 'result') showFeedback(quiz);
+}
+function renderSummary(s) {
+  $('summaryEyebrow').textContent = t(s.timedOut?'timeUp':s.completed?'lessonComplete':'sessionFinished');
+  $('summaryDescription').textContent = t(s.mode==='learn'?'summaryLearn':'summaryOther');
+  const timing = s.timerMode === 'off' ? '' : t('timing',{time:formatDuration(Math.floor(s.elapsedMs/1000))});
+  $('summaryProgress').hidden = !(s.mode==='learn' || timing || s.mode==='review');
+  $('summaryProgress').textContent = s.mode==='learn'
+    ? t('summaryLearning',{progress:t(s.completed?'completed':'reached'),round:s.round,timing})
+    : s.mode==='review' ? t('summaryReview',{count:s.pool.length,timing}) : timing ? t('summaryDuration',{timing}) : '';
+  $('summaryAttempts').textContent = s.attempts;
+  $('summaryCorrect').textContent = s.correct;
+  $('summaryAccuracy').textContent = s.attempts ? Math.round(s.correct/s.attempts*100)+'%' : '—';
+  $('hardestResults').innerHTML = s.hardest.length
+    ? `<ol class="hardest-list">${s.hardest.slice(0,10).map(x => `<li class="hardest-item"><span class="hardest-glyph" aria-hidden="true">${escapeHtml(x.item.kana)}</span><div class="hardest-info"><strong>${escapeHtml(itemDetail(x.item,s.wordAnswerMode))}</strong><span>${escapeHtml(t('attemptsCorrect',{attempts:x.attempts,attemptLabel:x.attempts===1?t('attemptSingular'):t('attemptPlural'),correct:x.correct}))}</span></div><span class="hardest-count">${escapeHtml(t('errors',{count:x.errors,label:x.errors===1?t('mistakeSingular'):t('mistakePlural')}))}</span></li>`).join('')}</ol>${s.hardest.length>10?`<p class="note">${escapeHtml(t('showingSome',{count:s.hardest.length}))}</p>`:''}`
+    : `<p class="summary-empty">${t(s.attempts?'flawless':'emptySummary')}</p>`;
+  $('reviewMistakesButton').hidden = s.hardest.length === 0;
+  $('practiceAgain').textContent = t(s.mode==='learn'?'repeatLesson':'repeatPractice');
 }
 function backToSelection() {
   if (state.quiz) clearQuizTimers(state.quiz);
@@ -834,13 +1345,13 @@ function backToSelection() {
 function openReviewDialog() {
   if (!state.lastSummary || !state.lastSummary.hardest.length) return;
   state.reviewSelection = new Set(state.lastSummary.hardest.map(x => x.item.id));
-  $('reviewItems').innerHTML = state.lastSummary.hardest.map(x => `<label class="review-item"><input type="checkbox" data-review-id="${escapeHtml(x.item.id)}" checked><span class="review-glyph">${escapeHtml(x.item.kana)}</span><span class="review-item-text"><strong>${escapeHtml(itemDetail(x.item,state.lastSummary.wordAnswerMode))}</strong><span>${x.errors} mistake${x.errors === 1 ? '' : 's'} · ${x.attempts} attempts</span></span></label>`).join('');
+  $('reviewItems').innerHTML = state.lastSummary.hardest.map(x => `<label class="review-item"><input type="checkbox" data-review-id="${escapeHtml(x.item.id)}" checked><span class="review-glyph">${escapeHtml(x.item.kana)}</span><span class="review-item-text"><strong>${escapeHtml(itemDetail(x.item,state.lastSummary.wordAnswerMode))}</strong><span>${escapeHtml(t('reviewLine',{errors:x.errors,errorLabel:x.errors===1?t('mistakeSingular'):t('mistakePlural'),attempts:x.attempts}))}</span></span></label>`).join('');
   updateReviewCount();
   $('reviewDialog').showModal();
 }
 function updateReviewCount() {
   const count = state.reviewSelection.size;
-  $('reviewCount').textContent = `${count} selected`;
+  $('reviewCount').textContent = t('selectedCount',{count});
   $('beginReview').disabled = count === 0;
 }
 function beginReview() {
@@ -869,6 +1380,12 @@ document.addEventListener('keydown', event => {
     event.stopPropagation();
   }
 }, true);
+$('languageSelect').addEventListener('change', e => changeLanguage(e.target.value));
+$('elapsedToggle').addEventListener('click', () => {
+  state.showElapsedClock = !state.showElapsedClock;
+  if (state.quiz) syncElapsedClock(state.quiz);
+  save();
+});
 $('timerSetting').addEventListener('change', e => { state.timerSetting = e.target.value; updateCustomTimerVisibility(); save(); });
 for (const id of ['customHours','customMinutes']) $(id).addEventListener('input', () => {
   state.customHours = $('customHours').value;
@@ -886,18 +1403,98 @@ document.querySelector('.tabs').addEventListener('keydown', e => {
   $('tab'+state.script[0].toUpperCase()+state.script.slice(1)).focus();
 });
 $('search').addEventListener('input',render);
-$('categories').addEventListener('click',e => {
+// Click-and-drag selection, like painting across cells. The first tile decides
+// whether this stroke selects or clears. Each tile is visited at most once.
+// We update tile styling in place while dragging so re-rendering cannot interrupt
+// the active pointer, then save / update counters once the stroke finishes.
+let selectionStroke = null;
+let skipStrokeClick = false;
+const categoriesEl = $('categories');
+function paintSelectionTile(tile) {
+  const stroke = selectionStroke;
+  if (!stroke || !tile || !categoriesEl.contains(tile) || !tile.classList.contains('kana-tile')) return;
+  const kana = tile.dataset.kana;
+  if (stroke.seen.has(kana)) return;
+  stroke.seen.add(kana);
+  const selected = state.selected[stroke.script];
+  if (stroke.selecting) selected.add(kana);
+  else selected.delete(kana);
+  tile.setAttribute('aria-pressed', String(stroke.selecting));
+  const item = catalogMap[stroke.script].get(kana);
+  if (item) tile.setAttribute('aria-label', `${kana}, ${item.answer}${item.meaning ? ', '+item.meaning : ''}, ${stroke.selecting ? 'selected' : 'not selected'}`);
+}
+function paintAcrossPointer(from, to) {
+  // Sample between move events so fast swipes don't miss tiles in the middle.
+  const distance = Math.hypot(to.x - from.x, to.y - from.y);
+  const steps = Math.max(1, Math.ceil(distance / 10));
+  for (let i = 1; i <= steps; i++) {
+    const x = from.x + (to.x - from.x) * (i / steps);
+    const y = from.y + (to.y - from.y) * (i / steps);
+    const target = document.elementFromPoint(x, y);
+    paintSelectionTile(target?.closest('.kana-tile'));
+  }
+}
+function endSelectionStroke(event) {
+  if (!selectionStroke || (event && event.pointerId !== selectionStroke.pointerId)) return;
+  const oldStroke = selectionStroke;
+  selectionStroke = null;
+  skipStrokeClick = true;
+  if (categoriesEl.hasPointerCapture?.(oldStroke.pointerId)) {
+    categoriesEl.releasePointerCapture(oldStroke.pointerId);
+  }
+  save();
+  render();
+  // Only the synthetic mouse click accompanying this stroke is suppressed.
+  setTimeout(() => { skipStrokeClick = false; }, 0);
+}
+categoriesEl.addEventListener('pointerdown', event => {
+  // Touch continues to use the standard tap-to-toggle interaction, allowing scroll.
+  if (event.pointerType === 'touch' || !event.isPrimary || event.button !== 0) return;
+  const tile = event.target.closest('.kana-tile');
+  if (!tile || !categoriesEl.contains(tile)) return;
+  event.preventDefault();
+  selectionStroke = {
+    pointerId: event.pointerId, script: state.script,
+    selecting: !state.selected[state.script].has(tile.dataset.kana),
+    seen: new Set(), last: { x: event.clientX, y: event.clientY }
+  };
+  paintSelectionTile(tile);
+  categoriesEl.setPointerCapture(event.pointerId);
+});
+categoriesEl.addEventListener('pointermove', event => {
+  if (!selectionStroke || selectionStroke.pointerId !== event.pointerId) return;
+  const next = { x: event.clientX, y: event.clientY };
+  paintAcrossPointer(selectionStroke.last, next);
+  selectionStroke.last = next;
+});
+categoriesEl.addEventListener('pointerup', event => {
+  if (!selectionStroke || selectionStroke.pointerId !== event.pointerId) return;
+  paintAcrossPointer(selectionStroke.last, { x: event.clientX, y: event.clientY });
+  endSelectionStroke(event);
+});
+categoriesEl.addEventListener('pointercancel', endSelectionStroke);
+categoriesEl.addEventListener('lostpointercapture', endSelectionStroke);
+categoriesEl.addEventListener('dragstart', event => {
+  if (event.target.closest('.kana-tile')) event.preventDefault();
+});
+categoriesEl.addEventListener('click',e => {
   const button = e.target.closest('button[data-action]');
   if (!button) return;
-  if (button.dataset.action === 'toggle') updateSelection([button.dataset.kana], 'toggle');
-  else updateSelection(currentVisible().filter(item => item.category === button.dataset.category).map(item => item.kana), button.dataset.action === 'add-group' ? 'add' : 'remove');
+  if (button.dataset.action === 'toggle') {
+    // Mouse and pen clicks have already been applied on pointerdown.
+    // Keyboard activation (detail=0) and touch taps still work as before.
+    if (skipStrokeClick && e.detail !== 0) return;
+    updateSelection([button.dataset.kana], 'toggle');
+  } else {
+    updateSelection(currentVisible().filter(item => item.category === button.dataset.category).map(item => item.kana), button.dataset.action === 'add-group' ? 'add' : 'remove');
+  }
 });
 $('selectAll').addEventListener('click', () => updateSelection(currentVisible().map(item => item.kana), 'add'));
 $('clearAll').addEventListener('click', () => updateSelection(currentVisible().map(item => item.kana), 'remove'));
 $('randomTen').addEventListener('click', () => {
   const subset = shuffle(currentVisible()).slice(0,10);
   state.selected[state.script] = new Set(subset.map(x => x.kana));
-  save();render();toast(`${subset.length} randomly chosen characters selected.`);
+  save();render();toast(t('toastSelect',{count:subset.length}));
 });
 $('learnButton').addEventListener('click', () => startQuiz('learn'));
 $('startButton').addEventListener('click', () => startQuiz('practice'));
@@ -909,7 +1506,7 @@ $('wordsButton').addEventListener('click', () => {
   // Keep the dialog visible if the custom time is invalid, so the user can fix it in the sidebar.
   if (state.timerSetting === 'custom' && customTimerSeconds() === null) {
     $('wordsDialog').close();
-    toast('Please enter a valid custom countdown before starting.');
+    toast(t('toastBadTimerBefore'));
     $('customMinutes').focus();
     return;
   }
@@ -959,7 +1556,5 @@ $('reviewSelectAll').addEventListener('click', () => setReviewSelection(true));
 $('reviewClearAll').addEventListener('click', () => setReviewSelection(false));
 $('beginReview').addEventListener('click',beginReview);
 restore();
-applyTheme(state.theme);
-updateCustomTimerVisibility();
+changeLanguage(state.language,false);
 save();
-render();

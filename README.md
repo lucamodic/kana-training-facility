@@ -4,12 +4,13 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 
 ## Features
 
-- **Hiragana, katakana, and beginner kanji** with individual selection and group selection.
+- **Hiragana, katakana, and beginner kanji** with individual selection, group selection, and click-and-drag painting to select or deselect multiple characters at once (mouse/pen). Touch taps and keyboard selection still work.
 - **Learn mode**: three guided passes (answers visible) and three memory-test passes.
 - **Infinite character practice** for the selected script.
-- **Word challenge**: open the dedicated Word Challenge dialog from the tab bar to guess an English meaning or a romaji reading. Only words made entirely from your selected written characters appear. The word list is a curated starter dictionary, not an online dictionary.
-- **Optional timer**: custom countdown by default (hours and minutes, 00:01 to 99:59), or off, count-up, and 5/10/15-minute presets. Pause/resume; countdowns finish the session automatically.
+- **Word challenge**: open the dedicated Word Challenge dialog from the tab bar to guess an English/Spanish meaning (depending on your language) or a romaji reading. Only words made entirely from your selected written characters appear. The word list is a curated starter dictionary, not an online dictionary.
+- **Optional timer**: custom countdown by default (hours and minutes, 00:01 to 99:59), or no countdown, count-up, and 5/10/15-minute presets. During Infinite Practice, choosing no countdown automatically shows a running elapsed clock; hide or show it any time without resetting it. A configured countdown and elapsed clock never display together. Pause/resume supported; countdowns finish the session automatically.
 - **Results and mistake review**: after finishing, see your accuracy and hardest items. Choose which missed items to review in a modal.
+- **English and Spanish** interface: English by default, with a header language selector. Word-meaning questions, accepted answers, and kanji glosses change with the selected language. Your choice is saved locally.
 - **Six editable themes**: Lavender, Mint, Peach, Sky, Burgundy, and Midnight, available through a compact theme menu in the header.
 - **Saved preferences** via localStorage (no visible backup controls).
 - **Favicon** displaying the hiragana あ.
@@ -41,7 +42,7 @@ Every written kana and kanji in a word must be selected in the respective tab. S
 
 - Romaji entry uses an exact match after normalizing whitespace and basic punctuation. Kanji often have many context-dependent readings; this is a beginner study aid, not a full dictionary.
 - Settings are stored in **this browser and this site origin**, not in a GitHub repository. Moving to a different device or URL will not carry them over.
-- All interface text is in English.
+- The default interface language is English. Change it in the header to Spanish; the choice is saved per browser.
 
 ## Session navigation
 

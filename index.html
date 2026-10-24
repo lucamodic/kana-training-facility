@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" data-theme="pastel">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#d9cae9">
+  <meta name="description" content="Kana Training Facility: learn hiragana, katakana, kanji and Japanese words at your own pace.">
+  <title>Kana Training Facility</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <div class="shell top-inner">
+      <a class="brand" href="#" id="homeLink" aria-label="Kana Training Facility, go to selection">
+        <span class="brand-icon" aria-hidden="true">あ</span>
+        <span><span class="brand-title">KANA TRAINING FACILITY <span class="brand-star">✦</span></span><span class="brand-sub">your little Japanese study space</span></span>
+      </a>
+      <div class="header-actions">
+        <div class="offline-pill"><span class="dot" aria-hidden="true"></span> LOCAL SETTINGS · OFFLINE READY</div>
+        <div class="theme-picker" id="themePicker">
+          <button type="button" id="themeToggle" class="theme-toggle" aria-expanded="false" aria-controls="themeMenu" aria-haspopup="true" aria-label="Change color theme">
+            <span class="theme-toggle-swatch" aria-hidden="true"></span>
+            <span>Theme: <strong id="currentThemeName">Lavender</strong></span>
+            <span class="theme-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="theme-menu" id="themeMenu" role="group" aria-label="Color theme" hidden>
+            <span class="theme-menu-label">CHOOSE A THEME</span>
+            <div class="palette-options">
+              <button type="button" class="palette-choice" data-palette="pastel" aria-pressed="true"><span class="palette-swatch" style="--s1:#dcc9ee;--s2:#facbdc;--s3:#d9ecdb" aria-hidden="true"></span>Lavender</button>
+              <button type="button" class="palette-choice" data-palette="mint" aria-pressed="false"><span class="palette-swatch" style="--s1:#b9decf;--s2:#ffe6b9;--s3:#def0e3" aria-hidden="true"></span>Mint</button>
+              <button type="button" class="palette-choice" data-palette="peach" aria-pressed="false"><span class="palette-swatch" style="--s1:#f4c6ac;--s2:#fde6b9;--s3:#dce4ec" aria-hidden="true"></span>Peach</button>
+              <button type="button" class="palette-choice" data-palette="blue" aria-pressed="false"><span class="palette-swatch" style="--s1:#b7d8f2;--s2:#d8cdf6;--s3:#f7d8e6" aria-hidden="true"></span>Sky</button>
+              <button type="button" class="palette-choice" data-palette="burgundy" aria-pressed="false"><span class="palette-swatch" style="--s1:#712b4b;--s2:#ddafc1;--s3:#ffefdc" aria-hidden="true"></span>Burgundy</button>
+              <button type="button" class="palette-choice" data-palette="night" aria-pressed="false"><span class="palette-swatch" style="--s1:#25283f;--s2:#8072ad;--s3:#d5a9ba" aria-hidden="true"></span>Midnight</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="shell retro-browser" aria-label="Decorative browser bar">
+      <div class="browser-navigation" aria-hidden="true"><span>◀</span><span>▶</span><span>↻</span></div>
+      <span class="browser-url">⌁ kana-training-facility / study-room</span>
+      <span class="browser-ready" aria-hidden="true">● ready</span>
+    </div>
+
+  </header>
+
+  <main class="shell">
+    <section id="setupScreen" aria-label="Choose study material">
+      <div class="study-switcher">
+        <div class="tabs" role="tablist" aria-label="Writing system">
+          <button type="button" id="tabHiragana" class="tab" role="tab" aria-selected="true" aria-controls="characterPanel" data-script="hiragana">Hiragana <span class="tab-counter" id="hCount">0</span></button>
+          <button type="button" id="tabKatakana" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="katakana">Katakana <span class="tab-counter" id="kCount">0</span></button>
+          <button type="button" id="tabKanji" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="kanji">Kanji <span class="tab-counter" id="jCount">0</span></button>
+        </div>
+        <button type="button" id="openWordsButton" class="words-launch" aria-haspopup="dialog" aria-controls="wordsDialog"><span class="words-launch-icon" aria-hidden="true">✎</span> Word Challenge <span class="words-count" id="wordAvailableCount">0</span> <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="layout">
+        <div class="main-panel" id="characterPanel" role="tabpanel" aria-labelledby="tabHiragana">
+          <div class="panel-heading"><div><h2 id="selectionHeading">Choose your hiragana</h2><p class="subtle">Click a character to include it in your study sessions.</p></div></div>
+          <div class="toolbar">
+            <input id="search" class="search" type="search" placeholder="Search character, reading, or meaning…" aria-label="Filter characters">
+            <button class="mini-button" id="selectAll" type="button">Select all</button>
+            <button class="mini-button" id="clearAll" type="button">Clear all</button>
+            <button class="mini-button" id="randomTen" type="button" title="Replace the current selection with up to 10 random visible characters">Random 10</button>
+          </div>
+          <div id="categories"></div>
+        </div>
+        <aside class="side-panel" aria-label="Session options">
+          <div class="side-grid">
+            <div><span class="side-label">YOUR SELECTION</span><div class="big-number"><strong id="selectedCount">0</strong><span>characters on this tab</span></div><p id="selectedDescription" class="subtle">Pick at least one to begin.</p></div>
+            <div class="side-rule"></div>
+            <div class="setting-group">
+              <div class="timer-header"><span class="timer-decoration" aria-hidden="true">✿</span><label class="side-label" for="timerSetting">YOUR LITTLE STUDY TIMER</label><span class="timer-decoration" aria-hidden="true">✧</span></div>
+              <div class="timer-card">
+                <div class="timer-card-head"><span aria-hidden="true" class="timer-clock">◷</span><span class="timer-card-title">Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div>
+                <select class="setting-select" id="timerSetting" aria-label="Timer mode"><option value="custom" selected>Custom countdown</option><option value="off">No timer</option><option value="up">Stopwatch (count up)</option><option value="300">5-minute countdown</option><option value="600">10-minute countdown</option><option value="900">15-minute countdown</option></select>
+                <div id="customTimerFields" class="custom-timer-fields" role="group" aria-label="Custom countdown duration">
+                  <label for="customHours">Hours<input type="number" id="customHours" class="time-input" min="0" max="99" step="1" inputmode="numeric" value="0" placeholder="00"></label>
+                  <span class="time-separator" aria-hidden="true">:</span>
+                  <label for="customMinutes">Minutes<input type="number" id="customMinutes" class="time-input" min="0" max="59" step="1" inputmode="numeric" value="5" placeholder="05"></label>
+                </div>
+                <p id="customTimerError" class="timer-error" role="alert" hidden>Please choose between 00:01 and 99:59.</p>
+                <p class="timer-footnote" id="timerFootnote">✧ One tiny study session at a time.</p>
+              </div>
+              <p class="choice-explanation">Countdowns end your lesson at zero. Pause anytime.</p>
+            </div>
+            <div class="session-choices">
+              <button type="button" class="button-secondary" id="learnButton" disabled>Learn my selection →</button><p class="choice-explanation">3 guided passes showing the answer, followed by 3 memory-test passes.</p>
+              <button type="button" class="button-primary" id="startButton" disabled>Infinite character practice →</button><p class="choice-explanation">Shuffled questions until you decide to finish.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="quizScreen" class="quiz-wrap" aria-label="Study session" hidden>
+      <div class="quiz-top"><button type="button" class="back" id="stopButton">← Finish lesson</button><div class="quiz-top-right"><div class="quiz-pill" id="quizPoolLabel">Hiragana · 0</div><div id="timerArea" class="timer-area" hidden><span aria-label="Timer" id="timerDisplay">05:00</span><button type="button" id="pauseTimerButton" class="mini-button" aria-pressed="false">Pause</button></div></div></div>
+      <div id="learningProgress" class="learning-progress" hidden><div class="progress-row"><strong id="learningStage">Guided learning</strong><span id="learningCount">Pass 1 of 6</span></div><div class="progress-track" id="progressTrack" role="progressbar" aria-label="Lesson progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div></div>
+      <div class="stats" id="quizStats"><div class="stat"><span>Answered</span><b id="attemptsStat">0</b></div><div class="stat"><span>Correct</span><b id="correctStat">0</b></div><div class="stat"><span>Accuracy</span><b id="accuracyStat">—</b></div></div>
+      <p class="quiz-sublabel" id="roundLabel">Shuffling your selection</p>
+      <div class="quiz-panel" id="quizPanel">
+        <div class="quiz-head" id="quizHead">How do you read this character?</div>
+        <div id="kanaDisplay" class="kana-display"><div class="quiz-symbol" id="quizSymbol" aria-live="polite">あ</div><div class="printed-note"><span id="printedLabel">In a regular font</span><span class="printed-kana" id="printedKana" aria-hidden="true">あ</span></div></div>
+        <div class="guided-block" id="guidedBlock" hidden><div class="guided-caption" id="guidedCaption">Reading</div><div class="guided-reading" id="guidedReading">a</div><p class="guided-tip" id="guidedTip">Say the reading out loud.</p><button type="button" class="button-primary" id="guidedNext">Got it, next →</button></div>
+        <div class="quiz-bottom" id="answerArea"><form id="answerForm" autocomplete="off"><label for="answerInput" id="answerLabel">Your answer in romaji</label><input id="answerInput" class="answer-input" type="text" placeholder="e.g. ka, shi, tsu…" autocomplete="off" autocapitalize="off" spellcheck="false" required><div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div><div class="quiz-actions"><button type="submit" class="button-primary" id="checkButton">Check ↵</button><button type="button" class="button-secondary" id="skipButton">I don't know</button></div></form></div>
+      </div>
+      <p class="quiz-hint" id="quizHint">Enter to check / continue · Esc to finish</p>
+      <button type="button" class="button-secondary end-lesson" id="finishLessonButton">Finish lesson & view results</button>
+    </section>
+
+    <section id="summaryScreen" class="summary-wrap" aria-label="Session results" hidden>
+      <div class="summary-card"><span class="eyebrow" id="summaryEyebrow">Session complete</span><div class="summary-intro"><h2>Here's how you did.</h2><p class="subtle" id="summaryDescription">Your results from this session.</p><div class="summary-progress" id="summaryProgress" hidden></div></div>
+        <div class="stats summary-stats"><div class="stat"><span>Answered</span><b id="summaryAttempts">0</b></div><div class="stat"><span>Correct</span><b id="summaryCorrect">0</b></div><div class="stat"><span>Accuracy</span><b id="summaryAccuracy">—</b></div></div>
+        <h3 class="hardest-heading">Your trickiest items</h3><p class="subtle">Ranked by mistakes and “I don't know” answers.</p><div id="hardestResults"></div>
+        <div class="summary-actions"><button type="button" class="button-secondary" id="backToSelection">Back to selection</button><button type="button" class="button-secondary" id="practiceAgain">Try again →</button><button type="button" class="button-primary" id="reviewMistakesButton" hidden>Practice my toughest items →</button></div>
+      </div>
+    </section>
+  </main>
+  <footer class="shell"><span>✦ KANA TRAINING FACILITY ✦</span><span>Made for curious minds · No tracking · Works offline</span></footer>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog id="wordsDialog" class="review-dialog words-dialog" aria-labelledby="wordsDialogTitle">
+    <div class="review-dialog-head"><div><span class="eyebrow">VOCABULARY PRACTICE</span><h2 id="wordsDialogTitle">Word Challenge</h2></div><button type="button" class="mini-button" id="closeWordsDialog" aria-label="Close Word Challenge">✕</button></div>
+    <div class="words-dialog-body">
+      <div class="words-unlocked"><span aria-hidden="true">✎</span><strong id="wordDialogCount">0</strong><span>words unlocked</span></div>
+      <p class="subtle" id="wordCountDescription">Select hiragana, katakana or kanji to unlock vocabulary.</p>
+      <label class="small-label" for="wordAnswerMode">What would you like to guess?</label>
+      <select class="setting-select" id="wordAnswerMode"><option value="meaning">English meaning</option><option value="reading">Romaji reading</option></select>
+      <p class="choice-explanation">Only vocabulary using your selected characters will appear. Your current timer setting also applies.</p>
+    </div>
+    <div class="review-footer words-dialog-footer"><button type="button" class="button-secondary" id="cancelWordsDialog">Cancel</button><button type="button" class="button-primary" id="wordsButton" disabled>Start word practice →</button></div>
+  </dialog>
+  <dialog id="reviewDialog" aria-labelledby="reviewTitle" class="review-dialog"><div class="review-dialog-head"><div><span class="eyebrow">A LITTLE EXTRA PRACTICE</span><h2 id="reviewTitle">Review your toughest items</h2></div><button type="button" class="mini-button" id="closeReview" aria-label="Close review dialog">✕</button></div><p class="subtle">Uncheck anything you don't want to practice right now. Your regular selections won't change.</p><div class="review-toolbar"><button type="button" class="mini-button" id="reviewSelectAll">Select all</button><button type="button" class="mini-button" id="reviewClearAll">Clear</button></div><div id="reviewItems" class="review-items"></div><div class="review-footer"><span id="reviewCount" class="subtle">0 selected</span><div class="review-buttons"><button type="button" class="button-secondary" id="cancelReview">Cancel</button><button type="button" class="button-primary" id="beginReview">Start review →</button></div></div></dialog>
+</body>
+</html>

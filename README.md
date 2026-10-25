@@ -12,7 +12,7 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 - **Optional timer**: no countdown by default, plus a custom countdown (hours and minutes, 00:01 to 99:59), count-up, and 5/10/15-minute presets. During Infinite Practice, choosing no countdown automatically shows a running elapsed clock; hide or show it any time without resetting it. A configured countdown and elapsed clock never display together. Pause/resume supported; countdowns finish the session automatically.
 - **Results and mistake review**: after finishing, see your accuracy and hardest items. Choose which missed items to review in a modal.
 - **English and Spanish** interface: English by default, with a header language selector. Word-meaning questions, accepted answers, and kanji glosses change with the selected language. Your choice is saved locally.
-- **Six editable themes**: Lavender, Mint, Peach, Sky, Burgundy, and Midnight, available through a compact theme menu in the header.
+- **Eight editable themes**: Lavender, Mint, Peach, Sky, Burgundy, Midnight, Trans Pride, and Bi Pride, available through a compact theme menu in the header.
 - **Saved preferences** via localStorage (no visible backup controls).
 - **Favicon** displaying the hiragana あ.
 

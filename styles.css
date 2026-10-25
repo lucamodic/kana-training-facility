@@ -382,6 +382,25 @@ html[data-theme="burgundy"] {
   --retro-selected:#e5f1e5; --retro-shadow:#915e70;
   --shadow:5px 6px 0 #74395044;
 }
+/* Pride-inspired palettes. Edit the variables here to tweak the whole site. */
+html[data-theme="trans"] {
+  --bg:#e9f6fc; --paper:#fffafd; --ink:#304459; --muted:#516b7a;
+  --line:#8db9d4; --soft:#e6f3fa; --accent:#ad4778;
+  --accent-soft:#fce5ee; --green:#266c60; --green-soft:#def3e9;
+  --retro-main:#a9dffa; --retro-deep:#5f8faf; --retro-cream:#ffffff;
+  --retro-ribbon:#f7cada; --retro-button:#f8e2ee; --retro-tile:#fff9fc;
+  --retro-selected:#ddf4ed; --retro-shadow:#80a4b7;
+  --shadow:5px 6px 0 #6ca1c044;
+}
+html[data-theme="bi"] {
+  --bg:#f7eaf6; --paper:#fffafd; --ink:#42294f; --muted:#725575;
+  --line:#b08ab5; --soft:#f0e1f1; --accent:#ac316e;
+  --accent-soft:#fce1ed; --green:#2d715b; --green-soft:#e1f3e7;
+  --retro-main:#dcb6de; --retro-deep:#77488e; --retro-cream:#ffe8f2;
+  --retro-ribbon:#efbbd8; --retro-button:#eedcf8; --retro-tile:#fff9fe;
+  --retro-selected:#dfefe7; --retro-shadow:#916a9c;
+  --shadow:5px 6px 0 #814b9844;
+}
 html[data-theme="night"] {
   color-scheme:dark;
   --bg:#191b2b; --paper:#282a40; --ink:#f8f0fa; --muted:#c5bfd9;
@@ -513,7 +532,7 @@ html[data-theme="night"] .palette-swatch { border-color:#c9bedc; }
 }
 .theme-caret { font-size: 14px; }
 .theme-menu {
-  position: absolute; right: 0; top: calc(100% + 10px); width: 276px; max-width: calc(100vw - 25px);
+  position: absolute; right: 0; top: calc(100% + 10px); width: 320px; max-width: calc(100vw - 25px);
   background: var(--paper); color: var(--ink);
   border: 2px solid var(--retro-deep); border-radius: 4px;
   box-shadow: 5px 5px 0 var(--retro-shadow); padding: 13px;

@@ -361,10 +361,103 @@ const wordRows = `
 駅|eki|station
 店|mise|shop;store
 `.trim();
-const words = wordRows.split('\n').map((line, i) => {
-  const [kana, readings, meanings] = line.split('|');
-  return { id: `word:${i}`, kana, answer: meanings.split(';')[0], meanings: meanings.split(';'), readings: readings.split(','), kind: 'word' };
-});
+// Additional mixed-script vocabulary and short, natural expressions.
+// Japanese | accepted romaji readings | English answers | Spanish answers.
+// These are still gated by ALL of the written characters the user selects,
+// across every tab simultaneously (not just the tab currently visible).
+const mixedWordRows = `
+このケーキ|kono keeki|this cake|esta torta
+そのケーキ|sono keeki|that cake|esa torta
+あのバス|ano basu|that bus|ese colectivo
+このゲーム|kono geemu|this game|este juego
+このアニメ|kono anime|this anime|este anime
+わたしのカメラ|watashi no kamera|my camera|mi cámara
+わたしのスマホ|watashi no sumaho|my smartphone|mi celular
+しろいネコ|shiroi neko|white cat|gato blanco
+あおいバス|aoi basu|blue bus|colectivo azul
+あたらしいスマホ|atarashii sumaho|new smartphone|celular nuevo
+おいしいケーキ|oishii keeki|delicious cake|torta deliciosa
+あついコーヒー|atsui koohii|hot coffee|café caliente
+ちいさいカメラ|chiisai kamera|small camera|cámara pequeña
+パンをたべる|pan o taberu|eat bread|comer pan
+ケーキをたべる|keeki o taberu|eat cake|comer torta
+ラーメンをたべる|raamen o taberu|eat ramen|comer ramen
+コーヒーをのむ|koohii o nomu|drink coffee|beber café
+テレビをみる|terebi o miru|watch television;watch tv|mirar televisión;ver televisión
+アニメをみる|anime o miru|watch anime|ver anime
+マンガをよむ|manga o yomu|read manga|leer manga
+ゲームをする|geemu o suru|play games|jugar videojuegos
+ホテルにいく|hoteru ni iku|go to the hotel|ir al hotel
+レストランにいく|resutoran ni iku|go to a restaurant|ir a un restaurante
+スープがすき|suupu ga suki|like soup|me gusta la sopa
+パンがすき|pan ga suki|like bread|me gusta el pan
+コーヒーがすき|koohii ga suki|like coffee|me gusta el café
+おちゃとケーキ|ocha to keeki|tea and cake|té y torta
+おちゃとコーヒー|ocha to koohii|tea and coffee|té y café
+日本のアニメ|nihon no anime|japanese anime|anime japonés
+日本のマンガ|nihon no manga|japanese manga|manga japonés
+日本のラーメン|nihon no raamen|japanese ramen|ramen japonés
+日本語のゲーム|nihongo no geemu|japanese-language game|videojuego en japonés
+日本語のマンガ|nihongo no manga|manga in japanese|manga en japonés
+学校のバス|gakkou no basu|school bus|colectivo escolar
+新しいスマホ|atarashii sumaho|new smartphone|celular nuevo
+大きいカメラ|ookii kamera|big camera|cámara grande
+古いテレビ|furui terebi|old television;old tv|televisión vieja
+私のカメラ|watashi no kamera|my camera|mi cámara
+私のスマホ|watashi no sumaho|my smartphone|mi celular
+日本語の先生|nihongo no sensei|japanese language teacher|profesor de japonés
+日本語の本|nihongo no hon|japanese-language book|libro en japonés
+パンを買う|pan o kau|buy bread|comprar pan
+ケーキを買う|keeki o kau|buy cake|comprar torta
+スーパーで買う|suupaa de kau|buy at a supermarket|comprar en un supermercado
+日本語を話す|nihongo o hanasu|speak japanese|hablar japonés
+日本語を学ぶ|nihongo o manabu|study japanese;learn japanese|estudiar japonés;aprender japonés
+学校に行く|gakkou ni iku|go to school|ir a la escuela
+学校の先生|gakkou no sensei|school teacher|maestro de escuela
+本を読む|hon o yomu|read a book|leer un libro
+名前を書く|namae o kaku|write a name|escribir un nombre
+水を飲む|mizu o nomu|drink water|beber agua
+花を見る|hana o miru|look at flowers|mirar flores
+電車にのる|densha ni noru|ride the train;take the train|viajar en tren;tomar el tren
+今日の天気|kyou no tenki|today's weather|el clima de hoy
+明日の朝|ashita no asa|tomorrow morning|mañana a la mañana
+雨の日|ame no hi|rainy day|día de lluvia
+私の家|watashi no ie|my house|mi casa
+私は学生|watashi wa gakusei|i am a student|soy estudiante
+私は先生|watashi wa sensei|i am a teacher|soy profesor
+友達と話す|tomodachi to hanasu|talk with a friend|hablar con un amigo
+山に行く|yama ni iku|go to the mountains|ir a las montañas
+海に行く|umi ni iku|go to the sea|ir al mar
+今日は休み|kyou wa yasumi|today is a day off|hoy es día libre
+お金がない|okane ga nai|have no money;no money|no tengo dinero;sin dinero
+空を見る|sora o miru|look at the sky|mirar el cielo
+店に入る|mise ni hairu|enter a shop|entrar a una tienda
+家に帰る|ie ni kaeru|go home;return home|volver a casa
+好きなアニメ|suki na anime|favorite anime;anime i like|anime favorito;anime que me gusta
+コーヒー店|koohii ten|coffee shop|cafetería
+ラーメン店|raamen ten|ramen restaurant;ramen shop|restaurante de ramen
+カメラ店|kamera ten|camera store|tienda de cámaras
+私はパンを食べる|watashi wa pan o taberu|i eat bread|yo como pan
+私はコーヒーを飲む|watashi wa koohii o nomu|i drink coffee|yo bebo café
+私はアニメが好き|watashi wa anime ga suki|i like anime|me gusta el anime
+私はコーヒーが好き|watashi wa koohii ga suki|i like coffee|me gusta el café
+私の好きなゲーム|watashi no suki na geemu|my favorite game|mi videojuego favorito
+日本のアニメを見る|nihon no anime o miru|watch japanese anime|ver anime japonés
+友達とゲームをする|tomodachi to geemu o suru|play games with a friend|jugar videojuegos con un amigo
+今日はパンを食べる|kyou wa pan o taberu|eat bread today|comer pan hoy
+この人は先生|kono hito wa sensei|this person is a teacher|esta persona es profesora
+`.trim();
+const words = [
+  ...wordRows.split('\n').map((line, i) => {
+    const [kana, readings, meanings] = line.split('|');
+    return { id: `word:${i}`, kana, answer: meanings.split(';')[0], meanings: meanings.split(';'), readings: readings.split(','), kind: 'word' };
+  }),
+  ...mixedWordRows.split('\n').map((line, i) => {
+    const [kana, readings, meanings, meaningsEs] = line.split('|');
+    return { id: `word:mixed:${i}`, kana, answer: meanings.split(';')[0],
+      meanings: meanings.split(';'), meaningsEs: meaningsEs.split(';'), readings: readings.split(','), kind: 'word' };
+  })
+];
 
 // Interface translations live alongside the English source strings. Spanish is optional:
 // a new visitor always starts in English; the chosen language is saved locally.
@@ -444,8 +537,8 @@ const ES_STATIC = {
 };
 const UI_EN = {
   selectedDesc:'{count} selected · ready to study.', emptySelection:'Pick at least one character to begin.',
-  wordReady:'Ready to practice {count} {word} using your current character selection.',
-  wordLocked:'No words unlocked yet. Try choosing ね and こ in Hiragana to unlock ねこ (cat), or 日 and 本 in Kanji to unlock 日本 (Japan).',
+  wordReady:'Ready to practice {count} {word} from your selections across all three tabs.',
+  wordLocked:'No words unlocked yet. Select characters from any tab to unlock words, including mixed-script words.',
   choose:'Choose your {script}', chooseVisible:'Select visible', clearVisible:'Clear visible',
   noneFound:'No characters match this search.', groupSelect:'Select', groupClear:'Clear', selected:'selected', notSelected:'not selected',
   timerGuess:'✧ Little steps, big progress!', toastBadGuesses:'Please enter a number of guesses between 1 and 10,000.',
@@ -482,8 +575,8 @@ const UI_EN = {
 };
 const UI_ES = {
   selectedDesc:'{count} seleccionados · listos para estudiar.', emptySelection:'Elegí al menos un carácter para empezar.',
-  wordReady:'Tenés {count} {word} para practicar con tu selección actual.',
-  wordLocked:'Todavía no hay palabras disponibles. Elegí ね y こ en Hiragana para desbloquear ねこ (gato), o 日 y 本 en Kanji para desbloquear 日本 (Japón).',
+  wordReady:'Tenés {count} {word} disponibles, usando lo seleccionado en las tres pestañas.',
+  wordLocked:'Todavía no hay palabras disponibles. Seleccioná caracteres de cualquier pestaña para desbloquear palabras, incluso combinadas.',
   choose:'Elegí tus caracteres de {script}', chooseVisible:'Seleccionar visibles', clearVisible:'Borrar visibles',
   noneFound:'No hay caracteres que coincidan con la búsqueda.', groupSelect:'Seleccionar', groupClear:'Borrar', selected:'seleccionado', notSelected:'sin seleccionar',
   timerGuess:'✧ ¡De a poquito, llegás lejos!', toastBadGuesses:'Ingresá una cantidad de respuestas entre 1 y 10.000.',
@@ -781,7 +874,7 @@ yesterday|ayer
 const ES_GLOSS = Object.fromEntries(glossTable.split('\n').map(s => s.split('|')));
 const toSpanish = english => english.split(';').map(term => ES_GLOSS[term.trim()] || term.trim()).join('; ');
 const itemMeaning = item => !item.meaning ? '' : (state.language === 'es' ? toSpanish(item.meaning) : item.meaning);
-const wordMeanings = item => state.language === 'es' ? item.meanings.map(term => ES_GLOSS[term] || term) : item.meanings;
+const wordMeanings = item => state.language === 'es' ? (item.meaningsEs || item.meanings.map(term => ES_GLOSS[term] || term)) : item.meanings;
 const localCategory = {basic:['Kana básicos','Los sonidos esenciales'],voiced:['Sonidos sonoros','Sonidos como ga, za, ba y pa'],
   combo:['Combinaciones','Sonidos como kya, sha y cho'],historical:['Históricos','Poco usados en japonés moderno'],
   extra:['Katakana extendido','Frecuentes en palabras extranjeras']};
@@ -971,6 +1064,18 @@ function save() {
   catch (_) { state.storageOk = false; }
 }
 
+// Identify the scripts that appear in a given piece of vocabulary.
+function scriptsInWord(word) {
+  const used = new Set();
+  for (const char of word.kana) {
+    const cp = char.codePointAt(0);
+    if (cp >= 0x4e00 && cp <= 0x9fff) used.add('kanji');
+    else if (cp >= 0x3040 && cp <= 0x309f) used.add('hiragana');
+    else if (cp >= 0x30a0 && cp <= 0x30ff && char !== 'ー' && char !== '・') used.add('katakana');
+  }
+  return used;
+}
+
 // Small kana count as their full-size counterparts for word eligibility.
 // Long vowel marks in katakana are orthography, not separately selectable characters.
 const SMALL_TO_BIG = { 'ぁ':'あ','ぃ':'い','ぅ':'う','ぇ':'え','ぉ':'お','ゃ':'や','ゅ':'ゆ','ょ':'よ','っ':'つ','ゎ':'わ',
@@ -1014,6 +1119,14 @@ function render() {
   $('wordsButton').disabled = !unlocked.length;
   $('wordAvailableCount').textContent = unlocked.length;
   $('wordDialogCount').textContent = unlocked.length;
+  const multi = unlocked.filter(word => scriptsInWord(word).size > 1);
+  const triple = multi.filter(word => scriptsInWord(word).size === 3);
+  $('mixedWordCount').textContent = state.language === 'es'
+    ? `${multi.length} combinadas · ${triple.length} con los tres sistemas`
+    : `${multi.length} mixed-script · ${triple.length} using all three scripts`;
+  $('mixedWordExamples').textContent = multi.length
+    ? (state.language === 'es' ? 'Ej.: ' : 'e.g. ') + multi.slice(0, 3).map(word => word.kana).join(' · ')
+    : (state.language === 'es' ? 'Seleccioná caracteres de otras pestañas para desbloquear palabras mixtas.' : 'Select characters from other tabs to unlock mixed-script words.');
   $('wordCountDescription').textContent = unlocked.length
     ? t('wordReady',{count:unlocked.length,word:unlocked.length===1?t('wordSingular'):t('wordPlural')})
     : t('wordLocked');

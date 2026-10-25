@@ -791,3 +791,18 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
    remain available for vertical scrolling; swipe near the edge to auto-scroll. */
 .kana-tile { touch-action: none; -webkit-user-select:none; user-select:none; }
 .kana-grid { touch-action: pan-y; }
+
+/* Word Challenge: mixed-writing-system vocabulary availability */
+.mixed-words-info {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 13px 0 19px;
+  padding: 12px 14px;
+  border: 1px dashed var(--border, #a77991);
+  border-radius: 5px;
+  background: var(--surface-soft, rgba(192,130,157,.09));
+  line-height: 1.55;
+}
+.mixed-words-label { font-size: .85rem; font-weight: 700; }
+.mixed-words-examples { font-size: .78rem; opacity: .84; overflow-wrap: anywhere; }

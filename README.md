@@ -11,11 +11,11 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 - **Practice by guess count**: choose Guess limit and enter any number from 1 to 10,000 (default 200). Each checked answer or “I don’t know” counts; the session ends automatically at the target and shows your full results. The current count is visible while practicing. This can also apply to Word Challenge, learning memory rounds, and focused review.
 - **Optional timer**: no countdown by default, plus a custom countdown (hours and minutes, 00:01 to 99:59), count-up, and 5/10/15-minute presets. During Infinite Practice, choosing no countdown automatically shows a running elapsed clock; hide or show it any time without resetting it. A configured countdown and elapsed clock never display together. Pause/resume supported; countdowns finish the session automatically.
 - **Results and mistake review**: after finishing, see your accuracy and hardest items. Choose which missed items to review in a modal.
-- **English and Spanish** interface: English by default, with a header language selector. Word-meaning questions, accepted answers, and kanji glosses change with the selected language. Your choice is saved locally.
+- **English and Spanish** interface: detects the browser’s preferred language on the first visit (Spanish if the browser prefers Spanish, English otherwise), with a header language selector. Word-meaning questions, accepted answers, and kanji glosses change with the selected language. A manual choice overrides browser detection and is saved locally.
 - **Ten editable themes**: Lavender, Mint, Peach, Sky, Burgundy, Midnight, Trans Pride, Bi Pride, Nonbinary Pride, and Lesbian Pride, available through a compact theme menu in the header.
 - **Saved preferences** via localStorage (no visible backup controls).
 - **Favicon and installable app icon** displaying the hiragana あ.
-- **PWA installation and offline cache**: Android/desktop install prompts, iOS home-screen guidance, and offline study after the first online load.
+- **PWA installation, offline cache, and updates**: Android/desktop install prompts, iOS home-screen guidance, offline study after the first online load, and a bilingual Update now / Later banner when a new release is ready.
 
 ## Install as a phone/desktop app (PWA)
 
@@ -24,7 +24,7 @@ This project is also a **Progressive Web App**. No app store, server, build tool
 - **Android / Chrome:** Open the published GitHub Pages HTTPS address. Choose **Install app** from Chrome (or use the site's **Install** button when Chrome makes the install prompt available). Depending on Chrome, it may say **Add to Home screen**.
 - **iPhone / iPad:** In Safari, tap **Share → Add to Home Screen** (choose **Open as Web App** when shown). Chrome on iOS also has Share → Add to Home Screen on supported versions.
 - **Desktop Chrome / Edge:** Use the Install icon or Install menu option for the page.
-- **Offline:** Visit the site online once and allow it to load fully, then use it offline from the installed icon. Selected characters and settings remain in the device's localStorage. Updates will load when connected again.
+- **Offline:** Visit the site online once and allow it to load fully, then use it offline from the installed icon. Selected characters and settings remain in the device's localStorage. When an update is ready, an English/Spanish banner offers **Update now** or **Later**. Updates are applied only when confirmed; doing so reloads the app. Finish an active practice session first if you want to keep its current results.
 
 The PWA works with both `https://username.github.io/repo/` and custom domains because the manifest, icons, and service worker use **relative paths**. Keep `manifest.webmanifest`, `sw.js`, and the `icons/` folder with the original files. A `file://` URL cannot install the app or register the offline service worker; GitHub Pages or a localhost server is required.
 
@@ -55,7 +55,7 @@ Every written kana and kanji in a word must be selected in the respective tab, *
 
 - Romaji entry uses an exact match after normalizing whitespace and basic punctuation. Kanji often have many context-dependent readings; this is a beginner study aid, not a full dictionary.
 - Settings are stored in **this browser and this site origin**, not in a GitHub repository. Moving to a different device or URL will not carry them over.
-- The default interface language is English. Change it in the header to Spanish; the choice is saved per browser.
+- On first use, Spanish-language browsers get Spanish, and all other languages fall back to English. The header selector can override this; an explicit selection remains saved across updates. Existing users keep their prior choice.
 
 ## Session navigation
 
@@ -74,3 +74,12 @@ The session card appears first on small screens, followed by the full-width Word
 - `私はパンを食べる` → `watashi wa pan o taberu` (I eat bread): all three scripts.
 
 Word Challenge counts and examples update instantly as you choose or clear characters in any tab. Longer samples can be called short expressions rather than standalone dictionary words.
+
+## Publishing updates to the installed PWA
+
+1. Make changes to `index.html`, `styles.css`, `app.js`, or other assets.
+2. **Increase the cache version string in `sw.js`** (e.g. change `offline-v3` to `offline-v4`). This is required to reliably announce a new release.
+3. Push all files to GitHub Pages. People who reopen or foreground the installed app while online are prompted when the new version finishes downloading.
+4. **Update now / Actualizar ahora** activates the new service worker and reloads the page. **Later / Más tarde** leaves the current version running.
+
+The update notice uses the currently selected interface language. New visitors start in the browser's preferred language (Spanish if the primary language starts with `es`, English fallback); a previous manually selected language takes precedence. This mechanism does not require a backend or external libraries. Updates aren't fetched while offline and may require a fresh visit / background-to-foreground cycle to be detected.

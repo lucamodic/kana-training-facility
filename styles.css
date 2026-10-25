@@ -911,3 +911,41 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
     flex: 1 1 0;
   }
 }
+
+/* PWA update prompt: localised, theme-aware and compact on mobile. */
+.pwa-update-notice {
+  position: fixed; z-index: 10001;
+  left: 50%; bottom: max(14px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(690px, calc(100% - 28px));
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 15px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--retro-deep);
+  border-radius: 7px;
+  box-shadow: 5px 5px 0 var(--retro-shadow);
+  font: 12px/1.45 "Courier New", monospace;
+}
+.pwa-update-symbol { align-self: center; flex: 0 0 auto; font-size: 24px; color: var(--retro-deep); }
+.pwa-update-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
+.pwa-update-copy strong { font-size: 13px; }
+.pwa-update-copy span { color: var(--muted); }
+.pwa-update-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pwa-update-actions button {
+  min-height: 39px; padding: 8px 11px; border: 1px solid var(--retro-deep);
+  border-radius: 4px; cursor: pointer; font: bold 12px "Courier New", monospace;
+}
+.pwa-update-apply { color: var(--ink); background: var(--retro-button); box-shadow: 2px 2px 0 var(--retro-shadow); }
+.pwa-update-dismiss { color: var(--ink); background: var(--retro-cream); }
+.pwa-update-actions button:hover { filter: brightness(.97); }
+.pwa-update-actions button:focus-visible { outline: 2px solid var(--retro-deep); outline-offset: 2px; }
+@media (max-width: 620px) {
+  .pwa-update-notice { align-items: flex-start; padding: 13px; gap: 9px; flex-wrap: wrap; }
+  .pwa-update-copy { flex: 1 1 calc(100% - 45px); }
+  .pwa-update-actions { width: 100%; justify-content: stretch; }
+  .pwa-update-actions button { flex: 1 1 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pwa-update-notice { scroll-behavior: auto; }
+}

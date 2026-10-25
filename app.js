@@ -459,8 +459,13 @@ const words = [
   })
 ];
 
-// Interface translations live alongside the English source strings. Spanish is optional:
-// a new visitor always starts in English; the chosen language is saved locally.
+// First visit: use the browser's main language (Spanish or English fallback).
+// An explicit language choice is saved and always takes precedence.
+function detectBrowserLanguage() {
+  const preferred = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+  return /^es(?:-|$)/i.test(preferred) ? 'es' : 'en';
+}
+// Interface translations live alongside the English source strings.
 const ES_STATIC = {
   'your little Japanese study space':'tu rinconcito para estudiar japonés',
   'In a regular font':'Con una fuente normal', 'Check ↵':'Comprobar ↵', "I don't know":'No sé',
@@ -933,7 +938,10 @@ function changeLanguage(language, persist=true) {
   render();
   if (state.quiz) refreshQuizLanguage();
   if (state.lastSummary && !$('summaryScreen').hidden) renderSummary(state.lastSummary);
-  if (persist) save();
+  if (persist) {
+    state.languagePreference = 'manual';
+    save();
+  }
 }
 
 const STORAGE_KEY = 'kana-training-facility-v2';
@@ -945,7 +953,7 @@ const $ = id => document.getElementById(id);
 const state = {
   script: 'hiragana', selected: { hiragana: new Set(), katakana: new Set(), kanji: new Set() },
   theme: 'pastel', timerSetting: 'off', customHours: 0, customMinutes: 5, guessLimit: 200, wordAnswerMode: 'meaning',
-  language: 'en', showElapsedClock: true,
+  language: detectBrowserLanguage(), languagePreference: 'auto', showElapsedClock: true,
   storageOk: true, quiz: null, lastSummary: null, reviewSelection: new Set()
 };
 const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -977,7 +985,7 @@ function setThemeMenu(open) {
 }
 function payload() {
   return { version: 3, script: state.script, theme: state.theme, timerSetting: state.timerSetting,
-    customHours: state.customHours, customMinutes: state.customMinutes, guessLimit: state.guessLimit, language: state.language, showElapsedClock: state.showElapsedClock,
+    customHours: state.customHours, customMinutes: state.customMinutes, guessLimit: state.guessLimit, language: state.language, languagePreference: state.languagePreference, showElapsedClock: state.showElapsedClock,
     wordAnswerMode: state.wordAnswerMode, selected: Object.fromEntries(SCRIPTS.map(script => [script, [...state.selected[script]]])) };
 }
 function applySavedData(data) {
@@ -1010,7 +1018,12 @@ function applySavedData(data) {
   }
   state.guessLimit = Number.isInteger(Number(data.guessLimit)) && data.guessLimit !== '' && Number(data.guessLimit) >= 1 && Number(data.guessLimit) <= 10000 ? Number(data.guessLimit) : 200;
   state.wordAnswerMode = ['meaning','reading'].includes(data.wordAnswerMode) ? data.wordAnswerMode : 'meaning';
-  state.language = ['en','es'].includes(data.language) ? data.language : 'en';
+  // Preserve a previously chosen language when migrating older saves.
+  // New visitors use the device's preferred language until they choose manually.
+  state.languagePreference = data.languagePreference === 'auto' ? 'auto' : 'manual';
+  state.language = state.languagePreference === 'auto'
+    ? detectBrowserLanguage()
+    : (['en','es'].includes(data.language) ? data.language : detectBrowserLanguage());
   state.showElapsedClock = data.showElapsedClock !== false;
   $('timerSetting').value = state.timerSetting;
   $('customHours').value = state.customHours;
@@ -1558,6 +1571,13 @@ document.addEventListener('keydown', event => {
   }
 }, true);
 $('languageSelect').addEventListener('change', e => changeLanguage(e.target.value));
+window.addEventListener('languagechange', () => {
+  if (state.languagePreference === 'auto') {
+    changeLanguage(detectBrowserLanguage(), false);
+    save();
+    refreshUpdateUi();
+  }
+});
 $('elapsedToggle').addEventListener('click', () => {
   state.showElapsedClock = !state.showElapsedClock;
   if (state.quiz) syncElapsedClock(state.quiz);
@@ -1848,10 +1868,89 @@ $('closeInstallDialog').addEventListener('click', () => $('installDialog').close
 $('dismissInstallDialog').addEventListener('click', () => $('installDialog').close());
 $('installDialog').addEventListener('click', e => { if (e.target === $('installDialog')) $('installDialog').close(); });
 $('languageSelect').addEventListener('change', refreshInstallUi);
+$('languageSelect').addEventListener('change', refreshUpdateUi);
 refreshInstallUi();
+/* PWA updates: do not interrupt studying. When a new version is waiting,
+   ask in the user's language and activate it only after they choose Update. */
+let pendingUpdateWorker = null;
+let updateWasDismissed = false;
+let updateReloadRequested = false;
+const UPDATE_STRINGS = {
+  en: {
+    title: 'Update available!',
+    text: 'A new version of Kana Training Facility is ready.',
+    apply: 'Update now', dismiss: 'Later',
+    confirm: 'Updating reloads the app and ends your current practice. Update now?'
+  },
+  es: {
+    title: '¡Actualización disponible!',
+    text: 'Hay una nueva versión de Kana Training Facility lista para instalar.',
+    apply: 'Actualizar ahora', dismiss: 'Más tarde',
+    confirm: 'La actualización recarga la app y termina tu práctica actual. ¿Actualizar ahora?'
+  }
+};
+function refreshUpdateUi() {
+  const strings = UPDATE_STRINGS[state.language] || UPDATE_STRINGS.en;
+  $('updateNoticeTitle').textContent = strings.title;
+  $('updateNoticeText').textContent = strings.text;
+  $('applyUpdateButton').textContent = strings.apply;
+  $('dismissUpdateButton').textContent = strings.dismiss;
+  $('updateNotice').hidden = !pendingUpdateWorker || updateWasDismissed;
+}
+function offerPwaUpdate(worker) {
+  if (!worker || worker.state === 'redundant') return;
+  if (pendingUpdateWorker !== worker) updateWasDismissed = false;
+  pendingUpdateWorker = worker;
+  refreshUpdateUi();
+}
+$('dismissUpdateButton').addEventListener('click', () => {
+  updateWasDismissed = true;
+  refreshUpdateUi();
+});
+$('applyUpdateButton').addEventListener('click', () => {
+  if (!pendingUpdateWorker) return;
+  if (state.quiz && !$('quizScreen').hidden && !window.confirm(UPDATE_STRINGS[state.language].confirm)) return;
+  updateReloadRequested = true;
+  $('applyUpdateButton').disabled = true;
+  // The waiting worker will take control and only then will the app reload.
+  pendingUpdateWorker.postMessage({type: 'SKIP_WAITING'});
+});
 if ('serviceWorker' in navigator && ['https:','http:'].includes(location.protocol)) {
+  let updateRegistration = null;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    // A first-time install can also take control; only reload when requested.
+    if (updateReloadRequested) window.location.reload();
+  });
+  const watchRegistration = registration => {
+    updateRegistration = registration;
+    if (registration.waiting && navigator.serviceWorker.controller) offerPwaUpdate(registration.waiting);
+    registration.addEventListener('updatefound', () => {
+      const installing = registration.installing;
+      if (!installing) return;
+      installing.addEventListener('statechange', () => {
+        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+          offerPwaUpdate(registration.waiting || installing);
+        }
+      });
+    });
+    // Ask for fresh updates when the user comes back online / foregrounds the app.
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && navigator.onLine) registration.update().catch(() => {});
+    });
+    window.addEventListener('online', () => registration.update().catch(() => {}));
+    // Browsers also check periodically by themselves, but this helps an app
+    // that's kept open for a long time.
+    setInterval(() => {
+      if (!document.hidden && navigator.onLine) registration.update().catch(() => {});
+    }, 60 * 60 * 1000);
+  };
+  refreshUpdateUi();
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' })
+    navigator.serviceWorker.register('./sw.js', {scope: './', updateViaCache: 'none'})
+      .then(registration => {
+        watchRegistration(registration);
+        registration.update().catch(() => {});
+      })
       .catch(error => console.warn('Offline cache could not be enabled:', error));
   });
 }

@@ -4,11 +4,12 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 
 ## Features
 
-- **Hiragana, katakana, and beginner kanji** with individual selection, group selection, and click-and-drag painting to select or deselect multiple characters at once (mouse/pen). Touch taps and keyboard selection still work.
+- **Hiragana, katakana, and beginner kanji** with individual selection, group selection, and click-and-drag painting to select or deselect multiple characters at once (mouse, pen, or finger). Touch taps and keyboard selection also work.
 - **Learn mode**: three guided passes (answers visible) and three memory-test passes.
 - **Infinite character practice** for the selected script.
-- **Word challenge**: open the dedicated Word Challenge dialog from the tab bar to guess an English/Spanish meaning (depending on your language) or a romaji reading. Only words made entirely from your selected written characters appear. The word list is a curated starter dictionary, not an online dictionary.
-- **Optional timer**: custom countdown by default (hours and minutes, 00:01 to 99:59), or no countdown, count-up, and 5/10/15-minute presets. During Infinite Practice, choosing no countdown automatically shows a running elapsed clock; hide or show it any time without resetting it. A configured countdown and elapsed clock never display together. Pause/resume supported; countdowns finish the session automatically.
+- **Word challenge**: open the dedicated Word Challenge dialog from the tab bar to guess an English/Spanish meaning (depending on your language) or a romaji reading. In Romaji Reading mode, the English meaning appears after every answer, whether correct or incorrect. Only words made entirely from your selected written characters appear. The word list is a curated starter dictionary, not an online dictionary.
+- **Practice by guess count**: choose Guess limit and enter any number from 1 to 10,000 (default 200). Each checked answer or “I don’t know” counts; the session ends automatically at the target and shows your full results. The current count is visible while practicing. This can also apply to Word Challenge, learning memory rounds, and focused review.
+- **Optional timer**: no countdown by default, plus a custom countdown (hours and minutes, 00:01 to 99:59), count-up, and 5/10/15-minute presets. During Infinite Practice, choosing no countdown automatically shows a running elapsed clock; hide or show it any time without resetting it. A configured countdown and elapsed clock never display together. Pause/resume supported; countdowns finish the session automatically.
 - **Results and mistake review**: after finishing, see your accuracy and hardest items. Choose which missed items to review in a modal.
 - **English and Spanish** interface: English by default, with a header language selector. Word-meaning questions, accepted answers, and kanji glosses change with the selected language. Your choice is saved locally.
 - **Six editable themes**: Lavender, Mint, Peach, Sky, Burgundy, and Midnight, available through a compact theme menu in the header.
@@ -48,3 +49,7 @@ Every written kana and kanji in a word must be selected in the respective tab. S
 
 - Practice, Learn, Word Challenge and review sessions automatically scroll to the exercise card, centered when it fits the screen.
 - The page respects reduced-motion preferences. The exercise input remains keyboard-focused without causing a second scroll.
+
+## Mobile character selection
+
+The session card appears first on small screens, followed by the writing-system tabs and character grid. You can tap tiles or hold and drag your finger across tiles to select or deselect in bulk. While finger-painting, staying near the top/bottom edge scrolls through longer character grids. To scroll normally, swipe from a section heading or the space outside the tiles.

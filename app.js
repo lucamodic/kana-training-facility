@@ -380,15 +380,18 @@ const ES_STATIC = {
   'Lavender':'Lavanda', 'Mint':'Menta', 'Peach':'Durazno', 'Sky':'Cielo',
   'Burgundy':'Bordó', 'Midnight':'Medianoche', 'Language':'Idioma',
   'Word Challenge':'Desafío de palabras',
-  'Click a character, or click and drag across several to select or deselect them.':'Hacé clic en un carácter o arrastrá para seleccionar o deseleccionar varios.',
+  'Tap a character or drag your mouse or finger across tiles to select or deselect several.':'Tocá un carácter o arrastrá el mouse o el dedo para marcar o desmarcar varios.',
   'Select all':'Seleccionar todo', 'Clear all':'Borrar todo', 'Random 10':'10 al azar',
   'characters on this tab':'caracteres en esta pestaña',
   'YOUR SELECTION':'TU SELECCIÓN', 'YOUR LITTLE STUDY TIMER':'TU TEMPORIZADOR',
   'Focus time':'Tiempo de estudio', 'Custom countdown':'Cuenta regresiva personalizada',
+  'Guess limit':'Límite de respuestas', 'Number of guesses':'Cantidad de respuestas',
+  'Please enter between 1 and 10,000 guesses.':'Ingresá un número entre 1 y 10.000 respuestas.', 'Guess limit configuration':'Configuración del límite de respuestas',
   'No countdown':'Sin cuenta regresiva', 'Stopwatch (count up)':'Cronómetro',
   '5-minute countdown':'5 minutos', '10-minute countdown':'10 minutos', '15-minute countdown':'15 minutos',
   'Hours':'Horas', 'Minutes':'Minutos', 'Please choose between 00:01 and 99:59.':'Elegí un tiempo entre 00:01 y 99:59.',
   'Countdowns end your lesson at zero. Pause anytime.':'Al llegar a cero, la lección termina. Podés pausar cuando quieras.',
+  'Choose how many answers to practice. Wrong answers and “I don’t know” count too.':'Elegí cuántas respuestas querés practicar. Los errores y «No sé» también cuentan.',
   'Learn my selection →':'Aprender mi selección →',
   '3 guided passes showing the answer, followed by 3 memory-test passes.':'3 vueltas guiadas con las respuestas y 3 vueltas para practicar de memoria.',
   'Infinite character practice →':'Práctica infinita de caracteres →',
@@ -445,6 +448,9 @@ const UI_EN = {
   wordLocked:'No words unlocked yet. Try choosing ね and こ in Hiragana to unlock ねこ (cat), or 日 and 本 in Kanji to unlock 日本 (Japan).',
   choose:'Choose your {script}', chooseVisible:'Select visible', clearVisible:'Clear visible',
   noneFound:'No characters match this search.', groupSelect:'Select', groupClear:'Clear', selected:'selected', notSelected:'not selected',
+  timerGuess:'✧ Little steps, big progress!', toastBadGuesses:'Please enter a number of guesses between 1 and 10,000.',
+  guessProgress:'{done} / {total} guesses', guessReached:'Guess goal reached!',
+  summaryGuessGoal:'Finished {attempts} of {goal} guesses{timing}.',
   timerNone:'✧ Infinite Practice shows an optional study clock.', timerUp:'✧ Every little minute counts.', timerReady:'✧ You’ve got this!',
   toastSelect:'{count} randomly chosen characters selected.', toastEmpty:'Please select at least one eligible item first.',
   toastBadTimer:'Please enter a valid custom countdown.', toastBadTimerBefore:'Please enter a valid custom countdown before starting.',
@@ -480,6 +486,9 @@ const UI_ES = {
   wordLocked:'Todavía no hay palabras disponibles. Elegí ね y こ en Hiragana para desbloquear ねこ (gato), o 日 y 本 en Kanji para desbloquear 日本 (Japón).',
   choose:'Elegí tus caracteres de {script}', chooseVisible:'Seleccionar visibles', clearVisible:'Borrar visibles',
   noneFound:'No hay caracteres que coincidan con la búsqueda.', groupSelect:'Seleccionar', groupClear:'Borrar', selected:'seleccionado', notSelected:'sin seleccionar',
+  timerGuess:'✧ ¡De a poquito, llegás lejos!', toastBadGuesses:'Ingresá una cantidad de respuestas entre 1 y 10.000.',
+  guessProgress:'{done} / {total} respuestas', guessReached:'¡Objetivo de respuestas cumplido!',
+  summaryGuessGoal:'Completaste {attempts} de {goal} respuestas{timing}.',
   timerNone:'✧ En práctica infinita aparece un reloj opcional.', timerUp:'✧ Cada minutito cuenta.', timerReady:'✧ ¡Vos podés!',
   toastSelect:'Seleccionaste {count} caracteres al azar.',toastEmpty:'Primero seleccioná al menos un elemento.',
   toastBadTimer:'Ingresá un tiempo válido para la cuenta regresiva.',toastBadTimerBefore:'Ingresá un tiempo válido antes de empezar.',
@@ -788,7 +797,7 @@ const STATIC_SELECTOR = [
   '#brandSubtitle','#offlineText','#themeCaption','#browserReady','.theme-menu-label','.palette-name','#languageCaption',
   '#wordsLaunchText','#dragHint','#randomTen','#selectedUnit','.side-label','.timer-card-title',
   '#printedLabel','#checkButton','#skipButton','#guidedCaption','#finishLessonButton',
-  '#timerSetting option','.time-caption','#customTimerError','#countdownHelp','#learnButton','#learnHelp','#startButton','#practiceHelp',
+  '#timerSetting option','.time-caption','#customTimerError','#guessLimitError','#countdownHelp','#learnButton','#learnHelp','#startButton','#practiceHelp',
   '.stat-answered','.stat-correct','.stat-accuracy','#finishLessonButton','#summaryTitle','#hardestHeading','#hardestHelp',
   '#backToSelection','#reviewMistakesButton','#footerText','#wordsDialog .eyebrow','#wordsDialogTitle','#wordsUnlockedUnit',
   '#wordsDialog .small-label','#wordAnswerMode option','#wordsDialogHelp','#cancelWordsDialog','#wordsButton',
@@ -799,7 +808,7 @@ const STATIC_ATTRIBUTES = [
   ['.tabs','aria-label'], ['#setupScreen','aria-label'], ['#sidePanel','aria-label'], ['.side-panel','aria-label'],
   ['#quizScreen','aria-label'], ['#summaryScreen','aria-label'], ['#homeLink','aria-label'],
   ['#randomTen','title'],['#closeWordsDialog','aria-label'],['#closeReview','aria-label'],
-  ['#customTimerFields','aria-label'], ['#timerSetting','aria-label'],['#progressTrack','aria-label'],
+  ['#customTimerFields','aria-label'], ['#guessLimitFields','aria-label'], ['#timerSetting','aria-label'],['#progressTrack','aria-label'],
   ['#timerDisplay','aria-label'], ['.retro-browser','aria-label']
 ];
 const originalText = new WeakMap();
@@ -841,7 +850,7 @@ const SCRIPTS = ['hiragana', 'katakana', 'kanji'];
 const $ = id => document.getElementById(id);
 const state = {
   script: 'hiragana', selected: { hiragana: new Set(), katakana: new Set(), kanji: new Set() },
-  theme: 'pastel', timerSetting: 'custom', customHours: 0, customMinutes: 5, wordAnswerMode: 'meaning',
+  theme: 'pastel', timerSetting: 'off', customHours: 0, customMinutes: 5, guessLimit: 200, wordAnswerMode: 'meaning',
   language: 'en', showElapsedClock: true,
   storageOk: true, quiz: null, lastSummary: null, reviewSelection: new Set()
 };
@@ -874,7 +883,7 @@ function setThemeMenu(open) {
 }
 function payload() {
   return { version: 3, script: state.script, theme: state.theme, timerSetting: state.timerSetting,
-    customHours: state.customHours, customMinutes: state.customMinutes, language: state.language, showElapsedClock: state.showElapsedClock,
+    customHours: state.customHours, customMinutes: state.customMinutes, guessLimit: state.guessLimit, language: state.language, showElapsedClock: state.showElapsedClock,
     wordAnswerMode: state.wordAnswerMode, selected: Object.fromEntries(SCRIPTS.map(script => [script, [...state.selected[script]]])) };
 }
 function applySavedData(data) {
@@ -889,11 +898,10 @@ function applySavedData(data) {
   state.selected = imported;
   state.script = SCRIPTS.includes(data.script) ? data.script : 'hiragana';
   applyTheme(PALETTES.includes(data.theme) ? data.theme : 'pastel');
-  // Existing users keep their explicit timer choices. On the first migration from
-  // the older release, its default "off" becomes the new custom default.
+  // Keep existing users' chosen timer. New visitors start with No countdown.
   const isLegacy = Number(data.version || 1) < 3;
-  const oldMode = ['off','up','300','600','900','custom'].includes(data.timerSetting) ? data.timerSetting : 'custom';
-  state.timerSetting = isLegacy && oldMode === 'off' ? 'custom' : oldMode;
+  const oldMode = ['off','up','300','600','900','custom','guesses'].includes(data.timerSetting) ? data.timerSetting : 'off';
+  state.timerSetting = oldMode;
   if (isLegacy) {
     const oldMinutes = Number(data.customMinutes);
     const oldSeconds = Number(data.customSeconds);
@@ -906,19 +914,29 @@ function applySavedData(data) {
     state.customHours = Number.isInteger(Number(data.customHours)) && data.customHours !== '' && Number(data.customHours) >= 0 && Number(data.customHours) <= 99 ? Number(data.customHours) : 0;
     state.customMinutes = Number.isInteger(Number(data.customMinutes)) && data.customMinutes !== '' && Number(data.customMinutes) >= 0 && Number(data.customMinutes) <= 59 ? Number(data.customMinutes) : 5;
   }
+  state.guessLimit = Number.isInteger(Number(data.guessLimit)) && data.guessLimit !== '' && Number(data.guessLimit) >= 1 && Number(data.guessLimit) <= 10000 ? Number(data.guessLimit) : 200;
   state.wordAnswerMode = ['meaning','reading'].includes(data.wordAnswerMode) ? data.wordAnswerMode : 'meaning';
   state.language = ['en','es'].includes(data.language) ? data.language : 'en';
   state.showElapsedClock = data.showElapsedClock !== false;
   $('timerSetting').value = state.timerSetting;
   $('customHours').value = state.customHours;
   $('customMinutes').value = state.customMinutes;
+  $('guessLimit').value = state.guessLimit;
   updateCustomTimerVisibility();
   $('wordAnswerMode').value = state.wordAnswerMode;
 }
 function updateCustomTimerVisibility() {
   $('customTimerFields').hidden = state.timerSetting !== 'custom';
+  $('guessLimitFields').hidden = state.timerSetting !== 'guesses';
   $('customTimerError').hidden = true;
-  $('timerFootnote').textContent = state.timerSetting === 'off' ? t('timerNone')
+  $('guessLimitError').hidden = true;
+  $('countdownHelp').textContent = state.timerSetting === 'guesses'
+    ? (state.language === 'es' ? ES_STATIC['Choose how many answers to practice. Wrong answers and “I don’t know” count too.'] : 'Choose how many answers to practice. Wrong answers and “I don’t know” count too.')
+    : state.timerSetting === 'off' || state.timerSetting === 'up'
+      ? (state.language === 'es' ? 'Practicá sin límite. Podés mostrar u ocultar el reloj durante la práctica infinita.' : 'Practice for as long as you like. You can show or hide the clock in Infinite Practice.')
+      : (state.language === 'es' ? ES_STATIC['Countdowns end your lesson at zero. Pause anytime.'] : 'Countdowns end your lesson at zero. Pause anytime.');
+  $('timerFootnote').textContent = state.timerSetting === 'guesses' ? t('timerGuess')
+    : state.timerSetting === 'off' ? t('timerNone')
     : state.timerSetting === 'up' ? t('timerUp')
     : t('timerReady');
 }
@@ -934,6 +952,13 @@ function customTimerSeconds() {
   $('customTimerError').hidden = valid;
   if (!valid) return null;
   return (hours * 60 + minutes) * 60;
+}
+function configuredGuessLimit() {
+  const raw = $('guessLimit').value.trim();
+  const value = Number(raw);
+  const valid = /^\d+$/.test(raw) && Number.isSafeInteger(value) && value >= 1 && value <= 10000;
+  $('guessLimitError').hidden = valid;
+  return valid ? value : null;
 }
 function restore() {
   try {
@@ -1066,12 +1091,15 @@ function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, 
   if (!pool.length) { toast(t('toastEmpty')); return; }
   const timerMode = state.timerSetting === 'custom' ? customTimerSeconds() : state.timerSetting;
   if (timerMode === null) { toast(t('toastBadTimer')); $('customMinutes').focus(); return; }
+  const guessLimit = state.timerSetting === 'guesses' ? configuredGuessLimit() : null;
+  if (state.timerSetting === 'guesses' && guessLimit === null) { toast(t('toastBadGuesses')); $('guessLimit').focus(); return; }
   if (state.quiz) clearQuizTimers(state.quiz);
   const quiz = { mode, kind, script: state.script, pool, deck: [], current: null, last: null,
     attempts: 0, correct: 0, round: 0, seenInRound: 0, phase: 'question', perItem: new Map(),
     wordAnswerMode: wordModeOverride || state.wordAnswerMode, transitionTimeout: null,
     timerInterval: null, timerMode: String(timerMode === 'off' && mode === 'practice' && kind === 'characters' ? 'elapsed' : timerMode),
-    elapsedMs: 0, lastTick: performance.now(), paused: false, lastCorrect: null };
+    elapsedMs: 0, lastTick: performance.now(), paused: false, lastCorrect: null,
+    guessLimit, guessLimitReached: false, limitEndTimeout: null };
   state.quiz = quiz;
   $('setupScreen').hidden = true;
   $('summaryScreen').hidden = true;
@@ -1087,7 +1115,7 @@ function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, 
 }
 function syncElapsedClock(quiz) {
   const toggle = $('elapsedToggle');
-  const canToggle = quiz.mode === 'practice' && quiz.kind === 'characters' && (quiz.timerMode === 'elapsed' || quiz.timerMode === 'up');
+  const canToggle = quiz.mode === 'practice' && quiz.kind === 'characters' && ['elapsed','up','guesses'].includes(quiz.timerMode);
   toggle.hidden = !canToggle;
   toggle.textContent = state.showElapsedClock ? t('clockHide') : t('clockShow');
   toggle.setAttribute('aria-pressed',String(state.showElapsedClock));
@@ -1107,7 +1135,7 @@ function initTimer(quiz) {
     quiz.elapsedMs += Math.max(0, now - quiz.lastTick);
     quiz.lastTick = now;
     updateTimer(quiz);
-    if (!['up','elapsed'].includes(quiz.timerMode) && quiz.elapsedMs >= Number(quiz.timerMode) * 1000) stopQuiz(false, true);
+    if (!['up','elapsed','guesses'].includes(quiz.timerMode) && quiz.elapsedMs >= Number(quiz.timerMode) * 1000) stopQuiz(false, true);
   }, 150);
 }
 function formatDuration(totalSeconds) {
@@ -1120,10 +1148,10 @@ function formatDuration(totalSeconds) {
 }
 function updateTimer(quiz) {
   if (quiz.timerMode === 'off') return;
-  const seconds = ['up','elapsed'].includes(quiz.timerMode) ? Math.floor(quiz.elapsedMs/1000)
+  const seconds = ['up','elapsed','guesses'].includes(quiz.timerMode) ? Math.floor(quiz.elapsedMs/1000)
     : Math.max(0, Number(quiz.timerMode) - quiz.elapsedMs/1000);
   $('timerDisplay').textContent = formatDuration(seconds);
-  $('timerArea').classList.toggle('timer-urgent', !['up','elapsed'].includes(quiz.timerMode) && seconds <= 30);
+  $('timerArea').classList.toggle('timer-urgent', !['up','elapsed','guesses'].includes(quiz.timerMode) && seconds <= 30);
 }
 function toggleTimerPause() {
   const quiz = state.quiz;
@@ -1145,6 +1173,7 @@ function toggleTimerPause() {
 function clearQuizTimers(quiz) {
   clearInterval(quiz.timerInterval);
   clearTimeout(quiz.transitionTimeout);
+  clearTimeout(quiz.limitEndTimeout);
 }
 function nextQuestion() {
   const quiz = state.quiz;
@@ -1199,6 +1228,7 @@ function nextQuestion() {
 }
 function advanceQuestion() {
   const quiz = state.quiz;
+  if (quiz?.guessLimitReached && quiz.phase === 'result') { stopQuiz(false,false,true); return; }
   if (!quiz || quiz.paused || !['result','guided'].includes(quiz.phase)) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { nextQuestion(); return; }
   quiz.phase = 'transition';
@@ -1217,12 +1247,18 @@ function advanceQuestion() {
   };
   quiz.transitionTimeout = setTimeout(completeTransition,165);
 }
+function updateGuessProgress(quiz) {
+  const pill = $('guessProgress');
+  pill.hidden = quiz.guessLimit === null;
+  if (!pill.hidden) pill.textContent = t('guessProgress',{done:quiz.attempts,total:quiz.guessLimit});
+}
 function updateStats() {
   if (!state.quiz) return;
   const {attempts,correct} = state.quiz;
   $('attemptsStat').textContent = attempts;
   $('correctStat').textContent = correct;
   $('accuracyStat').textContent = attempts ? Math.round(correct/attempts*100)+'%' : '—';
+  updateGuessProgress(state.quiz);
 }
 function reveal(skipped = false) {
   const quiz = state.quiz;
@@ -1246,9 +1282,18 @@ function reveal(skipped = false) {
   $('checkButton').classList.add(correct ? 'result-correct' : 'result-wrong');
   $('skipButton').hidden = true;
   updateStats();
+  if (quiz.guessLimit !== null && quiz.attempts >= quiz.guessLimit) {
+    quiz.guessLimitReached = true;
+    $('checkButton').textContent = t('seeResults');
+    // Leave the final answer (and the English meaning in Word Challenge) on
+    // screen briefly before taking the student to the results automatically.
+    quiz.limitEndTimeout = setTimeout(() => {
+      if (state.quiz === quiz && quiz.phase === 'result') stopQuiz(false,false,true);
+    }, 1250);
+  }
   $('checkButton').focus({preventScroll:true});
 }
-function stopQuiz(completed = false, timedOut = false) {
+function stopQuiz(completed = false, timedOut = false, reachedGuessGoal = false) {
   const quiz = state.quiz;
   if (!quiz) return;
   clearQuizTimers(quiz);
@@ -1256,7 +1301,7 @@ function stopQuiz(completed = false, timedOut = false) {
   const hardest = [...quiz.perItem.values()].filter(x => x.errors > 0)
     .sort((a,b) => b.errors-a.errors || a.correct/a.attempts-b.correct/b.attempts || b.attempts-a.attempts);
   state.lastSummary = { hardest, kind:quiz.kind, mode:quiz.mode, pool:[...quiz.pool], script:quiz.script,
-    wordAnswerMode:quiz.wordAnswerMode, timedOut, completed, round:quiz.round,
+    wordAnswerMode:quiz.wordAnswerMode, timedOut, completed, guessLimitReached:reachedGuessGoal, guessLimit:quiz.guessLimit, round:quiz.round,
     attempts:quiz.attempts, correct:quiz.correct, timerMode:quiz.timerMode,
     elapsedMs:quiz.elapsedMs };
   renderSummary(state.lastSummary);
@@ -1297,11 +1342,25 @@ function showFeedback(quiz) {
   const correct = quiz.lastCorrect;
   const answer = displayAnswer(quiz,item);
   const alt = quiz.kind === 'characters' && item.answers.length > 1 ? t('alsoAccepted',{answers:item.answers.slice(1).join(', ')}) : '';
-  const extra = quiz.kind === 'words'
+  const isWordReading = quiz.kind === 'words' && quiz.wordAnswerMode === 'reading';
+  const extra = isWordReading ? '' : quiz.kind === 'words'
     ? ` · ${item.readings[0]} · ${wordMeanings(item)[0]}` : (item.meaning ? ` · ${itemMeaning(item)}` : '');
   $('feedback').textContent = correct
-    ? t('correctFeedback',{kana:item.kana,answer,extra:quiz.kind==='words' ? ` (${item.readings[0]})` : '',alt})
+    ? t('correctFeedback',{kana:item.kana,answer,extra:quiz.kind==='words' && !isWordReading ? ` (${item.readings[0]})` : '',alt})
     : t('wrongFeedback',{kana:item.kana,answer,extra,alt});
+  // In Word Challenge / Romaji Reading, reveal the English definition for
+  // both correct and incorrect answers, regardless of the UI language.
+  if (isWordReading) {
+    const meaning = document.createElement('div');
+    meaning.className = 'word-reading-meaning';
+    const label = document.createElement('span');
+    label.className = 'word-reading-meaning-label';
+    label.textContent = state.language === 'es' ? 'Significado en inglés' : 'English meaning';
+    const value = document.createElement('strong');
+    value.textContent = item.meanings.join(' / ');
+    meaning.append(label, value);
+    $('feedback').appendChild(meaning);
+  }
   $('checkButton').textContent = quiz.mode === 'learn' && quiz.round === 6 && quiz.deck.length === 0 ? t('seeResults') : t('next');
 }
 function refreshQuizLanguage() {
@@ -1309,18 +1368,22 @@ function refreshQuizLanguage() {
   if (!quiz) return;
   $('quizPoolLabel').textContent = t('quizItems',{label:quiz.kind==='words'?t('words'):quiz.script[0].toUpperCase()+quiz.script.slice(1),count:quiz.pool.length,item:quiz.pool.length===1?t('itemSingular'):t('itemPlural'),mode:quiz.mode==='learn'?t('learnSuffix'):quiz.mode==='review'?t('reviewSuffix'):''});
   $('stopButton').textContent = state.language === 'es' ? '← Terminar lección' : '← Finish lesson';
+  updateGuessProgress(quiz);
   $('pauseTimerButton').textContent = quiz.paused ? t('resume') : t('pause');
   syncElapsedClock(quiz);
   updateQuestionLanguage(quiz);
   if (quiz.phase === 'question') $('checkButton').textContent = state.language==='es'?'Comprobar ↵':'Check ↵';
-  if (quiz.phase === 'result') showFeedback(quiz);
+  if (quiz.phase === 'result') {
+    showFeedback(quiz);
+    if (quiz.guessLimitReached) $('checkButton').textContent = t('seeResults');
+  }
 }
 function renderSummary(s) {
-  $('summaryEyebrow').textContent = t(s.timedOut?'timeUp':s.completed?'lessonComplete':'sessionFinished');
+  $('summaryEyebrow').textContent = t(s.guessLimitReached?'guessReached':s.timedOut?'timeUp':s.completed?'lessonComplete':'sessionFinished');
   $('summaryDescription').textContent = t(s.mode==='learn'?'summaryLearn':'summaryOther');
   const timing = s.timerMode === 'off' ? '' : t('timing',{time:formatDuration(Math.floor(s.elapsedMs/1000))});
-  $('summaryProgress').hidden = !(s.mode==='learn' || timing || s.mode==='review');
-  $('summaryProgress').textContent = s.mode==='learn'
+  $('summaryProgress').hidden = !(s.guessLimitReached || s.mode==='learn' || timing || s.mode==='review');
+  $('summaryProgress').textContent = s.guessLimitReached ? t('summaryGuessGoal',{attempts:s.attempts,goal:s.guessLimit,timing}) : s.mode==='learn'
     ? t('summaryLearning',{progress:t(s.completed?'completed':'reached'),round:s.round,timing})
     : s.mode==='review' ? t('summaryReview',{count:s.pool.length,timing}) : timing ? t('summaryDuration',{timing}) : '';
   $('summaryAttempts').textContent = s.attempts;
@@ -1387,6 +1450,11 @@ $('elapsedToggle').addEventListener('click', () => {
   save();
 });
 $('timerSetting').addEventListener('change', e => { state.timerSetting = e.target.value; updateCustomTimerVisibility(); save(); });
+$('guessLimit').addEventListener('input', () => {
+  state.guessLimit = $('guessLimit').value;
+  if (state.timerSetting === 'guesses') configuredGuessLimit();
+  save();
+});
 for (const id of ['customHours','customMinutes']) $(id).addEventListener('input', () => {
   state.customHours = $('customHours').value;
   state.customMinutes = $('customMinutes').value;
@@ -1408,7 +1476,8 @@ $('search').addEventListener('input',render);
 // We update tile styling in place while dragging so re-rendering cannot interrupt
 // the active pointer, then save / update counters once the stroke finishes.
 let selectionStroke = null;
-let skipStrokeClick = false;
+let lastConsumedClick = null;
+let touchScrollFrame = null;
 const categoriesEl = $('categories');
 function paintSelectionTile(tile) {
   const stroke = selectionStroke;
@@ -1438,28 +1507,52 @@ function endSelectionStroke(event) {
   if (!selectionStroke || (event && event.pointerId !== selectionStroke.pointerId)) return;
   const oldStroke = selectionStroke;
   selectionStroke = null;
-  skipStrokeClick = true;
+  if (touchScrollFrame !== null) cancelAnimationFrame(touchScrollFrame);
+  touchScrollFrame = null;
+  // Pointer-generated click after a paint stroke must not toggle the first tile again.
+  lastConsumedClick = {pointerId:oldStroke.pointerId, kana:oldStroke.firstKana, when:performance.now()};
   if (categoriesEl.hasPointerCapture?.(oldStroke.pointerId)) {
     categoriesEl.releasePointerCapture(oldStroke.pointerId);
   }
   save();
   render();
-  // Only the synthetic mouse click accompanying this stroke is suppressed.
-  setTimeout(() => { skipStrokeClick = false; }, 0);
 }
 categoriesEl.addEventListener('pointerdown', event => {
-  // Touch continues to use the standard tap-to-toggle interaction, allowing scroll.
-  if (event.pointerType === 'touch' || !event.isPrimary || event.button !== 0) return;
+  // Native touch scrolling is disabled only on tiles; users can still scroll
+  // from headings, gaps and the rest of the page. Touch drags paint like mouse drags.
+  if (!event.isPrimary || event.button !== 0) return;
   const tile = event.target.closest('.kana-tile');
   if (!tile || !categoriesEl.contains(tile)) return;
   event.preventDefault();
   selectionStroke = {
-    pointerId: event.pointerId, script: state.script,
+    pointerId: event.pointerId, script: state.script, pointerType: event.pointerType,
+    firstKana: tile.dataset.kana,
     selecting: !state.selected[state.script].has(tile.dataset.kana),
     seen: new Set(), last: { x: event.clientX, y: event.clientY }
   };
   paintSelectionTile(tile);
   categoriesEl.setPointerCapture(event.pointerId);
+  // Autoscroll while a finger stays near the viewport edge, so long grids
+  // remain navigable without releasing the swipe selection.
+  if (event.pointerType === 'touch') {
+    const scrollDuringPaint = () => {
+      const stroke = selectionStroke;
+      if (!stroke || stroke.pointerId !== event.pointerId) { touchScrollFrame = null; return; }
+      const vHeight = window.visualViewport?.height || window.innerHeight;
+      const lowerEdge = vHeight - 72;
+      const y = stroke.last.y;
+      const speed = y < 72 ? -Math.min(14, (72 - y) / 5) : y > lowerEdge ? Math.min(14, (y - lowerEdge) / 5) : 0;
+      if (speed) {
+        const oldScroll = window.scrollY;
+        window.scrollBy(0,speed);
+        if (window.scrollY !== oldScroll) {
+          paintSelectionTile(document.elementFromPoint(stroke.last.x,stroke.last.y)?.closest('.kana-tile'));
+        }
+      }
+      touchScrollFrame = requestAnimationFrame(scrollDuringPaint);
+    };
+    touchScrollFrame = requestAnimationFrame(scrollDuringPaint);
+  }
 });
 categoriesEl.addEventListener('pointermove', event => {
   if (!selectionStroke || selectionStroke.pointerId !== event.pointerId) return;
@@ -1481,9 +1574,13 @@ categoriesEl.addEventListener('click',e => {
   const button = e.target.closest('button[data-action]');
   if (!button) return;
   if (button.dataset.action === 'toggle') {
-    // Mouse and pen clicks have already been applied on pointerdown.
-    // Keyboard activation (detail=0) and touch taps still work as before.
-    if (skipStrokeClick && e.detail !== 0) return;
+    // Pointer interactions (including taps) were processed at pointerdown.
+    // Keep keyboard / accessibility clicks working (detail === 0).
+    if (e.detail !== 0 && lastConsumedClick && performance.now() - lastConsumedClick.when < 1200 &&
+        (typeof e.pointerId === 'number' ? e.pointerId === lastConsumedClick.pointerId : e.target.closest('.kana-tile')?.dataset.kana === lastConsumedClick.kana)) {
+      lastConsumedClick = null;
+      return;
+    }
     updateSelection([button.dataset.kana], 'toggle');
   } else {
     updateSelection(currentVisible().filter(item => item.category === button.dataset.category).map(item => item.kana), button.dataset.action === 'add-group' ? 'add' : 'remove');
@@ -1503,7 +1600,13 @@ $('closeWordsDialog').addEventListener('click', () => $('wordsDialog').close());
 $('cancelWordsDialog').addEventListener('click', () => $('wordsDialog').close());
 $('wordsDialog').addEventListener('click', e => { if (e.target === $('wordsDialog')) $('wordsDialog').close(); });
 $('wordsButton').addEventListener('click', () => {
-  // Keep the dialog visible if the custom time is invalid, so the user can fix it in the sidebar.
+  // Keep the dialog visible if the session setting is invalid, so the user can fix it in the sidebar.
+  if (state.timerSetting === 'guesses' && configuredGuessLimit() === null) {
+    $('wordsDialog').close();
+    toast(t('toastBadGuesses'));
+    $('guessLimit').focus();
+    return;
+  }
   if (state.timerSetting === 'custom' && customTimerSeconds() === null) {
     $('wordsDialog').close();
     toast(t('toastBadTimerBefore'));

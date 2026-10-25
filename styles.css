@@ -730,3 +730,64 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
   border: 1px solid var(--retro-deep);
   box-shadow: 2px 2px 0 var(--retro-shadow);
 }
+
+/* Word Challenge / Romaji Reading: English vocabulary reveal after each answer. */
+.word-reading-meaning {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px 11px;
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px dashed currentColor;
+}
+.word-reading-meaning-label {
+  font: 11px "Courier New", monospace;
+  opacity: .82;
+}
+.word-reading-meaning strong {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Cute answer-count limit, following the same card style as the custom countdown. */
+.guess-limit-fields {display:flex;align-items:flex-end;gap:10px;margin:12px 0 16px;}
+.guess-limit-fields label {display:grid;flex:1;min-width:0;gap:7px;color:var(--muted);font:700 11px "Courier New",monospace;}
+.guess-limit-fields input {text-align:center;font-size:19px;letter-spacing:.05em;}
+.guess-limit-deco {display:grid;place-items:center;flex:0 0 42px;height:43px;font-size:22px;color:var(--retro-deep);background:var(--retro-cream);border:1px dashed var(--retro-deep);border-radius:5px;}
+.guess-progress-pill {background:var(--retro-cream);border:1px dashed var(--retro-deep);font-variant-numeric:tabular-nums;}
+#guessLimitFields[hidden], #guessLimitError[hidden], #guessProgress[hidden] {display:none!important;}
+@media(max-width:470px){ .quiz-top-right {gap:7px;} .guess-progress-pill{font-size:11px;padding:7px 9px;} }
+
+
+/* Responsive setup: session controls ABOVE tabs and character grid on phones.
+   Desktop retains the familiar left study panel / right session card. */
+.study-content { min-width: 0; }
+.study-content .study-switcher { margin-bottom: 0; }
+.layout > .side-panel { margin-top: 49px; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0,1fr); }
+  .layout > .side-panel { order: -1; margin-top: 0; position: relative; top: auto; }
+  .layout > .study-content { order: 0; }
+  .study-content .study-switcher { margin-bottom: 8px; }
+}
+/* More breathing room for Select/Clear, even when translated to Spanish. */
+.toolbar { column-gap: 12px; row-gap: 12px; }
+.category-actions { gap: 12px; flex-wrap: wrap; }
+.category-actions .ghost-button { min-height: 36px; padding-inline: 12px; }
+@media (max-width: 600px) {
+  .toolbar { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 11px; }
+  .toolbar .search { grid-column: 1 / -1; width: 100%; min-width: 0; }
+  .toolbar .mini-button { width: 100%; min-width: 0; padding: 8px 5px; font-size: clamp(10px,2.65vw,12px); }
+  .category-heading { align-items: start; gap: 12px; }
+  .category-actions { width: 100%; gap: 10px; }
+  .category-actions .ghost-button { flex: 1 1 0; }
+}
+@media (max-width: 360px) {
+  .toolbar { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .toolbar #randomTen { grid-column: 1 / -1; }
+}
+/* Touch-drag on kana tiles works in both directions. Other page elements
+   remain available for vertical scrolling; swipe near the edge to auto-scroll. */
+.kana-tile { touch-action: none; -webkit-user-select:none; user-select:none; }
+.kana-grid { touch-action: pan-y; }

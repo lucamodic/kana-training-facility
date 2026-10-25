@@ -51,17 +51,18 @@
 
   <main class="shell">
     <section id="setupScreen" aria-label="Choose study material">
-      <div class="study-switcher">
+      <div class="layout">
+        <div class="study-content">
+          <div class="study-switcher">
         <div class="tabs" role="tablist" aria-label="Writing system">
           <button type="button" id="tabHiragana" class="tab" role="tab" aria-selected="true" aria-controls="characterPanel" data-script="hiragana">Hiragana <span class="tab-counter" id="hCount">0</span></button>
           <button type="button" id="tabKatakana" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="katakana">Katakana <span class="tab-counter" id="kCount">0</span></button>
           <button type="button" id="tabKanji" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="kanji">Kanji <span class="tab-counter" id="jCount">0</span></button>
         </div>
         <button type="button" id="openWordsButton" class="words-launch" aria-haspopup="dialog" aria-controls="wordsDialog"><span class="words-launch-icon" aria-hidden="true">✎</span> <span id="wordsLaunchText">Word Challenge</span> <span class="words-count" id="wordAvailableCount">0</span> <span aria-hidden="true">↗</span></button>
-      </div>
-      <div class="layout">
+          </div>
         <div class="main-panel" id="characterPanel" role="tabpanel" aria-labelledby="tabHiragana">
-          <div class="panel-heading"><div><h2 id="selectionHeading">Choose your hiragana</h2><p class="subtle" id="dragHint">Click a character, or click and drag across several to select or deselect them.</p></div></div>
+          <div class="panel-heading"><div><h2 id="selectionHeading">Choose your hiragana</h2><p class="subtle" id="dragHint">Tap a character or drag your mouse or finger across tiles to select or deselect several.</p></div></div>
           <div class="toolbar">
             <input id="search" class="search" type="search" placeholder="Search character, reading, or meaning…" aria-label="Filter characters">
             <button class="mini-button" id="selectAll" type="button">Select all</button>
@@ -70,6 +71,7 @@
           </div>
           <div id="categories"></div>
         </div>
+        </div><!-- /study-content -->
         <aside class="side-panel" aria-label="Session options">
           <div class="side-grid">
             <div><span class="side-label">YOUR SELECTION</span><div class="big-number"><strong id="selectedCount">0</strong><span id="selectedUnit">characters on this tab</span></div><p id="selectedDescription" class="subtle">Pick at least one to begin.</p></div>
@@ -78,12 +80,17 @@
               <div class="timer-header"><span class="timer-decoration" aria-hidden="true">✿</span><label class="side-label" for="timerSetting">YOUR LITTLE STUDY TIMER</label><span class="timer-decoration" aria-hidden="true">✧</span></div>
               <div class="timer-card">
                 <div class="timer-card-head"><span aria-hidden="true" class="timer-clock">◷</span><span class="timer-card-title">Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div>
-                <select class="setting-select" id="timerSetting" aria-label="Timer mode"><option value="custom" selected>Custom countdown</option><option value="off">No countdown</option><option value="up">Stopwatch (count up)</option><option value="300">5-minute countdown</option><option value="600">10-minute countdown</option><option value="900">15-minute countdown</option></select>
-                <div id="customTimerFields" class="custom-timer-fields" role="group" aria-label="Custom countdown duration">
+                <select class="setting-select" id="timerSetting" aria-label="Timer mode"><option value="custom">Custom countdown</option><option value="guesses">Guess limit</option><option value="off" selected>No countdown</option><option value="up">Stopwatch (count up)</option><option value="300">5-minute countdown</option><option value="600">10-minute countdown</option><option value="900">15-minute countdown</option></select>
+                <div id="customTimerFields" class="custom-timer-fields" role="group" aria-label="Custom countdown duration" hidden>
                   <label for="customHours"><span class="time-caption">Hours</span><input type="number" id="customHours" class="time-input" min="0" max="99" step="1" inputmode="numeric" value="0" placeholder="00"></label>
                   <span class="time-separator" aria-hidden="true">:</span>
                   <label for="customMinutes"><span class="time-caption">Minutes</span><input type="number" id="customMinutes" class="time-input" min="0" max="59" step="1" inputmode="numeric" value="5" placeholder="05"></label>
                 </div>
+                <div id="guessLimitFields" class="guess-limit-fields" role="group" aria-label="Guess limit configuration" hidden>
+                  <label for="guessLimit"><span class="time-caption">Number of guesses</span><input type="number" id="guessLimit" class="time-input guess-input" min="1" max="10000" step="1" inputmode="numeric" value="200"></label>
+                  <span class="guess-limit-deco" aria-hidden="true">✧</span>
+                </div>
+                <p id="guessLimitError" class="timer-error" role="alert" hidden>Please enter between 1 and 10,000 guesses.</p>
                 <p id="customTimerError" class="timer-error" role="alert" hidden>Please choose between 00:01 and 99:59.</p>
                 <p class="timer-footnote" id="timerFootnote">✧ One tiny study session at a time.</p>
               </div>
@@ -99,7 +106,7 @@
     </section>
 
     <section id="quizScreen" class="quiz-wrap" aria-label="Study session" hidden>
-      <div class="quiz-top"><button type="button" class="back" id="stopButton">← Finish lesson</button><div class="quiz-top-right"><div class="quiz-pill" id="quizPoolLabel">Hiragana · 0</div><div id="timerArea" class="timer-area" hidden><span class="timer-area-glyph" aria-hidden="true">◷</span><span aria-label="Timer" id="timerDisplay">05:00</span><button type="button" id="pauseTimerButton" class="mini-button" aria-pressed="false">Pause</button></div><button type="button" id="elapsedToggle" class="mini-button elapsed-toggle" hidden aria-pressed="true">Hide clock</button></div></div>
+      <div class="quiz-top"><button type="button" class="back" id="stopButton">← Finish lesson</button><div class="quiz-top-right"><div class="quiz-pill" id="quizPoolLabel">Hiragana · 0</div><div class="quiz-pill guess-progress-pill" id="guessProgress" aria-live="polite" hidden>0 / 200 guesses</div><div id="timerArea" class="timer-area" hidden><span class="timer-area-glyph" aria-hidden="true">◷</span><span aria-label="Timer" id="timerDisplay">05:00</span><button type="button" id="pauseTimerButton" class="mini-button" aria-pressed="false">Pause</button></div><button type="button" id="elapsedToggle" class="mini-button elapsed-toggle" hidden aria-pressed="true">Hide clock</button></div></div>
       <div id="learningProgress" class="learning-progress" hidden><div class="progress-row"><strong id="learningStage">Guided learning</strong><span id="learningCount">Pass 1 of 6</span></div><div class="progress-track" id="progressTrack" role="progressbar" aria-label="Lesson progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div></div>
       <div class="stats" id="quizStats"><div class="stat"><span class="stat-answered">Answered</span><b id="attemptsStat">0</b></div><div class="stat"><span class="stat-correct">Correct</span><b id="correctStat">0</b></div><div class="stat"><span class="stat-accuracy">Accuracy</span><b id="accuracyStat">—</b></div></div>
       <p class="quiz-sublabel" id="roundLabel">Shuffling your selection</p>

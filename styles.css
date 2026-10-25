@@ -401,6 +401,26 @@ html[data-theme="bi"] {
   --retro-selected:#dfefe7; --retro-shadow:#916a9c;
   --shadow:5px 6px 0 #814b9844;
 }
+/* Nonbinary Pride — yellow, white, purple and charcoal. */
+html[data-theme="nonbinary"] {
+  --bg:#fcf8df; --paper:#fffefa; --ink:#36283f; --muted:#61546b;
+  --line:#b7a1c0; --soft:#f5eff9; --accent:#8050ac;
+  --accent-soft:#fff7c7; --green:#32694f; --green-soft:#e4f2e3;
+  --retro-main:#f8e99b; --retro-deep:#704997; --retro-cream:#fffde9;
+  --retro-ribbon:#e5cef4; --retro-button:#f7edb7; --retro-tile:#fffdf6;
+  --retro-selected:#e6f2dd; --retro-shadow:#ab98ad;
+  --shadow:5px 6px 0 #74559433;
+}
+/* Lesbian Pride — sunset orange, white, pink and magenta. */
+html[data-theme="lesbian"] {
+  --bg:#fff0e8; --paper:#fffaf7; --ink:#58283e; --muted:#815563;
+  --line:#d09ba6; --soft:#ffedf0; --accent:#a82e68;
+  --accent-soft:#ffe4ee; --green:#2d6b50; --green-soft:#e3f2e5;
+  --retro-main:#f6bd9e; --retro-deep:#9c335e; --retro-cream:#fff0e3;
+  --retro-ribbon:#f4bfda; --retro-button:#ffe1cd; --retro-tile:#fff9f8;
+  --retro-selected:#e4f2e5; --retro-shadow:#bd8899;
+  --shadow:5px 6px 0 #a34e7240;
+}
 html[data-theme="night"] {
   color-scheme:dark;
   --bg:#191b2b; --paper:#282a40; --ink:#f8f0fa; --muted:#c5bfd9;

@@ -471,7 +471,8 @@ const ES_STATIC = {
   'LOCAL SETTINGS · OFFLINE READY':'AJUSTES LOCALES · SIN CONEXIÓN',
   'Theme:':'Tema:', '● ready':'● listo', 'CHOOSE A THEME':'ELEGÍ UN TEMA',
   'Lavender':'Lavanda', 'Mint':'Menta', 'Peach':'Durazno', 'Sky':'Cielo',
-  'Burgundy':'Bordó', 'Midnight':'Medianoche', 'Trans Pride':'Orgullo trans', 'Bi Pride':'Orgullo bi', 'Language':'Idioma',
+  'Burgundy':'Bordó', 'Midnight':'Medianoche', 'Trans Pride':'Orgullo trans', 'Bi Pride':'Orgullo bi',
+  'Nonbinary Pride':'Orgullo no binario', 'Lesbian Pride':'Orgullo lésbico', 'Language':'Idioma',
   'Word Challenge':'Desafío de palabras',
   'Tap a character or drag your mouse or finger across tiles to select or deselect several.':'Tocá un carácter o arrastrá el mouse o el dedo para marcar o desmarcar varios.',
   'Select all':'Seleccionar todo', 'Clear all':'Borrar todo', 'Random 10':'10 al azar',
@@ -937,8 +938,8 @@ function changeLanguage(language, persist=true) {
 
 const STORAGE_KEY = 'kana-training-facility-v2';
 const OLD_STORAGE_KEY = 'kana-lab-selection-v1';
-const PALETTES = ['pastel', 'mint', 'peach', 'blue', 'burgundy', 'night', 'trans', 'bi'];
-const THEME_NAMES = { pastel: 'Lavender', mint: 'Mint', peach: 'Peach', blue: 'Sky', burgundy: 'Burgundy', night: 'Midnight', trans: 'Trans Pride', bi: 'Bi Pride' };
+const PALETTES = ['pastel', 'mint', 'peach', 'blue', 'burgundy', 'night', 'trans', 'bi', 'nonbinary', 'lesbian'];
+const THEME_NAMES = { pastel: 'Lavender', mint: 'Mint', peach: 'Peach', blue: 'Sky', burgundy: 'Burgundy', night: 'Midnight', trans: 'Trans Pride', bi: 'Bi Pride', nonbinary: 'Nonbinary Pride', lesbian: 'Lesbian Pride' };
 const SCRIPTS = ['hiragana', 'katakana', 'kanji'];
 const $ = id => document.getElementById(id);
 const state = {
@@ -965,7 +966,7 @@ function applyTheme(theme) {
   if (!PALETTES.includes(theme)) return;
   state.theme = theme;
   document.documentElement.dataset.theme = theme;
-  document.querySelector('meta[name="theme-color"]').content = ({night:'#25283f',burgundy:'#712b4b',trans:'#5bcefa',bi:'#9b4f96'})[theme] || '#d9cae9';
+  document.querySelector('meta[name="theme-color"]').content = ({night:'#25283f',burgundy:'#712b4b',trans:'#5bcefa',bi:'#9b4f96',nonbinary:'#fcf434',lesbian:'#d52d00'})[theme] || '#d9cae9';
   document.querySelectorAll('[data-palette]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.palette === theme)));
   $('currentThemeName').textContent = localThemeName(THEME_NAMES[theme]);
   $('themeToggle').setAttribute('aria-label', t('themeAria',{name: localThemeName(THEME_NAMES[theme])}));

@@ -8,6 +8,11 @@
   <title>Kana Training Facility</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Kana Training">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
   <link rel="stylesheet" href="./styles.css">
   <script src="./app.js" defer></script>
 </head>
@@ -20,6 +25,7 @@
       </a>
       <div class="header-actions">
         <div class="offline-pill"><span class="dot" aria-hidden="true"></span> <span id="offlineText">LOCAL SETTINGS · OFFLINE READY</span></div>
+        <button type="button" id="installAppButton" class="install-app-button" aria-haspopup="dialog" aria-controls="installDialog" title="Install Kana Training Facility"><span aria-hidden="true">↓</span><span id="installAppLabel">Install</span></button>
         <label class="language-picker" for="languageSelect"><span class="language-icon" aria-hidden="true">文</span><span class="language-label" id="languageCaption">Language</span><select id="languageSelect" aria-label="Language / Idioma"><option value="en">English</option><option value="es">Español</option></select></label>
         <div class="theme-picker" id="themePicker">
           <button type="button" id="themeToggle" class="theme-toggle" aria-expanded="false" aria-controls="themeMenu" aria-haspopup="true" aria-label="Change color theme">
@@ -135,6 +141,12 @@
   <footer class="shell"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · No tracking · Works offline</span></footer>
   <div id="toast" role="status" aria-live="polite" hidden></div>
 
+  <dialog id="installDialog" class="review-dialog install-dialog" aria-labelledby="installDialogTitle">
+    <div class="review-dialog-head"><div><span class="eyebrow" id="installEyebrow">YOUR POCKET STUDY ROOM</span><h2 id="installDialogTitle">Install Kana Training Facility</h2></div><button type="button" class="mini-button" id="closeInstallDialog" aria-label="Close installation help">✕</button></div>
+    <p id="installDialogDescription">Add this study app to your home screen for quick access. After your first visit, it also works offline.</p>
+    <div class="install-platform-tips" id="installPlatformTips"></div>
+    <div class="install-dialog-footer"><button type="button" class="button-secondary" id="dismissInstallDialog">Got it!</button></div>
+  </dialog>
   <dialog id="wordsDialog" class="review-dialog words-dialog" aria-labelledby="wordsDialogTitle">
     <div class="review-dialog-head"><div><span class="eyebrow">VOCABULARY PRACTICE</span><h2 id="wordsDialogTitle">Word Challenge</h2></div><button type="button" class="mini-button" id="closeWordsDialog" aria-label="Close Word Challenge">✕</button></div>
     <div class="words-dialog-body">

@@ -845,3 +845,69 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
 }
 .mixed-words-label { font-size: .85rem; font-weight: 700; }
 .mixed-words-examples { font-size: .78rem; opacity: .84; overflow-wrap: anywhere; }
+
+/* PWA install: a compact retro control, consistent with the existing header. */
+.install-app-button {
+  display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center;
+  gap: 7px; min-height: 44px; height: 44px; padding: 0 11px;
+  background: var(--retro-button); color: var(--ink); border: 1px solid var(--retro-deep);
+  border-radius: 3px; box-shadow: 2px 2px 0 var(--retro-shadow);
+  font: 700 11px "Courier New", monospace; cursor: pointer; white-space: nowrap;
+}
+.install-app-button:hover, .install-app-button:focus-visible { background: var(--retro-cream); }
+.install-app-button > span:first-child { font-size: 19px; line-height: 1; }
+.install-dialog { width: min(460px, calc(100vw - 28px)); }
+.install-dialog p { font-size: 13px; line-height: 1.75; color: var(--muted); margin: 14px 0; }
+.install-platform-tips { border: 1px dashed var(--retro-deep); padding: 15px; background: var(--retro-cream); font: 12px/1.75 "Courier New", monospace; color: var(--ink); }
+.install-platform-tips strong { display: block; margin-bottom: 5px; }
+.install-platform-tips p { margin: 0; color: var(--ink); }
+.install-dialog-footer { display: flex; justify-content: flex-end; margin-top: 19px; }
+@media (max-width: 680px) {
+  .header-actions { gap: 7px; }
+  .install-app-button { width: 42px; min-width: 42px; padding: 0; }
+  #installAppLabel { display: none; }
+}
+/* Keep the logo legible above the controls on narrow phones. */
+@media (max-width: 680px) {
+  .top-inner { flex-wrap: wrap; gap: 10px; padding-block: 12px; }
+  .top-inner .brand { flex: 1 1 100%; width: 100%; gap: 12px; }
+  .top-inner .brand-title { font-size: clamp(15px, 4.2vw, 18px); }
+  .top-inner .brand-sub { font-size: 10px; }
+  .header-actions { width: 100%; justify-content: space-between; gap: 8px; }
+  .header-actions .language-picker { min-width: 0; flex: 1 1 auto; }
+  .header-actions .language-picker select { flex: 1 1 auto; width: 100%; max-width: none; }
+  .header-actions .theme-picker { flex: 0 0 auto; }
+}
+
+
+/* Mobile navigation refinement: vocabulary lives ABOVE writing-system tabs.
+   On desktop the familiar horizontal order is unchanged. */
+@media (max-width: 600px) {
+  .study-switcher {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .study-switcher .words-launch {
+    order: -1;
+    align-self: stretch;
+    width: 100%;
+    min-height: 47px;
+    margin: 0;
+    border-radius: 6px;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+  .study-switcher .tabs {
+    order: 0;
+    width: 100%;
+    margin: 0;
+    gap: 6px;
+    box-sizing: border-box;
+  }
+  .study-switcher .tab {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+}

@@ -14,11 +14,23 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 - **English and Spanish** interface: English by default, with a header language selector. Word-meaning questions, accepted answers, and kanji glosses change with the selected language. Your choice is saved locally.
 - **Ten editable themes**: Lavender, Mint, Peach, Sky, Burgundy, Midnight, Trans Pride, Bi Pride, Nonbinary Pride, and Lesbian Pride, available through a compact theme menu in the header.
 - **Saved preferences** via localStorage (no visible backup controls).
-- **Favicon** displaying the hiragana あ.
+- **Favicon and installable app icon** displaying the hiragana あ.
+- **PWA installation and offline cache**: Android/desktop install prompts, iOS home-screen guidance, and offline study after the first online load.
+
+## Install as a phone/desktop app (PWA)
+
+This project is also a **Progressive Web App**. No app store, server, build tool, or third-party service is necessary.
+
+- **Android / Chrome:** Open the published GitHub Pages HTTPS address. Choose **Install app** from Chrome (or use the site's **Install** button when Chrome makes the install prompt available). Depending on Chrome, it may say **Add to Home screen**.
+- **iPhone / iPad:** In Safari, tap **Share → Add to Home Screen** (choose **Open as Web App** when shown). Chrome on iOS also has Share → Add to Home Screen on supported versions.
+- **Desktop Chrome / Edge:** Use the Install icon or Install menu option for the page.
+- **Offline:** Visit the site online once and allow it to load fully, then use it offline from the installed icon. Selected characters and settings remain in the device's localStorage. Updates will load when connected again.
+
+The PWA works with both `https://username.github.io/repo/` and custom domains because the manifest, icons, and service worker use **relative paths**. Keep `manifest.webmanifest`, `sw.js`, and the `icons/` folder with the original files. A `file://` URL cannot install the app or register the offline service worker; GitHub Pages or a localhost server is required.
 
 ## Run locally
 
-Open `index.html` in a modern browser. No internet or installation needed. `index.html`, `styles.css`, `app.js`, `favicon.svg`, and `favicon.png` must stay together.
+Open `index.html` in a modern browser. No internet or installation needed. `index.html`, `styles.css`, `app.js`, `favicon.svg`, and `favicon.png` must stay together. You can test the content as a file, but install/offline features need GitHub Pages or localhost.
 
 ## Publish to GitHub Pages
 
@@ -52,7 +64,7 @@ Every written kana and kanji in a word must be selected in the respective tab, *
 
 ## Mobile character selection
 
-The session card appears first on small screens, followed by the writing-system tabs and character grid. You can tap tiles or hold and drag your finger across tiles to select or deselect in bulk. While finger-painting, staying near the top/bottom edge scrolls through longer character grids. To scroll normally, swipe from a section heading or the space outside the tiles.
+The session card appears first on small screens, followed by the full-width Word Challenge button, then the Hiragana/Katakana/Kanji tabs and character grid. You can tap tiles or hold and drag your finger across tiles to select or deselect in bulk. While finger-painting, staying near the top/bottom edge scrolls through longer character grids. To scroll normally, swipe from a section heading or the space outside the tiles.
 
 ### Mixed-script vocabulary examples
 

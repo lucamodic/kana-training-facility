@@ -1775,3 +1775,83 @@ $('beginReview').addEventListener('click',beginReview);
 restore();
 changeLanguage(state.language,false);
 save();
+
+
+/* Installable PWA: progressive enhancement for GitHub Pages and its subpaths. */
+let deferredInstallPrompt = null;
+const isInstalledPwa = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const installTranslations = {
+  en: {
+    button: 'Install', buttonTitle:'Install Kana Training Facility', eyebrow:'YOUR POCKET STUDY ROOM',
+    title:'Install Kana Training Facility', intro:'Add this study app to your home screen for quick access. After your first visit, it also works offline.',
+    androidTitle:'On Android / Chrome', android:'Use Chrome’s menu (⋮) and choose “Install app” or “Add to Home screen”.',
+    iphoneTitle:'On iPhone / iPad', iphone:'Tap Share in Safari (or Chrome), then “Add to Home Screen”. In Safari, enable “Open as Web App” when available.',
+    desktopTitle:'On desktop / Chrome', desktop:'Use the Install icon in the address bar, or find Install in the Chrome menu.',
+    localTitle:'Publish it first', local:'Install from your HTTPS GitHub Pages URL, not by double-clicking the HTML file.',
+    done:'Got it!', close:'Close installation help', installed:'Installed successfully!', notAvailable:'If the install prompt is not offered yet, use your browser’s menu.'
+  },
+  es: {
+    button:'Instalar',buttonTitle:'Instalar Kana Training Facility',eyebrow:'TU ESPACIO DE ESTUDIO PORTÁTIL',
+    title:'Instalar Kana Training Facility',intro:'Agregá esta aplicación a tu pantalla de inicio para abrirla directamente. Después de la primera visita también funciona sin conexión.',
+    androidTitle:'En Android / Chrome', android:'Abrí el menú de Chrome (⋮) y elegí «Instalar aplicación» o «Agregar a pantalla principal».',
+    iphoneTitle:'En iPhone / iPad', iphone:'Tocá Compartir en Safari (o Chrome) y después «Agregar a inicio». En Safari, activá «Abrir como app web» si aparece.',
+    desktopTitle:'En computadora / Chrome', desktop:'Usá el ícono de instalación de la barra de direcciones o la opción Instalar del menú de Chrome.',
+    localTitle:'Primero publicala',local:'La instalación funciona desde tu URL HTTPS de GitHub Pages, no abriendo el HTML con doble clic.',
+    done:'¡Entendido!',close:'Cerrar instrucciones',installed:'¡Aplicación instalada!',notAvailable:'Si todavía no aparece la instalación, usá el menú del navegador.'
+  }
+};
+function refreshInstallUi() {
+  const i = installTranslations[state.language] || installTranslations.en;
+  const installButton = $('installAppButton');
+  installButton.hidden = isInstalledPwa();
+  $('installAppLabel').textContent = i.button;
+  installButton.title = i.buttonTitle;
+  installButton.setAttribute('aria-label',i.buttonTitle);
+  $('installEyebrow').textContent = i.eyebrow;
+  $('installDialogTitle').textContent = i.title;
+  $('installDialogDescription').textContent = i.intro;
+  $('dismissInstallDialog').textContent = i.done;
+  $('closeInstallDialog').setAttribute('aria-label', i.close);
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const hint = location.protocol === 'file:' ? [i.localTitle, i.local] : isIOS ? [i.iphoneTitle, i.iphone] : isAndroid ? [i.androidTitle, i.android] : [i.desktopTitle, i.desktop];
+  const tips = $('installPlatformTips');
+  tips.replaceChildren();
+  const strong = document.createElement('strong'); strong.textContent = hint[0];
+  const paragraph = document.createElement('p'); paragraph.textContent = hint[1];
+  tips.append(strong, paragraph);
+}
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  refreshInstallUi();
+});
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  $('installDialog').close();
+  refreshInstallUi();
+  toast(installTranslations[state.language].installed);
+});
+$('installAppButton').addEventListener('click', async () => {
+  if (deferredInstallPrompt) {
+    const prompt = deferredInstallPrompt;
+    deferredInstallPrompt = null;
+    await prompt.prompt();
+    // Some browsers return the chosen outcome asynchronously.
+    if (prompt.userChoice) await prompt.userChoice;
+  } else {
+    refreshInstallUi();
+    $('installDialog').showModal();
+  }
+});
+$('closeInstallDialog').addEventListener('click', () => $('installDialog').close());
+$('dismissInstallDialog').addEventListener('click', () => $('installDialog').close());
+$('installDialog').addEventListener('click', e => { if (e.target === $('installDialog')) $('installDialog').close(); });
+$('languageSelect').addEventListener('change', refreshInstallUi);
+refreshInstallUi();
+if ('serviceWorker' in navigator && ['https:','http:'].includes(location.protocol)) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' })
+      .catch(error => console.warn('Offline cache could not be enabled:', error));
+  });
+}

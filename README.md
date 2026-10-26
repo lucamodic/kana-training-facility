@@ -89,3 +89,13 @@ The update notice uses the currently selected interface language. New visitors s
 ## Rapid Fire / Ráfaga
 
 Enable **Rapid Fire** from Your Session to set a separate time limit for **each answer** (1–300 seconds, default 10). It works alongside No limit, Timer, and Guess limit, including Word Challenge and voice answers. An unanswered question is counted as incorrect, briefly shows the correct answer, then automatically advances. The guided learning passes are not timed; the 3 memory passes are. Pausing freezes both countdowns. Preferences persist locally; the PWA offline cache was updated.
+
+## Improved Word Challenge voice recognition
+
+- Japanese (`ja-JP`) recognition with up to 10 alternatives per response.
+- All recognized kana and katakana are transliterated to romaji, including contracted sounds, small っ, and long vowels.
+- Accepts common Japanese kanji transcriptions of correctly pronounced words (for instance 血 for *chi*), using a local lookup built from the word bank and a small homophone list.
+- Compatible browsers may receive gentle Japanese vocabulary hints via `SpeechRecognitionPhrase`. This experimental API is silently skipped where unsupported.
+- Unrecognized speech and uncertain mismatches can always be retried without affecting quiz statistics.
+- No server or audio storage has been added. Browser speech recognition may still fail in Brave and may require connectivity; typing remains available. This is a pronunciation-matching aid, not reliable pronunciation scoring.
+- Speech normalization is in `speech-utils.js`, loaded before `app.js`. Update `CACHE_NAME` in `sw.js` for further PWA changes.

@@ -545,13 +545,13 @@ const ES_STATIC = {
 };
 const UI_EN = {
   voiceOptionTitle:'Speak instead of typing', voiceOptionSubtitle:'Tap the microphone and say the Japanese reading.',
-  voiceOnlineNote:'Speech recognition may require internet and send audio to your browser’s speech service. You can always type instead.',
+  voiceOnlineNote:'Japanese speech recognition uses your browser’s service (possibly online). It compares pronunciations, but is not an accent test. Short sounds may be unreliable. You can always type.',
   voiceNotSupported:'Voice recognition is not available in this browser. Typing still works.',
   voiceAnswerTitle:'Say it in Japanese!', voiceMic:'Tap to speak', voiceListening:'Listening…', voiceIdle:'Tap the microphone to start.',
-  voiceHeard:'Heard: {text}', voiceNotMatched:'That did not match automatically. Try again, type instead, or count it as an attempt.',
+  voiceHeard:'Heard: {text}', voiceNotMatched:'Not a confident match. Try speaking again (without a penalty), switch to typing, or count it as a miss.',
   voiceNoSpeech:'No speech detected. Try again.', voiceMicBlocked:'Microphone access was denied. Check your browser permissions, or type instead.',
-  voiceNetwork:'Speech recognition could not connect. Try again online or type instead.', voiceGenericError:'Could not recognize your speech. Try again or type instead.',
-  voiceRetry:'Try again', voiceCountAttempt:'Count as an attempt', voiceTypeInstead:'Type instead',
+  voiceNetwork:'Your browser’s speech service could not connect. Some browsers (including Brave) may not support Japanese speech recognition. Try Chrome or type instead.', voiceGenericError:'Could not recognize your speech. Try again or type instead.',
+  voiceInterpreted:' · Reading: {text}', voiceRetry:'Try again', voiceCountAttempt:'Count as an attempt', voiceTypeInstead:'Type instead',
 
   selectedDesc:'{count} selected · ready to study.', emptySelection:'Pick at least one character to begin.',
   wordReady:'Ready to practice {count} {word} from your selections across all three tabs.',
@@ -593,13 +593,13 @@ const UI_EN = {
 };
 const UI_ES = {
   voiceOptionTitle:'Responder con la voz', voiceOptionSubtitle:'Tocá el micrófono y decí la lectura en japonés.',
-  voiceOnlineNote:'El reconocimiento puede necesitar internet y enviar audio al servicio de voz del navegador. Siempre podés escribir.',
+  voiceOnlineNote:'El reconocimiento en japonés depende del navegador (puede requerir internet). Compara lecturas, no evalúa tu acento. Los sonidos cortos pueden fallar. Siempre podés escribir.',
   voiceNotSupported:'Este navegador no permite reconocer la voz. Podés responder escribiendo.',
   voiceAnswerTitle:'¡Decilo en japonés!', voiceMic:'Tocar para hablar', voiceListening:'Escuchando…', voiceIdle:'Tocá el micrófono para empezar.',
-  voiceHeard:'Escuché: {text}', voiceNotMatched:'No coincidió automáticamente. Podés volver a hablar, escribir o contarlo como intento.',
+  voiceHeard:'Escuché: {text}', voiceNotMatched:'No se reconoció como la lectura esperada. Podés repetirlo sin penalización, escribir o contarlo como error.',
   voiceNoSpeech:'No detecté tu voz. Probá de nuevo.', voiceMicBlocked:'No hay permiso para el micrófono. Revisá los permisos del navegador o escribí.',
-  voiceNetwork:'No se pudo conectar al reconocimiento de voz. Probá con internet o escribí.', voiceGenericError:'No pude reconocer lo que dijiste. Volvé a intentar o escribí.',
-  voiceRetry:'Probar otra vez', voiceCountAttempt:'Contar como intento', voiceTypeInstead:'Escribir respuesta',
+  voiceNetwork:'El servicio de voz del navegador no se pudo conectar. Algunos navegadores (incluido Brave) pueden no admitir japonés. Probá con Chrome o escribí.', voiceGenericError:'No pude reconocer lo que dijiste. Volvé a intentar o escribí.',
+  voiceInterpreted:' · Lectura: {text}', voiceRetry:'Probar otra vez', voiceCountAttempt:'Contar como intento', voiceTypeInstead:'Escribir respuesta',
 
   selectedDesc:'{count} seleccionados · listos para estudiar.', emptySelection:'Elegí al menos un carácter para empezar.',
   wordReady:'Tenés {count} {word} disponibles, usando lo seleccionado en las tres pestañas.',
@@ -1251,37 +1251,11 @@ function refreshVoiceOption() {
   $('voiceOptionSubtitle').textContent = t('voiceOptionSubtitle');
   $('voiceSupportNote').textContent = t(speechAvailable() ? 'voiceOnlineNote' : 'voiceNotSupported');
 }
-// A Japanese speech engine often returns こんにちは or コーヒー rather than
-// Latin romaji. Compare spelling first, then kana pronunciations if possible.
-const speechKanaMap = new Map([...catalog.hiragana,...catalog.katakana].map(item=>[item.kana,item.answer]));
-speechKanaMap.set('っ','');speechKanaMap.set('ッ','');
-function kanaRomanize(input) {
-  const text = String(input).normalize('NFKC').replace(/[。、「」、？！!?.\s]/g,'');
-  let result = '';
-  for (let i=0;i<text.length;) {
-    const char = text[i];
-    if (char === 'ー') { const vowel = result.match(/[aeiou]$/)?.[0]; if (!vowel) return null;result += vowel; i++;continue; }
-    if (char === 'っ' || char === 'ッ') {
-      const next = speechKanaMap.get(text.slice(i+1,i+3)) || speechKanaMap.get(text[i+1]);
-      if (!next) return null;
-      result += next.startsWith('ch') ? 't' : next[0];i++;continue;
-    }
-    const pair = speechKanaMap.get(text.slice(i,i+2));
-    if (pair) { result += pair; i+=2; continue; }
-    const value = speechKanaMap.get(char);
-    if (!value) return null;
-    result += value;i++;
-  }
-  return result;
-}
-function normalizeSpokenJapanese(input) {
-  return String(input).normalize('NFKC').replace(/[\s。、！？!?.，,.「」『』\-]/g,'');
-}
+// Speech utility: recognizes kana, katakana, romanization variants and
+// known kanji transcriptions without requiring a backend or new CDN assets.
+const japaneseSpeech = KTFSpeech.build(catalog, words);
 function matchesSpeech(heard, word) {
-  if (normalizeSpokenJapanese(heard) === normalizeSpokenJapanese(word.kana)) return true;
-  const romaji = kanaRomanize(heard);
-  if (romaji && word.readings.some(reading => normalized(romaji) === normalized(reading))) return true;
-  return word.readings.some(reading => normalized(reading) === normalized(heard));
+  return japaneseSpeech.inspect([{transcript:heard}],word).matched;
 }
 function setVoiceMessage(quiz, key, args={}) {
   quiz.voiceStatusKey=key;
@@ -1292,6 +1266,7 @@ function renderVoiceQuestion(quiz) {
   quiz.voiceVerdict=null;
   quiz.voiceHeard='';
   quiz.voiceTypeInstead=false;
+  quiz.voiceInterpretation='';
   $('voiceAnswer').hidden = !quiz.voiceMode;
   $('typedAnswerFields').hidden=!!quiz.voiceMode;
   $('answerInput').required=!quiz.voiceMode;
@@ -1312,13 +1287,14 @@ function updateVoiceLanguage(quiz) {
   $('voiceUseTranscript').textContent=t('voiceCountAttempt');
   $('voiceTypeInstead').textContent=t('voiceTypeInstead');
   if (quiz.voiceStatusKey) $('voiceStatus').textContent=t(quiz.voiceStatusKey,quiz.voiceStatusArgs || {});
-  if (quiz.voiceHeard) $('voiceTranscript').textContent=t('voiceHeard',{text:quiz.voiceHeard});
+  if (quiz.voiceHeard) $('voiceTranscript').textContent=t('voiceHeard',{text:quiz.voiceHeard}) + (quiz.voiceInterpretation ? t('voiceInterpreted',{text:quiz.voiceInterpretation}) : '');
 }
 function startVoiceListening() {
   const quiz=state.quiz;
   if (!quiz || !quiz.voiceMode || quiz.phase!=='question' || quiz.paused || !speechAvailable()) return;
   stopVoiceRecognition();
   quiz.voiceHeard='';
+  quiz.voiceInterpretation='';
   quiz.voiceVerdict=null;
   $('voiceTranscript').hidden=true;
   $('voiceRetry').hidden=true;
@@ -1328,7 +1304,15 @@ function startVoiceListening() {
   recognition.lang='ja-JP';
   recognition.continuous=false;
   recognition.interimResults=false;
-  recognition.maxAlternatives=5;
+  recognition.maxAlternatives=10;
+  // Experimental contextual biasing: supported only in some Chromium versions.
+  // Ignore safely on other browsers (notably Brave/Chrome Android/Safari).
+  if ('phrases' in recognition && typeof window.SpeechRecognitionPhrase === 'function') {
+    try {
+      recognition.phrases = japaneseSpeech.biasedPhrases(quiz.current,quiz.pool)
+        .map(hint => new window.SpeechRecognitionPhrase(hint.phrase,hint.boost));
+    } catch (_) { /* Unsupported implementation: recognition still works normally. */ }
+  }
   activeVoiceRecognition=recognition;
   const item=quiz.current;
   $('voiceMicButton').classList.add('is-listening');
@@ -1337,14 +1321,21 @@ function startVoiceListening() {
   const isCurrent=()=>state.quiz===quiz && quiz.current===item && quiz.phase==='question' && activeVoiceRecognition===recognition;
   recognition.onresult=(event)=>{
     if (!isCurrent()) return;
-    const results=Array.from(event.results || []).flatMap(row=>Array.from(row || []).map(alt=>alt.transcript).filter(Boolean));
+    const alternatives=[];
+    for (const row of Array.from(event.results || [])) {
+      for (const alt of Array.from(row || [])) {
+        if (alt && alt.transcript) alternatives.push({transcript:alt.transcript,confidence:alt.confidence});
+      }
+    }
     stopVoiceRecognition();
-    const heard=results[0] || '';
-    if (!heard) { setVoiceMessage(quiz,'voiceNoSpeech');return; }
+    const evaluation=japaneseSpeech.inspect(alternatives,item);
+    if (!evaluation.best) { setVoiceMessage(quiz,'voiceNoSpeech');$('voiceRetry').hidden=false;return; }
+    const heard=evaluation.best.transcript;
     quiz.voiceHeard=heard;
+    quiz.voiceInterpretation=evaluation.best.interpretations[0] || '';
     $('voiceTranscript').hidden=false;
-    $('voiceTranscript').textContent=t('voiceHeard',{text:heard});
-    if (results.some(transcript=>matchesSpeech(transcript,item))) {
+    $('voiceTranscript').textContent=t('voiceHeard',{text:heard}) + (quiz.voiceInterpretation ? t('voiceInterpreted',{text:quiz.voiceInterpretation}) : '');
+    if (evaluation.matched) {
       quiz.voiceVerdict=true;
       reveal(false);
     } else {

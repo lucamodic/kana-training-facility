@@ -1,3 +1,14 @@
+## Voice recognition connection test (new)
+
+If Word Challenge returns a **network** speech error, click **Test microphone and speech service** in the exercise, or open `voice-test.html` on your published site. This page checks the microphone and speech recognition **separately** in both Japanese and English, using a minimal Web Speech call with no experimental phrase hints. Speech recognition can depend on a remote browser service; giving microphone permission is not sufficient when that service cannot connect.
+
+- If the microphone test works but speech recognition fails in both languages, the issue is the browser's recognition service/network, not the app's Japanese reading matcher. Try Chrome with privacy/VPN extensions temporarily disabled or another network.
+- If English speech works but Japanese fails, the recognition service may not support Japanese on that browser/environment.
+- If both speech tests work, clear/reload the installed PWA and retry Word Challenge, or send the test status/results when reporting the issue.
+- Brave may expose `webkitSpeechRecognition` but still lack a functioning underlying speech service. The app still supports typing and retrying.
+
+The experimental phrase-biasing feature is **disabled** in Word Challenge to rule out a browser compatibility regression. Multiple kana, romaji and kanji readings remain supported during the *comparison* stage. The diagnostic test does not save audio. Its recognition test may send speech to a browser provider.
+
 # Kana Training Facility
 
 A retro-inspired Japanese study website. Everything runs in your browser, with **no accounts, analytics, external libraries, server, or build tools**.

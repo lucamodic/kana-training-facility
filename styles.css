@@ -1061,3 +1061,8 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
 #quizPanel .rapid-fire-indicator { margin: 14px 16px 4px; text-align: left; }
 #quizPanel .quiz-head { margin-top: 5px; }
 @media(max-width:600px){ #quizPanel .rapid-fire-indicator { margin: 12px 10px 4px; } }
+
+/* Compact network-error diagnostics link within the voice card. */
+.voice-diagnostic-link { display: inline-block; margin: 8px auto 3px; font: 700 12px/1.55 'Courier New', monospace; text-decoration: underline; text-underline-offset: 3px; color: var(--ink); }
+.voice-diagnostic-link[hidden] { display: none !important; }
+.voice-diagnostic-link:focus-visible { outline: 2px solid var(--retro-deep); outline-offset: 4px; }

@@ -550,7 +550,7 @@ const UI_EN = {
   voiceAnswerTitle:'Say it in Japanese!', voiceMic:'Tap to speak', voiceListening:'Listening…', voiceIdle:'Tap the microphone to start.',
   voiceHeard:'Heard: {text}', voiceNotMatched:'Not a confident match. Try speaking again (without a penalty), switch to typing, or count it as a miss.',
   voiceNoSpeech:'No speech detected. Try again.', voiceMicBlocked:'Microphone access was denied. Check your browser permissions, or type instead.',
-  voiceNetwork:'Your browser’s speech service could not connect. Some browsers (including Brave) may not support Japanese speech recognition. Try Chrome or type instead.', voiceGenericError:'Could not recognize your speech. Try again or type instead.',
+  voiceNetwork:'Speech recognition could not connect (network error). Microphone permission alone does not fix this. Test your browser’s speech service, or type instead.', voiceDiagnose:'Test microphone and speech service ↗', voiceGenericError:'Could not recognize your speech. Try again or type instead.',
   voiceInterpreted:' · Reading: {text}', voiceRetry:'Try again', voiceCountAttempt:'Count as an attempt', voiceTypeInstead:'Type instead',
 
   selectedDesc:'{count} selected · ready to study.', emptySelection:'Pick at least one character to begin.',
@@ -598,7 +598,7 @@ const UI_ES = {
   voiceAnswerTitle:'¡Decilo en japonés!', voiceMic:'Tocar para hablar', voiceListening:'Escuchando…', voiceIdle:'Tocá el micrófono para empezar.',
   voiceHeard:'Escuché: {text}', voiceNotMatched:'No se reconoció como la lectura esperada. Podés repetirlo sin penalización, escribir o contarlo como error.',
   voiceNoSpeech:'No detecté tu voz. Probá de nuevo.', voiceMicBlocked:'No hay permiso para el micrófono. Revisá los permisos del navegador o escribí.',
-  voiceNetwork:'El servicio de voz del navegador no se pudo conectar. Algunos navegadores (incluido Brave) pueden no admitir japonés. Probá con Chrome o escribí.', voiceGenericError:'No pude reconocer lo que dijiste. Volvé a intentar o escribí.',
+  voiceNetwork:'No se pudo conectar al servicio de reconocimiento (error network). El permiso del micrófono no alcanza para resolverlo. Probá el diagnóstico o escribí.', voiceDiagnose:'Probar micrófono y reconocimiento ↗', voiceGenericError:'No pude reconocer lo que dijiste. Volvé a intentar o escribí.',
   voiceInterpreted:' · Lectura: {text}', voiceRetry:'Probar otra vez', voiceCountAttempt:'Contar como intento', voiceTypeInstead:'Escribir respuesta',
 
   selectedDesc:'{count} seleccionados · listos para estudiar.', emptySelection:'Elegí al menos un carácter para empezar.',
@@ -1275,6 +1275,7 @@ function renderVoiceQuestion(quiz) {
   $('voiceTranscript').hidden=true;
   $('voiceRetry').hidden=true;
   $('voiceUseTranscript').hidden=true;
+  $('voiceDiagnosticLink').hidden=true;
   $('voiceMicButton').disabled=false;
   $('voiceMicButton').classList.remove('is-listening');
   if (quiz.voiceMode) setVoiceMessage(quiz,'voiceIdle');
@@ -1286,6 +1287,7 @@ function updateVoiceLanguage(quiz) {
   $('voiceRetry').textContent=t('voiceRetry');
   $('voiceUseTranscript').textContent=t('voiceCountAttempt');
   $('voiceTypeInstead').textContent=t('voiceTypeInstead');
+  $('voiceDiagnosticLink').textContent=t('voiceDiagnose');
   if (quiz.voiceStatusKey) $('voiceStatus').textContent=t(quiz.voiceStatusKey,quiz.voiceStatusArgs || {});
   if (quiz.voiceHeard) $('voiceTranscript').textContent=t('voiceHeard',{text:quiz.voiceHeard}) + (quiz.voiceInterpretation ? t('voiceInterpreted',{text:quiz.voiceInterpretation}) : '');
 }
@@ -1299,20 +1301,17 @@ function startVoiceListening() {
   $('voiceTranscript').hidden=true;
   $('voiceRetry').hidden=true;
   $('voiceUseTranscript').hidden=true;
+  $('voiceDiagnosticLink').hidden=true;
   const ctor=window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition=new ctor();
   recognition.lang='ja-JP';
   recognition.continuous=false;
   recognition.interimResults=false;
   recognition.maxAlternatives=10;
-  // Experimental contextual biasing: supported only in some Chromium versions.
-  // Ignore safely on other browsers (notably Brave/Chrome Android/Safari).
-  if ('phrases' in recognition && typeof window.SpeechRecognitionPhrase === 'function') {
-    try {
-      recognition.phrases = japaneseSpeech.biasedPhrases(quiz.current,quiz.pool)
-        .map(hint => new window.SpeechRecognitionPhrase(hint.phrase,hint.boost));
-    } catch (_) { /* Unsupported implementation: recognition still works normally. */ }
-  }
+  // Keep browser speech recognition in its simplest, broadly compatible form.
+  // Experimental SpeechRecognitionPhrase biasing is deliberately disabled:
+  // some browsers expose this API but cannot complete the speech session.
+  // Kana/kanji/romaji alternatives are still compared after transcription.
   activeVoiceRecognition=recognition;
   const item=quiz.current;
   $('voiceMicButton').classList.add('is-listening');
@@ -1348,6 +1347,7 @@ function startVoiceListening() {
     if (!isCurrent()) return;
     stopVoiceRecognition();
     setVoiceMessage(quiz, event.error==='no-speech'?'voiceNoSpeech':(['not-allowed','service-not-allowed'].includes(event.error)?'voiceMicBlocked':event.error==='network'?'voiceNetwork':'voiceGenericError'));
+    $('voiceDiagnosticLink').hidden = event.error !== 'network';
     $('voiceRetry').hidden=false;
   };
   recognition.onend=()=>{

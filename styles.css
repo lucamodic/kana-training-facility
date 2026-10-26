@@ -951,37 +951,6 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
 }
 
 
-/* Optional Japanese speaking practice in Word Challenge (reading only). */
-.voice-option { margin: 16px 0 17px; background: var(--retro-cream); border: 1px dashed var(--retro-deep); border-radius: 7px; padding: 12px; }
-.voice-option[hidden], .voice-answer[hidden], #typedAnswerFields[hidden], #checkButton[hidden], #voiceRetry[hidden], #voiceUseTranscript[hidden], #voiceTranscript[hidden] { display: none !important; }
-.voice-option-switch { display: flex; align-items: center; gap: 11px; cursor: pointer; }
-.voice-option-switch input { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--accent); }
-.voice-option-icon { display: grid;place-items:center;width:38px;height:38px;flex-shrink:0;border-radius:50%;background:var(--retro-main);border:1px solid var(--retro-deep);font-size:20px; }
-.voice-option-switch strong,.voice-option-switch small { display: block;line-height:1.5;color:var(--ink); }
-.voice-option-switch strong { font-size: 13px; }
-.voice-option-switch small { font-size: 11px;color:var(--muted); }
-.voice-option-note { font-size: 11px;line-height:1.65;color:var(--muted);margin:9px 0 0 30px; }
-.voice-answer { text-align:center;padding:16px 12px 13px;margin:0 0 8px;border:1px dashed var(--retro-deep);background:var(--retro-cream);border-radius:8px; }
-.voice-answer-top { display:flex;align-items:center;justify-content:center;gap:11px;color:var(--ink);font:700 13px 'Courier New',monospace;margin-bottom:15px; }
-.voice-sparkle { color:var(--accent);font-size:17px; }
-.voice-mic-button { display:flex; flex-direction:column;align-items:center;justify-content:center;gap:9px;min-width:160px;min-height:115px;margin:0 auto;padding:14px 20px;border:2px solid var(--retro-deep);border-radius:14px;background:var(--retro-main);color:var(--ink);box-shadow:3px 3px 0 var(--retro-shadow);font:700 12px 'Courier New',monospace;cursor:pointer;transition:transform .15s, box-shadow .15s; }
-.voice-mic-button:hover:not(:disabled) { transform:translateY(-2px); }
-.voice-mic-button:focus-visible { outline:3px solid var(--accent);outline-offset:3px; }
-.voice-mic-button.is-listening { animation:voice-glow 1.25s ease-in-out infinite;background:var(--retro-ribbon); }
-.voice-mic-button:disabled { opacity:.55;cursor:not-allowed; }
-.voice-mic-glyph { font-size:38px;line-height:1; }
-.voice-status { min-height:32px;margin:12px auto 7px;max-width:440px;font-size:12px;line-height:1.65;color:var(--muted); }
-.voice-transcript { word-break:break-word;margin:9px auto;color:var(--ink);padding:9px 11px;border:1px solid var(--line);background:var(--paper);border-radius:4px;font-size:12px; }
-.voice-action-row { display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:14px; }
-.voice-action-row .mini-button { min-height:40px; }
-@keyframes voice-glow { 0%,100% {box-shadow:3px 3px 0 var(--retro-shadow)} 50%{box-shadow:0 0 0 7px var(--retro-ribbon),3px 3px 0 var(--retro-shadow)} }
-@media(prefers-reduced-motion:reduce){.voice-mic-button.is-listening{animation:none}}
-@media(max-width:410px){.voice-option-switch{align-items:flex-start}.voice-option-note{margin-left:0}.voice-answer{padding:15px 9px}.voice-action-row .mini-button{flex:1 1 auto}}
-
-.quiz-actions.voice-question { grid-template-columns: 1fr; }
-.quiz-actions.voice-question #skipButton { width:100%; }
-
-
 /* Rapid Fire — independent per-question countdown, all theme colors inherited. */
 .rapid-fire-card {
   margin: 16px 0 6px; border: 1px solid var(--retro-deep); border-radius: 7px;
@@ -1062,7 +1031,7 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
 #quizPanel .quiz-head { margin-top: 5px; }
 @media(max-width:600px){ #quizPanel .rapid-fire-indicator { margin: 12px 10px 4px; } }
 
-/* Compact network-error diagnostics link within the voice card. */
-.voice-diagnostic-link { display: inline-block; margin: 8px auto 3px; font: 700 12px/1.55 'Courier New', monospace; text-decoration: underline; text-underline-offset: 3px; color: var(--ink); }
-.voice-diagnostic-link[hidden] { display: none !important; }
-.voice-diagnostic-link:focus-visible { outline: 2px solid var(--retro-deep); outline-offset: 4px; }
+/* One Pass joins the other study actions without touching existing themes. */
+.one-pass-button { width: 100%; margin-top: 3px; }
+.session-choices > button { min-height: 44px; }
+.session-choices > .choice-explanation { margin-top: 2px; }

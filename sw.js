@@ -1,8 +1,8 @@
 /* Kana Training Facility offline shell, scoped for GitHub Pages subpaths.
    Bump CACHE_NAME on each future release to trigger the update prompt. */
-const CACHE_NAME = 'kana-training-facility-offline-v8-voice-diagnostics';
+const CACHE_NAME = 'kana-training-facility-offline-v10-hiragana-vocabulary';
 const SHELL = [
-  './', './index.html', './voice-test.html', './styles.css', './speech-utils.js', './app.js', './manifest.webmanifest',
+  './', './index.html', './styles.css', './app.js', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

@@ -14,7 +14,6 @@
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
   <link rel="stylesheet" href="./styles.css">
-  <script src="./speech-utils.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
@@ -125,6 +124,7 @@
             <div class="session-choices">
               <button type="button" class="button-secondary" id="learnButton" disabled>Learn my selection →</button><p class="choice-explanation" id="learnHelp">3 guided passes showing the answer, followed by 3 memory-test passes.</p>
               <button type="button" class="button-primary" id="startButton" disabled>Infinite character practice →</button><p class="choice-explanation" id="practiceHelp">Shuffled questions until you decide to finish.</p>
+              <button type="button" class="button-secondary one-pass-button" id="onePassButton" disabled>One Pass · Daily review →</button><p class="choice-explanation" id="onePassHelp">Each selected character from all three tabs appears once, then your results.</p>
             </div>
           </div>
         </aside>
@@ -145,15 +145,7 @@
         <div class="quiz-head" id="quizHead">How do you read this character?</div>
         <div id="kanaDisplay" class="kana-display"><div class="quiz-symbol" id="quizSymbol" aria-live="polite">あ</div><div class="printed-note"><span id="printedLabel">In a regular font</span><span class="printed-kana" id="printedKana" aria-hidden="true">あ</span></div></div>
         <div class="guided-block" id="guidedBlock" hidden><div class="guided-caption" id="guidedCaption">Reading</div><div class="guided-reading" id="guidedReading">a</div><p class="guided-tip" id="guidedTip">Say the reading out loud.</p><button type="button" class="button-primary" id="guidedNext">Got it, next →</button></div>
-        <div class="quiz-bottom" id="answerArea"><form id="answerForm" autocomplete="off"><div id="typedAnswerFields"><label for="answerInput" id="answerLabel">Your answer in romaji</label><input id="answerInput" class="answer-input" type="text" placeholder="e.g. ka, shi, tsu…" autocomplete="off" autocapitalize="off" spellcheck="false" required></div>
-          <div class="voice-answer" id="voiceAnswer" hidden>
-            <div class="voice-answer-top"><span class="voice-sparkle" aria-hidden="true">✦</span><strong id="voiceAnswerTitle">Say it in Japanese!</strong><span class="voice-sparkle" aria-hidden="true">✦</span></div>
-            <button type="button" id="voiceMicButton" class="voice-mic-button"><span class="voice-mic-glyph" aria-hidden="true">🎙</span><span id="voiceMicLabel">Tap to speak</span></button>
-            <p id="voiceStatus" class="voice-status" role="status" aria-live="polite">Tap the microphone to start.</p>
-            <p id="voiceTranscript" class="voice-transcript" hidden></p>
-            <a id="voiceDiagnosticLink" class="voice-diagnostic-link" href="./voice-test.html" target="_blank" rel="noopener" hidden>Test microphone and speech service ↗</a>
-            <div class="voice-action-row"><button type="button" id="voiceRetry" class="mini-button" hidden>Try again</button><button type="button" id="voiceUseTranscript" class="mini-button" hidden>Count as an attempt</button><button type="button" id="voiceTypeInstead" class="mini-button">Type instead</button></div>
-          </div><div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div><div class="quiz-actions"><button type="submit" class="button-primary" id="checkButton">Check ↵</button><button type="button" class="button-secondary" id="skipButton">I don't know</button></div></form></div>
+        <div class="quiz-bottom" id="answerArea"><form id="answerForm" autocomplete="off"><div id="typedAnswerFields"><label for="answerInput" id="answerLabel">Your answer in romaji</label><input id="answerInput" class="answer-input" type="text" placeholder="e.g. ka, shi, tsu…" autocomplete="off" autocapitalize="off" spellcheck="false" required></div><div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div><div class="quiz-actions"><button type="submit" class="button-primary" id="checkButton">Check ↵</button><button type="button" class="button-secondary" id="skipButton">I don't know</button></div></form></div>
       </div>
       <p class="quiz-hint" id="quizHint">Enter to check / continue · Esc to finish</p>
       <button type="button" class="button-secondary end-lesson" id="finishLessonButton">Finish lesson & view results</button>
@@ -195,10 +187,6 @@
       <div class="mixed-words-info" aria-live="polite"><span class="mixed-words-label" id="mixedWordCount">0 mixed-script · 0 using all three scripts</span><span class="mixed-words-examples" id="mixedWordExamples">Select characters from other tabs to unlock mixed-script words.</span></div>
       <label class="small-label" for="wordAnswerMode">What would you like to guess?</label>
       <select class="setting-select" id="wordAnswerMode"><option value="meaning">English meaning</option><option value="reading">Romaji reading</option></select>
-      <div class="voice-option" id="voiceOption" hidden>
-        <label class="voice-option-switch" for="wordVoiceEnabled"><input type="checkbox" id="wordVoiceEnabled"><span class="voice-option-icon" aria-hidden="true">♪</span><span><strong id="voiceOptionTitle">Speak instead of typing</strong><small id="voiceOptionSubtitle">Tap the microphone and say the Japanese reading.</small></span></label>
-        <p class="voice-option-note" id="voiceSupportNote">Speech recognition may need internet. Your browser may send audio to its speech provider.</p>
-      </div>
       <p class="choice-explanation" id="wordsDialogHelp">Only vocabulary using your selected characters will appear. Your current timer setting also applies.</p>
     </div>
     <div class="review-footer words-dialog-footer"><button type="button" class="button-secondary" id="cancelWordsDialog">Cancel</button><button type="button" class="button-primary" id="wordsButton" disabled>Start word practice →</button></div>

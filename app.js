@@ -447,7 +447,546 @@ const mixedWordRows = `
 今日はパンを食べる|kyou wa pan o taberu|eat bread today|comer pan hoy
 この人は先生|kono hito wa sensei|this person is a teacher|esta persona es profesora
 `.trim();
+// More everyday katakana vocabulary: travel, food, clothing, devices, and more.
+// Each entry has its own Spanish meaning; all spellings remain selectable/offline.
+const extraKatakanaRows = `
+アパート|apaato|apartment|departamento
+エアコン|eakon|air conditioner|aire acondicionado
+エレベーター|erebeetaa|elevator|ascensor
+エスカレーター|esukareetaa|escalator|escalera mecánica
+オフィス|ofisu|office|oficina
+コンビニ|konbini|convenience store|tienda de conveniencia
+デパート|depaato|department store|tienda departamental
+ベッド|beddo|bed|cama
+ソファ|sofa|sofa;couch|sofá
+テーブル|teeburu|table|mesa
+チェア|chea|chair|silla
+ドア|doa|door|puerta
+カーテン|kaaten|curtain|cortina
+カーペット|kaapetto|carpet|alfombra
+ライト|raito|light|luz
+ランプ|ranpu|lamp|lámpara
+スイッチ|suicchi|switch|interruptor
+リモコン|rimokon|remote control|control remoto
+シャワー|shawaa|shower|ducha
+トイレ|toire|toilet;restroom|baño
+バスタブ|basutabu|bathtub|bañera
+タオル|taoru|towel|toalla
+シャンプー|shanpuu|shampoo|champú
+ドライヤー|doraiyaa|hair dryer|secador de pelo
+ブラシ|burashi|brush|cepillo
+スリッパ|surippa|slippers|pantuflas
+パジャマ|pajama|pajamas|pijama
+セーター|seetaa|sweater|suéter
+シャツ|shatsu|shirt|camisa
+ティーシャツ|tiishatsu|t-shirt|remera
+ジーンズ|jiinzu|jeans|jeans
+ジャケット|jaketto|jacket|campera
+コート|kooto|coat|abrigo
+スカート|sukaato|skirt|falda
+ドレス|doresu|dress|vestido
+ネクタイ|nekutai|tie;necktie|corbata
+ベルト|beruto|belt|cinturón
+サンダル|sandaru|sandals|sandalias
+ブーツ|buutsu|boots|botas
+スニーカー|suniikaa|sneakers|zapatillas
+バッグ|baggu|bag|bolso
+リュック|ryukku|backpack|mochila
+ポケット|poketto|pocket|bolsillo
+ボタン|botan|button|botón
+ファッション|fasshon|fashion|moda
+ジュース|juusu|juice|jugo
+ミルク|miruku|milk|leche
+チーズ|chiizu|cheese|queso
+バター|bataa|butter|manteca
+ヨーグルト|yooguruto|yogurt;yoghurt|yogur
+サラダ|sarada|salad|ensalada
+サンドイッチ|sandoicchi|sandwich|sándwich
+ハンバーガー|hanbaagaa|hamburger;burger|hamburguesa
+ホットドッグ|hottodoggu|hot dog|pancho
+ピザ|piza|pizza|pizza
+パスタ|pasuta|pasta|pasta
+ステーキ|suteeki|steak|bife
+カレー|karee|curry|curry
+ポテト|poteto|potato|papa
+フライドポテト|furaido poteto|french fries;fries|papas fritas
+チョコレート|chokoreeto|chocolate|chocolate
+クッキー|kukkii|cookie;biscuit|galletita
+ドーナツ|doonatsu|donut;doughnut|dona
+プリン|purin|custard pudding;pudding|flan
+ゼリー|zerii|jelly;gelatin|gelatina
+バナナ|banana|banana|banana
+オレンジ|orenji|orange|naranja
+レモン|remon|lemon|limón
+メロン|meron|melon|melón
+パイナップル|painappuru|pineapple|ananá
+ストロベリー|sutoroberii|strawberry|frutilla
+コーラ|koora|cola|gaseosa cola
+ワイン|wain|wine|vino
+ビール|biiru|beer|cerveza
+カフェ|kafe|cafe;coffee shop|cafetería
+メニュー|menyuu|menu|menú
+フォーク|fooku|fork|tenedor
+ナイフ|naifu|knife|cuchillo
+スプーン|supuun|spoon|cuchara
+グラス|gurasu|drinking glass|vaso
+コップ|koppu|cup;glass|vaso
+プレート|pureeto|plate|plato
+ボウル|bouru|bowl|bol
+ストロー|sutoroo|straw|sorbete
+ペットボトル|pettobotoru|plastic bottle|botella de plástico
+テイクアウト|teikuauto|takeout;takeaway|para llevar
+チケット|chiketto|ticket|entrada
+パスポート|pasupooto|passport|pasaporte
+スーツケース|suutsukeesu|suitcase|valija
+マップ|mappu|map|mapa
+ガイド|gaido|guide|guía
+ガイドブック|gaidobukku|guidebook|guía de viaje
+ツアー|tsuaa|tour|excursión
+ビザ|biza|visa|visa
+プラットフォーム|purattofoomu|platform|plataforma
+バイク|baiku|motorcycle;motorbike|moto
+トラック|torakku|truck|camión
+ヘリコプター|herikoputaa|helicopter|helicóptero
+ボート|booto|boat|bote
+フェリー|ferii|ferry|ferry
+モノレール|monoreeru|monorail|monorriel
+スタジアム|sutajiamu|stadium|estadio
+プール|puuru|swimming pool;pool|pileta
+スポーツ|supootsu|sports|deportes
+サッカー|sakkaa|soccer;football|fútbol
+テニス|tenisu|tennis|tenis
+バスケット|basuketto|basketball|básquet
+バレーボール|bareebooru|volleyball|vóley
+ゴルフ|gorufu|golf|golf
+スキー|sukii|skiing|esquí
+スノーボード|sunooboodo|snowboarding|snowboard
+ランニング|ranningu|running|correr
+ジョギング|jogingu|jogging|trote
+ダンス|dansu|dance|baile
+ギター|gitaa|guitar|guitarra
+ピアノ|piano|piano|piano
+ドラム|doramu|drums|batería
+バイオリン|baiorin|violin|violín
+コンサート|konsaato|concert|concierto
+ライブ|raibu|live concert;live show|recital
+ミュージック|myuujikku|music|música
+ポップ|poppu|pop music|música pop
+ロック|rokku|rock music|música rock
+ジャズ|jazu|jazz|jazz
+パーティー|paatii|party|fiesta
+プレゼント|purezento|present;gift|regalo
+イベント|ibento|event|evento
+フェス|fesu|festival|festival
+コンピューター|konpyuutaa|computer|computadora
+パソコン|pasokon|computer;pc|computadora
+ノートパソコン|nootopasokon|laptop|notebook
+キーボード|kiiboodo|keyboard|teclado
+マウス|mausu|computer mouse;mouse|mouse
+モニター|monitaa|monitor|monitor
+スクリーン|sukuriin|screen|pantalla
+プリンター|purintaa|printer|impresora
+メール|meeru|email|correo electrónico
+インターネット|intaanetto|internet|internet
+ウェブサイト|webusaito|website|sitio web
+ブラウザ|burauza|browser|navegador
+アプリ|apuri|app;application|aplicación
+データ|deeta|data|datos
+ファイル|fairu|file|archivo
+フォルダー|forudaa|folder|carpeta
+パスワード|pasuwaado|password|contraseña
+アカウント|akaunto|account|cuenta
+ログイン|roguin|login|inicio de sesión
+ダウンロード|daunroodo|download|descarga
+アップロード|appuroodo|upload|subida
+オンライン|onrain|online|en línea
+オフライン|ofurain|offline|sin conexión
+ビデオ|bideo|video|video
+コントローラー|kontorooraa|controller|control
+ヘッドホン|heddohon|headphones|auriculares
+イヤホン|iyahon|earbuds;earphones|auriculares
+マイク|maiku|microphone|micrófono
+スピーカー|supiikaa|speaker|parlante
+バッテリー|batterii|battery|batería
+ケーブル|keeburu|cable|cable
+カレンダー|karendaa|calendar|calendario
+ペン|pen|pen|lapicera
+ノート|nooto|notebook|cuaderno
+ボールペン|boorupen|ballpoint pen|birome
+テスト|tesuto|test;exam|examen
+クラス|kurasu|class|clase
+レッスン|ressun|lesson|lección
+アルバイト|arubaito|part-time job|trabajo a tiempo parcial
+プロジェクト|purojekuto|project|proyecto
+ミーティング|miitingu|meeting|reunión
+リスト|risuto|list|lista
+メモ|memo|memo;note|nota
+ニュース|nyuusu|news|noticias
+メッセージ|messeeji|message|mensaje
+プレイヤー|pureiyaa|player|jugador
+レベル|reberu|level|nivel
+キャラクター|kyarakutaa|character|personaje
+アイテム|aitemu|item|objeto
+モンスター|monsutaa|monster|monstruo
+ドラゴン|doragon|dragon|dragón
+クエスト|kuesuto|quest|misión
+ダンジョン|danjon|dungeon|mazmorra
+カード|kaado|card|carta
+パズル|pazuru|puzzle|rompecabezas
+ボーナス|boonasu|bonus|bono
+`.trim();
+// Additional hiragana-only vocabulary, including beginner hiragana spellings of
+// words often written with kanji in everyday Japanese.
+// Japanese | romaji (comma-separated alternatives) | English | Spanish.
+const extraHiraganaRows = `
+あかちゃん|akachan|baby|bebé
+あに|ani|older brother|hermano mayor
+あね|ane|older sister|hermana mayor
+おとうさん|otousan|father;dad|papá;padre
+おかあさん|okaasan|mother;mom|mamá;madre
+おにいさん|oniisan|older brother|hermano mayor
+おねえさん|oneesan|older sister|hermana mayor
+おじいさん|ojiisan|grandfather|abuelo
+おばあさん|obaasan|grandmother|abuela
+おじさん|ojisan|uncle|tío
+おばさん|obasan|aunt|tía
+こども|kodomo|child;children|niño;niña
+むすこ|musuko|son|hijo
+むすめ|musume|daughter|hija
+おとこ|otoko|man|hombre
+おんな|onna|woman|mujer
+ともだち|tomodachi|friend|amigo;amiga
+みんな|minna|everyone;everybody|todos;todas
+だれ|dare|who|quién
+ぼく|boku|I;me|yo
+あなた|anata|you|vos;tú
+かれ|kare|he;him|él
+かのじょ|kanojo|she;her|ella
+うま|uma|horse|caballo
+ぶた|buta|pig|cerdo
+ひつじ|hitsuji|sheep|oveja
+やぎ|yagi|goat|cabra
+さる|saru|monkey|mono
+くま|kuma|bear|oso
+きつね|kitsune|fox|zorro
+たぬき|tanuki|raccoon dog|tanuki
+しか|shika|deer|ciervo
+うさぎ|usagi|rabbit|conejo
+ねずみ|nezumi|mouse;rat|ratón;rata
+とら|tora|tiger|tigre
+へび|hebi|snake|serpiente
+かえる|kaeru|frog|rana
+かめ|kame|turtle|tortuga
+くじら|kujira|whale|ballena
+いるか|iruka|dolphin|delfín
+えび|ebi|shrimp;prawn|camarón;langostino
+かに|kani|crab|cangrejo
+いか|ika|squid|calamar
+くらげ|kurage|jellyfish|medusa
+あり|ari|ant|hormiga
+はち|hachi|bee|abeja
+ちょう|chou|butterfly|mariposa
+とんぼ|tonbo|dragonfly|libélula
+せみ|semi|cicada|cigarra
+かぶとむし|kabutomushi|rhinoceros beetle|escarabajo rinoceronte
+ほたる|hotaru|firefly|luciérnaga
+ごはん|gohan|cooked rice;meal|arroz cocido;comida
+おにぎり|onigiri|rice ball|bola de arroz
+おべんとう|obentou|boxed lunch;bento|vianda;bento
+みそ|miso|miso|miso
+みそしる|misoshiru|miso soup|sopa de miso
+とうふ|toufu|tofu|tofu
+うどん|udon|udon noodles|fideos udon
+そば|soba|buckwheat noodles;soba|fideos soba
+すきやき|sukiyaki|sukiyaki|sukiyaki
+てんぷら|tenpura|tempura|tempura
+さしみ|sashimi|sashimi|sashimi
+さとう|satou|sugar|azúcar
+しょうゆ|shouyu|soy sauce|salsa de soja
+こしょう|koshou|pepper|pimienta
+ぎゅうにゅう|gyuunyuu|milk|leche
+みかん|mikan|mandarin orange;tangerine|mandarina
+いちご|ichigo|strawberry|frutilla;fresa
+ぶどう|budou|grapes|uvas
+なし|nashi|pear|pera
+かき|kaki|persimmon|caqui
+すいか|suika|watermelon|sandía
+やさい|yasai|vegetables|verduras
+くだもの|kudamono|fruit|fruta
+にんじん|ninjin|carrot|zanahoria
+だいこん|daikon|daikon radish|rábano daikon
+きゅうり|kyuuri|cucumber|pepino
+たまねぎ|tamanegi|onion|cebolla
+なす|nasu|eggplant|berenjena
+じゃがいも|jagaimo|potato|papa;patata
+きのこ|kinoko|mushroom|hongo;champiñón
+もち|mochi|mochi;rice cake|mochi;pastel de arroz
+あめ|ame|candy;sweet|caramelo;golosina
+たべもの|tabemono|food|comida
+のみもの|nomimono|drink;beverage|bebida
+たいよう|taiyou|sun|sol
+ひかり|hikari|light|luz
+かげ|kage|shadow|sombra
+かみなり|kaminari|thunder|trueno
+いなずま|inazuma|lightning|relámpago
+ゆきだるま|yukidaruma|snowman|muñeco de nieve
+こおり|koori|ice|hielo
+きり|kiri|fog;mist|niebla
+にじ|niji|rainbow|arcoíris
+たいふう|taifuu|typhoon|tifón
+じしん|jishin|earthquake|terremoto
+もり|mori|forest|bosque
+はやし|hayashi|grove;woods|arboleda;bosquecillo
+いけ|ike|pond|estanque
+みずうみ|mizuumi|lake|lago
+たき|taki|waterfall|cascada
+たに|tani|valley|valle
+すなはま|sunahama|sandy beach|playa de arena
+うみべ|umibe|seaside;seashore|costa;orilla del mar
+さばく|sabaku|desert|desierto
+くさ|kusa|grass|pasto;hierba
+はっぱ|happa|leaf|hoja
+えだ|eda|branch|rama
+たね|tane|seed|semilla
+つぼみ|tsubomi|flower bud|capullo floral
+ばら|bara|rose|rosa
+ひまわり|himawari|sunflower|girasol
+さくらんぼ|sakuranbo|cherry|cereza
+どんぐり|donguri|acorn|bellota
+まど|mado|window|ventana
+とびら|tobira|door|puerta
+かぎ|kagi|key;lock|llave;cerradura
+かべ|kabe|wall|pared
+やね|yane|roof|techo
+ゆか|yuka|floor|suelo;piso
+たたみ|tatami|tatami mat|tatami
+ふとん|futon|futon;bedding|futón;colchón japonés
+まくら|makura|pillow|almohada
+もうふ|moufu|blanket|manta;frazada
+いす|isu|chair|silla
+かがみ|kagami|mirror|espejo
+でんき|denki|electricity;electric light|electricidad;luz eléctrica
+せんたく|sentaku|laundry;washing clothes|lavado de ropa
+せっけん|sekken|soap|jabón
+ほうき|houki|broom|escoba
+ぞうきん|zoukin|cleaning cloth;rag|trapo de limpieza
+さら|sara|plate;dish|plato
+はし|hashi|chopsticks;bridge|palillos;puente
+ちゃわん|chawan|rice bowl|cuenco para arroz
+なべ|nabe|pot;cooking pot|olla
+やかん|yakan|kettle|pava;hervidor
+ふく|fuku|clothes|ropa
+ぼうし|boushi|hat;cap|sombrero;gorra
+くつした|kutsushita|socks|medias;calcetines
+かばん|kaban|bag|bolso;mochila
+さいふ|saifu|wallet|billetera
+えんぴつ|enpitsu|pencil|lápiz
+けしごむ|keshigomu|eraser|goma de borrar
+ほんだな|hondana|bookshelf|biblioteca;estantería
+きょう|kyou|today|hoy
+あした|ashita|tomorrow|mañana
+きのう|kinou|yesterday|ayer
+あさ|asa|morning|mañana
+ゆうがた|yuugata|evening;late afternoon|atardecer;última hora de la tarde
+よなか|yonaka|midnight;middle of the night|medianoche
+まいにち|mainichi|every day|todos los días
+まいあさ|maiasa|every morning|todas las mañanas
+まいばん|maiban|every night|todas las noches
+こんや|konya|tonight|esta noche
+いま|ima|now|ahora
+さっき|sakki|a moment ago;just now|hace un momento
+あと|ato|later;after|después;más tarde
+まえ|mae|before;in front|antes;delante
+ひだり|hidari|left|izquierda
+みぎ|migi|right|derecha
+まっすぐ|massugu|straight ahead|derecho;recto
+となり|tonari|next to;beside|al lado
+ちかく|chikaku|nearby;vicinity|cerca;alrededores
+とおく|tooku|far away|lejos
+こうえん|kouen|park|parque
+がっこう|gakkou|school|escuela
+びょういん|byouin|hospital|hospital
+としょかん|toshokan|library|biblioteca
+ゆうびんきょく|yuubinkyoku|post office|correo;oficina de correos
+ぎんこう|ginkou|bank|banco
+きっさてん|kissaten|coffee shop;cafe|cafetería
+りょかん|ryokan|Japanese inn|posada japonesa;ryokan
+おてら|otera|Buddhist temple|templo budista
+じんじゃ|jinja|Shinto shrine|santuario sintoísta
+いりぐち|iriguchi|entrance|entrada
+でぐち|deguchi|exit|salida
+かいだん|kaidan|stairs|escaleras
+こうさてん|kousaten|intersection|intersección;cruce
+くうこう|kuukou|airport|aeropuerto
+ちかてつ|chikatetsu|subway;metro|subte;metro
+でんしゃ|densha|train|tren
+たべる|taberu|eat|comer
+のむ|nomu|drink|beber;tomar
+みる|miru|see;watch|ver;mirar
+よむ|yomu|read|leer
+かく|kaku|write;draw|escribir;dibujar
+はなす|hanasu|speak;talk|hablar
+いう|iu|say|decir
+いく|iku|go|ir
+くる|kuru|come|venir
+ねる|neru|sleep;go to bed|dormir;acostarse
+おきる|okiru|wake up;get up|despertarse;levantarse
+はたらく|hataraku|work|trabajar
+あそぶ|asobu|play;have fun|jugar;divertirse
+あるく|aruku|walk|caminar
+はしる|hashiru|run|correr
+およぐ|oyogu|swim|nadar
+うたう|utau|sing|cantar
+おどる|odoru|dance|bailar
+わらう|warau|laugh;smile|reír;sonreír
+なく|naku|cry|llorar
+まつ|matsu|wait|esperar
+つかう|tsukau|use|usar
+つくる|tsukuru|make;create|hacer;crear
+あける|akeru|open|abrir
+しめる|shimeru|close|cerrar
+はいる|hairu|enter;go in|entrar
+でる|deru|go out;leave|salir
+あらう|arau|wash|lavar
+そうじする|souji suru,soujisuru|clean|limpiar
+べんきょうする|benkyou suru,benkyousuru|study|estudiar
+やすむ|yasumu|rest;take a break|descansar
+すわる|suwaru|sit|sentarse
+たつ|tatsu|stand up|pararse;levantarse
+しる|shiru|know|saber;conocer
+かんがえる|kangaeru|think;consider|pensar;considerar
+おぼえる|oboeru|memorize;remember|memorizar;recordar
+わすれる|wasureru|forget|olvidar
+さがす|sagasu|search for;look for|buscar
+みつける|mitsukeru|find;discover|encontrar;descubrir
+なくす|nakusu|lose;misplace|perder;extraviar
+もつ|motsu|hold;carry|sostener;llevar
+かう|kau|buy|comprar
+うる|uru|sell|vender
+はらう|harau|pay|pagar
+まがる|magaru|turn|doblar;girar
+とまる|tomaru|stop|parar;detenerse
+のる|noru|ride;get on|subir;viajar en
+おりる|oriru|get off;descend|bajarse;descender
+つける|tsukeru|turn on;attach|encender;colocar
+けす|kesu|turn off;erase|apagar;borrar
+おおきい|ookii|big;large|grande
+ちいさい|chiisai|small;little|pequeño;chico
+あたらしい|atarashii|new|nuevo
+ふるい|furui|old|viejo;antiguo
+たかい|takai|tall;expensive|alto;caro
+やすい|yasui|cheap;inexpensive|barato;económico
+はやい|hayai|fast;early|rápido;temprano
+おそい|osoi|slow;late|lento;tarde
+あつい|atsui|hot;warm weather|caluroso;hace calor
+さむい|samui|cold weather|frío;hace frío
+つめたい|tsumetai|cold to touch|frío al tacto
+あたたかい|atatakai|warm|cálido;tibio
+すずしい|suzushii|cool weather|fresco
+あかるい|akarui|bright;cheerful|luminoso;alegre
+くらい|kurai|dark;gloomy|oscuro;sombrío
+おもしろい|omoshiroi|interesting;funny|interesante;gracioso
+つまらない|tsumaranai|boring|aburrido
+むずかしい|muzukashii|difficult;hard|difícil
+やさしい|yasashii|kind;easy|amable;fácil
+かわいい|kawaii|cute;adorable|tierno;lindo
+かっこいい|kakkoii|cool;stylish|genial;con estilo
+おいしい|oishii|delicious;tasty|rico;delicioso
+まずい|mazui|bad tasting;unappetizing|feo de sabor;desagradable
+あまい|amai|sweet|dulce
+からい|karai|spicy;hot|picante
+にがい|nigai|bitter|amargo
+すっぱい|suppai|sour|ácido;agrio
+しょっぱい|shoppai|salty|salado
+たのしい|tanoshii|fun;enjoyable|divertido
+かなしい|kanashii|sad|triste
+うれしい|ureshii|happy;glad|feliz;contento
+こわい|kowai|scary;frightening|aterrador;da miedo
+ねむい|nemui|sleepy|con sueño
+いそがしい|isogashii|busy|ocupado
+ひま|hima|free time;not busy|tiempo libre;desocupado
+げんき|genki|energetic;well|con energía;bien de salud
+しずか|shizuka|quiet|silencioso;tranquilo
+にぎやか|nigiyaka|lively;bustling|animado;bullicioso
+きれい|kirei|beautiful;clean|hermoso;limpio
+きたない|kitanai|dirty|sucio
+つよい|tsuyoi|strong|fuerte
+よわい|yowai|weak|débil
+おもい|omoi|heavy|pesado
+かるい|karui|light;not heavy|liviano;ligero
+ながい|nagai|long|largo
+みじかい|mijikai|short;brief|corto;breve
+ひろい|hiroi|wide;spacious|amplio;espacioso
+せまい|semai|narrow;cramped|estrecho;angosto
+すみません|sumimasen|excuse me;sorry|disculpá;perdón
+ごめんなさい|gomennasai|sorry;I am sorry|perdón;lo siento
+おねがいします|onegaishimasu|please|por favor
+はい|hai|yes|sí
+いいえ|iie|no|no
+どうも|doumo|thanks;thank you|gracias
+どうぞ|douzo|please;go ahead|por favor;adelante
+いただきます|itadakimasu|said before eating|expresión antes de comer
+ごちそうさま|gochisousama|thanks for the meal|gracias por la comida
+おかえり|okaeri|welcome home|bienvenido a casa
+ただいま|tadaima|I am home|ya llegué;estoy en casa
+いってきます|ittekimasu|I am leaving;see you later|ya me voy;hasta luego
+いってらっしゃい|itterasshai|take care;see you|que te vaya bien;nos vemos
+はじめまして|hajimemashite|nice to meet you|mucho gusto
+おつかれさま|otsukaresama|good work;thanks for your hard work|buen trabajo;gracias por tu esfuerzo
+わかりました|wakarimashita|understood;I understand|entendido;entendí
+わかりません|wakarimasen|I do not understand|no entiendo
+だいじょうぶ|daijoubu|okay;all right|está bien;no pasa nada
+もちろん|mochiron|of course|por supuesto
+たすけて|tasukete|help me|ayudame
+ちょっと|chotto|a little;a moment|un poco;un momento
+もういちど|mou ichido,mouichido|one more time;again|una vez más;de nuevo
+ゆっくり|yukkuri|slowly;take your time|despacio;con calma
+いくら|ikura|how much|cuánto cuesta
+どこ|doko|where|dónde
+いつ|itsu|when|cuándo
+なに|nani|what|qué
+どうして|doushite|why|por qué
+どうやって|dou yatte,douyatte|how;in what way|cómo;de qué manera
+これ|kore|this|esto
+それ|sore|that|eso
+あれ|are|that over there|aquello
+こちら|kochira|this way;here|por aquí;aquí
+どちら|dochira|which way;which one|por dónde;cuál
+ひらがな|hiragana|hiragana|hiragana
+かたかな|katakana|katakana|katakana
+かんじ|kanji|kanji;Chinese character|kanji;carácter chino
+もじ|moji|character;letter|carácter;letra
+ことば|kotoba|word;language|palabra;idioma
+いみ|imi|meaning|significado
+れんしゅう|renshuu|practice;training|práctica;entrenamiento
+べんきょう|benkyou|study|estudio
+しつもん|shitsumon|question|pregunta
+こたえ|kotae|answer|respuesta
+はつおん|hatsuon|pronunciation|pronunciación
+あいさつ|aisatsu|greeting|saludo
+じしょ|jisho|dictionary|diccionario
+きょうかしょ|kyoukasho|textbook|libro de texto
+きょうしつ|kyoushitsu|classroom|aula
+せいと|seito|pupil;student|alumno;estudiante
+だいがく|daigaku|university|universidad
+しゅくだい|shukudai|homework|tarea;deberes
+しけん|shiken|exam;test|examen;prueba
+ただしい|tadashii|correct;right|correcto
+まちがい|machigai|mistake;error|error;equivocación
+`.trim();
+const extraHiraganaWords = extraHiraganaRows.split('\n').map((line, i) => {
+  const [kana, readings, meanings, meaningsEs] = line.split('|');
+  return { id: `word:hiragana:${i}`, kana, answer: meanings.split(';')[0],
+    meanings: meanings.split(';'), meaningsEs: meaningsEs.split(';'), readings: readings.split(','), kind: 'word' };
+});
+const extraKatakanaWords = extraKatakanaRows.split('\n').map((line, i) => {
+  const [kana, readings, meanings, meaningsEs] = line.split('|');
+  return { id: `word:katakana:${i}`, kana, answer: meanings.split(';')[0],
+    meanings: meanings.split(';'), meaningsEs: meaningsEs.split(';'), readings: readings.split(','), kind: 'word' };
+});
 const words = [
+  ...extraHiraganaWords,
+  ...extraKatakanaWords,
   ...wordRows.split('\n').map((line, i) => {
     const [kana, readings, meanings] = line.split('|');
     return { id: `word:${i}`, kana, answer: meanings.split(';')[0], meanings: meanings.split(';'), readings: readings.split(','), kind: 'word' };
@@ -496,6 +1035,8 @@ const ES_STATIC = {
   'Learn my selection →':'Aprender mi selección →',
   '3 guided passes showing the answer, followed by 3 memory-test passes.':'3 vueltas guiadas con las respuestas y 3 vueltas para practicar de memoria.',
   'Infinite character practice →':'Práctica infinita de caracteres →',
+  'One Pass · Daily review →':'Una pasada · Repaso diario →',
+  'Each selected character from all three tabs appears once, then your results.':'Cada carácter marcado de las tres pestañas aparece una sola vez. Después ves los resultados.',
   'Shuffled questions until you decide to finish.':'Preguntas mezcladas hasta que decidas terminar.',
   '← Finish lesson':'← Terminar lección', 'Pause':'Pausar',
   'Answered':'Respondidas', 'Correct':'Correctas', 'Accuracy':'Precisión',
@@ -544,15 +1085,8 @@ const ES_STATIC = {
   'Replace the current selection with up to 10 random visible characters':'Reemplazar la selección por hasta 10 caracteres visibles al azar',
 };
 const UI_EN = {
-  voiceOptionTitle:'Speak instead of typing', voiceOptionSubtitle:'Tap the microphone and say the Japanese reading.',
-  voiceOnlineNote:'Japanese speech recognition uses your browser’s service (possibly online). It compares pronunciations, but is not an accent test. Short sounds may be unreliable. You can always type.',
-  voiceNotSupported:'Voice recognition is not available in this browser. Typing still works.',
-  voiceAnswerTitle:'Say it in Japanese!', voiceMic:'Tap to speak', voiceListening:'Listening…', voiceIdle:'Tap the microphone to start.',
-  voiceHeard:'Heard: {text}', voiceNotMatched:'Not a confident match. Try speaking again (without a penalty), switch to typing, or count it as a miss.',
-  voiceNoSpeech:'No speech detected. Try again.', voiceMicBlocked:'Microphone access was denied. Check your browser permissions, or type instead.',
-  voiceNetwork:'Speech recognition could not connect (network error). Microphone permission alone does not fix this. Test your browser’s speech service, or type instead.', voiceDiagnose:'Test microphone and speech service ↗', voiceGenericError:'Could not recognize your speech. Try again or type instead.',
-  voiceInterpreted:' · Reading: {text}', voiceRetry:'Try again', voiceCountAttempt:'Count as an attempt', voiceTypeInstead:'Type instead',
 
+  dailyHelp:'One shuffled pass through {count} selected characters across all three tabs.', dailyTitle:'One Pass', dailyProgress:'One Pass · {item} of {total}', dailyFinished:'Daily review complete!', dailySummaryHelp:'One attempt per selected character, across Hiragana, Katakana and Kanji.', dailySummaryProgress:'Reviewed {done} of {total} selected characters{timing}.',
   selectedDesc:'{count} selected · ready to study.', emptySelection:'Pick at least one character to begin.',
   wordReady:'Ready to practice {count} {word} from your selections across all three tabs.',
   wordLocked:'No words unlocked yet. Select characters from any tab to unlock words, including mixed-script words.',
@@ -592,14 +1126,7 @@ const UI_EN = {
   itemSingular:'item',itemPlural:'items',attemptSingular:'attempt',attemptPlural:'attempts',mistakeSingular:'mistake',mistakePlural:'mistakes',
 };
 const UI_ES = {
-  voiceOptionTitle:'Responder con la voz', voiceOptionSubtitle:'Tocá el micrófono y decí la lectura en japonés.',
-  voiceOnlineNote:'El reconocimiento en japonés depende del navegador (puede requerir internet). Compara lecturas, no evalúa tu acento. Los sonidos cortos pueden fallar. Siempre podés escribir.',
-  voiceNotSupported:'Este navegador no permite reconocer la voz. Podés responder escribiendo.',
-  voiceAnswerTitle:'¡Decilo en japonés!', voiceMic:'Tocar para hablar', voiceListening:'Escuchando…', voiceIdle:'Tocá el micrófono para empezar.',
-  voiceHeard:'Escuché: {text}', voiceNotMatched:'No se reconoció como la lectura esperada. Podés repetirlo sin penalización, escribir o contarlo como error.',
-  voiceNoSpeech:'No detecté tu voz. Probá de nuevo.', voiceMicBlocked:'No hay permiso para el micrófono. Revisá los permisos del navegador o escribí.',
-  voiceNetwork:'No se pudo conectar al servicio de reconocimiento (error network). El permiso del micrófono no alcanza para resolverlo. Probá el diagnóstico o escribí.', voiceDiagnose:'Probar micrófono y reconocimiento ↗', voiceGenericError:'No pude reconocer lo que dijiste. Volvé a intentar o escribí.',
-  voiceInterpreted:' · Lectura: {text}', voiceRetry:'Probar otra vez', voiceCountAttempt:'Contar como intento', voiceTypeInstead:'Escribir respuesta',
+  dailyHelp:'Una vuelta mezclada por {count} caracteres marcados en las tres pestañas.', dailyTitle:'Una pasada', dailyProgress:'Una pasada · {item} de {total}', dailyFinished:'¡Repaso diario completado!', dailySummaryHelp:'Un intento por cada carácter marcado, de Hiragana, Katakana y Kanji.', dailySummaryProgress:'Repasaste {done} de {total} caracteres seleccionados{timing}.',
 
   selectedDesc:'{count} seleccionados · listos para estudiar.', emptySelection:'Elegí al menos un carácter para empezar.',
   wordReady:'Tenés {count} {word} disponibles, usando lo seleccionado en las tres pestañas.',
@@ -919,7 +1446,7 @@ const STATIC_SELECTOR = [
   '#wordsLaunchText','#dragHint','#randomTen','#selectedUnit','.side-label','.timer-card-title',
   '#rapidFireTitle','#rapidFireSubtitle','#rapidFireSecondsLabel','#rapidFireSecondsUnit','#rapidFireHelp','#rapidFireError',
   '#printedLabel','#checkButton','#skipButton','#guidedCaption','#finishLessonButton',
-  '#timerSetting option','.time-caption','#customTimerError','#guessLimitError','#countdownHelp','#learnButton','#learnHelp','#startButton','#practiceHelp',
+  '#timerSetting option','.time-caption','#customTimerError','#guessLimitError','#countdownHelp','#learnButton','#learnHelp','#startButton','#practiceHelp','#onePassButton','#onePassHelp',
   '.stat-answered','.stat-correct','.stat-accuracy','#finishLessonButton','#summaryTitle','#hardestHeading','#hardestHelp',
   '#backToSelection','#reviewMistakesButton','#footerText','#wordsDialog .eyebrow','#wordsDialogTitle','#wordsUnlockedUnit',
   '#wordsDialog .small-label','#wordAnswerMode option','#wordsDialogHelp','#cancelWordsDialog','#wordsButton',
@@ -962,7 +1489,6 @@ function changeLanguage(language, persist=true) {
   if (state.quiz) updateRapidFireDisplay(state.quiz);
   render();
   if (state.quiz) refreshQuizLanguage();
-  refreshVoiceOption();
   if (state.lastSummary && !$('summaryScreen').hidden) renderSummary(state.lastSummary);
   if (persist) {
     state.languagePreference = 'manual';
@@ -978,7 +1504,7 @@ const SCRIPTS = ['hiragana', 'katakana', 'kanji'];
 const $ = id => document.getElementById(id);
 const state = {
   script: 'hiragana', selected: { hiragana: new Set(), katakana: new Set(), kanji: new Set() },
-  theme: 'pastel', timerSetting: 'off', customHours: 0, customMinutes: 5, guessLimit: 200, rapidFireEnabled: false, rapidFireSeconds: 10, wordAnswerMode: 'meaning', wordVoiceEnabled: false,
+  theme: 'pastel', timerSetting: 'off', customHours: 0, customMinutes: 5, guessLimit: 200, rapidFireEnabled: false, rapidFireSeconds: 10, wordAnswerMode: 'meaning',
   language: detectBrowserLanguage(), languagePreference: 'auto', showElapsedClock: true,
   storageOk: true, quiz: null, lastSummary: null, reviewSelection: new Set()
 };
@@ -1012,7 +1538,7 @@ function setThemeMenu(open) {
 function payload() {
   return { version: 3, script: state.script, theme: state.theme, timerSetting: state.timerSetting,
     customHours: state.customHours, customMinutes: state.customMinutes, guessLimit: state.guessLimit, rapidFireEnabled: state.rapidFireEnabled, rapidFireSeconds: state.rapidFireSeconds, language: state.language, languagePreference: state.languagePreference, showElapsedClock: state.showElapsedClock,
-    wordAnswerMode: state.wordAnswerMode, wordVoiceEnabled: state.wordVoiceEnabled, selected: Object.fromEntries(SCRIPTS.map(script => [script, [...state.selected[script]]])) };
+    wordAnswerMode: state.wordAnswerMode, selected: Object.fromEntries(SCRIPTS.map(script => [script, [...state.selected[script]]])) };
 }
 function applySavedData(data) {
   if (!data || typeof data !== 'object' || !data.selected || typeof data.selected !== 'object') throw Error('Invalid settings');
@@ -1053,7 +1579,6 @@ function applySavedData(data) {
   state.rapidFireEnabled = data.rapidFireEnabled === true;
   state.rapidFireSeconds = Number.isSafeInteger(Number(data.rapidFireSeconds)) && Number(data.rapidFireSeconds) >= 1 && Number(data.rapidFireSeconds) <= 300 ? Number(data.rapidFireSeconds) : 10;
   state.wordAnswerMode = ['meaning','reading'].includes(data.wordAnswerMode) ? data.wordAnswerMode : 'meaning';
-  state.wordVoiceEnabled = data.wordVoiceEnabled === true;
   // Preserve a previously chosen language when migrating older saves.
   // New visitors use the device's preferred language until they choose manually.
   state.languagePreference = data.languagePreference === 'auto' ? 'auto' : 'manual';
@@ -1070,8 +1595,6 @@ function applySavedData(data) {
   updateRapidFireSettings();
   updateCustomTimerVisibility();
   $('wordAnswerMode').value = state.wordAnswerMode;
-  $('wordVoiceEnabled').checked = state.wordVoiceEnabled;
-  refreshVoiceOption();
 }
 function updateCustomTimerVisibility() {
   $('customTimerFields').hidden = state.timerSetting !== 'custom';
@@ -1183,6 +1706,9 @@ function render() {
   $('selectedDescription').textContent = selected.size ? t('selectedDesc',{count:selected.size}) : t('emptySelection');
   $('learnButton').disabled = !selected.size;
   $('startButton').disabled = !selected.size;
+  const allSelectedCount = SCRIPTS.reduce((total, s) => total + state.selected[s].size, 0);
+  $('onePassButton').disabled = allSelectedCount === 0;
+  $('onePassHelp').textContent = t('dailyHelp', {count:allSelectedCount});
   const unlocked = eligibleWords();
   $('wordsButton').disabled = !unlocked.length;
   $('wordAvailableCount').textContent = unlocked.length;
@@ -1233,156 +1759,6 @@ function updateSelection(characters, mode) {
   save(); render();
 }
 
-// Word Challenge optional speaking mode. Recognition runs in Japanese even when
-// the interface is English or Spanish. No audio is stored by this application.
-const speechAvailable = () => !!(window.SpeechRecognition || window.webkitSpeechRecognition) && window.isSecureContext !== false;
-let activeVoiceRecognition = null;
-function stopVoiceRecognition() {
-  const recognition = activeVoiceRecognition;
-  activeVoiceRecognition = null;
-  if (recognition) { try { recognition.abort(); } catch (_) {} }
-  $('voiceMicButton').classList.remove('is-listening');
-}
-function refreshVoiceOption() {
-  $('voiceOption').hidden = $('wordAnswerMode').value !== 'reading';
-  $('wordVoiceEnabled').disabled = !speechAvailable();
-  $('wordVoiceEnabled').checked = state.wordVoiceEnabled && speechAvailable();
-  $('voiceOptionTitle').textContent = t('voiceOptionTitle');
-  $('voiceOptionSubtitle').textContent = t('voiceOptionSubtitle');
-  $('voiceSupportNote').textContent = t(speechAvailable() ? 'voiceOnlineNote' : 'voiceNotSupported');
-}
-// Speech utility: recognizes kana, katakana, romanization variants and
-// known kanji transcriptions without requiring a backend or new CDN assets.
-const japaneseSpeech = KTFSpeech.build(catalog, words);
-function matchesSpeech(heard, word) {
-  return japaneseSpeech.inspect([{transcript:heard}],word).matched;
-}
-function setVoiceMessage(quiz, key, args={}) {
-  quiz.voiceStatusKey=key;
-  quiz.voiceStatusArgs=args;
-  $('voiceStatus').textContent=t(key,args);
-}
-function renderVoiceQuestion(quiz) {
-  quiz.voiceVerdict=null;
-  quiz.voiceHeard='';
-  quiz.voiceTypeInstead=false;
-  quiz.voiceInterpretation='';
-  $('voiceAnswer').hidden = !quiz.voiceMode;
-  $('typedAnswerFields').hidden=!!quiz.voiceMode;
-  $('answerInput').required=!quiz.voiceMode;
-  $('checkButton').hidden=!!quiz.voiceMode;
-  $('answerForm').querySelector('.quiz-actions').classList.toggle('voice-question',!!quiz.voiceMode);
-  $('voiceTranscript').hidden=true;
-  $('voiceRetry').hidden=true;
-  $('voiceUseTranscript').hidden=true;
-  $('voiceDiagnosticLink').hidden=true;
-  $('voiceMicButton').disabled=false;
-  $('voiceMicButton').classList.remove('is-listening');
-  if (quiz.voiceMode) setVoiceMessage(quiz,'voiceIdle');
-  updateVoiceLanguage(quiz);
-}
-function updateVoiceLanguage(quiz) {
-  $('voiceAnswerTitle').textContent=t('voiceAnswerTitle');
-  $('voiceMicLabel').textContent=t(activeVoiceRecognition ? 'voiceListening' : 'voiceMic');
-  $('voiceRetry').textContent=t('voiceRetry');
-  $('voiceUseTranscript').textContent=t('voiceCountAttempt');
-  $('voiceTypeInstead').textContent=t('voiceTypeInstead');
-  $('voiceDiagnosticLink').textContent=t('voiceDiagnose');
-  if (quiz.voiceStatusKey) $('voiceStatus').textContent=t(quiz.voiceStatusKey,quiz.voiceStatusArgs || {});
-  if (quiz.voiceHeard) $('voiceTranscript').textContent=t('voiceHeard',{text:quiz.voiceHeard}) + (quiz.voiceInterpretation ? t('voiceInterpreted',{text:quiz.voiceInterpretation}) : '');
-}
-function startVoiceListening() {
-  const quiz=state.quiz;
-  if (!quiz || !quiz.voiceMode || quiz.phase!=='question' || quiz.paused || !speechAvailable()) return;
-  stopVoiceRecognition();
-  quiz.voiceHeard='';
-  quiz.voiceInterpretation='';
-  quiz.voiceVerdict=null;
-  $('voiceTranscript').hidden=true;
-  $('voiceRetry').hidden=true;
-  $('voiceUseTranscript').hidden=true;
-  $('voiceDiagnosticLink').hidden=true;
-  const ctor=window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition=new ctor();
-  recognition.lang='ja-JP';
-  recognition.continuous=false;
-  recognition.interimResults=false;
-  recognition.maxAlternatives=10;
-  // Keep browser speech recognition in its simplest, broadly compatible form.
-  // Experimental SpeechRecognitionPhrase biasing is deliberately disabled:
-  // some browsers expose this API but cannot complete the speech session.
-  // Kana/kanji/romaji alternatives are still compared after transcription.
-  activeVoiceRecognition=recognition;
-  const item=quiz.current;
-  $('voiceMicButton').classList.add('is-listening');
-  $('voiceMicLabel').textContent=t('voiceListening');
-  setVoiceMessage(quiz,'voiceListening');
-  const isCurrent=()=>state.quiz===quiz && quiz.current===item && quiz.phase==='question' && activeVoiceRecognition===recognition;
-  recognition.onresult=(event)=>{
-    if (!isCurrent()) return;
-    const alternatives=[];
-    for (const row of Array.from(event.results || [])) {
-      for (const alt of Array.from(row || [])) {
-        if (alt && alt.transcript) alternatives.push({transcript:alt.transcript,confidence:alt.confidence});
-      }
-    }
-    stopVoiceRecognition();
-    const evaluation=japaneseSpeech.inspect(alternatives,item);
-    if (!evaluation.best) { setVoiceMessage(quiz,'voiceNoSpeech');$('voiceRetry').hidden=false;return; }
-    const heard=evaluation.best.transcript;
-    quiz.voiceHeard=heard;
-    quiz.voiceInterpretation=evaluation.best.interpretations[0] || '';
-    $('voiceTranscript').hidden=false;
-    $('voiceTranscript').textContent=t('voiceHeard',{text:heard}) + (quiz.voiceInterpretation ? t('voiceInterpreted',{text:quiz.voiceInterpretation}) : '');
-    if (evaluation.matched) {
-      quiz.voiceVerdict=true;
-      reveal(false);
-    } else {
-      setVoiceMessage(quiz,'voiceNotMatched');
-      $('voiceRetry').hidden=false;
-      $('voiceUseTranscript').hidden=false;
-    }
-  };
-  recognition.onerror=(event)=>{
-    if (!isCurrent()) return;
-    stopVoiceRecognition();
-    setVoiceMessage(quiz, event.error==='no-speech'?'voiceNoSpeech':(['not-allowed','service-not-allowed'].includes(event.error)?'voiceMicBlocked':event.error==='network'?'voiceNetwork':'voiceGenericError'));
-    $('voiceDiagnosticLink').hidden = event.error !== 'network';
-    $('voiceRetry').hidden=false;
-  };
-  recognition.onend=()=>{
-    if (!isCurrent()) return;
-    stopVoiceRecognition();
-    setVoiceMessage(quiz,'voiceNoSpeech');
-    $('voiceRetry').hidden=false;
-  };
-  try { recognition.start(); }
-  catch (_) { stopVoiceRecognition();setVoiceMessage(quiz,'voiceGenericError');$('voiceRetry').hidden=false; }
-}
-function typeInstead() {
-  const quiz=state.quiz;
-  if (!quiz || quiz.phase!=='question') return;
-  stopVoiceRecognition();
-  quiz.voiceMode=false;
-  quiz.voiceVerdict=null;
-  $('voiceAnswer').hidden=true;
-  $('typedAnswerFields').hidden=false;
-  $('answerInput').required=true;
-  $('checkButton').hidden=false;
-  $('answerForm').querySelector('.quiz-actions').classList.remove('voice-question');
-  $('answerInput').focus({preventScroll:true});
-}
-$('voiceMicButton').addEventListener('click',startVoiceListening);
-$('voiceRetry').addEventListener('click',startVoiceListening);
-$('voiceTypeInstead').addEventListener('click',typeInstead);
-$('voiceUseTranscript').addEventListener('click',()=>{
-  const quiz=state.quiz;
-  if (!quiz || quiz.phase!=='question' || !quiz.voiceHeard) return;
-  // Never count a noisy recognizer's mismatch without the user's explicit choice.
-  quiz.voiceVerdict=false;
-  reveal(false);
-});
-
 function answersFor(quiz, item) {
   if (quiz.kind === 'words') return quiz.wordAnswerMode === 'reading' ? item.readings : wordMeanings(item);
   return item.answers;
@@ -1420,19 +1796,21 @@ function centerActiveExercise(quiz) {
 
 function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, wordModeOverride = null) {
   const kind = kindOverride || (mode === 'words' ? 'words' : 'characters');
-  const pool = suppliedPool ? [...suppliedPool] : (kind === 'words' ? eligibleWords() : catalog[state.script].filter(e => state.selected[state.script].has(e.kana)));
+  const pool = suppliedPool ? [...suppliedPool] : (mode === 'daily'
+    ? SCRIPTS.flatMap(script => catalog[script].filter(item => state.selected[script].has(item.kana)))
+    : (kind === 'words' ? eligibleWords() : catalog[state.script].filter(e => state.selected[state.script].has(e.kana))));
   if (!pool.length) { toast(t('toastEmpty')); return; }
-  const timerMode = state.timerSetting === 'custom' ? customTimerSeconds() : state.timerSetting;
+  const timerMode = mode === 'daily' ? 'off' : state.timerSetting === 'custom' ? customTimerSeconds() : state.timerSetting;
   if (timerMode === null) { toast(t('toastBadTimer')); $('customMinutes').focus(); return; }
-  const guessLimit = state.timerSetting === 'guesses' ? configuredGuessLimit() : null;
-  if (state.timerSetting === 'guesses' && guessLimit === null) { toast(t('toastBadGuesses')); $('guessLimit').focus(); return; }
+  const guessLimit = mode !== 'daily' && state.timerSetting === 'guesses' ? configuredGuessLimit() : null;
+  if (mode !== 'daily' && state.timerSetting === 'guesses' && guessLimit === null) { toast(t('toastBadGuesses')); $('guessLimit').focus(); return; }
   const rapidLimit = configuredRapidFireSeconds();
   if (state.rapidFireEnabled && rapidLimit === null) { toast(t('toastBadRapidFire')); $('rapidFireSeconds').focus(); return; }
-  if (state.quiz) { stopVoiceRecognition(); clearQuizTimers(state.quiz); }
+  if (state.quiz) { clearQuizTimers(state.quiz); }
   const quiz = { mode, kind, script: state.script, pool, deck: [], current: null, last: null,
     attempts: 0, correct: 0, round: 0, seenInRound: 0, phase: 'question', perItem: new Map(),
-    wordAnswerMode: wordModeOverride || state.wordAnswerMode, voiceMode: kind === 'words' && (wordModeOverride || state.wordAnswerMode) === 'reading' && state.wordVoiceEnabled && speechAvailable(), voiceStatusKey: 'voiceIdle', transitionTimeout: null,
-    timerInterval: null, timerMode: String(timerMode === 'off' && mode === 'practice' && kind === 'characters' ? 'elapsed' : timerMode),
+    wordAnswerMode: wordModeOverride || state.wordAnswerMode, transitionTimeout: null,
+    timerInterval: null, timerMode: String(timerMode === 'off' && (mode === 'practice' || mode === 'daily') && kind === 'characters' ? 'elapsed' : timerMode),
     elapsedMs: 0, lastTick: performance.now(), paused: false, lastCorrect: null,
     guessLimit, guessLimitReached: false, limitEndTimeout: null,
     rapidFireSeconds: rapidLimit, rapidElapsedMs: 0, rapidTimeouts: 0, rapidAdvanceTimeout: null, rapidExpired: false };
@@ -1442,7 +1820,7 @@ function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, 
   $('quizScreen').hidden = false;
   $('kanaDisplay').classList.remove('is-exiting', 'is-entering');
   $('quizPanel').classList.remove('is-paused');
-  $('quizPoolLabel').textContent = t('quizItems',{label:kind==='words'?t('words'):quiz.script[0].toUpperCase()+quiz.script.slice(1),count:pool.length,item:pool.length===1?t('itemSingular'):t('itemPlural'),mode:mode==='learn'?t('learnSuffix'):mode==='review'?t('reviewSuffix'):''});
+  $('quizPoolLabel').textContent = mode === 'daily' ? t('dailyTitle')+' · '+pool.length : t('quizItems',{label:kind==='words'?t('words'):quiz.script[0].toUpperCase()+quiz.script.slice(1),count:pool.length,item:pool.length===1?t('itemSingular'):t('itemPlural'),mode:mode==='learn'?t('learnSuffix'):mode==='review'?t('reviewSuffix'):''});
   $('stopButton').textContent = state.language === 'es' ? '← Terminar lección' : '← Finish lesson';
   $('learningProgress').hidden = mode !== 'learn';
   initTimer(quiz);
@@ -1451,7 +1829,7 @@ function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, 
 }
 function syncElapsedClock(quiz) {
   const toggle = $('elapsedToggle');
-  const canToggle = quiz.mode === 'practice' && quiz.kind === 'characters' && ['elapsed','up','guesses'].includes(quiz.timerMode);
+  const canToggle = ['practice','daily'].includes(quiz.mode) && quiz.kind === 'characters' && ['elapsed','up','guesses'].includes(quiz.timerMode);
   toggle.hidden = !canToggle;
   toggle.textContent = state.showElapsedClock ? t('clockHide') : t('clockShow');
   toggle.setAttribute('aria-pressed',String(state.showElapsedClock));
@@ -1558,8 +1936,7 @@ function toggleTimerPause() {
   $('quizPanel').classList.toggle('is-paused', quiz.paused);
   updateTimer(quiz);
   updateRapidFireDisplay(quiz);
-  if (quiz.paused) stopVoiceRecognition();
-  if (!quiz.paused && quiz.phase === 'question') (quiz.voiceMode ? $('voiceMicButton') : $('answerInput')).focus();
+  if (!quiz.paused && quiz.phase === 'question') $('answerInput').focus();
 }
 function clearQuizTimers(quiz) {
   clearInterval(quiz.timerInterval);
@@ -1568,11 +1945,10 @@ function clearQuizTimers(quiz) {
   clearTimeout(quiz.rapidAdvanceTimeout);
 }
 function nextQuestion() {
-  stopVoiceRecognition();
   const quiz = state.quiz;
   if (!quiz) return;
   if (!quiz.deck.length) {
-    if (quiz.mode === 'learn' && quiz.round === 6) { stopQuiz(true); return; }
+    if ((quiz.mode === 'learn' && quiz.round === 6) || (quiz.mode === 'daily' && quiz.round === 1)) { stopQuiz(true); return; }
     quiz.deck = shuffle(quiz.pool);
     if (quiz.deck.length > 1 && quiz.last && quiz.deck[0].id === quiz.last.id) {
       const other = quiz.deck.findIndex(item => item.id !== quiz.last.id);
@@ -1618,14 +1994,14 @@ function nextQuestion() {
     $('checkButton').classList.remove('result-correct', 'result-wrong');
     $('checkButton').disabled = false;
     $('skipButton').hidden = false;
-    renderVoiceQuestion(quiz);
-    if (!quiz.paused) (quiz.voiceMode ? $('voiceMicButton') : $('answerInput')).focus({preventScroll:true});
+    if (!quiz.paused) $('answerInput').focus({preventScroll:true});
   }
   updateStats();
 }
 function advanceQuestion() {
   const quiz = state.quiz;
   if (quiz?.guessLimitReached && quiz.phase === 'result') { stopQuiz(false,false,true); return; }
+  if (quiz?.mode === 'daily' && quiz.phase === 'result' && !quiz.deck.length) { stopQuiz(true); return; }
   if (!quiz || quiz.paused || !['result','guided'].includes(quiz.phase)) return;
   clearTimeout(quiz.rapidAdvanceTimeout);
   quiz.rapidAdvanceTimeout = null;
@@ -1668,11 +2044,8 @@ function reveal(skipped = false) {
     expireRapidFire(quiz); return;
   }
   const entered = normalized($('answerInput').value);
-  if (!skipped && !entered && (quiz.voiceVerdict === null || quiz.voiceVerdict === undefined)) { $('answerInput').focus(); return; }
-  stopVoiceRecognition();
-  const voiceVerdict = quiz.voiceMode && quiz.voiceVerdict !== null && quiz.voiceVerdict !== undefined ? quiz.voiceVerdict : null;
-  if (quiz.voiceMode && !skipped && voiceVerdict !== null) { /* speech engine already matched the spoken answer */ }
-  const correct = !skipped && (voiceVerdict !== null ? voiceVerdict : answersFor(quiz, quiz.current).some(answer => normalized(answer) === entered));
+  if (!skipped && !entered) { $('answerInput').focus(); return; }
+  const correct = !skipped && answersFor(quiz, quiz.current).some(answer => normalized(answer) === entered);
   quiz.attempts++;
   if (correct) quiz.correct++;
   const item = quiz.current;
@@ -1683,7 +2056,6 @@ function reveal(skipped = false) {
   quiz.phase = 'result';
   updateRapidFireDisplay(quiz);
   $('answerInput').disabled = true;
-  if (quiz.voiceMode) { $('voiceAnswer').hidden = true; $('typedAnswerFields').hidden = true; $('checkButton').hidden = false; $('answerForm').querySelector('.quiz-actions').classList.remove('voice-question'); }
   $('feedback').hidden = false;
   $('feedback').className = 'feedback '+(correct ? 'correct':'wrong');
   quiz.lastCorrect = correct;
@@ -1691,6 +2063,13 @@ function reveal(skipped = false) {
   $('checkButton').classList.add(correct ? 'result-correct' : 'result-wrong');
   $('skipButton').hidden = true;
   updateStats();
+  if (quiz.mode === 'daily' && !quiz.deck.length) {
+    $('checkButton').textContent = t('seeResults');
+    // Let the final answer remain visible briefly before completing the one-pass review.
+    quiz.limitEndTimeout = setTimeout(() => {
+      if (state.quiz === quiz && quiz.phase === 'result') stopQuiz(true);
+    }, 1700);
+  }
   if (quiz.guessLimit !== null && quiz.attempts >= quiz.guessLimit) {
     quiz.guessLimitReached = true;
     $('checkButton').textContent = t('seeResults');
@@ -1705,7 +2084,6 @@ function reveal(skipped = false) {
 function stopQuiz(completed = false, timedOut = false, reachedGuessGoal = false) {
   const quiz = state.quiz;
   if (!quiz) return;
-  stopVoiceRecognition();
   clearQuizTimers(quiz);
   $('kanaDisplay').classList.remove('is-exiting','is-entering');
   const hardest = [...quiz.perItem.values()].filter(x => x.errors > 0)
@@ -1730,9 +2108,11 @@ function updateQuestionLanguage(quiz) {
   if (!quiz.current) return;
   const guided = quiz.mode === 'learn' && quiz.round <= 3;
   $('printedLabel').textContent = state.language === 'es' ? 'Con una fuente normal' : 'In a regular font';
-  $('roundLabel').textContent = quiz.mode === 'learn'
-    ? t('learnPass',{stage:t(guided?'guided':'memory'),pass:guided?quiz.round:quiz.round-3,item:quiz.seenInRound,total:quiz.pool.length})
-    : t('round',{round:quiz.round,item:quiz.seenInRound,total:quiz.pool.length});
+  $('roundLabel').textContent = quiz.mode === 'daily'
+    ? t('dailyProgress',{item:quiz.seenInRound,total:quiz.pool.length})
+    : quiz.mode === 'learn'
+      ? t('learnPass',{stage:t(guided?'guided':'memory'),pass:guided?quiz.round:quiz.round-3,item:quiz.seenInRound,total:quiz.pool.length})
+      : t('round',{round:quiz.round,item:quiz.seenInRound,total:quiz.pool.length});
   $('quizHead').textContent = guided ? t('headGuided')
     : quiz.kind === 'words' ? t(quiz.wordAnswerMode === 'meaning'?'headWordsMeaning':'headWordsReading') : t('headCharacter');
   $('quizHint').textContent = t(guided?'hintGuided':'hintQuiz');
@@ -1777,19 +2157,18 @@ function showFeedback(quiz) {
     meaning.append(label, value);
     $('feedback').appendChild(meaning);
   }
-  $('checkButton').textContent = quiz.mode === 'learn' && quiz.round === 6 && quiz.deck.length === 0 ? t('seeResults') : t('next');
+  $('checkButton').textContent = ((quiz.mode === 'learn' && quiz.round === 6) || quiz.mode === 'daily') && quiz.deck.length === 0 ? t('seeResults') : t('next');
 }
 function refreshQuizLanguage() {
   const quiz = state.quiz;
   if (!quiz) return;
-  $('quizPoolLabel').textContent = t('quizItems',{label:quiz.kind==='words'?t('words'):quiz.script[0].toUpperCase()+quiz.script.slice(1),count:quiz.pool.length,item:quiz.pool.length===1?t('itemSingular'):t('itemPlural'),mode:quiz.mode==='learn'?t('learnSuffix'):quiz.mode==='review'?t('reviewSuffix'):''});
+  $('quizPoolLabel').textContent = quiz.mode === 'daily' ? t('dailyTitle')+' · '+quiz.pool.length : t('quizItems',{label:quiz.kind==='words'?t('words'):quiz.script[0].toUpperCase()+quiz.script.slice(1),count:quiz.pool.length,item:quiz.pool.length===1?t('itemSingular'):t('itemPlural'),mode:quiz.mode==='learn'?t('learnSuffix'):quiz.mode==='review'?t('reviewSuffix'):''});
   $('stopButton').textContent = state.language === 'es' ? '← Terminar lección' : '← Finish lesson';
   updateGuessProgress(quiz);
   $('pauseTimerButton').textContent = quiz.paused ? t('resume') : t('pause');
   syncElapsedClock(quiz);
   updateQuestionLanguage(quiz);
   if (quiz.phase === 'question') $('checkButton').textContent = state.language==='es'?'Comprobar ↵':'Check ↵';
-  if (quiz.voiceMode) updateVoiceLanguage(quiz);
   updateRapidFireDisplay(quiz);
   if (quiz.phase === 'result') {
     showFeedback(quiz);
@@ -1797,13 +2176,14 @@ function refreshQuizLanguage() {
   }
 }
 function renderSummary(s) {
-  $('summaryEyebrow').textContent = t(s.guessLimitReached?'guessReached':s.timedOut?'timeUp':s.completed?'lessonComplete':'sessionFinished');
-  $('summaryDescription').textContent = t(s.mode==='learn'?'summaryLearn':'summaryOther');
+  $('summaryEyebrow').textContent = t(s.mode==='daily' && s.completed ? 'dailyFinished' : s.guessLimitReached?'guessReached':s.timedOut?'timeUp':s.completed?'lessonComplete':'sessionFinished');
+  $('summaryDescription').textContent = t(s.mode==='daily'?'dailySummaryHelp':s.mode==='learn'?'summaryLearn':'summaryOther');
   if (s.rapidTimeouts) $('summaryDescription').textContent += ' · ' + t('rapidFireBonus',{count:s.rapidTimeouts});
   const timing = s.timerMode === 'off' ? '' : t('timing',{time:formatDuration(Math.floor(s.elapsedMs/1000))});
-  $('summaryProgress').hidden = !(s.guessLimitReached || s.mode==='learn' || timing || s.mode==='review');
+  $('summaryProgress').hidden = !(s.guessLimitReached || s.mode==='learn' || s.mode==='daily' || timing || s.mode==='review');
   $('summaryProgress').textContent = s.guessLimitReached ? t('summaryGuessGoal',{attempts:s.attempts,goal:s.guessLimit,timing}) : s.mode==='learn'
     ? t('summaryLearning',{progress:t(s.completed?'completed':'reached'),round:s.round,timing})
+    : s.mode==='daily' ? t('dailySummaryProgress',{done:s.attempts,total:s.pool.length,timing})
     : s.mode==='review' ? t('summaryReview',{count:s.pool.length,timing}) : timing ? t('summaryDuration',{timing}) : '';
   $('summaryAttempts').textContent = s.attempts;
   $('summaryCorrect').textContent = s.correct;
@@ -1816,7 +2196,6 @@ function renderSummary(s) {
 }
 function backToSelection() {
   if (state.quiz) clearQuizTimers(state.quiz);
-  stopVoiceRecognition();
   state.quiz = null;
   $('kanaDisplay').classList.remove('is-exiting','is-entering');
   $('quizScreen').hidden = true;
@@ -1900,8 +2279,7 @@ for (const id of ['customHours','customMinutes']) $(id).addEventListener('input'
   if (state.timerSetting === 'custom') customTimerSeconds();
   save();
 });
-$('wordAnswerMode').addEventListener('change', e => { state.wordAnswerMode = e.target.value; refreshVoiceOption(); save(); });
-$('wordVoiceEnabled').addEventListener('change', e => { state.wordVoiceEnabled = e.target.checked; save(); });
+$('wordAnswerMode').addEventListener('change', e => { state.wordAnswerMode = e.target.value; save(); });
 for (const script of SCRIPTS) $('tab'+script[0].toUpperCase()+script.slice(1)).addEventListener('click', () => selectScript(script));
 document.querySelector('.tabs').addEventListener('keydown', e => {
   if (!['ArrowLeft','ArrowRight'].includes(e.key)) return;
@@ -2035,7 +2413,8 @@ $('randomTen').addEventListener('click', () => {
 });
 $('learnButton').addEventListener('click', () => startQuiz('learn'));
 $('startButton').addEventListener('click', () => startQuiz('practice'));
-$('openWordsButton').addEventListener('click', () => { render(); refreshVoiceOption(); $('wordsDialog').showModal(); });
+$('onePassButton').addEventListener('click', () => startQuiz('daily'));
+$('openWordsButton').addEventListener('click', () => { render(); $('wordsDialog').showModal(); });
 $('closeWordsDialog').addEventListener('click', () => $('wordsDialog').close());
 $('cancelWordsDialog').addEventListener('click', () => $('wordsDialog').close());
 $('wordsDialog').addEventListener('click', e => { if (e.target === $('wordsDialog')) $('wordsDialog').close(); });

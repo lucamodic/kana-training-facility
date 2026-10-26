@@ -483,14 +483,16 @@ const ES_STATIC = {
   'Select all':'Seleccionar todo', 'Clear all':'Borrar todo', 'Random 10':'10 al azar',
   'characters on this tab':'caracteres en esta pestaña',
   'YOUR SELECTION':'TU SELECCIÓN', 'YOUR LITTLE STUDY TIMER':'TU TEMPORIZADOR',
-  'Focus time':'Tiempo de estudio', 'Custom countdown':'Cuenta regresiva personalizada',
+  'Focus time':'Tiempo de estudio', 'No limit':'Sin límite', 'Timer':'Temporizador',
   'Guess limit':'Límite de respuestas', 'Number of guesses':'Cantidad de respuestas',
   'Please enter between 1 and 10,000 guesses.':'Ingresá un número entre 1 y 10.000 respuestas.', 'Guess limit configuration':'Configuración del límite de respuestas',
-  'No countdown':'Sin cuenta regresiva', 'Stopwatch (count up)':'Cronómetro',
-  '5-minute countdown':'5 minutos', '10-minute countdown':'10 minutos', '15-minute countdown':'15 minutos',
   'Hours':'Horas', 'Minutes':'Minutos', 'Please choose between 00:01 and 99:59.':'Elegí un tiempo entre 00:01 y 99:59.',
   'Countdowns end your lesson at zero. Pause anytime.':'Al llegar a cero, la lección termina. Podés pausar cuando quieras.',
   'Choose how many answers to practice. Wrong answers and “I don’t know” count too.':'Elegí cuántas respuestas querés practicar. Los errores y «No sé» también cuentan.',
+  'Rapid Fire':'Ráfaga', 'A little challenge for quick thinking!':'¡Un desafío para pensar rápido!',
+  'Seconds per answer':'Segundos por respuesta', 'If time runs out, it counts as a mistake and the next question appears.':'Si se acaba el tiempo, cuenta como error y aparece la próxima pregunta.',
+  'Choose between 1 and 300 seconds.':'Elegí entre 1 y 300 segundos.',
+  'sec':'seg', 'Rapid Fire countdown':'Cuenta regresiva de Ráfaga', 'Time left for this answer':'Tiempo restante para esta respuesta',
   'Learn my selection →':'Aprender mi selección →',
   '3 guided passes showing the answer, followed by 3 memory-test passes.':'3 vueltas guiadas con las respuestas y 3 vueltas para practicar de memoria.',
   'Infinite character practice →':'Práctica infinita de caracteres →',
@@ -535,24 +537,34 @@ const ES_STATIC = {
   'Session results':'Resultados de la sesión',
   'Close Word Challenge':'Cerrar desafío de palabras',
   'Close review dialog':'Cerrar ventana de repaso',
-  'Custom countdown duration':'Duración personalizada',
+  'Timer duration':'Duración del temporizador',
   'Timer mode':'Modo del temporizador',
   'Lesson progress':'Progreso de la lección',
   'Kana Training Facility, go to selection':'Kana Training Facility, ir a selección',
   'Replace the current selection with up to 10 random visible characters':'Reemplazar la selección por hasta 10 caracteres visibles al azar',
 };
 const UI_EN = {
+  voiceOptionTitle:'Speak instead of typing', voiceOptionSubtitle:'Tap the microphone and say the Japanese reading.',
+  voiceOnlineNote:'Speech recognition may require internet and send audio to your browser’s speech service. You can always type instead.',
+  voiceNotSupported:'Voice recognition is not available in this browser. Typing still works.',
+  voiceAnswerTitle:'Say it in Japanese!', voiceMic:'Tap to speak', voiceListening:'Listening…', voiceIdle:'Tap the microphone to start.',
+  voiceHeard:'Heard: {text}', voiceNotMatched:'That did not match automatically. Try again, type instead, or count it as an attempt.',
+  voiceNoSpeech:'No speech detected. Try again.', voiceMicBlocked:'Microphone access was denied. Check your browser permissions, or type instead.',
+  voiceNetwork:'Speech recognition could not connect. Try again online or type instead.', voiceGenericError:'Could not recognize your speech. Try again or type instead.',
+  voiceRetry:'Try again', voiceCountAttempt:'Count as an attempt', voiceTypeInstead:'Type instead',
+
   selectedDesc:'{count} selected · ready to study.', emptySelection:'Pick at least one character to begin.',
   wordReady:'Ready to practice {count} {word} from your selections across all three tabs.',
   wordLocked:'No words unlocked yet. Select characters from any tab to unlock words, including mixed-script words.',
   choose:'Choose your {script}', chooseVisible:'Select visible', clearVisible:'Clear visible',
   noneFound:'No characters match this search.', groupSelect:'Select', groupClear:'Clear', selected:'selected', notSelected:'not selected',
   timerGuess:'✧ Little steps, big progress!', toastBadGuesses:'Please enter a number of guesses between 1 and 10,000.',
+  rapidFireIndicatorTitle:'Rapid Fire',rapidFireTimeout:'Time’s up! This counts as a mistake.',rapidFireWaiting:'Next one coming up…',rapidFirePaused:'Take your time — paused.',rapidFireBonus:'{count} timed out',toastBadRapidFire:'Choose a Rapid Fire limit between 1 and 300 seconds.',
   guessProgress:'{done} / {total} guesses', guessReached:'Guess goal reached!',
   summaryGuessGoal:'Finished {attempts} of {goal} guesses{timing}.',
   timerNone:'✧ Infinite Practice shows an optional study clock.', timerUp:'✧ Every little minute counts.', timerReady:'✧ You’ve got this!',
   toastSelect:'{count} randomly chosen characters selected.', toastEmpty:'Please select at least one eligible item first.',
-  toastBadTimer:'Please enter a valid custom countdown.', toastBadTimerBefore:'Please enter a valid custom countdown before starting.',
+  toastBadTimer:'Please enter a valid timer duration.', toastBadTimerBefore:'Please enter a valid timer duration before starting.',
   themeAria:'Change color theme, current {name}',
   quizItems:'{label} · {count} {item}{mode}', words:'Vocabulary', learnSuffix:' · Learn', reviewSuffix:' · Review',
   learnPass:'{stage} · Pass {pass} of 3 · Item {item} of {total}', round:'Round {round} · Item {item} of {total}',
@@ -580,12 +592,22 @@ const UI_EN = {
   itemSingular:'item',itemPlural:'items',attemptSingular:'attempt',attemptPlural:'attempts',mistakeSingular:'mistake',mistakePlural:'mistakes',
 };
 const UI_ES = {
+  voiceOptionTitle:'Responder con la voz', voiceOptionSubtitle:'Tocá el micrófono y decí la lectura en japonés.',
+  voiceOnlineNote:'El reconocimiento puede necesitar internet y enviar audio al servicio de voz del navegador. Siempre podés escribir.',
+  voiceNotSupported:'Este navegador no permite reconocer la voz. Podés responder escribiendo.',
+  voiceAnswerTitle:'¡Decilo en japonés!', voiceMic:'Tocar para hablar', voiceListening:'Escuchando…', voiceIdle:'Tocá el micrófono para empezar.',
+  voiceHeard:'Escuché: {text}', voiceNotMatched:'No coincidió automáticamente. Podés volver a hablar, escribir o contarlo como intento.',
+  voiceNoSpeech:'No detecté tu voz. Probá de nuevo.', voiceMicBlocked:'No hay permiso para el micrófono. Revisá los permisos del navegador o escribí.',
+  voiceNetwork:'No se pudo conectar al reconocimiento de voz. Probá con internet o escribí.', voiceGenericError:'No pude reconocer lo que dijiste. Volvé a intentar o escribí.',
+  voiceRetry:'Probar otra vez', voiceCountAttempt:'Contar como intento', voiceTypeInstead:'Escribir respuesta',
+
   selectedDesc:'{count} seleccionados · listos para estudiar.', emptySelection:'Elegí al menos un carácter para empezar.',
   wordReady:'Tenés {count} {word} disponibles, usando lo seleccionado en las tres pestañas.',
   wordLocked:'Todavía no hay palabras disponibles. Seleccioná caracteres de cualquier pestaña para desbloquear palabras, incluso combinadas.',
   choose:'Elegí tus caracteres de {script}', chooseVisible:'Seleccionar visibles', clearVisible:'Borrar visibles',
   noneFound:'No hay caracteres que coincidan con la búsqueda.', groupSelect:'Seleccionar', groupClear:'Borrar', selected:'seleccionado', notSelected:'sin seleccionar',
   timerGuess:'✧ ¡De a poquito, llegás lejos!', toastBadGuesses:'Ingresá una cantidad de respuestas entre 1 y 10.000.',
+  rapidFireIndicatorTitle:'Ráfaga',rapidFireTimeout:'¡Se acabó el tiempo! Cuenta como error.',rapidFireWaiting:'Ya viene la siguiente…',rapidFirePaused:'Pausa activada.',rapidFireBonus:'{count} sin responder a tiempo',toastBadRapidFire:'Elegí un límite de Ráfaga entre 1 y 300 segundos.',
   guessProgress:'{done} / {total} respuestas', guessReached:'¡Objetivo de respuestas cumplido!',
   summaryGuessGoal:'Completaste {attempts} de {goal} respuestas{timing}.',
   timerNone:'✧ En práctica infinita aparece un reloj opcional.', timerUp:'✧ Cada minutito cuenta.', timerReady:'✧ ¡Vos podés!',
@@ -895,6 +917,7 @@ const localKanjiCategory = {
 const STATIC_SELECTOR = [
   '#brandSubtitle','#offlineText','#themeCaption','#browserReady','.theme-menu-label','.palette-name','#languageCaption',
   '#wordsLaunchText','#dragHint','#randomTen','#selectedUnit','.side-label','.timer-card-title',
+  '#rapidFireTitle','#rapidFireSubtitle','#rapidFireSecondsLabel','#rapidFireSecondsUnit','#rapidFireHelp','#rapidFireError',
   '#printedLabel','#checkButton','#skipButton','#guidedCaption','#finishLessonButton',
   '#timerSetting option','.time-caption','#customTimerError','#guessLimitError','#countdownHelp','#learnButton','#learnHelp','#startButton','#practiceHelp',
   '.stat-answered','.stat-correct','.stat-accuracy','#finishLessonButton','#summaryTitle','#hardestHeading','#hardestHelp',
@@ -908,7 +931,7 @@ const STATIC_ATTRIBUTES = [
   ['#quizScreen','aria-label'], ['#summaryScreen','aria-label'], ['#homeLink','aria-label'],
   ['#randomTen','title'],['#closeWordsDialog','aria-label'],['#closeReview','aria-label'],
   ['#customTimerFields','aria-label'], ['#guessLimitFields','aria-label'], ['#timerSetting','aria-label'],['#progressTrack','aria-label'],
-  ['#timerDisplay','aria-label'], ['.retro-browser','aria-label']
+  ['#timerDisplay','aria-label'], ['#rapidFireIndicator','aria-label'], ['#rapidFireProgress','aria-label'], ['.retro-browser','aria-label']
 ];
 const originalText = new WeakMap();
 const originalAttrs = new WeakMap();
@@ -935,8 +958,11 @@ function changeLanguage(language, persist=true) {
   translateStatic();
   applyTheme(state.theme);
   updateCustomTimerVisibility();
+  updateRapidFireSettings();
+  if (state.quiz) updateRapidFireDisplay(state.quiz);
   render();
   if (state.quiz) refreshQuizLanguage();
+  refreshVoiceOption();
   if (state.lastSummary && !$('summaryScreen').hidden) renderSummary(state.lastSummary);
   if (persist) {
     state.languagePreference = 'manual';
@@ -952,7 +978,7 @@ const SCRIPTS = ['hiragana', 'katakana', 'kanji'];
 const $ = id => document.getElementById(id);
 const state = {
   script: 'hiragana', selected: { hiragana: new Set(), katakana: new Set(), kanji: new Set() },
-  theme: 'pastel', timerSetting: 'off', customHours: 0, customMinutes: 5, guessLimit: 200, wordAnswerMode: 'meaning',
+  theme: 'pastel', timerSetting: 'off', customHours: 0, customMinutes: 5, guessLimit: 200, rapidFireEnabled: false, rapidFireSeconds: 10, wordAnswerMode: 'meaning', wordVoiceEnabled: false,
   language: detectBrowserLanguage(), languagePreference: 'auto', showElapsedClock: true,
   storageOk: true, quiz: null, lastSummary: null, reviewSelection: new Set()
 };
@@ -985,8 +1011,8 @@ function setThemeMenu(open) {
 }
 function payload() {
   return { version: 3, script: state.script, theme: state.theme, timerSetting: state.timerSetting,
-    customHours: state.customHours, customMinutes: state.customMinutes, guessLimit: state.guessLimit, language: state.language, languagePreference: state.languagePreference, showElapsedClock: state.showElapsedClock,
-    wordAnswerMode: state.wordAnswerMode, selected: Object.fromEntries(SCRIPTS.map(script => [script, [...state.selected[script]]])) };
+    customHours: state.customHours, customMinutes: state.customMinutes, guessLimit: state.guessLimit, rapidFireEnabled: state.rapidFireEnabled, rapidFireSeconds: state.rapidFireSeconds, language: state.language, languagePreference: state.languagePreference, showElapsedClock: state.showElapsedClock,
+    wordAnswerMode: state.wordAnswerMode, wordVoiceEnabled: state.wordVoiceEnabled, selected: Object.fromEntries(SCRIPTS.map(script => [script, [...state.selected[script]]])) };
 }
 function applySavedData(data) {
   if (!data || typeof data !== 'object' || !data.selected || typeof data.selected !== 'object') throw Error('Invalid settings');
@@ -1000,10 +1026,13 @@ function applySavedData(data) {
   state.selected = imported;
   state.script = SCRIPTS.includes(data.script) ? data.script : 'hiragana';
   applyTheme(PALETTES.includes(data.theme) ? data.theme : 'pastel');
-  // Keep existing users' chosen timer. New visitors start with No countdown.
+  // New visitors use No limit. Migrate previous timer presets into the
+  // same custom timer input rather than silently discarding their duration.
   const isLegacy = Number(data.version || 1) < 3;
-  const oldMode = ['off','up','300','600','900','custom','guesses'].includes(data.timerSetting) ? data.timerSetting : 'off';
-  state.timerSetting = oldMode;
+  const oldMode = String(data.timerSetting || 'off');
+  const oldPresetMinutes = {'300':5, '600':10, '900':15}[oldMode];
+  state.timerSetting = oldPresetMinutes ? 'custom'
+    : (['off','custom','guesses'].includes(oldMode) ? oldMode : 'off');
   if (isLegacy) {
     const oldMinutes = Number(data.customMinutes);
     const oldSeconds = Number(data.customSeconds);
@@ -1016,8 +1045,15 @@ function applySavedData(data) {
     state.customHours = Number.isInteger(Number(data.customHours)) && data.customHours !== '' && Number(data.customHours) >= 0 && Number(data.customHours) <= 99 ? Number(data.customHours) : 0;
     state.customMinutes = Number.isInteger(Number(data.customMinutes)) && data.customMinutes !== '' && Number(data.customMinutes) >= 0 && Number(data.customMinutes) <= 59 ? Number(data.customMinutes) : 5;
   }
+  if (oldPresetMinutes) {
+    state.customHours = 0;
+    state.customMinutes = oldPresetMinutes;
+  }
   state.guessLimit = Number.isInteger(Number(data.guessLimit)) && data.guessLimit !== '' && Number(data.guessLimit) >= 1 && Number(data.guessLimit) <= 10000 ? Number(data.guessLimit) : 200;
+  state.rapidFireEnabled = data.rapidFireEnabled === true;
+  state.rapidFireSeconds = Number.isSafeInteger(Number(data.rapidFireSeconds)) && Number(data.rapidFireSeconds) >= 1 && Number(data.rapidFireSeconds) <= 300 ? Number(data.rapidFireSeconds) : 10;
   state.wordAnswerMode = ['meaning','reading'].includes(data.wordAnswerMode) ? data.wordAnswerMode : 'meaning';
+  state.wordVoiceEnabled = data.wordVoiceEnabled === true;
   // Preserve a previously chosen language when migrating older saves.
   // New visitors use the device's preferred language until they choose manually.
   state.languagePreference = data.languagePreference === 'auto' ? 'auto' : 'manual';
@@ -1029,8 +1065,13 @@ function applySavedData(data) {
   $('customHours').value = state.customHours;
   $('customMinutes').value = state.customMinutes;
   $('guessLimit').value = state.guessLimit;
+  $('rapidFireEnabled').checked = state.rapidFireEnabled;
+  $('rapidFireSeconds').value = state.rapidFireSeconds;
+  updateRapidFireSettings();
   updateCustomTimerVisibility();
   $('wordAnswerMode').value = state.wordAnswerMode;
+  $('wordVoiceEnabled').checked = state.wordVoiceEnabled;
+  refreshVoiceOption();
 }
 function updateCustomTimerVisibility() {
   $('customTimerFields').hidden = state.timerSetting !== 'custom';
@@ -1040,12 +1081,25 @@ function updateCustomTimerVisibility() {
   $('countdownHelp').textContent = state.timerSetting === 'guesses'
     ? (state.language === 'es' ? ES_STATIC['Choose how many answers to practice. Wrong answers and “I don’t know” count too.'] : 'Choose how many answers to practice. Wrong answers and “I don’t know” count too.')
     : state.timerSetting === 'off' || state.timerSetting === 'up'
-      ? (state.language === 'es' ? 'Practicá sin límite. Podés mostrar u ocultar el reloj durante la práctica infinita.' : 'Practice for as long as you like. You can show or hide the clock in Infinite Practice.')
+      ? (state.language === 'es' ? 'Practicá sin límite. Podés mostrar u ocultar el reloj durante la práctica infinita.' : 'Practice with no limit. Show or hide your elapsed clock during Infinite Practice.')
       : (state.language === 'es' ? ES_STATIC['Countdowns end your lesson at zero. Pause anytime.'] : 'Countdowns end your lesson at zero. Pause anytime.');
   $('timerFootnote').textContent = state.timerSetting === 'guesses' ? t('timerGuess')
     : state.timerSetting === 'off' ? t('timerNone')
-    : state.timerSetting === 'up' ? t('timerUp')
     : t('timerReady');
+}
+function updateRapidFireSettings() {
+  $('rapidFireSettings').hidden = !state.rapidFireEnabled;
+  $('rapidFireCard').classList.toggle('is-active', state.rapidFireEnabled);
+  $('rapidFireEnabled').setAttribute('aria-expanded', String(state.rapidFireEnabled));
+  if (!state.rapidFireEnabled) $('rapidFireError').hidden = true;
+}
+function configuredRapidFireSeconds() {
+  if (!state.rapidFireEnabled) return null;
+  const raw = $('rapidFireSeconds').value.trim();
+  const secs = Number(raw);
+  const valid = /^\d+$/.test(raw) && Number.isSafeInteger(secs) && secs >= 1 && secs <= 300;
+  $('rapidFireError').hidden = valid;
+  return valid ? secs : null;
 }
 function customTimerSeconds() {
   const hourString = $('customHours').value;
@@ -1179,6 +1233,165 @@ function updateSelection(characters, mode) {
   save(); render();
 }
 
+// Word Challenge optional speaking mode. Recognition runs in Japanese even when
+// the interface is English or Spanish. No audio is stored by this application.
+const speechAvailable = () => !!(window.SpeechRecognition || window.webkitSpeechRecognition) && window.isSecureContext !== false;
+let activeVoiceRecognition = null;
+function stopVoiceRecognition() {
+  const recognition = activeVoiceRecognition;
+  activeVoiceRecognition = null;
+  if (recognition) { try { recognition.abort(); } catch (_) {} }
+  $('voiceMicButton').classList.remove('is-listening');
+}
+function refreshVoiceOption() {
+  $('voiceOption').hidden = $('wordAnswerMode').value !== 'reading';
+  $('wordVoiceEnabled').disabled = !speechAvailable();
+  $('wordVoiceEnabled').checked = state.wordVoiceEnabled && speechAvailable();
+  $('voiceOptionTitle').textContent = t('voiceOptionTitle');
+  $('voiceOptionSubtitle').textContent = t('voiceOptionSubtitle');
+  $('voiceSupportNote').textContent = t(speechAvailable() ? 'voiceOnlineNote' : 'voiceNotSupported');
+}
+// A Japanese speech engine often returns こんにちは or コーヒー rather than
+// Latin romaji. Compare spelling first, then kana pronunciations if possible.
+const speechKanaMap = new Map([...catalog.hiragana,...catalog.katakana].map(item=>[item.kana,item.answer]));
+speechKanaMap.set('っ','');speechKanaMap.set('ッ','');
+function kanaRomanize(input) {
+  const text = String(input).normalize('NFKC').replace(/[。、「」、？！!?.\s]/g,'');
+  let result = '';
+  for (let i=0;i<text.length;) {
+    const char = text[i];
+    if (char === 'ー') { const vowel = result.match(/[aeiou]$/)?.[0]; if (!vowel) return null;result += vowel; i++;continue; }
+    if (char === 'っ' || char === 'ッ') {
+      const next = speechKanaMap.get(text.slice(i+1,i+3)) || speechKanaMap.get(text[i+1]);
+      if (!next) return null;
+      result += next.startsWith('ch') ? 't' : next[0];i++;continue;
+    }
+    const pair = speechKanaMap.get(text.slice(i,i+2));
+    if (pair) { result += pair; i+=2; continue; }
+    const value = speechKanaMap.get(char);
+    if (!value) return null;
+    result += value;i++;
+  }
+  return result;
+}
+function normalizeSpokenJapanese(input) {
+  return String(input).normalize('NFKC').replace(/[\s。、！？!?.，,.「」『』\-]/g,'');
+}
+function matchesSpeech(heard, word) {
+  if (normalizeSpokenJapanese(heard) === normalizeSpokenJapanese(word.kana)) return true;
+  const romaji = kanaRomanize(heard);
+  if (romaji && word.readings.some(reading => normalized(romaji) === normalized(reading))) return true;
+  return word.readings.some(reading => normalized(reading) === normalized(heard));
+}
+function setVoiceMessage(quiz, key, args={}) {
+  quiz.voiceStatusKey=key;
+  quiz.voiceStatusArgs=args;
+  $('voiceStatus').textContent=t(key,args);
+}
+function renderVoiceQuestion(quiz) {
+  quiz.voiceVerdict=null;
+  quiz.voiceHeard='';
+  quiz.voiceTypeInstead=false;
+  $('voiceAnswer').hidden = !quiz.voiceMode;
+  $('typedAnswerFields').hidden=!!quiz.voiceMode;
+  $('answerInput').required=!quiz.voiceMode;
+  $('checkButton').hidden=!!quiz.voiceMode;
+  $('answerForm').querySelector('.quiz-actions').classList.toggle('voice-question',!!quiz.voiceMode);
+  $('voiceTranscript').hidden=true;
+  $('voiceRetry').hidden=true;
+  $('voiceUseTranscript').hidden=true;
+  $('voiceMicButton').disabled=false;
+  $('voiceMicButton').classList.remove('is-listening');
+  if (quiz.voiceMode) setVoiceMessage(quiz,'voiceIdle');
+  updateVoiceLanguage(quiz);
+}
+function updateVoiceLanguage(quiz) {
+  $('voiceAnswerTitle').textContent=t('voiceAnswerTitle');
+  $('voiceMicLabel').textContent=t(activeVoiceRecognition ? 'voiceListening' : 'voiceMic');
+  $('voiceRetry').textContent=t('voiceRetry');
+  $('voiceUseTranscript').textContent=t('voiceCountAttempt');
+  $('voiceTypeInstead').textContent=t('voiceTypeInstead');
+  if (quiz.voiceStatusKey) $('voiceStatus').textContent=t(quiz.voiceStatusKey,quiz.voiceStatusArgs || {});
+  if (quiz.voiceHeard) $('voiceTranscript').textContent=t('voiceHeard',{text:quiz.voiceHeard});
+}
+function startVoiceListening() {
+  const quiz=state.quiz;
+  if (!quiz || !quiz.voiceMode || quiz.phase!=='question' || quiz.paused || !speechAvailable()) return;
+  stopVoiceRecognition();
+  quiz.voiceHeard='';
+  quiz.voiceVerdict=null;
+  $('voiceTranscript').hidden=true;
+  $('voiceRetry').hidden=true;
+  $('voiceUseTranscript').hidden=true;
+  const ctor=window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition=new ctor();
+  recognition.lang='ja-JP';
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.maxAlternatives=5;
+  activeVoiceRecognition=recognition;
+  const item=quiz.current;
+  $('voiceMicButton').classList.add('is-listening');
+  $('voiceMicLabel').textContent=t('voiceListening');
+  setVoiceMessage(quiz,'voiceListening');
+  const isCurrent=()=>state.quiz===quiz && quiz.current===item && quiz.phase==='question' && activeVoiceRecognition===recognition;
+  recognition.onresult=(event)=>{
+    if (!isCurrent()) return;
+    const results=Array.from(event.results || []).flatMap(row=>Array.from(row || []).map(alt=>alt.transcript).filter(Boolean));
+    stopVoiceRecognition();
+    const heard=results[0] || '';
+    if (!heard) { setVoiceMessage(quiz,'voiceNoSpeech');return; }
+    quiz.voiceHeard=heard;
+    $('voiceTranscript').hidden=false;
+    $('voiceTranscript').textContent=t('voiceHeard',{text:heard});
+    if (results.some(transcript=>matchesSpeech(transcript,item))) {
+      quiz.voiceVerdict=true;
+      reveal(false);
+    } else {
+      setVoiceMessage(quiz,'voiceNotMatched');
+      $('voiceRetry').hidden=false;
+      $('voiceUseTranscript').hidden=false;
+    }
+  };
+  recognition.onerror=(event)=>{
+    if (!isCurrent()) return;
+    stopVoiceRecognition();
+    setVoiceMessage(quiz, event.error==='no-speech'?'voiceNoSpeech':(['not-allowed','service-not-allowed'].includes(event.error)?'voiceMicBlocked':event.error==='network'?'voiceNetwork':'voiceGenericError'));
+    $('voiceRetry').hidden=false;
+  };
+  recognition.onend=()=>{
+    if (!isCurrent()) return;
+    stopVoiceRecognition();
+    setVoiceMessage(quiz,'voiceNoSpeech');
+    $('voiceRetry').hidden=false;
+  };
+  try { recognition.start(); }
+  catch (_) { stopVoiceRecognition();setVoiceMessage(quiz,'voiceGenericError');$('voiceRetry').hidden=false; }
+}
+function typeInstead() {
+  const quiz=state.quiz;
+  if (!quiz || quiz.phase!=='question') return;
+  stopVoiceRecognition();
+  quiz.voiceMode=false;
+  quiz.voiceVerdict=null;
+  $('voiceAnswer').hidden=true;
+  $('typedAnswerFields').hidden=false;
+  $('answerInput').required=true;
+  $('checkButton').hidden=false;
+  $('answerForm').querySelector('.quiz-actions').classList.remove('voice-question');
+  $('answerInput').focus({preventScroll:true});
+}
+$('voiceMicButton').addEventListener('click',startVoiceListening);
+$('voiceRetry').addEventListener('click',startVoiceListening);
+$('voiceTypeInstead').addEventListener('click',typeInstead);
+$('voiceUseTranscript').addEventListener('click',()=>{
+  const quiz=state.quiz;
+  if (!quiz || quiz.phase!=='question' || !quiz.voiceHeard) return;
+  // Never count a noisy recognizer's mismatch without the user's explicit choice.
+  quiz.voiceVerdict=false;
+  reveal(false);
+});
+
 function answersFor(quiz, item) {
   if (quiz.kind === 'words') return quiz.wordAnswerMode === 'reading' ? item.readings : wordMeanings(item);
   return item.answers;
@@ -1199,9 +1412,11 @@ function centerActiveExercise(quiz) {
     if (state.quiz !== quiz || $('quizScreen').hidden) return;
     const bounds = $('quizPanel').getBoundingClientRect();
     const viewportHeight = window.visualViewport?.height || window.innerHeight;
-    const padding = 20;
-    const desiredTop = bounds.height <= viewportHeight - 2 * padding
-      ? (viewportHeight - bounds.height) / 2
+    // The session toolbar is sticky; leave room for it so the prompt
+    // and Rapid Fire bar are never hidden underneath on phones.
+    const padding = Math.max(20, $('quizScreen').querySelector('.quiz-top').getBoundingClientRect().height + 14);
+    const desiredTop = bounds.height <= viewportHeight - padding - 20
+      ? Math.max(padding, (viewportHeight - bounds.height) / 2)
       : padding;
     const target = window.scrollY + bounds.top - desiredTop;
     const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
@@ -1220,13 +1435,16 @@ function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, 
   if (timerMode === null) { toast(t('toastBadTimer')); $('customMinutes').focus(); return; }
   const guessLimit = state.timerSetting === 'guesses' ? configuredGuessLimit() : null;
   if (state.timerSetting === 'guesses' && guessLimit === null) { toast(t('toastBadGuesses')); $('guessLimit').focus(); return; }
-  if (state.quiz) clearQuizTimers(state.quiz);
+  const rapidLimit = configuredRapidFireSeconds();
+  if (state.rapidFireEnabled && rapidLimit === null) { toast(t('toastBadRapidFire')); $('rapidFireSeconds').focus(); return; }
+  if (state.quiz) { stopVoiceRecognition(); clearQuizTimers(state.quiz); }
   const quiz = { mode, kind, script: state.script, pool, deck: [], current: null, last: null,
     attempts: 0, correct: 0, round: 0, seenInRound: 0, phase: 'question', perItem: new Map(),
-    wordAnswerMode: wordModeOverride || state.wordAnswerMode, transitionTimeout: null,
+    wordAnswerMode: wordModeOverride || state.wordAnswerMode, voiceMode: kind === 'words' && (wordModeOverride || state.wordAnswerMode) === 'reading' && state.wordVoiceEnabled && speechAvailable(), voiceStatusKey: 'voiceIdle', transitionTimeout: null,
     timerInterval: null, timerMode: String(timerMode === 'off' && mode === 'practice' && kind === 'characters' ? 'elapsed' : timerMode),
     elapsedMs: 0, lastTick: performance.now(), paused: false, lastCorrect: null,
-    guessLimit, guessLimitReached: false, limitEndTimeout: null };
+    guessLimit, guessLimitReached: false, limitEndTimeout: null,
+    rapidFireSeconds: rapidLimit, rapidElapsedMs: 0, rapidTimeouts: 0, rapidAdvanceTimeout: null, rapidExpired: false };
   state.quiz = quiz;
   $('setupScreen').hidden = true;
   $('summaryScreen').hidden = true;
@@ -1248,22 +1466,75 @@ function syncElapsedClock(quiz) {
   toggle.setAttribute('aria-pressed',String(state.showElapsedClock));
   $('timerArea').hidden = quiz.timerMode === 'off' || (canToggle && !state.showElapsedClock);
 }
+function rapidFireActive(quiz) {
+  // Guided passes show the reading, so only memory questions are timed.
+  return quiz.rapidFireSeconds !== null && quiz.phase === 'question';
+}
+function updateRapidFireDisplay(quiz) {
+  const active = rapidFireActive(quiz) || (quiz.rapidFireSeconds !== null && quiz.phase === 'result');
+  const container = $('rapidFireIndicator');
+  container.hidden = !active;
+  if (!active) return;
+  const remaining = Math.max(0, quiz.rapidFireSeconds - quiz.rapidElapsedMs / 1000);
+  const percent = Math.max(0, Math.min(100, remaining / quiz.rapidFireSeconds * 100));
+  container.classList.toggle('is-urgent', remaining <= Math.min(5, quiz.rapidFireSeconds * .3) && quiz.phase === 'question');
+  container.classList.toggle('is-expired', quiz.rapidExpired);
+  $('rapidFireIndicatorTitle').textContent = t('rapidFireIndicatorTitle');
+  $('rapidFireRemaining').textContent = `${Math.ceil(remaining)}${state.language === 'es' ? ' seg' : 's'}`;
+  $('rapidFireBar').style.width = `${percent}%`;
+  $('rapidFireProgress').setAttribute('aria-valuenow',String(Math.round(percent)));
+  $('rapidFirePause').textContent = quiz.paused ? t('resume') : t('pause');
+  // Both controls pause the same timers; don't duplicate them when a global timer is visible.
+  $('rapidFirePause').hidden = quiz.timerMode !== 'off';
+  $('rapidFireStatus').textContent = quiz.rapidExpired ? t('rapidFireTimeout') : (quiz.paused ? t('rapidFirePaused') : '');
+}
+function expireRapidFire(quiz) {
+  if (state.quiz !== quiz || !rapidFireActive(quiz) || quiz.paused || quiz.rapidExpired) return;
+  quiz.rapidElapsedMs = quiz.rapidFireSeconds * 1000;
+  quiz.rapidExpired = true;
+  quiz.rapidTimeouts++;
+  // Timeout is a real incorrect answer and counts toward Guess limit.
+  reveal(true);
+  if (state.quiz !== quiz) return;
+  updateRapidFireDisplay(quiz);
+  if (!quiz.guessLimitReached) {
+    quiz.rapidAdvanceTimeout = setTimeout(function tryAdvance() {
+      if (state.quiz !== quiz || quiz.phase !== 'result') return;
+      if (quiz.paused) { quiz.rapidAdvanceTimeout = setTimeout(tryAdvance, 180); return; }
+      advanceQuestion();
+    }, 1500);
+  }
+}
+function tickQuizTimers(quiz) {
+  if (state.quiz !== quiz || quiz.paused) return;
+  const now = performance.now();
+  const delta = Math.max(0, now - quiz.lastTick);
+  quiz.lastTick = now;
+  if (quiz.timerMode !== 'off') {
+    quiz.elapsedMs += delta;
+    updateTimer(quiz);
+    if (!['up','elapsed','guesses'].includes(quiz.timerMode) && quiz.elapsedMs >= Number(quiz.timerMode) * 1000) {
+      stopQuiz(false, true);return;
+    }
+  } else {
+    // Still track duration for results even if only Rapid Fire is active.
+    quiz.elapsedMs += delta;
+  }
+  if (rapidFireActive(quiz) && !quiz.rapidExpired) {
+    quiz.rapidElapsedMs += delta;
+    if (quiz.rapidElapsedMs >= quiz.rapidFireSeconds * 1000) { expireRapidFire(quiz);return; }
+    updateRapidFireDisplay(quiz);
+  }
+}
 function initTimer(quiz) {
-  const enabled = quiz.timerMode !== 'off';
+  const enabled = quiz.timerMode !== 'off' || quiz.rapidFireSeconds !== null;
   $('pauseTimerButton').textContent = t('pause');
   $('pauseTimerButton').setAttribute('aria-pressed', 'false');
   syncElapsedClock(quiz);
   if (!enabled) return;
   updateTimer(quiz);
   quiz.lastTick = performance.now();
-  quiz.timerInterval = setInterval(() => {
-    if (state.quiz !== quiz || quiz.paused) return;
-    const now = performance.now();
-    quiz.elapsedMs += Math.max(0, now - quiz.lastTick);
-    quiz.lastTick = now;
-    updateTimer(quiz);
-    if (!['up','elapsed','guesses'].includes(quiz.timerMode) && quiz.elapsedMs >= Number(quiz.timerMode) * 1000) stopQuiz(false, true);
-  }, 150);
+  quiz.timerInterval = setInterval(() => tickQuizTimers(quiz), 80);
 }
 function formatDuration(totalSeconds) {
   const secs = Math.max(0, Math.ceil(totalSeconds));
@@ -1282,7 +1553,7 @@ function updateTimer(quiz) {
 }
 function toggleTimerPause() {
   const quiz = state.quiz;
-  if (!quiz || quiz.timerMode === 'off') return;
+  if (!quiz || (quiz.timerMode === 'off' && quiz.rapidFireSeconds === null)) return;
   if (!quiz.paused) {
     const now = performance.now();
     quiz.elapsedMs += Math.max(0, now - quiz.lastTick);
@@ -1295,14 +1566,18 @@ function toggleTimerPause() {
   $('pauseTimerButton').setAttribute('aria-pressed', String(quiz.paused));
   $('quizPanel').classList.toggle('is-paused', quiz.paused);
   updateTimer(quiz);
-  if (!quiz.paused && quiz.phase === 'question') $('answerInput').focus();
+  updateRapidFireDisplay(quiz);
+  if (quiz.paused) stopVoiceRecognition();
+  if (!quiz.paused && quiz.phase === 'question') (quiz.voiceMode ? $('voiceMicButton') : $('answerInput')).focus();
 }
 function clearQuizTimers(quiz) {
   clearInterval(quiz.timerInterval);
   clearTimeout(quiz.transitionTimeout);
   clearTimeout(quiz.limitEndTimeout);
+  clearTimeout(quiz.rapidAdvanceTimeout);
 }
 function nextQuestion() {
+  stopVoiceRecognition();
   const quiz = state.quiz;
   if (!quiz) return;
   if (!quiz.deck.length) {
@@ -1320,6 +1595,9 @@ function nextQuestion() {
   quiz.seenInRound++;
   const guided = quiz.mode === 'learn' && quiz.round <= 3;
   quiz.phase = guided ? 'guided' : 'question';
+  quiz.rapidElapsedMs = 0;
+  quiz.rapidExpired = false;
+  updateRapidFireDisplay(quiz);
   $('quizSymbol').textContent = quiz.current.kana;
   $('printedKana').textContent = quiz.current.kana;
   $('printedLabel').textContent = state.language === 'es' ? 'Con una fuente normal' : 'In a regular font';
@@ -1349,7 +1627,8 @@ function nextQuestion() {
     $('checkButton').classList.remove('result-correct', 'result-wrong');
     $('checkButton').disabled = false;
     $('skipButton').hidden = false;
-    if (!quiz.paused) $('answerInput').focus({preventScroll:true});
+    renderVoiceQuestion(quiz);
+    if (!quiz.paused) (quiz.voiceMode ? $('voiceMicButton') : $('answerInput')).focus({preventScroll:true});
   }
   updateStats();
 }
@@ -1357,6 +1636,8 @@ function advanceQuestion() {
   const quiz = state.quiz;
   if (quiz?.guessLimitReached && quiz.phase === 'result') { stopQuiz(false,false,true); return; }
   if (!quiz || quiz.paused || !['result','guided'].includes(quiz.phase)) return;
+  clearTimeout(quiz.rapidAdvanceTimeout);
+  quiz.rapidAdvanceTimeout = null;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { nextQuestion(); return; }
   quiz.phase = 'transition';
   $('checkButton').disabled = true;
@@ -1390,9 +1671,17 @@ function updateStats() {
 function reveal(skipped = false) {
   const quiz = state.quiz;
   if (!quiz || quiz.paused || quiz.phase !== 'question') return;
+  // Check the exact remaining time at submission, not just at the last animation frame.
+  // expireRapidFire sets rapidExpired before invoking reveal so this cannot recurse.
+  if (!quiz.rapidExpired && rapidFireActive(quiz) && performance.now() - quiz.lastTick + quiz.rapidElapsedMs >= quiz.rapidFireSeconds * 1000) {
+    expireRapidFire(quiz); return;
+  }
   const entered = normalized($('answerInput').value);
-  if (!skipped && !entered) { $('answerInput').focus(); return; }
-  const correct = !skipped && answersFor(quiz, quiz.current).some(answer => normalized(answer) === entered);
+  if (!skipped && !entered && (quiz.voiceVerdict === null || quiz.voiceVerdict === undefined)) { $('answerInput').focus(); return; }
+  stopVoiceRecognition();
+  const voiceVerdict = quiz.voiceMode && quiz.voiceVerdict !== null && quiz.voiceVerdict !== undefined ? quiz.voiceVerdict : null;
+  if (quiz.voiceMode && !skipped && voiceVerdict !== null) { /* speech engine already matched the spoken answer */ }
+  const correct = !skipped && (voiceVerdict !== null ? voiceVerdict : answersFor(quiz, quiz.current).some(answer => normalized(answer) === entered));
   quiz.attempts++;
   if (correct) quiz.correct++;
   const item = quiz.current;
@@ -1401,7 +1690,9 @@ function reveal(skipped = false) {
   if (correct) stats.correct++; else stats.errors++;
   quiz.perItem.set(item.id,stats);
   quiz.phase = 'result';
+  updateRapidFireDisplay(quiz);
   $('answerInput').disabled = true;
+  if (quiz.voiceMode) { $('voiceAnswer').hidden = true; $('typedAnswerFields').hidden = true; $('checkButton').hidden = false; $('answerForm').querySelector('.quiz-actions').classList.remove('voice-question'); }
   $('feedback').hidden = false;
   $('feedback').className = 'feedback '+(correct ? 'correct':'wrong');
   quiz.lastCorrect = correct;
@@ -1423,13 +1714,14 @@ function reveal(skipped = false) {
 function stopQuiz(completed = false, timedOut = false, reachedGuessGoal = false) {
   const quiz = state.quiz;
   if (!quiz) return;
+  stopVoiceRecognition();
   clearQuizTimers(quiz);
   $('kanaDisplay').classList.remove('is-exiting','is-entering');
   const hardest = [...quiz.perItem.values()].filter(x => x.errors > 0)
     .sort((a,b) => b.errors-a.errors || a.correct/a.attempts-b.correct/b.attempts || b.attempts-a.attempts);
   state.lastSummary = { hardest, kind:quiz.kind, mode:quiz.mode, pool:[...quiz.pool], script:quiz.script,
     wordAnswerMode:quiz.wordAnswerMode, timedOut, completed, guessLimitReached:reachedGuessGoal, guessLimit:quiz.guessLimit, round:quiz.round,
-    attempts:quiz.attempts, correct:quiz.correct, timerMode:quiz.timerMode,
+    attempts:quiz.attempts, correct:quiz.correct, rapidTimeouts:quiz.rapidTimeouts, timerMode:quiz.timerMode,
     elapsedMs:quiz.elapsedMs };
   renderSummary(state.lastSummary);
   state.quiz = null;
@@ -1477,6 +1769,12 @@ function showFeedback(quiz) {
     : t('wrongFeedback',{kana:item.kana,answer,extra,alt});
   // In Word Challenge / Romaji Reading, reveal the English definition for
   // both correct and incorrect answers, regardless of the UI language.
+  if (quiz.rapidExpired) {
+    const timeNotice = document.createElement('strong');
+    timeNotice.className = 'rapid-expired-message';
+    timeNotice.textContent = t('rapidFireTimeout');
+    $('feedback').prepend(timeNotice);
+  }
   if (isWordReading) {
     const meaning = document.createElement('div');
     meaning.className = 'word-reading-meaning';
@@ -1500,6 +1798,8 @@ function refreshQuizLanguage() {
   syncElapsedClock(quiz);
   updateQuestionLanguage(quiz);
   if (quiz.phase === 'question') $('checkButton').textContent = state.language==='es'?'Comprobar ↵':'Check ↵';
+  if (quiz.voiceMode) updateVoiceLanguage(quiz);
+  updateRapidFireDisplay(quiz);
   if (quiz.phase === 'result') {
     showFeedback(quiz);
     if (quiz.guessLimitReached) $('checkButton').textContent = t('seeResults');
@@ -1508,6 +1808,7 @@ function refreshQuizLanguage() {
 function renderSummary(s) {
   $('summaryEyebrow').textContent = t(s.guessLimitReached?'guessReached':s.timedOut?'timeUp':s.completed?'lessonComplete':'sessionFinished');
   $('summaryDescription').textContent = t(s.mode==='learn'?'summaryLearn':'summaryOther');
+  if (s.rapidTimeouts) $('summaryDescription').textContent += ' · ' + t('rapidFireBonus',{count:s.rapidTimeouts});
   const timing = s.timerMode === 'off' ? '' : t('timing',{time:formatDuration(Math.floor(s.elapsedMs/1000))});
   $('summaryProgress').hidden = !(s.guessLimitReached || s.mode==='learn' || timing || s.mode==='review');
   $('summaryProgress').textContent = s.guessLimitReached ? t('summaryGuessGoal',{attempts:s.attempts,goal:s.guessLimit,timing}) : s.mode==='learn'
@@ -1524,6 +1825,7 @@ function renderSummary(s) {
 }
 function backToSelection() {
   if (state.quiz) clearQuizTimers(state.quiz);
+  stopVoiceRecognition();
   state.quiz = null;
   $('kanaDisplay').classList.remove('is-exiting','is-entering');
   $('quizScreen').hidden = true;
@@ -1584,6 +1886,18 @@ $('elapsedToggle').addEventListener('click', () => {
   save();
 });
 $('timerSetting').addEventListener('change', e => { state.timerSetting = e.target.value; updateCustomTimerVisibility(); save(); });
+$('rapidFireEnabled').addEventListener('change', e => {
+  state.rapidFireEnabled = e.target.checked;
+  updateRapidFireSettings();
+  if (state.rapidFireEnabled) configuredRapidFireSeconds();
+  save();
+});
+$('rapidFireSeconds').addEventListener('input', e => {
+  state.rapidFireSeconds = e.target.value;
+  if (state.rapidFireEnabled) configuredRapidFireSeconds();
+  save();
+});
+$('rapidFirePause').addEventListener('click', toggleTimerPause);
 $('guessLimit').addEventListener('input', () => {
   state.guessLimit = $('guessLimit').value;
   if (state.timerSetting === 'guesses') configuredGuessLimit();
@@ -1595,7 +1909,8 @@ for (const id of ['customHours','customMinutes']) $(id).addEventListener('input'
   if (state.timerSetting === 'custom') customTimerSeconds();
   save();
 });
-$('wordAnswerMode').addEventListener('change', e => { state.wordAnswerMode = e.target.value; save(); });
+$('wordAnswerMode').addEventListener('change', e => { state.wordAnswerMode = e.target.value; refreshVoiceOption(); save(); });
+$('wordVoiceEnabled').addEventListener('change', e => { state.wordVoiceEnabled = e.target.checked; save(); });
 for (const script of SCRIPTS) $('tab'+script[0].toUpperCase()+script.slice(1)).addEventListener('click', () => selectScript(script));
 document.querySelector('.tabs').addEventListener('keydown', e => {
   if (!['ArrowLeft','ArrowRight'].includes(e.key)) return;
@@ -1729,7 +2044,7 @@ $('randomTen').addEventListener('click', () => {
 });
 $('learnButton').addEventListener('click', () => startQuiz('learn'));
 $('startButton').addEventListener('click', () => startQuiz('practice'));
-$('openWordsButton').addEventListener('click', () => { render(); $('wordsDialog').showModal(); });
+$('openWordsButton').addEventListener('click', () => { render(); refreshVoiceOption(); $('wordsDialog').showModal(); });
 $('closeWordsDialog').addEventListener('click', () => $('wordsDialog').close());
 $('cancelWordsDialog').addEventListener('click', () => $('wordsDialog').close());
 $('wordsDialog').addEventListener('click', e => { if (e.target === $('wordsDialog')) $('wordsDialog').close(); });
@@ -1746,6 +2061,9 @@ $('wordsButton').addEventListener('click', () => {
     toast(t('toastBadTimerBefore'));
     $('customMinutes').focus();
     return;
+  }
+  if (state.rapidFireEnabled && configuredRapidFireSeconds() === null) {
+    $('wordsDialog').close(); toast(t('toastBadRapidFire')); $('rapidFireSeconds').focus(); return;
   }
   $('wordsDialog').close();
   startQuiz('words');

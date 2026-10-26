@@ -90,8 +90,8 @@
               <div class="timer-header"><span class="timer-decoration" aria-hidden="true">✿</span><label class="side-label" for="timerSetting">YOUR LITTLE STUDY TIMER</label><span class="timer-decoration" aria-hidden="true">✧</span></div>
               <div class="timer-card">
                 <div class="timer-card-head"><span aria-hidden="true" class="timer-clock">◷</span><span class="timer-card-title">Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div>
-                <select class="setting-select" id="timerSetting" aria-label="Timer mode"><option value="custom">Custom countdown</option><option value="guesses">Guess limit</option><option value="off" selected>No countdown</option><option value="up">Stopwatch (count up)</option><option value="300">5-minute countdown</option><option value="600">10-minute countdown</option><option value="900">15-minute countdown</option></select>
-                <div id="customTimerFields" class="custom-timer-fields" role="group" aria-label="Custom countdown duration" hidden>
+                <select class="setting-select" id="timerSetting" aria-label="Timer mode"><option value="off" selected>No limit</option><option value="custom">Timer</option><option value="guesses">Guess limit</option></select>
+                <div id="customTimerFields" class="custom-timer-fields" role="group" aria-label="Timer duration" hidden>
                   <label for="customHours"><span class="time-caption">Hours</span><input type="number" id="customHours" class="time-input" min="0" max="99" step="1" inputmode="numeric" value="0" placeholder="00"></label>
                   <span class="time-separator" aria-hidden="true">:</span>
                   <label for="customMinutes"><span class="time-caption">Minutes</span><input type="number" id="customMinutes" class="time-input" min="0" max="59" step="1" inputmode="numeric" value="5" placeholder="05"></label>
@@ -104,7 +104,22 @@
                 <p id="customTimerError" class="timer-error" role="alert" hidden>Please choose between 00:01 and 99:59.</p>
                 <p class="timer-footnote" id="timerFootnote">✧ One tiny study session at a time.</p>
               </div>
-              <p class="choice-explanation" id="countdownHelp">Countdowns end your lesson at zero. Pause anytime.</p>
+              <p class="choice-explanation" id="countdownHelp">Practice with no limit. Show or hide your elapsed clock during Infinite Practice.</p>
+              <div class="rapid-fire-card" id="rapidFireCard">
+                <label class="rapid-fire-toggle" for="rapidFireEnabled">
+                  <span class="rapid-fire-symbol" aria-hidden="true">✦</span>
+                  <span class="rapid-fire-copy"><strong id="rapidFireTitle">Rapid Fire</strong><small id="rapidFireSubtitle">A little challenge for quick thinking!</small></span>
+                  <input id="rapidFireEnabled" type="checkbox" role="switch" aria-controls="rapidFireSettings" aria-expanded="false">
+                </label>
+                <div id="rapidFireSettings" class="rapid-fire-settings" hidden>
+                  <div class="rapid-fire-setting-row">
+                    <label for="rapidFireSeconds" id="rapidFireSecondsLabel">Seconds per answer</label>
+                    <div class="rapid-fire-number"><input id="rapidFireSeconds" type="number" min="1" max="300" step="1" inputmode="numeric" value="10"><span id="rapidFireSecondsUnit">sec</span></div>
+                  </div>
+                  <p class="rapid-fire-help" id="rapidFireHelp">If time runs out, it counts as a mistake and the next question appears.</p>
+                  <p id="rapidFireError" class="timer-error" role="alert" hidden>Choose between 1 and 300 seconds.</p>
+                </div>
+              </div>
             </div>
             <div class="session-choices">
               <button type="button" class="button-secondary" id="learnButton" disabled>Learn my selection →</button><p class="choice-explanation" id="learnHelp">3 guided passes showing the answer, followed by 3 memory-test passes.</p>
@@ -121,10 +136,22 @@
       <div class="stats" id="quizStats"><div class="stat"><span class="stat-answered">Answered</span><b id="attemptsStat">0</b></div><div class="stat"><span class="stat-correct">Correct</span><b id="correctStat">0</b></div><div class="stat"><span class="stat-accuracy">Accuracy</span><b id="accuracyStat">—</b></div></div>
       <p class="quiz-sublabel" id="roundLabel">Shuffling your selection</p>
       <div class="quiz-panel" id="quizPanel">
+      <div id="rapidFireIndicator" class="rapid-fire-indicator" role="group" aria-label="Rapid Fire countdown" hidden>
+        <div class="rapid-fire-indicator-top"><span class="rapid-fire-indicator-label"><span aria-hidden="true">✦</span> <span id="rapidFireIndicatorTitle">Rapid Fire</span></span><span class="rapid-fire-indicator-tools"><strong id="rapidFireRemaining" aria-live="off">10s</strong><button type="button" class="mini-button rapid-fire-pause" id="rapidFirePause">Pause</button></span></div>
+        <div class="rapid-fire-track" role="progressbar" id="rapidFireProgress" aria-label="Time left for this answer" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="rapidFireBar"></span></div>
+        <p id="rapidFireStatus" class="rapid-fire-status" aria-live="polite"></p>
+      </div>
         <div class="quiz-head" id="quizHead">How do you read this character?</div>
         <div id="kanaDisplay" class="kana-display"><div class="quiz-symbol" id="quizSymbol" aria-live="polite">あ</div><div class="printed-note"><span id="printedLabel">In a regular font</span><span class="printed-kana" id="printedKana" aria-hidden="true">あ</span></div></div>
         <div class="guided-block" id="guidedBlock" hidden><div class="guided-caption" id="guidedCaption">Reading</div><div class="guided-reading" id="guidedReading">a</div><p class="guided-tip" id="guidedTip">Say the reading out loud.</p><button type="button" class="button-primary" id="guidedNext">Got it, next →</button></div>
-        <div class="quiz-bottom" id="answerArea"><form id="answerForm" autocomplete="off"><label for="answerInput" id="answerLabel">Your answer in romaji</label><input id="answerInput" class="answer-input" type="text" placeholder="e.g. ka, shi, tsu…" autocomplete="off" autocapitalize="off" spellcheck="false" required><div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div><div class="quiz-actions"><button type="submit" class="button-primary" id="checkButton">Check ↵</button><button type="button" class="button-secondary" id="skipButton">I don't know</button></div></form></div>
+        <div class="quiz-bottom" id="answerArea"><form id="answerForm" autocomplete="off"><div id="typedAnswerFields"><label for="answerInput" id="answerLabel">Your answer in romaji</label><input id="answerInput" class="answer-input" type="text" placeholder="e.g. ka, shi, tsu…" autocomplete="off" autocapitalize="off" spellcheck="false" required></div>
+          <div class="voice-answer" id="voiceAnswer" hidden>
+            <div class="voice-answer-top"><span class="voice-sparkle" aria-hidden="true">✦</span><strong id="voiceAnswerTitle">Say it in Japanese!</strong><span class="voice-sparkle" aria-hidden="true">✦</span></div>
+            <button type="button" id="voiceMicButton" class="voice-mic-button"><span class="voice-mic-glyph" aria-hidden="true">🎙</span><span id="voiceMicLabel">Tap to speak</span></button>
+            <p id="voiceStatus" class="voice-status" role="status" aria-live="polite">Tap the microphone to start.</p>
+            <p id="voiceTranscript" class="voice-transcript" hidden></p>
+            <div class="voice-action-row"><button type="button" id="voiceRetry" class="mini-button" hidden>Try again</button><button type="button" id="voiceUseTranscript" class="mini-button" hidden>Count as an attempt</button><button type="button" id="voiceTypeInstead" class="mini-button">Type instead</button></div>
+          </div><div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div><div class="quiz-actions"><button type="submit" class="button-primary" id="checkButton">Check ↵</button><button type="button" class="button-secondary" id="skipButton">I don't know</button></div></form></div>
       </div>
       <p class="quiz-hint" id="quizHint">Enter to check / continue · Esc to finish</p>
       <button type="button" class="button-secondary end-lesson" id="finishLessonButton">Finish lesson & view results</button>
@@ -166,6 +193,10 @@
       <div class="mixed-words-info" aria-live="polite"><span class="mixed-words-label" id="mixedWordCount">0 mixed-script · 0 using all three scripts</span><span class="mixed-words-examples" id="mixedWordExamples">Select characters from other tabs to unlock mixed-script words.</span></div>
       <label class="small-label" for="wordAnswerMode">What would you like to guess?</label>
       <select class="setting-select" id="wordAnswerMode"><option value="meaning">English meaning</option><option value="reading">Romaji reading</option></select>
+      <div class="voice-option" id="voiceOption" hidden>
+        <label class="voice-option-switch" for="wordVoiceEnabled"><input type="checkbox" id="wordVoiceEnabled"><span class="voice-option-icon" aria-hidden="true">♪</span><span><strong id="voiceOptionTitle">Speak instead of typing</strong><small id="voiceOptionSubtitle">Tap the microphone and say the Japanese reading.</small></span></label>
+        <p class="voice-option-note" id="voiceSupportNote">Speech recognition may need internet. Your browser may send audio to its speech provider.</p>
+      </div>
       <p class="choice-explanation" id="wordsDialogHelp">Only vocabulary using your selected characters will appear. Your current timer setting also applies.</p>
     </div>
     <div class="review-footer words-dialog-footer"><button type="button" class="button-secondary" id="cancelWordsDialog">Cancel</button><button type="button" class="button-primary" id="wordsButton" disabled>Start word practice →</button></div>

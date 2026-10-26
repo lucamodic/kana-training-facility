@@ -1,6 +1,6 @@
 /* Kana Training Facility offline shell, scoped for GitHub Pages subpaths.
    Bump CACHE_NAME on each future release to trigger the update prompt. */
-const CACHE_NAME = 'kana-training-facility-offline-v3';
+const CACHE_NAME = 'kana-training-facility-offline-v6';
 const SHELL = [
   './', './index.html', './styles.css', './app.js', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',

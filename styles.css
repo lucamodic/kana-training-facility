@@ -1124,3 +1124,19 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
  .global-study.is-floating .study-clock-titlebar strong {font-size:9px}
  .global-study.is-floating .study-clock-window-button {min-width:23px}
 }
+
+/* Floating clock: grab the title bar to reposition, including on touch screens. */
+.global-study.is-floating .study-clock-titlebar {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.global-study.is-floating.is-dragging .study-clock-titlebar { cursor: grabbing; }
+.global-study.is-floating .study-clock-titlebar:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+.global-study.is-floating .study-clock-titlebar button { cursor: pointer; touch-action: manipulation; }
+.global-study .study-clock-grip { display:none; font-size:15px; line-height:1; opacity:.8; }
+.global-study.is-floating .study-clock-grip {display:inline;}

@@ -127,3 +127,8 @@ Also deploy the updated `sw.js`, which caches this new file as part of the PWA.
 Español: el reloj global solo ofrece duración personalizada, se pausa o
 reanuda de forma independiente de las lecciones y al terminar reproduce una campanita suave y muestra el
 resumen de las actividades. No hay botón de audio japonés.
+
+
+## Draggable floating study clock
+
+While studying, the active global clock floats above the lesson. Drag its title bar (the area with the `⠿` grip) with a mouse or finger to reposition it. The location is stored in this browser, and automatically clamped to the visible viewport. The title bar can also be focused and moved with arrow keys (Shift + arrow for smaller steps). The minimize and close/dock buttons still work, and the large timer on the home screen has not changed. The clock keeps running while you move it. This release bumps the service-worker cache to `v15`.

@@ -1,6 +1,7 @@
 "use strict";
 (() => {
   const KEY = 'ktf-global-study-clock-v1';
+  const POSITION_KEY = 'ktf-floating-clock-position-v1';
   const $ = id => document.getElementById(id);
   const MAX_MS = (99 * 60 + 59) * 60000;
   const dictionary = {
@@ -18,7 +19,7 @@
       unique: 'Different items', mistakes: 'Need another look', noMistakes: 'No mistakes recorded this session.',
       close: 'Done →',
       confirm: 'Finish this study session early and see your progress?',
-      announcement: 'Study time remaining', minimize: 'Minimize study clock', expand: 'Expand study clock', dock: 'Keep clock in the lesson', float: 'Float study clock'
+      announcement: 'Study time remaining', minimize: 'Minimize study clock', expand: 'Expand study clock', dock: 'Keep clock in the lesson', float: 'Float study clock', drag: 'Drag to move the clock. Use arrow keys to adjust its position.'
     },
     es: {
       title: 'MI TIEMPO DE ESTUDIO', subtitle: 'Tu pequeña sesión de estudio',
@@ -34,7 +35,7 @@
       unique: 'Elementos diferentes', mistakes: 'Para seguir repasando', noMistakes: 'No tuviste errores en esta sesión.',
       close: 'Listo →',
       confirm: '¿Querés terminar antes esta sesión y ver tu progreso?',
-      announcement: 'Tiempo restante de estudio', minimize: 'Minimizar reloj de estudio', expand: 'Expandir reloj de estudio', dock: 'Dejar el reloj dentro de la lección', float: 'Hacer flotar el reloj'
+      announcement: 'Tiempo restante de estudio', minimize: 'Minimizar reloj de estudio', expand: 'Expandir reloj de estudio', dock: 'Dejar el reloj dentro de la lección', float: 'Hacer flotar el reloj', drag: 'Arrastrá para mover el reloj. Usá las flechas para ajustar su posición.'
     }
   };
   const lang = () => document.documentElement.lang === 'es' ? 'es' : 'en';
@@ -52,6 +53,59 @@
   let lessonOpen = false;
   let isDocked = false;
   let isMinimized = false;
+  const titlebar = clockElement.querySelector('.study-clock-titlebar');
+  let floatingPosition = null;
+  let activeDrag = null;
+  try {
+    const stored = JSON.parse(localStorage.getItem(POSITION_KEY) || 'null');
+    if (stored && Number.isFinite(stored.left) && Number.isFinite(stored.top)) {
+      floatingPosition = {left: stored.left, top: stored.top};
+    }
+  } catch (_) {}
+  function viewportBounds() {
+    const viewport = window.visualViewport;
+    return viewport
+      ? {left: viewport.offsetLeft, top: viewport.offsetTop, width: viewport.width, height: viewport.height}
+      : {left: 0, top: 0, width: innerWidth, height: innerHeight};
+  }
+  function clampPosition(position) {
+    const viewport = viewportBounds();
+    const rect = clockElement.getBoundingClientRect();
+    const padding = 8;
+    const minLeft = viewport.left + padding;
+    const minTop = viewport.top + padding;
+    const maxLeft = Math.max(minLeft, viewport.left + viewport.width - rect.width - padding);
+    const maxTop = Math.max(minTop, viewport.top + viewport.height - rect.height - padding);
+    return {
+      left: Math.min(maxLeft, Math.max(minLeft, position.left)),
+      top: Math.min(maxTop, Math.max(minTop, position.top))
+    };
+  }
+  function applyFloatingPosition() {
+    if (!clockElement.classList.contains('is-floating')) {
+      clockElement.style.left = '';
+      clockElement.style.top = '';
+      clockElement.style.right = '';
+      clockElement.style.bottom = '';
+      return;
+    }
+    if (!floatingPosition) {
+      clockElement.style.left = '';
+      clockElement.style.top = '';
+      clockElement.style.right = '';
+      clockElement.style.bottom = '';
+      return;
+    }
+    floatingPosition = clampPosition(floatingPosition);
+    clockElement.style.left = `${floatingPosition.left}px`;
+    clockElement.style.top = `${floatingPosition.top}px`;
+    clockElement.style.right = 'auto';
+    clockElement.style.bottom = 'auto';
+  }
+  function saveFloatingPosition() {
+    if (!floatingPosition) return;
+    try { localStorage.setItem(POSITION_KEY, JSON.stringify(floatingPosition)); } catch (_) {}
+  }
   function placeClock() {
     const lessonActive = lessonOpen && clock.status !== 'idle';
     const floating = lessonActive && !isDocked;
@@ -66,6 +120,9 @@
     $('studyClockMinimize').hidden = !floating;
     $('studyClockDock').hidden = !floating;
     $('studyClockFloat').hidden = !docked;
+    titlebar.tabIndex = floating ? 0 : -1;
+    titlebar.title = floating ? t('drag') : '';
+    applyFloatingPosition();
   }
   function viewChanged(open) {
     lessonOpen = open;
@@ -75,6 +132,59 @@
     }
     placeClock();
   }
+  function pointerStart(event) {
+    if (!clockElement.classList.contains('is-floating') || event.button !== 0 ||
+        event.target.closest('button, input, a, select')) return;
+    const rect = clockElement.getBoundingClientRect();
+    floatingPosition = {left: rect.left, top: rect.top};
+    activeDrag = {id: event.pointerId, x: event.clientX, y: event.clientY,
+      left: rect.left, top: rect.top};
+    clockElement.classList.add('is-dragging');
+    titlebar.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  }
+  function pointerMove(event) {
+    if (!activeDrag || event.pointerId !== activeDrag.id) return;
+    floatingPosition = clampPosition({
+      left: activeDrag.left + event.clientX - activeDrag.x,
+      top: activeDrag.top + event.clientY - activeDrag.y
+    });
+    applyFloatingPosition();
+  }
+  function pointerEnd(event) {
+    if (!activeDrag || event.pointerId !== activeDrag.id) return;
+    activeDrag = null;
+    clockElement.classList.remove('is-dragging');
+    if (titlebar.hasPointerCapture?.(event.pointerId)) titlebar.releasePointerCapture(event.pointerId);
+    saveFloatingPosition();
+  }
+  titlebar.addEventListener('pointerdown', pointerStart);
+  titlebar.addEventListener('pointermove', pointerMove);
+  titlebar.addEventListener('pointerup', pointerEnd);
+  titlebar.addEventListener('pointercancel', pointerEnd);
+  titlebar.addEventListener('lostpointercapture', pointerEnd);
+  titlebar.addEventListener('keydown', event => {
+    if (!clockElement.classList.contains('is-floating') ||
+        !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+    event.preventDefault();
+    const rect = clockElement.getBoundingClientRect();
+    const step = event.shiftKey ? 4 : 18;
+    floatingPosition = clampPosition({
+      left: rect.left + (event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0),
+      top: rect.top + (event.key === 'ArrowUp' ? -step : event.key === 'ArrowDown' ? step : 0)
+    });
+    applyFloatingPosition();
+    saveFloatingPosition();
+  });
+  function fitFloatingClock() {
+    if (clockElement.classList.contains('is-floating') && floatingPosition) {
+      applyFloatingPosition();
+      saveFloatingPosition();
+    }
+  }
+  window.addEventListener('resize', fitFloatingClock);
+  window.visualViewport?.addEventListener('resize', fitFloatingClock);
+  window.visualViewport?.addEventListener('scroll', fitFloatingClock);
   const normalizeTime = value => String(value ?? '').trim();
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || 'null');

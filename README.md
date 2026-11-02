@@ -90,3 +90,34 @@ The update notice uses the currently selected interface language. New visitors s
 
 Enable **Rapid Fire** from Your Session to set a separate time limit for **each answer** (1–300 seconds, default 10). It works alongside No limit, Timer, and Guess limit, including Word Challenge. An unanswered question is counted as incorrect, briefly shows the correct answer, then automatically advances. The guided learning passes are not timed; the 3 memory passes are. Pausing freezes both countdowns. Preferences persist locally; the PWA offline cache was updated.
 
+
+
+## Global study timer / Temporizador general
+
+The study clock is at the top of the page and is independent of the lesson timer.
+Choose **any custom time** using the Hours and Minutes fields (no preset duration).
+Allowed range: 00:01 through 99:59. The chosen duration is remembered locally.
+
+Start, pause/resume or finish early at any time. The clock keeps counting across
+Hiragana, Katakana, Kanji, One Pass, Word Challenge, and lesson/result screens.
+Progress and the deadline are stored in the browser. After a page reload, the
+countdown and collected study metrics can resume. Browser background throttling
+does not change the deadline.
+
+At zero, a summary modal appears with study duration, total answers, accuracy,
+words, character answers, guided cards, lessons finished, unique items, and the
+most-missed items recorded **while the global study timer was running**.
+The app attempts to say “お疲れさまでした。今日もよく頑張りました。” using the browser's
+Japanese speech synthesis. Users can replay the voice message from the modal.
+Audio requires an available speech synthesis voice and may be blocked by browser
+autoplay rules, so the visible Japanese message is also displayed.
+
+The interface automatically follows English/Spanish preference. All study
+metrics stay in localStorage and are not uploaded to a server.
+
+New source file: `study-clock.js`; include it in the GitHub Pages deployment.
+Also deploy the updated `sw.js`, which caches this new file as part of the PWA.
+
+Español: el reloj global solo ofrece duración personalizada, se pausa o
+reanuda de forma independiente de las lecciones y al terminar muestra un
+resumen de las actividades y el mensaje japonés.

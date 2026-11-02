@@ -15,6 +15,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
   <link rel="stylesheet" href="./styles.css">
   <script src="./app.js" defer></script>
+  <script src="./study-clock.js" defer></script>
 </head>
 <body>
   <header class="top">
@@ -58,6 +59,22 @@
     </div>
 
   </header>
+
+
+    <section class="global-study shell" id="globalStudyClock" aria-label="Study time tracker">
+      <div class="study-clock-card">
+        <div class="study-clock-titlebar"><span aria-hidden="true">✦</span> <strong id="studyClockTitle">MY STUDY TIME</strong><span class="study-clock-title-deco" aria-hidden="true">✧ ✧</span></div>
+        <div class="study-clock-body">
+          <div class="study-clock-intro"><div><strong id="studyClockSubtitle">Your own little study session</strong><p id="studyClockDescription">Choose your hours and minutes. Your timer follows you across lessons.</p></div><span class="study-clock-flower" aria-hidden="true">✿</span></div>
+          <div class="study-clock-grid">
+            <div class="study-clock-inputs" id="studyClockInputs"><label for="studyHours"><span id="studyHoursLabel">Hours</span><input id="studyHours" type="number" inputmode="numeric" min="0" max="99" step="1" placeholder="0" autocomplete="off"></label><span class="study-clock-colon">:</span><label for="studyMinutes"><span id="studyMinutesLabel">Minutes</span><input id="studyMinutes" type="number" inputmode="numeric" min="0" max="59" step="1" placeholder="0" autocomplete="off"></label></div>
+            <div class="study-clock-status" aria-live="off"><span id="studyClockStatus">SET YOUR TIME</span><strong id="studyClockDisplay">--:--:--</strong><div class="study-clock-progress" role="progressbar" id="studyClockProgress" aria-label="Overall study time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="studyClockBar"></span></div></div>
+          </div>
+          <p class="study-clock-error" id="studyClockError" role="alert" hidden>Please enter a duration between 1 minute and 99 hours 59 minutes.</p>
+          <div class="study-clock-buttons"><button type="button" class="button-primary" id="studyClockStart">Start study time →</button><button type="button" class="button-secondary" id="studyClockPause" hidden>Pause</button><button type="button" class="button-secondary" id="studyClockFinish" hidden>Finish &amp; see summary</button></div>
+        </div>
+      </div>
+    </section>
 
   <main class="shell">
     <section id="setupScreen" aria-label="Choose study material">
@@ -192,5 +209,11 @@
     <div class="review-footer words-dialog-footer"><button type="button" class="button-secondary" id="cancelWordsDialog">Cancel</button><button type="button" class="button-primary" id="wordsButton" disabled>Start word practice →</button></div>
   </dialog>
   <dialog id="reviewDialog" aria-labelledby="reviewTitle" class="review-dialog"><div class="review-dialog-head"><div><span class="eyebrow">A LITTLE EXTRA PRACTICE</span><h2 id="reviewTitle">Review your toughest items</h2></div><button type="button" class="mini-button" id="closeReview" aria-label="Close review dialog">✕</button></div><p class="subtle" id="reviewDialogHelp">Uncheck anything you don't want to practice right now. Your regular selections won't change.</p><div class="review-toolbar"><button type="button" class="mini-button" id="reviewSelectAll">Select all</button><button type="button" class="mini-button" id="reviewClearAll">Clear</button></div><div id="reviewItems" class="review-items"></div><div class="review-footer"><span id="reviewCount" class="subtle">0 selected</span><div class="review-buttons"><button type="button" class="button-secondary" id="cancelReview">Cancel</button><button type="button" class="button-primary" id="beginReview">Start review →</button></div></div></dialog>
+
+  <dialog id="studyClockCompleteDialog" class="review-dialog study-clock-dialog" aria-labelledby="studyClockDialogTitle">
+    <div class="study-clock-dialog-top"><span class="study-clock-celebration" aria-hidden="true">✧ ✿ ✧</span><p class="study-clock-japanese" lang="ja">お疲れさまでした！</p><h2 id="studyClockDialogTitle">Study session complete!</h2><p id="studyClockDialogDescription">Lovely work today. Here's what you practiced.</p></div>
+    <div class="study-clock-summary" id="studyClockSummary"></div>
+    <div class="study-clock-dialog-actions"><button type="button" class="button-secondary" id="studyClockReplaySpeech">♪ Play Japanese message</button><button type="button" class="button-primary" id="studyClockDismiss">Done →</button></div>
+  </dialog>
 </body>
 </html>

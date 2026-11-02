@@ -1490,6 +1490,7 @@ function changeLanguage(language, persist=true) {
   render();
   if (state.quiz) refreshQuizLanguage();
   if (state.lastSummary && !$('summaryScreen').hidden) renderSummary(state.lastSummary);
+  document.dispatchEvent(new Event('ktf:languagechange'));
   if (persist) {
     state.languagePreference = 'manual';
     save();
@@ -1815,6 +1816,7 @@ function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, 
     guessLimit, guessLimitReached: false, limitEndTimeout: null,
     rapidFireSeconds: rapidLimit, rapidElapsedMs: 0, rapidTimeouts: 0, rapidAdvanceTimeout: null, rapidExpired: false };
   state.quiz = quiz;
+  window.KTFStudyClock?.onQuizStart({kind, mode});
   $('setupScreen').hidden = true;
   $('summaryScreen').hidden = true;
   $('quizScreen').hidden = false;
@@ -1977,6 +1979,7 @@ function nextQuestion() {
     $('progressFill').style.width = progress+'%';
     $('progressTrack').setAttribute('aria-valuenow', String(progress));
   }
+  if (guided) window.KTFStudyClock?.onGuided(quiz.current);
   if (guided) {
     $('guidedReading').textContent = `${quiz.current.answer}${quiz.current.meaning ? ' · '+itemMeaning(quiz.current) : ''}`;
     $('guidedCaption').textContent = t('guideCaption');
@@ -2053,6 +2056,7 @@ function reveal(skipped = false) {
   stats.attempts++;
   if (correct) stats.correct++; else stats.errors++;
   quiz.perItem.set(item.id,stats);
+  window.KTFStudyClock?.onAnswer({item, kind:quiz.kind, correct, skipped, timedOut:quiz.rapidExpired});
   quiz.phase = 'result';
   updateRapidFireDisplay(quiz);
   $('answerInput').disabled = true;
@@ -2085,6 +2089,7 @@ function stopQuiz(completed = false, timedOut = false, reachedGuessGoal = false)
   const quiz = state.quiz;
   if (!quiz) return;
   clearQuizTimers(quiz);
+  window.KTFStudyClock?.onQuizFinish({kind:quiz.kind, mode:quiz.mode, completed});
   $('kanaDisplay').classList.remove('is-exiting','is-entering');
   const hardest = [...quiz.perItem.values()].filter(x => x.errors > 0)
     .sort((a,b) => b.errors-a.errors || a.correct/a.attempts-b.correct/b.attempts || b.attempts-a.attempts);

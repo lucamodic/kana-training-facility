@@ -16,9 +16,9 @@
       time: 'Time studied', answers: 'Answers', accurate: 'Accuracy', words: 'Word answers',
       kana: 'Character answers', guided: 'Guided cards seen', lessons: 'Lessons finished',
       unique: 'Different items', mistakes: 'Need another look', noMistakes: 'No mistakes recorded this session.',
-      replay: '♪ Play Japanese message', close: 'Done →',
+      close: 'Done →',
       confirm: 'Finish this study session early and see your progress?',
-      announcement: 'Study time remaining', notSupported: 'Audio could not play automatically. You can try the Japanese message button.'
+      announcement: 'Study time remaining', minimize: 'Minimize study clock', expand: 'Expand study clock', dock: 'Keep clock in the lesson', float: 'Float study clock'
     },
     es: {
       title: 'MI TIEMPO DE ESTUDIO', subtitle: 'Tu pequeña sesión de estudio',
@@ -32,9 +32,9 @@
       time: 'Tiempo estudiado', answers: 'Respuestas', accurate: 'Precisión', words: 'Palabras respondidas',
       kana: 'Caracteres respondidos', guided: 'Tarjetas guiadas vistas', lessons: 'Lecciones terminadas',
       unique: 'Elementos diferentes', mistakes: 'Para seguir repasando', noMistakes: 'No tuviste errores en esta sesión.',
-      replay: '♪ Escuchar mensaje en japonés', close: 'Listo →',
+      close: 'Listo →',
       confirm: '¿Querés terminar antes esta sesión y ver tu progreso?',
-      announcement: 'Tiempo restante de estudio', notSupported: 'No se pudo reproducir el audio automáticamente. Probá con el botón del mensaje japonés.'
+      announcement: 'Tiempo restante de estudio', minimize: 'Minimizar reloj de estudio', expand: 'Expandir reloj de estudio', dock: 'Dejar el reloj dentro de la lección', float: 'Hacer flotar el reloj'
     }
   };
   const lang = () => document.documentElement.lang === 'es' ? 'es' : 'en';
@@ -45,6 +45,36 @@
   const blank = () => ({ status: 'idle', savedHours:'', savedMinutes:'', durationMs:0,
     startedAt:null, deadlineAt:null, remainingMs:0, stats: defaultStats() });
   let clock = blank();
+  const clockElement = $('globalStudyClock');
+  const homeMarker = document.createComment('study clock position');
+  clockElement.before(homeMarker);
+  const lesson = $('quizScreen');
+  let lessonOpen = false;
+  let isDocked = false;
+  let isMinimized = false;
+  function placeClock() {
+    const lessonActive = lessonOpen && clock.status !== 'idle';
+    const floating = lessonActive && !isDocked;
+    const docked = lessonActive && isDocked;
+    if (docked) {
+      if (clockElement.parentNode !== lesson || lesson.firstChild !== clockElement) lesson.prepend(clockElement);
+    } else if (clockElement.previousSibling !== homeMarker) homeMarker.after(clockElement);
+    clockElement.classList.toggle('is-floating', floating);
+    clockElement.classList.toggle('is-docked', docked);
+    clockElement.classList.toggle('is-minimized', floating && isMinimized);
+    clockElement.classList.toggle('is-active', clock.status !== 'idle');
+    $('studyClockMinimize').hidden = !floating;
+    $('studyClockDock').hidden = !floating;
+    $('studyClockFloat').hidden = !docked;
+  }
+  function viewChanged(open) {
+    lessonOpen = open;
+    if (open) {
+      isDocked = false;
+      isMinimized = matchMedia('(max-width: 680px)').matches;
+    }
+    placeClock();
+  }
   const normalizeTime = value => String(value ?? '').trim();
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
@@ -78,8 +108,15 @@
     $('studyClockFinish').textContent = t('finish');
     $('studyClockError').textContent = t('error');
     $('studyClockProgress').setAttribute('aria-label', t('announcement'));
-    $('studyClockReplaySpeech').textContent = t('replay');
     $('studyClockDismiss').textContent = t('close');
+    const minimize = $('studyClockMinimize');
+    minimize.setAttribute('aria-label', t(isMinimized ? 'expand' : 'minimize'));
+    minimize.title = t(isMinimized ? 'expand' : 'minimize');
+    minimize.textContent = isMinimized ? '+' : '−';
+    $('studyClockDock').setAttribute('aria-label',t('dock'));
+    $('studyClockDock').title = t('dock');
+    $('studyClockFloat').setAttribute('aria-label',t('float'));
+    $('studyClockFloat').title = t('float');
   }
   function render() {
     const active = clock.status !== 'idle';
@@ -91,21 +128,50 @@
     $('studyClockFinish').hidden = !active;
     $('studyClockStatus').textContent = active ? t(clock.status === 'paused' ? 'paused' : 'remaining') : t('setup');
     $('studyClockDisplay').textContent = active ? format(remaining()) : '--:--:--';
+    $('studyClockMiniTime').textContent = active ? format(remaining()) : '--:--:--';
     const progress = active ? Math.max(0, Math.min(100, 100 * remaining() / clock.durationMs)) : 0;
     $('studyClockBar').style.width = progress + '%';
     $('studyClockProgress').setAttribute('aria-valuenow', Math.round(progress));
+    placeClock();
   }
   const safeText = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function sayJapanese() {
-    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return;
+  let bellContext = null;
+  function unlockBellAudio() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
     try {
-      speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance('お疲れさまでした。今日もよく頑張りました。');
-      utterance.lang = 'ja-JP';
-      utterance.rate = .88;
-      const japaneseVoice = speechSynthesis.getVoices().find(voice => voice.lang.toLowerCase().startsWith('ja'));
-      if (japaneseVoice) utterance.voice = japaneseVoice;
-      speechSynthesis.speak(utterance);
+      if (!bellContext || bellContext.state === 'closed') bellContext = new AudioContextClass();
+      if (bellContext.state === 'suspended') bellContext.resume().catch(() => {});
+    } catch (_) {}
+  }
+  function playSoftBell() {
+    if (!bellContext || bellContext.state !== 'running') return;
+    try {
+      const startAt = bellContext.currentTime + 0.04;
+      const chimes = [
+        {frequency: 783.99, offset: 0, duration: 1.55},
+        {frequency: 1046.50, offset: 0.26, duration: 1.9}
+      ];
+      chimes.forEach(({frequency, offset, duration}) => {
+        [
+          {ratio: 1, volume: 0.075},
+          {ratio: 2.01, volume: 0.017},
+          {ratio: 3.94, volume: 0.006}
+        ].forEach(({ratio, volume}) => {
+          const tone = bellContext.createOscillator();
+          const envelope = bellContext.createGain();
+          const at = startAt + offset;
+          tone.type = 'sine';
+          tone.frequency.value = frequency * ratio;
+          envelope.gain.setValueAtTime(0.0001, at);
+          envelope.gain.exponentialRampToValueAtTime(volume, at + 0.018);
+          envelope.gain.exponentialRampToValueAtTime(0.0001, at + duration);
+          tone.connect(envelope);
+          envelope.connect(bellContext.destination);
+          tone.start(at);
+          tone.stop(at + duration + 0.04);
+        });
+      });
     } catch (_) {}
   }
   function summaryCard(value, label) {
@@ -130,7 +196,7 @@
       `<div class="study-clock-summary-note"><strong>${safeText(t('mistakes'))}:</strong> ${safeText(mistakes)}</div>`;
     const dialog = $('studyClockCompleteDialog');
     if (!dialog.open) dialog.showModal();
-    if (finishedNaturally) sayJapanese();
+    if (finishedNaturally) playSoftBell();
   }
   function finish(natural=false) {
     if (clock.status === 'idle') return;
@@ -165,6 +231,7 @@
     const durationMs = validInputs();
     if (!durationMs) { $('studyClockError').hidden = false; return; }
     $('studyClockError').hidden = true;
+    unlockBellAudio();
     clock = { ...clock, status:'running', durationMs, remainingMs:durationMs,
       startedAt:Date.now(), deadlineAt:Date.now()+durationMs, stats:defaultStats() };
     persist();
@@ -176,6 +243,7 @@
       clock.deadlineAt = null;
       clock.status = 'paused';
     } else if (clock.status === 'paused') {
+      unlockBellAudio();
       clock.deadlineAt = Date.now() + clock.remainingMs;
       clock.status = 'running';
     }
@@ -183,6 +251,7 @@
     render();
   }
   function onQuizStart() {
+    viewChanged(true);
     if (!track()) return;
     clock.stats.started++;
     persist();
@@ -212,11 +281,12 @@
     persist();
   }
   function onQuizFinish() {
+    viewChanged(false);
     if (!track()) return;
     clock.stats.finished++;
     persist();
   }
-  window.KTFStudyClock = {onQuizStart,onGuided,onAnswer,onQuizFinish};
+  window.KTFStudyClock = {onQuizStart,onGuided,onAnswer,onQuizFinish,onViewChange: viewChanged};
   $('studyHours').value = clock.savedHours;
   $('studyMinutes').value = clock.savedMinutes;
   $('studyHours').addEventListener('input',saveInput);
@@ -225,9 +295,12 @@
   $('studyClockPause').addEventListener('click',pauseResume);
   $('studyClockFinish').addEventListener('click',() => { if (window.confirm(t('confirm'))) finish(false); });
   $('studyClockDismiss').addEventListener('click',() => $('studyClockCompleteDialog').close());
-  $('studyClockReplaySpeech').addEventListener('click',sayJapanese);
+  $('studyClockMinimize').addEventListener('click', () => { isMinimized = !isMinimized; render(); });
+  $('studyClockDock').addEventListener('click', () => { isDocked = true; isMinimized = false; render(); });
+  $('studyClockFloat').addEventListener('click', () => { isDocked = false; isMinimized = false; render(); });
   document.addEventListener('ktf:languagechange',render);
   document.addEventListener('visibilitychange',() => { if (!document.hidden) tick(); });
+  document.addEventListener('pointerdown', () => { if (clock.status !== 'idle') unlockBellAudio(); }, {passive:true});
   window.addEventListener('pageshow',tick);
   setInterval(tick, 500);
   render();

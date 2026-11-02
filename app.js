@@ -2200,6 +2200,7 @@ function renderSummary(s) {
   $('practiceAgain').textContent = t(s.mode==='learn'?'repeatLesson':'repeatPractice');
 }
 function backToSelection() {
+  window.KTFStudyClock?.onViewChange(false);
   if (state.quiz) clearQuizTimers(state.quiz);
   state.quiz = null;
   $('kanaDisplay').classList.remove('is-exiting','is-entering');

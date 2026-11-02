@@ -4,6 +4,9 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 
 ## Features
 
+- **Compact global study clock:** smaller home-page timer beneath the browser header. When a running or paused clock is active during a lesson, it becomes a floating, non-blocking widget. Minimize it to a title bar or close the floating view to dock the clock inside the lesson; use the ↗ button to float it again. On small screens the widget starts minimized to avoid covering answer fields. The countdown and study summary continue uninterrupted when moved or minimized.
+
+
 - **Hiragana, katakana, and beginner kanji** with individual selection, group selection, and click-and-drag painting to select or deselect multiple characters at once (mouse, pen, or finger). Touch taps and keyboard selection also work.
 - **Learn mode**: three guided passes (answers visible) and three memory-test passes.
 - **Infinite character practice** for the selected script.
@@ -107,10 +110,13 @@ does not change the deadline.
 At zero, a summary modal appears with study duration, total answers, accuracy,
 words, character answers, guided cards, lessons finished, unique items, and the
 most-missed items recorded **while the global study timer was running**.
-The app attempts to say “お疲れさまでした。今日もよく頑張りました。” using the browser's
-Japanese speech synthesis. Users can replay the voice message from the modal.
-Audio requires an available speech synthesis voice and may be blocked by browser
-autoplay rules, so the visible Japanese message is also displayed.
+When the study countdown reaches zero, the app plays a gentle two-note chime generated
+locally with Web Audio (no audio files or network requests), then shows the study
+summary. There is no Japanese message playback button and no speech synthesis.
+The written Japanese congratulatory message remains visible in the modal.
+Sound is initialized when the user starts or resumes the timer. Some browsers may
+suppress audio when the page is suspended, the device is muted, or the app has been
+closed; the summary still appears when the page resumes.
 
 The interface automatically follows English/Spanish preference. All study
 metrics stay in localStorage and are not uploaded to a server.
@@ -119,5 +125,5 @@ New source file: `study-clock.js`; include it in the GitHub Pages deployment.
 Also deploy the updated `sw.js`, which caches this new file as part of the PWA.
 
 Español: el reloj global solo ofrece duración personalizada, se pausa o
-reanuda de forma independiente de las lecciones y al terminar muestra un
-resumen de las actividades y el mensaje japonés.
+reanuda de forma independiente de las lecciones y al terminar reproduce una campanita suave y muestra el
+resumen de las actividades. No hay botón de audio japonés.

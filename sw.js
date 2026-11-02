@@ -1,6 +1,6 @@
 /* Kana Training Facility offline shell, scoped for GitHub Pages subpaths.
    Bump CACHE_NAME on each future release to trigger the update prompt. */
-const CACHE_NAME = 'kana-training-facility-offline-v13-compact-floating-study-clock';
+const CACHE_NAME = 'kana-training-facility-offline-v14-restored-home-floating-lesson';
 const SHELL = [
   './', './index.html', './styles.css', './app.js', './study-clock.js', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',

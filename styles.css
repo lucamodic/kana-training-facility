@@ -1081,71 +1081,46 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
 @media(max-width:360px){.study-clock-flower{display:none}.study-clock-status strong{font-size:25px}.study-clock-summary-item strong{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.study-clock-progress > span{transition:none}}
 
-.global-study {width:min(1200px,calc(100% - 22px));margin:12px auto 16px}
-.global-study .study-clock-card {width:min(660px,100%);margin-inline:auto 0}
-.global-study .study-clock-titlebar {min-height:29px;padding:5px 10px}
-.global-study .study-clock-titlebar strong {font-size:11px}
-.global-study .study-clock-title-deco,.global-study .study-clock-intro{display:none}
-.global-study .study-clock-body{padding:10px 13px 11px}
-.global-study .study-clock-grid{grid-template-columns:minmax(0,1fr) minmax(170px,1fr);gap:14px;align-items:center}
-.global-study .study-clock-inputs{gap:7px}
-.global-study .study-clock-inputs input{height:35px;font-size:18px}
-.global-study .study-clock-colon{font-size:18px;padding-bottom:5px}
-.global-study .study-clock-status strong{font-size:clamp(21px,3vw,26px);line-height:1}
-.global-study .study-clock-status{gap:4px}
-.global-study .study-clock-buttons{gap:8px;margin-top:9px}
-.global-study .study-clock-buttons button{font-size:12px;min-height:33px;padding:6px 12px}
-.global-study.is-active .study-clock-inputs{display:none}
-.global-study.is-active .study-clock-grid{display:block}
-.global-study.is-active:not(.is-floating):not(.is-docked) .study-clock-card{max-width:410px}
+
 .global-study .study-clock-mini-time {display:none;font:700 12px 'Courier New',monospace;font-variant-numeric:tabular-nums;white-space:nowrap;margin-left:auto}
-.global-study .study-clock-window-actions{display:flex;align-items:center;gap:5px;margin-left:auto}
-.global-study .study-clock-window-button{min-width:25px;height:24px;padding:0 5px;border:1px solid var(--retro-deep);border-radius:4px;background:var(--paper);color:var(--ink);font:700 17px/1 'Courier New',monospace;cursor:pointer}
-.global-study .study-clock-window-button:hover{background:var(--retro-cream)}
-.global-study .study-clock-window-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.global-study .study-clock-window-button[hidden]{display:none!important}
-.global-study.is-floating{position:fixed;right:18px;bottom:18px;z-index:35;width:min(330px,calc(100vw - 30px));margin:0;max-width:none;filter:drop-shadow(0 5px 12px rgba(28,20,38,.18))}
-.global-study.is-floating .study-clock-card{width:100%;margin:0}
-.global-study.is-floating .study-clock-titlebar{padding:7px 10px;gap:6px}
-.global-study.is-floating .study-clock-titlebar strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px}
-.global-study.is-floating .study-clock-grid{display:block}
-.global-study.is-floating .study-clock-mini-time{display:inline;color:var(--ink)}
-.global-study.is-floating .study-clock-window-actions{margin-left:0}
-.global-study.is-floating .study-clock-status strong{font-size:27px}
-.global-study.is-floating .study-clock-buttons button{flex:1 1 auto}
-.global-study.is-floating.is-minimized .study-clock-body{display:none}
-.global-study.is-floating.is-minimized .study-clock-titlebar{border-bottom:0;min-height:38px}
-.global-study.is-docked{position:static;width:100%;margin:2px auto 17px;z-index:auto}
-.global-study.is-docked .study-clock-card{margin:0;width:100%;max-width:none!important}
-.global-study.is-docked .study-clock-grid{display:block}
-.global-study.is-docked .study-clock-titlebar{gap:8px}
-.global-study.is-docked .study-clock-window-actions{margin-left:auto}
-.global-study.is-docked .study-clock-body{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.global-study.is-docked .study-clock-grid{flex:1 1 180px}
-.global-study.is-docked .study-clock-buttons{flex:1 1 205px;margin-top:0;justify-content:flex-end}
-.global-study.is-docked .study-clock-buttons button{min-width:0}
-@media(max-width:680px){
- .global-study{margin:10px auto 12px}
- .global-study .study-clock-card{width:100%}
- .global-study .study-clock-body{padding:10px 11px}
- .global-study .study-clock-grid{grid-template-columns: minmax(0,1fr) minmax(0,1fr);gap:11px}
- .global-study .study-clock-inputs input{height:36px}
- .global-study .study-clock-status{padding:0;border:0;background:transparent}
- .global-study .study-clock-status strong{font-size:clamp(19px,5.5vw,27px)}
- .global-study .study-clock-buttons button{flex:1 1 auto}
- .global-study.is-floating{left:12px;right:12px;bottom:max(12px, env(safe-area-inset-bottom));width:auto}
- .global-study.is-floating .study-clock-body{padding:11px}
- .global-study.is-docked .study-clock-body{display:block}
- .global-study.is-docked .study-clock-buttons{margin-top:9px;justify-content:stretch}
- .global-study.is-docked .study-clock-buttons button{flex:1 1 120px}
-}
-@media(max-width:360px){
- .global-study.is-floating .study-clock-titlebar strong{font-size:9px}
- .global-study .study-clock-titlebar{padding-inline:7px}
- .global-study .study-clock-window-button{min-width:23px}
-}
-.global-study.is-docked {position:sticky;top:8px;z-index:21;filter:drop-shadow(0 2px 5px rgba(28,20,38,.12))}
-.global-study.is-docked .study-clock-body {display:none}
+.global-study .study-clock-window-actions {display:flex;align-items:center;gap:5px;margin-left:auto}
+.global-study .study-clock-window-button {min-width:25px;height:24px;padding:0 5px;border:1px solid var(--retro-deep);border-radius:4px;background:var(--paper);color:var(--ink);font:700 17px/1 'Courier New',monospace;cursor:pointer}
+.global-study .study-clock-window-button:hover {background:var(--retro-cream)}
+.global-study .study-clock-window-button:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
+.global-study .study-clock-window-button[hidden] {display:none!important}
+.global-study:not(.is-floating):not(.is-docked) .study-clock-window-actions {display:none}
+
+.global-study.is-floating {position:fixed;right:18px;bottom:18px;z-index:35;width:min(330px,calc(100vw - 30px));margin:0;max-width:none;filter:drop-shadow(0 5px 12px rgba(28,20,38,.18))}
+.global-study.is-floating .study-clock-card {width:100%;margin:0}
+.global-study.is-floating .study-clock-titlebar {min-height:29px;padding:7px 10px;gap:6px}
+.global-study.is-floating .study-clock-titlebar strong {white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px}
+.global-study.is-floating .study-clock-title-deco,.global-study.is-floating .study-clock-intro {display:none}
+.global-study.is-floating .study-clock-body {padding:10px 13px 11px}
+.global-study.is-floating .study-clock-grid {display:block}
+.global-study.is-floating .study-clock-inputs {display:none}
+.global-study.is-floating .study-clock-status {padding:0;border:0;background:transparent;gap:4px}
+.global-study.is-floating .study-clock-status strong {font-size:27px;line-height:1}
+.global-study.is-floating .study-clock-mini-time {display:inline;color:var(--ink)}
+.global-study.is-floating .study-clock-window-actions {margin-left:0}
+.global-study.is-floating .study-clock-buttons {gap:8px;margin-top:9px}
+.global-study.is-floating .study-clock-buttons button {flex:1 1 auto;font-size:12px;min-height:33px;padding:6px 12px}
+.global-study.is-floating.is-minimized .study-clock-body {display:none}
+.global-study.is-floating.is-minimized .study-clock-titlebar {border-bottom:0;min-height:38px}
+
+.global-study.is-docked {position:sticky;top:8px;z-index:21;width:100%;margin:2px auto 17px;filter:drop-shadow(0 2px 5px rgba(28,20,38,.12))}
+.global-study.is-docked .study-clock-card {margin:0;width:100%;max-width:none!important}
+.global-study.is-docked .study-clock-titlebar {min-height:36px;gap:8px;border-bottom:0}
+.global-study.is-docked .study-clock-title-deco {display:none}
 .global-study.is-docked .study-clock-mini-time {display:inline}
-.global-study.is-docked .study-clock-titlebar {min-height:36px;border-bottom:0}
-@media(max-width:680px) {.global-study.is-docked .study-clock-titlebar strong {font-size:10px}}
+.global-study.is-docked .study-clock-window-actions {margin-left:auto}
+.global-study.is-docked .study-clock-body {display:none}
+
+@media(max-width:680px) {
+ .global-study.is-floating {left:12px;right:12px;bottom:max(12px, env(safe-area-inset-bottom));width:auto}
+ .global-study.is-floating .study-clock-body {padding:11px}
+ .global-study.is-docked .study-clock-titlebar strong {font-size:10px}
+}
+@media(max-width:360px) {
+ .global-study.is-floating .study-clock-titlebar strong {font-size:9px}
+ .global-study.is-floating .study-clock-window-button {min-width:23px}
+}

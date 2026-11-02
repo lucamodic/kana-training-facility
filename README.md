@@ -4,7 +4,7 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 
 ## Features
 
-- **Compact global study clock:** smaller home-page timer beneath the browser header. When a running or paused clock is active during a lesson, it becomes a floating, non-blocking widget. Minimize it to a title bar or close the floating view to dock the clock inside the lesson; use the ↗ button to float it again. On small screens the widget starts minimized to avoid covering answer fields. The countdown and study summary continue uninterrupted when moved or minimized.
+- **Global study clock:** restored full-size study timer on the home screen, with description, custom hours and minutes, a large countdown and visible controls. When a running or paused clock is active during a lesson, it becomes a floating, non-blocking widget. Minimize it to a title bar or close the floating view to dock the clock inside the lesson; use the ↗ button to float it again. On small screens the widget starts minimized to avoid covering answer fields. The countdown and study summary continue uninterrupted when moved or minimized.
 
 
 - **Hiragana, katakana, and beginner kanji** with individual selection, group selection, and click-and-drag painting to select or deselect multiple characters at once (mouse, pen, or finger). Touch taps and keyboard selection also work.

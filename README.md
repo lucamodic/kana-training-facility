@@ -21,6 +21,12 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 - **Favicon and installable app icon** displaying the hiragana あ.
 - **PWA installation, offline cache, and updates**: Android/desktop install prompts, iOS home-screen guidance, offline study after the first online load, and a bilingual Update now / Later banner when a new release is ready.
 
+## Word Library and kanji explanations
+
+- **Browse unlocked vocabulary:** Open Word Challenge and choose **Browse unlocked vocabulary** before starting. Search and filter every unlocked word across Hiragana, Katakana, Kanji, and mixed scripts. Each entry includes Japanese, romaji and **English meaning**, even when the interface language is set to Spanish.
+- **Kanji breakdown after answers:** Whenever a word contains kanji, its result shows the contextual reading for each kanji or (for irregular compounds such as 今日, 明日 and 大人) the inseparable whole-word reading. Notes explain relevant sound changes such as rendaku and the doubled consonant in 学校. These are curated explanations, not an automatic phonetic decomposition.
+- The word list respects the selected tiles on all three tabs. Your saved selections, study progress, PWA, themes and lesson modes are not changed. No manga features are included.
+
 ## Install as a phone/desktop app (PWA)
 
 This project is also a **Progressive Web App**. No app store, server, build tool, or third-party service is necessary.
@@ -132,3 +138,15 @@ resumen de las actividades. No hay botón de audio japonés.
 ## Draggable floating study clock
 
 While studying, the active global clock floats above the lesson. Drag its title bar (the area with the `⠿` grip) with a mouse or finger to reposition it. The location is stored in this browser, and automatically clamped to the visible viewport. The title bar can also be focused and moved with arrow keys (Shift + arrow for smaller steps). The minimize and close/dock buttons still work, and the large timer on the home screen has not changed. The clock keeps running while you move it. This release bumps the service-worker cache to `v15`.
+
+## Learning Progress and Google sync
+
+The **My Progress** link beside the offline badge opens skill exams, a personalized test, exam history, recommendations, and Google login. The footer includes a **Learning Guide**. Exam attempts are saved locally and synced to Supabase when signed in and online. The static PWA can still be used offline.
+
+See `setup/SETUP.md` and execute `setup/supabase-schema.sql` in the Supabase SQL Editor before testing synchronization. Google OAuth uses the project settings configured in Supabase, while `config.js` contains only public credentials. Never add secret keys to the frontend.
+
+The exam banks contain more questions than a single attempt and diversify retakes with a different order and priority for previously unseen questions.
+
+### Editable nickname
+
+My Progress shows the user's chosen nickname, never their Google name by default. Use **Set nickname / Edit nickname** to pick a display name (2–32 characters). The Google email is in the collapsible **Account details** section. The nickname is stored in `auth.users.user_metadata.ktf_nickname` via `supabase.auth.updateUser`, cached on each device for offline use, and synchronized whenever online. No new SQL required.

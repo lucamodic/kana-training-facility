@@ -998,6 +998,121 @@ const words = [
   })
 ];
 
+const KANJI_COMPOUNDS = {
+  '日本語': {parts:[['日','ni'],['本','hon'],['語','go']]},
+  '日本': {parts:[['日','ni'],['本','hon']]},
+  '学生': {parts:[['学','gaku'],['生','sei']]},
+  '学校': {parts:[['学','gak (gaku)'],['校','kou']],note:'smallTsu'},
+  '先生': {parts:[['先','sen'],['生','sei']]},
+  '友達': {parts:[['友','tomo'],['達','dachi']],note:'rendaku'},
+  '家族': {parts:[['家','ka'],['族','zoku']]},
+  '今日': {parts:[['今日','kyou']],note:'irregular'},
+  '明日': {parts:[['明日','ashita']],note:'irregular'},
+  '昨日': {parts:[['昨日','kinou']],note:'irregular'},
+  '大人': {parts:[['大人','otona']],note:'irregular'},
+  '時間': {parts:[['時','ji'],['間','kan']]},
+  '午前': {parts:[['午','go'],['前','zen']]},
+  '午後': {parts:[['午','go'],['後','go']]},
+  '名前': {parts:[['名','na'],['前','mae']]},
+  '電車': {parts:[['電','den'],['車','sha']]},
+  '火山': {parts:[['火','ka'],['山','zan']],note:'rendaku'},
+  '天気': {parts:[['天','ten'],['気','ki']]},
+  '新しい': {parts:[['新','atara']]},
+  '大きい': {parts:[['大','oo']]},
+  '古い': {parts:[['古','furu']]},
+  '買う': {parts:[['買','ka']]},
+  '話す': {parts:[['話','hana']]},
+  '学ぶ': {parts:[['学','mana']]},
+  '行く': {parts:[['行','i']]},
+  '読む': {parts:[['読','yo']]},
+  '書く': {parts:[['書','ka']]},
+  '飲む': {parts:[['飲','no']]},
+  '見る': {parts:[['見','mi']]},
+  '休み': {parts:[['休','yasu']]},
+  '入る': {parts:[['入','hai']]},
+  '帰る': {parts:[['帰','kae']]},
+  '食べる': {parts:[['食','ta']]},
+  '好き': {parts:[['好','su']]}
+};
+const KANJI_CONTEXT = {店:'mise',私:'watashi',山:'yama',川:'kawa',水:'mizu',海:'umi',空:'sora',花:'hana',本:'hon',車:'kuruma',家:'ie',男:'otoko',女:'onna',人:'hito',月:'tsuki',日:'hi',雨:'ame',春:'haru',夏:'natsu',秋:'aki',冬:'fuyu',右:'migi',左:'hidari',上:'ue',下:'shita',中:'naka',外:'soto',駅:'eki',朝:'asa',天:'ten',気:'ki',金:'kane',子:'ko'};
+const KANJI_COMPOUND_KEYS = Object.keys(KANJI_COMPOUNDS).sort((a,b)=>b.length-a.length);
+function breakdownFor(word) {
+  if (!scriptsInWord(word).has('kanji')) return null;
+  const segments=[];
+  const notes=new Set();
+  for(let i=0;i<word.kana.length;) {
+    const compound=KANJI_COMPOUND_KEYS.find(key=>word.kana.startsWith(key,i));
+    if(compound){
+      const data=KANJI_COMPOUNDS[compound];
+      segments.push(...data.parts.map(([glyph,reading])=>({glyph,reading,special:data.note==='irregular'})));
+      if(data.note)notes.add(data.note);
+      i+=compound.length;
+      continue;
+    }
+    const glyph=word.kana[i];
+    if(catalogMap.kanji.has(glyph)) {
+      const reading=glyph==='店' && /[ァ-ヶー]店/.test(word.kana.slice(0,i+1)) ? 'ten' : (KANJI_CONTEXT[glyph]||catalogMap.kanji.get(glyph).answer);
+      segments.push({glyph,reading,special:false});
+    }
+    i++;
+  }
+  return {segments,notes:[...notes]};
+}
+function renderKanjiBreakdown(word) {
+  const breakdown=breakdownFor(word);
+  if(!breakdown?.segments.length)return null;
+  const es=state.language==='es';
+  const wrap=document.createElement('section');
+  wrap.className='kanji-breakdown';
+  const title=document.createElement('div');
+  title.className='kanji-breakdown-title';
+  title.textContent=es?'Desglose de kanji':'Kanji breakdown';
+  wrap.append(title);
+  const list=document.createElement('div');
+  list.className='kanji-breakdown-list';
+  for(const part of breakdown.segments){
+    const entry=part.glyph.length===1?catalogMap.kanji.get(part.glyph):null;
+    const tile=document.createElement('div');
+    tile.className='kanji-breakdown-part';
+    const glyph=document.createElement('span');
+    glyph.className='kanji-breakdown-glyph';
+    glyph.lang='ja';
+    glyph.textContent=part.glyph;
+    const details=document.createElement('span');
+    details.className='kanji-breakdown-detail';
+    const reading=document.createElement('strong');
+    reading.textContent=part.reading;
+    details.append(reading);
+    const gloss=document.createElement('small');
+    gloss.textContent=entry ? itemMeaning(entry).split(';')[0] : wordMeanings(word)[0];
+    details.append(gloss);
+    const base=entry?.answer;
+    if(part.special){
+      const hint=document.createElement('small');
+      hint.textContent=es?'Lectura especial de la palabra completa':'Special whole-word reading';
+      details.append(hint);
+    }else if(base && normalized(base)!==normalized(part.reading)){
+      const hint=document.createElement('small');
+      hint.textContent=(es?'En caracteres: ':'Character drill: ')+base;
+      details.append(hint);
+    }
+    tile.append(glyph,details);
+    list.append(tile);
+  }
+  wrap.append(list);
+  const noteMessages={
+    irregular:es?'Algunas palabras tienen una lectura propia: no se pueden separar con precisión kanji por kanji.':'Some words have a special reading that cannot be split reliably by kanji.',
+    rendaku:es?'El sonido inicial puede cambiar al combinar kanji (rendaku).':'The initial consonant can change in a compound (rendaku).',
+    smallTsu:es?'En 学校, gaku + kou se convierte en gakkou, con una consonante doble.':'In 学校, gaku + kou becomes gakkou, with a doubled consonant.'
+  };
+  for(const id of breakdown.notes){
+    const note=document.createElement('p');
+    note.className='kanji-breakdown-note';
+    note.textContent=noteMessages[id];
+    wrap.append(note);
+  }
+  return wrap;
+}
 // First visit: use the browser's main language (Spanish or English fallback).
 // An explicit language choice is saved and always takes precedence.
 function detectBrowserLanguage() {
@@ -1483,6 +1598,7 @@ function changeLanguage(language, persist=true) {
   document.documentElement.lang = language;
   $('languageSelect').value = language;
   translateStatic();
+  updateWordLibraryLanguage();
   applyTheme(state.theme);
   updateCustomTimerVisibility();
   updateRapidFireSettings();
@@ -1654,6 +1770,7 @@ function restore() {
 function save() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload())); state.storageOk = true; }
   catch (_) { state.storageOk = false; }
+  document.dispatchEvent(new Event("ktf:settingschange"));
 }
 
 // Identify the scripts that appear in a given piece of vocabulary.
@@ -1688,6 +1805,38 @@ function wordIsUnlocked(word) {
   return true;
 }
 const eligibleWords = () => words.filter(wordIsUnlocked);
+function wordLibraryI18n(key) {
+  const en={eyebrow:'YOUR STUDY DICTIONARY',title:'Unlocked vocabulary',intro:'Every word unlocked by the characters selected across all three tabs. Review the readings and English meanings before practicing.',search:'Find a word',placeholder:'Japanese, romaji or English...',system:'Writing system',all:'All words',mixed:'Mixed scripts',back:'← Back to Word Challenge',browse:'Browse unlocked vocabulary',empty:'No matching unlocked words. Select more characters or change your search.',counter:'{shown} of {total} unlocked words',english:'ENGLISH MEANING',hiragana:'Hiragana',katakana:'Katakana',kanji:'Kanji',countLabel:'words unlocked'};
+  const es={eyebrow:'TU DICCIONARIO DE ESTUDIO',title:'Vocabulario disponible',intro:'Todas las palabras que desbloqueaste con los caracteres seleccionados en las tres pestañas. Repasá las lecturas y los significados en inglés antes de practicar.',search:'Buscar una palabra',placeholder:'Japonés, romaji o inglés...',system:'Sistema de escritura',all:'Todas',mixed:'Escrituras combinadas',back:'← Volver a Desafío de palabras',browse:'Ver palabras disponibles',empty:'No hay palabras que coincidan. Seleccioná más caracteres o cambiá la búsqueda.',counter:'{shown} de {total} palabras disponibles',english:'SIGNIFICADO EN INGLÉS',hiragana:'Hiragana',katakana:'Katakana',kanji:'Kanji',countLabel:'palabras disponibles'};
+  return (state.language==='es'?es:en)[key] || key;
+}
+function updateWordLibraryLanguage() {
+  const mapping={wordLibraryEyebrow:'eyebrow',wordLibraryTitle:'title',wordLibraryIntro:'intro',wordLibrarySearchLabel:'search',wordLibraryFilterLabel:'system',wordLibraryBack:'back',browseWordsLabel:'browse'};
+  for(const [id,key] of Object.entries(mapping))$(id).textContent=wordLibraryI18n(key);
+  $('wordLibrarySearch').placeholder=wordLibraryI18n('placeholder');
+  $('closeWordLibrary').setAttribute('aria-label',state.language==='es'?'Cerrar lista de palabras':'Close vocabulary list');
+  for(const option of $('wordLibraryFilter').options)option.textContent=wordLibraryI18n(option.value);
+  if($('wordLibraryDialog').open)renderWordLibrary();
+}
+function renderWordLibrary() {
+  const all=eligibleWords();
+  const filter=$('wordLibraryFilter').value;
+  const query=normalized($('wordLibrarySearch').value);
+  const filtered=all.filter(word=>{
+    const scripts=scriptsInWord(word);
+    const type=scripts.size>1?'mixed':[...scripts][0]||'all';
+    if(filter!=='all'&&type!==filter)return false;
+    return !query||[word.kana,...word.readings,...word.meanings,...(word.meaningsEs||[])].some(item=>normalized(item).includes(query));
+  }).sort((a,b)=>a.readings[0].localeCompare(b.readings[0],'en')||a.kana.localeCompare(b.kana,'ja'));
+  $('wordLibraryCount').textContent=wordLibraryI18n('counter').replace('{shown}',filtered.length).replace('{total}',all.length);
+  const list=$('wordLibraryList');
+  if(!filtered.length){list.innerHTML='<p class="word-library-empty">'+escapeHtml(wordLibraryI18n('empty'))+'</p>';return;}
+  list.innerHTML=filtered.map(word=>{
+    const scripts=scriptsInWord(word);
+    const type=scripts.size>1?'mixed':[...scripts][0]||'all';
+    return '<article class="word-library-row"><div><div class="word-library-japanese" lang="ja">'+escapeHtml(word.kana)+'</div><span class="word-library-badge">'+escapeHtml(wordLibraryI18n(type))+'</span></div><div class="word-library-romaji">'+escapeHtml(word.readings.join(' / '))+'</div><div class="word-library-meaning"><span class="word-library-meaning-label">'+escapeHtml(wordLibraryI18n('english'))+'</span>'+escapeHtml(word.meanings.join(' / '))+'</div></article>';
+  }).join('');
+}
 function currentVisible() {
   const query = normalized($('search').value);
   return catalog[state.script].filter(item => !query || [item.kana, item.answer, ...(item.answers || []), item.meaning || ''].some(x => normalized(x).includes(query)));
@@ -2162,6 +2311,10 @@ function showFeedback(quiz) {
     meaning.append(label, value);
     $('feedback').appendChild(meaning);
   }
+  if (quiz.kind === 'words') {
+    const breakdown=renderKanjiBreakdown(item);
+    if(breakdown)$('feedback').append(breakdown);
+  }
   $('checkButton').textContent = ((quiz.mode === 'learn' && quiz.round === 6) || quiz.mode === 'daily') && quiz.deck.length === 0 ? t('seeResults') : t('next');
 }
 function refreshQuizLanguage() {
@@ -2421,6 +2574,25 @@ $('learnButton').addEventListener('click', () => startQuiz('learn'));
 $('startButton').addEventListener('click', () => startQuiz('practice'));
 $('onePassButton').addEventListener('click', () => startQuiz('daily'));
 $('openWordsButton').addEventListener('click', () => { render(); $('wordsDialog').showModal(); });
+$('browseWordsButton').addEventListener('click',()=>{
+  $('wordsDialog').close();
+  $('wordLibrarySearch').value='';
+  $('wordLibraryFilter').value='all';
+  updateWordLibraryLanguage();
+  renderWordLibrary();
+  $('wordLibraryDialog').showModal();
+  $('wordLibrarySearch').focus();
+});
+$('closeWordLibrary').addEventListener('click',()=>$('wordLibraryDialog').close());
+$('wordLibraryBack').addEventListener('click',()=>{
+  $('wordLibraryDialog').close();
+  render();
+  $('wordsDialog').showModal();
+  $('browseWordsButton').focus();
+});
+$('wordLibrarySearch').addEventListener('input',renderWordLibrary);
+$('wordLibraryFilter').addEventListener('change',renderWordLibrary);
+$('wordLibraryDialog').addEventListener('click',event=>{if(event.target===$('wordLibraryDialog'))$('wordLibraryDialog').close();});
 $('closeWordsDialog').addEventListener('click', () => $('wordsDialog').close());
 $('cancelWordsDialog').addEventListener('click', () => $('wordsDialog').close());
 $('wordsDialog').addEventListener('click', e => { if (e.target === $('wordsDialog')) $('wordsDialog').close(); });
@@ -2486,6 +2658,22 @@ function setReviewSelection(checked) {
 $('reviewSelectAll').addEventListener('click', () => setReviewSelection(true));
 $('reviewClearAll').addEventListener('click', () => setReviewSelection(false));
 $('beginReview').addEventListener('click',beginReview);
+window.KTFBridge = {
+  catalog,
+  words,
+  eligibleWords,
+  getSettings: () => structuredClone(payload()),
+  getLanguage: () => state.language,
+  isQuizActive: () => Boolean(state.quiz),
+  applySettings: settings => {
+    if (!settings || state.quiz) return false;
+    applySavedData(settings);
+    changeLanguage(state.language, false);
+    render();
+    save();
+    return true;
+  }
+};
 restore();
 changeLanguage(state.language,false);
 save();

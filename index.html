@@ -16,6 +16,9 @@
   <link rel="stylesheet" href="./styles.css">
   <script src="./app.js" defer></script>
   <script src="./study-clock.js" defer></script>
+  <script src="./config.js" defer></script>
+  <script src="./cloud-sync.js" defer></script>
+  <script src="./learning-progress.js" defer></script>
 </head>
 <body>
   <header class="top">
@@ -26,6 +29,7 @@
       </a>
       <div class="header-actions">
         <div class="offline-pill"><span class="dot" aria-hidden="true"></span> <span id="offlineText">LOCAL SETTINGS · OFFLINE READY</span></div>
+        <button type="button" class="progress-open-button" id="progressOpen" aria-haspopup="dialog" aria-controls="progressDialog">My Progress</button>
         <button type="button" id="installAppButton" class="install-app-button" aria-haspopup="dialog" aria-controls="installDialog" title="Install Kana Training Facility"><span aria-hidden="true">↓</span><span id="installAppLabel">Install</span></button>
         <label class="language-picker" for="languageSelect"><span class="language-icon" aria-hidden="true">文</span><span class="language-label" id="languageCaption">Language</span><select id="languageSelect" aria-label="Language / Idioma"><option value="en">English</option><option value="es">Español</option></select></label>
         <div class="theme-picker" id="themePicker">
@@ -63,7 +67,7 @@
 
     <section class="global-study shell" id="globalStudyClock" aria-label="Study time tracker">
       <div class="study-clock-card">
-        <div class="study-clock-titlebar"><span aria-hidden="true">✦</span><strong id="studyClockTitle">MY STUDY TIME</strong><span class="study-clock-title-deco" aria-hidden="true">✧ ✧</span><span class="study-clock-mini-time" id="studyClockMiniTime" aria-hidden="true">--:--:--</span><div class="study-clock-window-actions"><button type="button" id="studyClockMinimize" class="study-clock-window-button" aria-label="Minimize study clock" title="Minimize study clock" hidden>−</button><button type="button" id="studyClockDock" class="study-clock-window-button" aria-label="Move clock into page" title="Move clock into page" hidden>×</button><button type="button" id="studyClockFloat" class="study-clock-window-button" aria-label="Float study clock" title="Float study clock" hidden>↗</button></div></div>
+        <div class="study-clock-titlebar"><span aria-hidden="true">✦</span><span class="study-clock-grip" aria-hidden="true">⠿</span> <strong id="studyClockTitle">MY STUDY TIME</strong><span class="study-clock-title-deco" aria-hidden="true">✧ ✧</span><span class="study-clock-mini-time" id="studyClockMiniTime" aria-hidden="true">--:--:--</span><div class="study-clock-window-actions"><button type="button" id="studyClockMinimize" class="study-clock-window-button" aria-label="Minimize study clock" title="Minimize study clock" hidden>−</button><button type="button" id="studyClockDock" class="study-clock-window-button" aria-label="Move clock into page" title="Move clock into page" hidden>×</button><button type="button" id="studyClockFloat" class="study-clock-window-button" aria-label="Float study clock" title="Float study clock" hidden>↗</button></div></div>
         <div class="study-clock-body">
           <div class="study-clock-intro"><div><strong id="studyClockSubtitle">Your own little study session</strong><p id="studyClockDescription">Choose your hours and minutes. Your timer follows you across lessons.</p></div><span class="study-clock-flower" aria-hidden="true">✿</span></div>
           <div class="study-clock-grid">
@@ -176,7 +180,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · No tracking · Works offline</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">
@@ -190,6 +194,30 @@
   </aside>
   <div id="toast" role="status" aria-live="polite" hidden></div>
 
+  <dialog id="progressDialog" class="review-dialog progress-dialog" aria-labelledby="progressTitle">
+    <div class="review-dialog-head"><div><span class="eyebrow">✦ LEARNING PROGRESS</span><h2 id="progressTitle">Learning Progress</h2></div><button type="button" class="mini-button" id="progressClose" aria-label="Close">✕</button></div>
+    <div class="progress-dialog-scroll">
+      <p class="subtle" id="progressIntro"></p>
+      <div class="progress-account-card"><div class="progress-identity"><span class="eyebrow" id="progressAccountTitle">Cloud sync</span><strong id="progressUser">Studying as a guest</strong><small id="progressStatus">Saved locally</small></div><div class="progress-auth-actions"><button class="button-primary" type="button" id="progressLogin">Continue with Google</button><button class="button-secondary" type="button" id="progressNicknameEdit" hidden>Edit nickname</button><button class="button-secondary" type="button" id="progressSync" hidden>Sync now</button></div></div>
+      <form id="progressNicknameForm" class="progress-nickname-form" hidden><label id="progressNicknameLabel" for="progressNicknameInput">Your nickname</label><div class="progress-nickname-fields"><input id="progressNicknameInput" type="text" minlength="2" maxlength="64" autocomplete="nickname" placeholder="Choose a nickname" required><button class="button-primary" type="submit" id="progressNicknameSave">Save nickname</button><button class="button-secondary" type="button" id="progressNicknameCancel">Cancel</button></div><small id="progressNicknameHint">2–32 characters. Saved offline and synced later.</small></form>
+      <p class="progress-nickname-feedback" id="progressNicknameFeedback" role="status" aria-live="polite" hidden></p>
+      <details class="progress-account-details" id="progressAccountDetails" hidden><summary id="progressAccountDetailsLabel">Account details</summary><div class="progress-account-details-inner"><div><span id="progressEmailLabel">Google email</span><strong id="progressEmail"></strong></div><button type="button" class="button-secondary" id="progressLogout">Sign out</button></div></details>
+      <p class="progress-sync-help" id="progressSyncHelp"></p>
+      <div class="progress-next"><span class="eyebrow">✦ NEXT STEP</span><p id="progressRecommendation"></p></div>
+      <div class="progress-heading"><h3 id="progressExamsHeading">Skill exams</h3><p id="progressNotice"></p></div>
+      <div class="progress-exam-grid" id="progressExams"></div>
+      <div class="progress-heading"><h3 id="progressHistoryHeading">Exam history</h3></div>
+      <p class="subtle" id="progressEmpty"></p><div class="progress-history" id="progressHistory"></div>
+      <div class="progress-dashboard-footer"><button type="button" class="button-secondary" id="progressGuide">Learning Guide</button><button type="button" class="button-secondary" id="progressExport">Export backup</button></div>
+    </div>
+  </dialog>
+  <dialog id="examDialog" class="review-dialog exam-dialog" aria-labelledby="examTitle">
+    <div class="review-dialog-head"><div><span class="eyebrow">✦ SKILL EXAM</span><h2 id="examTitle">Exam</h2></div><button type="button" class="mini-button" id="examExit" aria-label="Leave exam">✕</button></div>
+    <div class="exam-progress"><span id="examCounter"></span><div class="progress-track"><div class="progress-fill" id="examProgressFill"></div></div></div>
+    <div id="examBody"><div class="exam-prompt" id="examPrompt" lang="ja"></div><form id="examForm"><label for="examInput" id="examQuestionLabel">Write the romaji reading</label><input id="examInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" required><button type="submit" class="button-primary" id="examNext">Next question</button></form></div>
+    <div id="examResult" hidden><div class="exam-result-score" id="examResultScore"></div><h3 id="examResultTitle"></h3><strong id="examResultPass"></strong><p id="examResultNext"></p><div id="examResultMistakes"></div><button type="button" class="button-primary" id="examBack">Back to progress</button></div>
+  </dialog>
+  <dialog id="guideDialog" class="review-dialog guide-dialog" aria-labelledby="guideTitle"><div class="review-dialog-head"><div><span class="eyebrow">✦ HOW TO STUDY</span><h2 id="guideTitle">Learning Guide</h2></div><button type="button" class="mini-button" id="guideClose" aria-label="Close guide">✕</button></div><p class="subtle" id="guideIntro"></p><div id="guideSections"></div></dialog>
   <dialog id="installDialog" class="review-dialog install-dialog" aria-labelledby="installDialogTitle">
     <div class="review-dialog-head"><div><span class="eyebrow" id="installEyebrow">YOUR POCKET STUDY ROOM</span><h2 id="installDialogTitle">Install Kana Training Facility</h2></div><button type="button" class="mini-button" id="closeInstallDialog" aria-label="Close installation help">✕</button></div>
     <p id="installDialogDescription">Add this study app to your home screen for quick access. After your first visit, it also works offline.</p>
@@ -201,12 +229,24 @@
     <div class="words-dialog-body">
       <div class="words-unlocked"><span aria-hidden="true">✎</span><strong id="wordDialogCount">0</strong><span id="wordsUnlockedUnit">words unlocked</span></div>
       <p class="subtle" id="wordCountDescription">Select hiragana, katakana or kanji to unlock vocabulary.</p>
+      <button type="button" class="word-library-launch" id="browseWordsButton" aria-haspopup="dialog" aria-controls="wordLibraryDialog"><span class="word-library-launch-icon" aria-hidden="true">▤</span><span id="browseWordsLabel">Browse unlocked vocabulary</span><span aria-hidden="true">↗</span></button>
       <div class="mixed-words-info" aria-live="polite"><span class="mixed-words-label" id="mixedWordCount">0 mixed-script · 0 using all three scripts</span><span class="mixed-words-examples" id="mixedWordExamples">Select characters from other tabs to unlock mixed-script words.</span></div>
       <label class="small-label" for="wordAnswerMode">What would you like to guess?</label>
       <select class="setting-select" id="wordAnswerMode"><option value="meaning">English meaning</option><option value="reading">Romaji reading</option></select>
       <p class="choice-explanation" id="wordsDialogHelp">Only vocabulary using your selected characters will appear. Your current timer setting also applies.</p>
     </div>
     <div class="review-footer words-dialog-footer"><button type="button" class="button-secondary" id="cancelWordsDialog">Cancel</button><button type="button" class="button-primary" id="wordsButton" disabled>Start word practice →</button></div>
+  </dialog>
+  <dialog id="wordLibraryDialog" class="review-dialog word-library-dialog" aria-labelledby="wordLibraryTitle">
+    <div class="review-dialog-head"><div><span class="eyebrow" id="wordLibraryEyebrow">YOUR STUDY DICTIONARY</span><h2 id="wordLibraryTitle">Unlocked vocabulary</h2></div><button type="button" class="mini-button" id="closeWordLibrary" aria-label="Close vocabulary list">✕</button></div>
+    <p class="word-library-intro" id="wordLibraryIntro">All words available with your selected Hiragana, Katakana, and Kanji. Review them before you practice.</p>
+    <div class="word-library-controls">
+      <label for="wordLibrarySearch"><span id="wordLibrarySearchLabel">Find a word</span><input id="wordLibrarySearch" type="search" autocomplete="off" placeholder="Japanese, romaji or English..." /></label>
+      <label for="wordLibraryFilter"><span id="wordLibraryFilterLabel">Writing system</span><select id="wordLibraryFilter" class="setting-select"><option value="all">All words</option><option value="hiragana">Hiragana</option><option value="katakana">Katakana</option><option value="kanji">Kanji</option><option value="mixed">Mixed scripts</option></select></label>
+    </div>
+    <div class="word-library-count" id="wordLibraryCount" role="status" aria-live="polite">0 words</div>
+    <div class="word-library-list" id="wordLibraryList"></div>
+    <div class="review-footer word-library-footer"><button type="button" class="button-secondary" id="wordLibraryBack">← Back to Word Challenge</button></div>
   </dialog>
   <dialog id="reviewDialog" aria-labelledby="reviewTitle" class="review-dialog"><div class="review-dialog-head"><div><span class="eyebrow">A LITTLE EXTRA PRACTICE</span><h2 id="reviewTitle">Review your toughest items</h2></div><button type="button" class="mini-button" id="closeReview" aria-label="Close review dialog">✕</button></div><p class="subtle" id="reviewDialogHelp">Uncheck anything you don't want to practice right now. Your regular selections won't change.</p><div class="review-toolbar"><button type="button" class="mini-button" id="reviewSelectAll">Select all</button><button type="button" class="mini-button" id="reviewClearAll">Clear</button></div><div id="reviewItems" class="review-items"></div><div class="review-footer"><span id="reviewCount" class="subtle">0 selected</span><div class="review-buttons"><button type="button" class="button-secondary" id="cancelReview">Cancel</button><button type="button" class="button-primary" id="beginReview">Start review →</button></div></div></dialog>
 

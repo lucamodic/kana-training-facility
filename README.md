@@ -154,3 +154,8 @@ My Progress shows the user's chosen nickname, never their Google name by default
 ## Design update: exams on the study page
 
 Skill exams now appear in the main study area with the same card-and-answer layout as ordinary practice instead of using a modal window. The Learning Guide and Learning Progress dashboard retain their separate dialogs, styled with the current theme. Scrollbars match the selected palette. The global timer supports the exam page. All existing authentication, nickname and offline sync settings remain unchanged.
+
+
+### UI polish release v20
+
+Refined the Learning Progress account area, skill cards, guide layout, and exam typography/responsive spacing. Exam word prompts use a smaller, context-aware size than individual kana/kanji. No changes to authentication, stored progress, exams, or schema. Offline service-worker cache version updated.

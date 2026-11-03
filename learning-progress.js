@@ -260,6 +260,7 @@
     get('examPassingBadge').textContent=trans('PASS · 90%','APROBACIÓN · 90%');
     get('examHint').textContent=trans('No hints during an exam · Enter to continue','Sin pistas durante el examen · Enter para continuar');
     get('examPrompt').textContent=q.prompt;
+    get('examPrompt').classList.toggle('exam-prompt-word', q.kind==='word' || [...q.prompt].length>2);
     get('examPrompt').lang='ja';
     get('examQuestionLabel').textContent=q.type==='meaning'?t('meaning'):t('reading');
     get('examAnswerLabel').textContent=trans('Your answer','Tu respuesta');
@@ -323,7 +324,9 @@
     get('guideTitle').textContent=t('guideTitle');
     get('guideIntro').textContent=t('guideIntro');
     get('guideSections').innerHTML=['howExams','howSelection','howScoring','howSync','howProfile'].map(key=>`<section><h3>${t(key)}</h3><p>${t(key+'Body')}</p></section>`).join('');
-    get('guideClose').textContent=t('close');
+    get('guideClose').textContent='✕';
+    get('guideClose').setAttribute('aria-label',t('close'));
+    get('guideClose').title=t('close');
   }
   async function exportBackup() {
     const exams=await cloud.getAttempts();

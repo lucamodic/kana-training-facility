@@ -1332,3 +1332,115 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .footer-guide-links button{background:var(--paper);color:var(--ink);border:1px solid var(--retro-deep);border-radius:3px;box-shadow:2px 2px 0 var(--retro-shadow);padding:7px 10px;font:bold 11px "Courier New",monospace;cursor:pointer}
 .footer-guide-links button:hover{background:var(--retro-cream)}
 @media(max-width:360px){.exam-session #examForm .quiz-actions{grid-template-columns:1fr}}
+
+
+/* Learning Progress · visual refinement */
+.progress-dialog{width:min(900px,calc(100vw - 28px));}
+.progress-dialog-scroll{padding:26px clamp(16px,3.2vw,30px) 30px;background:var(--paper);}
+.progress-dialog-scroll > #progressIntro{margin:0 0 25px;max-width:660px;font-size:14px;line-height:1.8;color:var(--muted);}
+.progress-dialog .review-dialog-head,.guide-dialog .review-dialog-head{padding:17px 23px 18px;}
+.progress-dialog .review-dialog-head h2,.guide-dialog .review-dialog-head h2{font-size:clamp(26px,3vw,35px);line-height:1.1;}
+.progress-dialog .review-dialog-head .eyebrow,.guide-dialog .review-dialog-head .eyebrow{margin-bottom:6px;}
+.progress-dialog .review-dialog-head .mini-button,.guide-dialog .review-dialog-head .mini-button{align-self:center;flex-shrink:0;}
+
+.progress-account-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;justify-content:initial;gap:12px 25px;padding:21px 23px;margin:0;background:linear-gradient(135deg,color-mix(in srgb,var(--retro-main) 28%,var(--paper)),var(--paper) 62%);border-color:var(--retro-deep);min-width:0;}
+.progress-identity{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.progress-account-card .eyebrow{margin:0 0 5px;font-size:10px;letter-spacing:.1em;}
+.progress-identity > strong{font-family:Georgia,"Times New Roman",serif;font-size:clamp(17px,2vw,20px);line-height:1.3;letter-spacing:-.02em;overflow-wrap:anywhere;}
+.progress-identity > small{font-size:12px;line-height:1.5;color:var(--muted);opacity:1;}
+.progress-auth-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:9px;max-width:100%;}
+.progress-auth-actions .button-primary,.progress-auth-actions .button-secondary{width:auto;min-width:120px;min-height:42px;padding:11px 15px;white-space:normal;line-height:1.25;font-size:12px;text-align:center;}
+.progress-auth-actions .button-secondary{background:var(--paper);border-color:var(--retro-deep);}
+.progress-auth-actions .button-secondary:hover{background:var(--retro-cream);}
+.progress-nickname-form{padding:18px 20px;margin-top:14px;}
+.progress-nickname-fields{gap:9px;align-items:center;}
+.progress-nickname-fields input{padding:10px 12px;}
+.progress-nickname-fields button{width:auto;min-height:42px;}
+.progress-account-details{margin:14px 0 0;padding:10px 15px;box-shadow:none;background:color-mix(in srgb,var(--soft) 48%,var(--paper));border-width:1px;}
+.progress-account-details summary{font-size:12px;line-height:1.5;padding:4px 0;}
+.progress-account-details-inner{gap:16px;}
+.progress-sync-help{margin:16px 0 22px;padding:11px 14px;background:color-mix(in srgb,var(--retro-cream) 42%,var(--paper));border:1px dashed var(--line);border-radius:4px;font-size:12px;line-height:1.65;opacity:1;}
+.progress-next{border:2px solid var(--line);border-left:5px solid var(--green);border-radius:4px;padding:17px 19px;margin:0 0 26px;box-shadow:none;background:color-mix(in srgb,var(--green-soft) 42%,var(--paper));}
+.progress-next .eyebrow{margin:0 0 9px;color:var(--green);}
+.progress-next p{margin:0;font-size:14px;line-height:1.7;font-weight:650;}
+.progress-heading{display:grid;gap:6px;margin:28px 0 14px;padding-bottom:11px;border-bottom:2px dashed var(--line);}
+.progress-heading h3{font-family:Georgia,"Times New Roman",serif;font-size:22px;line-height:1.25;letter-spacing:-.035em;}
+.progress-heading p{margin:0;font-size:12px;line-height:1.65;color:var(--muted);opacity:1;}
+.progress-exam-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;}
+.progress-exam-card{gap:12px;padding:18px 19px;min-width:0;border-color:var(--line);box-shadow:3px 3px 0 color-mix(in srgb,var(--retro-shadow) 17%,transparent);background:var(--paper);}
+.progress-exam-head{gap:9px;align-items:center;}
+.progress-exam-head h3{font-size:17px;line-height:1.3;letter-spacing:-.025em;}
+.progress-exam-status{border-radius:3px;max-width:100%;font:700 11px "Courier New",monospace;letter-spacing:0;white-space:nowrap;}
+.progress-exam-card p{line-height:1.7;font-size:12.5px;color:var(--muted);}
+.progress-exam-card > button{align-self:stretch;min-height:42px;margin-top:auto;border:1px solid var(--retro-deep);background:var(--retro-button);padding:11px 14px;}
+.progress-exam-card > button:not(:disabled):hover{background:var(--retro-main);}
+.progress-exam-card > small{font-size:11px;line-height:1.55;}
+.progress-history{gap:9px;}
+.progress-history-row{gap:15px;padding:13px 16px;box-shadow:none;}
+.progress-history-row strong{line-height:1.25;}
+.progress-history-row small{line-height:1.6;color:var(--muted);opacity:1;}
+.progress-history-percent{flex-shrink:0;font:800 15px "Courier New",monospace;}
+.progress-dialog #progressEmpty{margin:15px 0;padding:14px 16px;background:var(--soft);border:1px dashed var(--line);border-radius:4px;font-size:12px;}
+.progress-dashboard-footer{display:flex;align-items:center;gap:10px;margin-top:24px;padding-top:19px;border-top:2px dashed var(--line);}
+.progress-dashboard-footer button{width:auto;min-height:42px;padding:11px 15px;}
+
+.guide-dialog{width:min(780px,calc(100vw - 28px));}
+.guide-dialog> #guideIntro{margin:26px 28px 20px;font-size:14px;line-height:1.75;max-width:650px;}
+.guide-dialog > #guideSections{margin:0 28px 28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;counter-reset:guide-step;}
+#guideSections section{display:block;position:relative;counter-increment:guide-step;padding:17px 18px 17px 19px;background:var(--paper);border:2px solid var(--line);box-shadow:3px 3px 0 color-mix(in srgb,var(--retro-shadow) 20%,transparent);border-radius:4px;min-width:0;}
+#guideSections section::before{content:counter(guide-step,decimal-leading-zero);display:block;margin-bottom:10px;font:bold 11px "Courier New",monospace;color:var(--accent);letter-spacing:.05em;}
+#guideSections h3{margin:0 0 9px;font-size:18px;line-height:1.25;}
+#guideSections p{margin:0;font-size:12.5px;line-height:1.75;color:var(--muted);}
+#guideSections section:last-child:nth-child(odd){grid-column:span 2;}
+
+.exam-session{max-width:720px;}
+.exam-session-title{padding:22px 24px;margin-bottom:20px;}
+.exam-session-title h2{font-size:clamp(27px,4vw,35px);}
+.exam-session-title .subtle{font-size:13px;line-height:1.65;}
+.exam-session > .learning-progress{padding:15px 19px;margin-bottom:20px;}
+.exam-question-panel .quiz-head{padding:18px 14px 0;font-size:13px;line-height:1.5;}
+.exam-session .exam-prompt{font-size:clamp(105px,22vw,168px);font-weight:450;min-height:220px;padding:15px 16px 22px;line-height:1.15;}
+.exam-session .exam-prompt.exam-prompt-word{font-size:clamp(52px,9vw,96px);font-weight:550;overflow-wrap:anywhere;line-height:1.25;}
+.exam-session .exam-answer-area{padding:24px 27px 28px;}
+.exam-session #examForm{gap:12px;}
+.exam-session #examForm label{font-size:12px;line-height:1.5;}
+.exam-session #examInput{font-size:16px;min-height:50px;}
+.exam-session #examForm .quiz-actions{gap:12px;}
+.exam-session .quiz-hint{margin:19px auto 0;line-height:1.6;}
+
+@media(max-width:700px){
+  .progress-dialog .review-dialog-head,.guide-dialog .review-dialog-head{padding:14px 16px;}
+  .progress-dialog-scroll{padding:19px 17px 24px;}
+  .progress-dialog-scroll > #progressIntro{margin-bottom:21px;font-size:13px;}
+  .progress-account-card{padding:18px;grid-template-columns:minmax(0,1fr);gap:17px;}
+  .progress-auth-actions{justify-content:flex-start;gap:8px;}
+  .progress-auth-actions .button-primary,.progress-auth-actions .button-secondary{min-width:0;flex:0 1 auto;}
+  .progress-sync-help{margin:15px 0 21px;}
+  .progress-next{padding:16px;margin-bottom:25px;}
+  .progress-heading{margin-top:25px;}
+  .progress-exam-grid{grid-template-columns:1fr;gap:12px;}
+  .progress-exam-card{padding:16px;}
+  .progress-heading h3{font-size:20px;}
+  .guide-dialog > #guideIntro{margin:21px 17px 19px;font-size:13px;}
+  .guide-dialog > #guideSections{margin:0 17px 24px;grid-template-columns:1fr;gap:11px;}
+  #guideSections section:last-child:nth-child(odd){grid-column:auto;}
+}
+@media(max-width:380px){
+  .progress-dialog{width:calc(100vw - 12px);}
+  .progress-dialog-scroll{padding:17px 12px 20px;}
+  .progress-dialog .review-dialog-head h2,.guide-dialog .review-dialog-head h2{font-size:25px;}
+  .progress-account-card{padding:15px;gap:15px;}
+  .progress-auth-actions .button-primary,.progress-auth-actions .button-secondary{flex:1 1 120px;}
+  .progress-dashboard-footer{flex-wrap:wrap;}
+  .progress-dashboard-footer button{flex:1 1 120px;}
+  .exam-session .exam-prompt{font-size:clamp(105px,22vw,168px);}
+  .exam-session .exam-prompt.exam-prompt-word{font-size:clamp(43px,12vw,68px);}
+}
+
+
+.progress-exam-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;column-gap:10px;row-gap:6px;}
+.progress-exam-head h3{min-width:0;margin:0;}
+.progress-exam-head .progress-exam-status{justify-self:end;}
+.progress-exam-card > button.button-secondary{align-self:stretch;width:100%;min-height:43px;}
+.guide-dialog #guideClose{min-width:42px;width:42px;min-height:42px;height:42px;padding:0;display:grid;place-items:center;font-size:17px;}
+@media(max-width:380px){.progress-exam-head{grid-template-columns:minmax(0,1fr) auto;}.progress-exam-head .progress-exam-status{max-width:106px;white-space:normal;text-align:center;}}

@@ -172,6 +172,23 @@
       <button type="button" class="button-secondary end-lesson" id="finishLessonButton">Finish lesson & view results</button>
     </section>
 
+
+    <section id="examScreen" class="quiz-wrap exam-session" aria-label="Skill exam" hidden>
+      <div class="quiz-top">
+        <button type="button" class="back" id="examExit">← Back to progress</button>
+        <div class="quiz-top-right"><span class="quiz-pill" id="examModeBadge">✦ EXAM MODE</span><span class="quiz-pill" id="examPassingBadge">PASS · 90%</span></div>
+      </div>
+      <div class="exam-session-title"><span class="eyebrow" id="examEyebrow">✦ SKILL CHECK</span><h2 id="examTitle">Kana Fundamentals</h2><p class="subtle" id="examSubtitle">No hints or instant feedback. See your results at the end.</p></div>
+      <div id="examProgress" class="learning-progress"><div class="progress-row"><strong id="examCounter">Question 1 of 30</strong><span id="examProgressPercent">0%</span></div><div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="examProgressTrack"><div class="progress-fill" id="examProgressFill"></div></div></div>
+      <div class="quiz-panel exam-question-panel" id="examQuestionPanel">
+        <div class="quiz-head" id="examQuestionLabel">Write the romaji reading</div>
+        <div class="exam-prompt" id="examPrompt" lang="ja">あ</div>
+        <div class="quiz-bottom exam-answer-area" id="examBody"><form id="examForm" autocomplete="off"><label for="examInput" id="examAnswerLabel">Your answer</label><input id="examInput" class="answer-input" type="text" autocapitalize="none" spellcheck="false" autocomplete="off" required><div class="quiz-actions"><button type="submit" class="button-primary" id="examNext">Next question →</button><button type="button" class="button-secondary" id="examSkip">I don't know</button></div></form></div>
+      </div>
+      <p id="examHint" class="quiz-hint">No hints during an exam · Enter to continue</p>
+      <div id="examResult" class="summary-card exam-results-card" hidden><span class="eyebrow" id="examResultsEyebrow">✦ EXAM COMPLETE</span><div class="summary-intro"><h2 id="examResultTitle">Exam results</h2><p id="examResultPass" class="exam-result-status"></p><div id="examResultScore" class="exam-result-score"></div><p id="examResultNext"></p></div><div id="examResultMistakes"></div><div class="summary-actions"><button type="button" class="button-primary" id="examBack">Back to progress →</button></div></div>
+    </section>
+
     <section id="summaryScreen" class="summary-wrap" aria-label="Session results" hidden>
       <div class="summary-card"><span class="eyebrow" id="summaryEyebrow">Session complete</span><div class="summary-intro"><h2 id="summaryTitle">Here's how you did.</h2><p class="subtle" id="summaryDescription">Your results from this session.</p><div class="summary-progress" id="summaryProgress" hidden></div></div>
         <div class="stats summary-stats"><div class="stat"><span class="stat-answered">Answered</span><b id="summaryAttempts">0</b></div><div class="stat"><span class="stat-correct">Correct</span><b id="summaryCorrect">0</b></div><div class="stat"><span class="stat-accuracy">Accuracy</span><b id="summaryAccuracy">—</b></div></div>
@@ -210,12 +227,6 @@
       <p class="subtle" id="progressEmpty"></p><div class="progress-history" id="progressHistory"></div>
       <div class="progress-dashboard-footer"><button type="button" class="button-secondary" id="progressGuide">Learning Guide</button><button type="button" class="button-secondary" id="progressExport">Export backup</button></div>
     </div>
-  </dialog>
-  <dialog id="examDialog" class="review-dialog exam-dialog" aria-labelledby="examTitle">
-    <div class="review-dialog-head"><div><span class="eyebrow">✦ SKILL EXAM</span><h2 id="examTitle">Exam</h2></div><button type="button" class="mini-button" id="examExit" aria-label="Leave exam">✕</button></div>
-    <div class="exam-progress"><span id="examCounter"></span><div class="progress-track"><div class="progress-fill" id="examProgressFill"></div></div></div>
-    <div id="examBody"><div class="exam-prompt" id="examPrompt" lang="ja"></div><form id="examForm"><label for="examInput" id="examQuestionLabel">Write the romaji reading</label><input id="examInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" required><button type="submit" class="button-primary" id="examNext">Next question</button></form></div>
-    <div id="examResult" hidden><div class="exam-result-score" id="examResultScore"></div><h3 id="examResultTitle"></h3><strong id="examResultPass"></strong><p id="examResultNext"></p><div id="examResultMistakes"></div><button type="button" class="button-primary" id="examBack">Back to progress</button></div>
   </dialog>
   <dialog id="guideDialog" class="review-dialog guide-dialog" aria-labelledby="guideTitle"><div class="review-dialog-head"><div><span class="eyebrow">✦ HOW TO STUDY</span><h2 id="guideTitle">Learning Guide</h2></div><button type="button" class="mini-button" id="guideClose" aria-label="Close guide">✕</button></div><p class="subtle" id="guideIntro"></p><div id="guideSections"></div></dialog>
   <dialog id="installDialog" class="review-dialog install-dialog" aria-labelledby="installDialogTitle">

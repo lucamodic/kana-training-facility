@@ -213,9 +213,12 @@
     get('progressHistory').innerHTML=attempts.slice(0,35).map(a=>`<article class="progress-history-row"><div><strong>${clean(examLabel(a.examId))}</strong><small>${new Date(a.completedAt).toLocaleString(L()==='es'?'es-AR':'en-US',{dateStyle:'medium',timeStyle:'short'})} · ${a.correct}/${a.total}</small></div><span class="progress-history-percent ${a.passed?'is-passed':''}">${a.percent}%</span></article>`).join('');
   }
   async function showProgress() {
-    if(get('examDialog').open)get('examDialog').close();
+    if(!get('examScreen').hidden){
+      if(current && !window.confirm(trans('Leave this exam? Your unfinished attempt will not be saved.','¿Salir del examen? El intento sin terminar no se guardará.')))return;
+      closeExamView();
+    }
     page='dashboard';
-    get('progressDialog').showModal();
+    if(!get('progressDialog').open)get('progressDialog').showModal();
     attempts=await cloud.getAttempts();
     renderDashboard();
   }
@@ -230,23 +233,40 @@
     current={examId:id,questions,index:0,answers:[],startedAt:new Date().toISOString()};
     page='exam';
     get('progressDialog').close();
-    get('examDialog').showModal();
-    get('examBody').hidden=false;
+    get('setupScreen').hidden=true;
+    get('quizScreen').hidden=true;
+    get('summaryScreen').hidden=true;
+    get('examScreen').hidden=false;
+    get('examQuestionPanel').hidden=false;
     get('examResult').hidden=true;
+    get('examHint').hidden=false;
+    window.KTFStudyClock?.onViewChange(true,'exam');
     renderQuestion();
+    get('examScreen').scrollIntoView({block:'start',behavior:'instant'});
   }
   function renderQuestion() {
     const q=current?.questions[current.index];
     if(!q)return;
     get('examTitle').textContent=examLabel(current.examId);
     get('examCounter').textContent=`${t('question')} ${current.index+1} ${t('from')} ${current.questions.length}`;
-    get('examProgressFill').style.width=(current.index/current.questions.length*100)+'%';
+    const progress=Math.round(current.index/current.questions.length*100);
+    get('examProgressFill').style.width=progress+'%';
+    get('examProgressPercent').textContent=progress+'%';
+    get('examProgressTrack').setAttribute('aria-valuenow',String(progress));
+    get('examExit').textContent=trans('← Back to progress','← Volver a mi progreso');
+    get('examSubtitle').textContent=trans('No hints or instant feedback. See your results at the end.','Sin pistas ni correcciones inmediatas. Vas a ver tus resultados al finalizar.');
+    get('examEyebrow').textContent=trans('✦ SKILL CHECK','✦ EVALUACIÓN');
+    get('examModeBadge').textContent=trans('✦ EXAM MODE','✦ MODO EXAMEN');
+    get('examPassingBadge').textContent=trans('PASS · 90%','APROBACIÓN · 90%');
+    get('examHint').textContent=trans('No hints during an exam · Enter to continue','Sin pistas durante el examen · Enter para continuar');
     get('examPrompt').textContent=q.prompt;
     get('examPrompt').lang='ja';
     get('examQuestionLabel').textContent=q.type==='meaning'?t('meaning'):t('reading');
+    get('examAnswerLabel').textContent=trans('Your answer','Tu respuesta');
     get('examInput').placeholder=t('write');
     get('examInput').value='';
     get('examNext').textContent=current.index===current.questions.length-1?t('finish'):t('next');
+    get('examSkip').textContent=trans("I don't know",'No sé');
     get('examInput').focus({preventScroll:true});
   }
   async function submitAnswer(event) {
@@ -269,8 +289,9 @@
     const result={examId:current.examId,questions:current.answers,correct,total,percent,passed:percent>=90,weak,startedAt:current.startedAt,completedAt:new Date().toISOString()};
     await cloud.addAttempt(result);
     attempts=await cloud.getAttempts();
-    get('examBody').hidden=true;
+    get('examQuestionPanel').hidden=true;
     get('examResult').hidden=false;
+    get('examHint').hidden=true;
     get('examResultTitle').textContent=t('results');
     get('examResultScore').textContent=`${percent}% · ${correct}/${total}`;
     get('examResultPass').textContent=result.passed?t('pass'):t('fail');
@@ -282,7 +303,21 @@
     get('examResultMistakes').innerHTML=errors.length?`<h3>${t('mistakes')}</h3>${errors.slice(0,15).map(q=>`<div class="exam-mistake"><strong lang="ja">${clean(q.prompt)}</strong><span>${clean(q.answer||'—')} → ${clean(q.expected)}</span></div>`).join('')}`:'';
     get('examBack').textContent=t('closeResult');
     get('examProgressFill').style.width='100%';
+    get('examProgressPercent').textContent='100%';
+    get('examProgressTrack').setAttribute('aria-valuenow','100');
+    get('examResultsEyebrow').textContent=trans('✦ EXAM COMPLETE','✦ EXAMEN FINALIZADO');
+    get('examCounter').textContent=trans('Exam complete','Examen finalizado');
     current=null;
+  }
+  function closeExamView() {
+    current=null;
+    page='dashboard';
+    get('examScreen').hidden=true;
+    get('setupScreen').hidden=false;
+    get('quizScreen').hidden=true;
+    get('summaryScreen').hidden=true;
+    window.KTFStudyClock?.onViewChange(false);
+    window.scrollTo({top:0,behavior:'instant'});
   }
   function renderGuide() {
     get('guideTitle').textContent=t('guideTitle');
@@ -306,11 +341,20 @@
       if(button)startExam(button.dataset.exam);
     });
     get('examForm').addEventListener('submit',submitAnswer);
-    get('examExit').addEventListener('click',()=>{
-      if(current && !confirm(trans('Leave this exam? Your unfinished attempt will not be saved.','¿Salir del examen? El intento sin terminar no se guardará.')))return;
-      current=null;get('examDialog').close();showProgress();
+    get('examSkip').addEventListener('click',()=>{
+      if(!current)return;
+      get('examInput').value='';
+      submitAnswer(new Event('submit',{cancelable:true}));
     });
-    get('examBack').addEventListener('click',()=>{get('examDialog').close();showProgress();});
+    get('examExit').addEventListener('click',showProgress);
+    get('examBack').addEventListener('click',showProgress);
+    get('homeLink').addEventListener('click',event=>{
+      if(get('examScreen').hidden)return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if(current && !window.confirm(trans('Leave this exam? Your unfinished attempt will not be saved.','¿Salir del examen? El intento sin terminar no se guardará.')))return;
+      closeExamView();
+    },true);
     get('progressLogin').addEventListener('click',async()=>{try{await cloud.signIn();}catch(error){alert(t('signError')+': '+error.message);}});
     get('progressLogout').addEventListener('click',async()=>{await cloud.signOut();await refresh();});
     get('progressNicknameEdit').addEventListener('click',()=>{
@@ -325,7 +369,6 @@
     get('progressExport').addEventListener('click',exportBackup);
     get('progressDialog').addEventListener('click',e=>{if(e.target===get('progressDialog'))get('progressDialog').close();});
     get('guideDialog').addEventListener('click',e=>{if(e.target===get('guideDialog'))get('guideDialog').close();});
-    get('examDialog').addEventListener('cancel',e=>{if(current){e.preventDefault();get('examExit').click();}});
     cloud.subscribe(()=>{refresh().catch(()=>{});});
     document.addEventListener('ktf:languagechange',()=>{
       get('progressOpen').textContent=t('button');
@@ -333,12 +376,12 @@
       get('footerProgress').textContent=t('progressLink');
       if(get('progressDialog').open)renderDashboard();
       if(get('guideDialog').open)renderGuide();
-      if(get('examDialog').open&&current)renderQuestion();
+      if(!get('examScreen').hidden&&current)renderQuestion();
     });
     get('progressOpen').textContent=t('button');
     get('footerGuide').textContent=t('guideLink');
     get('footerProgress').textContent=t('progressLink');
   }
-  window.KTFLearning = {definitions,buildBank,sampleQuestions,open:showProgress};
+  window.KTFLearning = {definitions,buildBank,sampleQuestions,open:showProgress,leaveExam:closeExamView};
   init();
 })();

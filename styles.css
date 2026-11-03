@@ -1194,78 +1194,95 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
 
 .progress-open-button{border:1px solid var(--line, #ab8daa);background:var(--panel, #fff7fc);color:var(--text, #4c3452);padding:.55rem .8rem;border-radius:8px;font-weight:800;font-size:.78rem;cursor:pointer;white-space:nowrap;box-shadow:2px 2px 0 rgba(54,35,48,.12)}
 .progress-open-button:hover{filter:brightness(.96)}
-.ktf-footer{gap:12px;flex-wrap:wrap}
-.footer-guide-links{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.footer-guide-links button{border:0;padding:5px;background:none;color:inherit;text-decoration:underline;cursor:pointer;font:inherit;font-size:.82rem}
-.progress-dialog,.exam-dialog,.guide-dialog{width:min(910px,calc(100vw - 24px));max-width:910px;max-height:min(92dvh,900px);padding:0;background:var(--paper,#fff8fb);color:var(--ink,#3d2b3e);border:2px solid var(--line,#bb9bb3);border-radius:12px;box-shadow:0 22px 70px rgba(22,15,32,.35);overflow:auto}
+html{scrollbar-color:var(--retro-deep) var(--soft);scrollbar-width:thin}
+body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResultMistakes,.progress-history,*{scrollbar-color:var(--retro-deep) var(--soft);scrollbar-width:thin}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--soft);border-left:1px solid var(--line);border-top:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--retro-main),var(--retro-deep));border:2px solid var(--soft);border-radius:999px}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--accent),var(--retro-deep))}
+::-webkit-scrollbar-corner{background:var(--soft)}
+
+.progress-dialog,.exam-dialog,.guide-dialog{width:min(960px,calc(100vw - 24px));max-width:960px;max-height:min(90dvh,920px);padding:0;background:var(--paper,#fff8fb);color:var(--ink,#3d2b3e);border:2px solid var(--retro-deep);border-radius:4px;box-shadow:8px 8px 0 color-mix(in srgb, var(--retro-shadow) 55%, transparent);overflow:auto}
 .progress-dialog::backdrop,.exam-dialog::backdrop,.guide-dialog::backdrop{background:rgba(19,12,28,.65);backdrop-filter:blur(3px)}
-.progress-dialog-scroll{padding:15px 20px 23px}
-.progress-account-card{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:var(--soft,#f1e4f1);border:1px solid var(--line,#b9a0bd);padding:14px;border-radius:9px;margin-top:15px}
-.progress-account-card>div:first-child{display:grid;gap:4px;min-width:200px}
-.progress-account-card strong{overflow-wrap:anywhere}
-.progress-account-card small{font-size:.77rem;opacity:.77}
-.progress-auth-actions{display:flex;gap:8px;flex-wrap:wrap}
-.progress-auth-actions button{font-size:.82rem;min-height:38px}
-.progress-sync-help{font-size:.78rem;opacity:.77;margin:9px 0 14px}
-.progress-next{border:1px dashed var(--line,#bd9db8);border-radius:9px;padding:13px 16px;margin-bottom:18px;background:var(--panel,#fff)}
-.progress-next p{margin:6px 0 0;font-weight:650;line-height:1.5}
-.progress-heading{margin:18px 0 10px}
-.progress-heading h3{font-size:1rem;margin:0}
-.progress-heading p{margin:4px 0 0;font-size:.78rem;opacity:.75}
-.progress-exam-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.progress-exam-card{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line,#bd9db8);border-radius:9px;padding:14px;background:var(--panel,#fff)}
-.progress-exam-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;flex-wrap:wrap}
-.progress-exam-head h3{margin:0;font-size:.94rem}
-.progress-exam-status{border-radius:99px;padding:3px 7px;background:var(--soft,#f1e1f1);font-size:.72rem;font-weight:650}
-.progress-exam-card p{font-size:.83rem;margin:0;line-height:1.45;flex:1}
-.progress-exam-card button{font-size:.81rem;align-self:flex-start}
-.progress-exam-card small{font-size:.75rem;color:var(--muted,#8a6482)}
-.progress-history{display:grid;gap:6px}
-.progress-history-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;background:var(--panel,#fff);border:1px solid var(--line,#bd9db8);border-radius:7px}
-.progress-history-row>div{display:grid;gap:3px}
-.progress-history-row small{font-size:.75rem;opacity:.72}
-.progress-history-percent{font-weight:800}
-.progress-history-percent.is-passed{color:var(--success,#248158)}
-.progress-dashboard-footer{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.exam-dialog{width:min(600px,calc(100vw - 24px))}
-.exam-progress{padding:14px 20px 0;font-size:.81rem;font-weight:700}
-.exam-progress .progress-track{height:8px;margin-top:8px}
-#examBody{padding:12px 20px 25px}
-.exam-prompt{font-size:clamp(3rem,9vw,5.1rem);font-weight:750;text-align:center;padding:30px 8px 32px;overflow-wrap:anywhere;line-height:1.25}
-#examForm{display:grid;gap:12px;max-width:440px;margin:auto}
-#examForm label{font-size:.9rem;font-weight:700}
-#examInput{width:100%;padding:13px 12px;border-radius:8px;border:2px solid var(--line,#b9a0bd);font-size:1rem;color:var(--ink,#33203c);background:var(--panel,#fff)}
-#examNext{justify-self:stretch;min-height:44px}
-#examResult{padding:18px 22px 24px}
-.exam-result-score{font-size:2rem;font-weight:850}
-.exam-result-passed{color:var(--success,#27825c)}
-.exam-result-review{color:var(--danger,#a34b65)}
-.exam-mistake{display:flex;gap:12px;align-items:center;padding:9px;border-bottom:1px solid var(--line,#bb9baa);overflow-wrap:anywhere}
-.exam-mistake strong{font-size:1.3rem;min-width:90px}
-#examResultMistakes{max-height:34vh;overflow:auto;margin:14px 0}
-.guide-dialog{width:min(680px,calc(100vw - 24px));padding-bottom:18px}
-.guide-dialog>p,.guide-dialog>#guideSections{margin:16px 20px}
-#guideSections section{border-bottom:1px solid var(--line,#b8a1b9);padding:9px 0}
-#guideSections h3{margin:0 0 6px;font-size:1rem}
-#guideSections p{margin:0 0 8px;font-size:.87rem;line-height:1.6}
-@media(max-width:650px){.progress-exam-grid{grid-template-columns:1fr}.progress-dialog-scroll{padding:12px}.progress-account-card{align-items:stretch}.progress-auth-actions{width:100%}.progress-auth-actions button{flex:1}.progress-open-button{padding:.48rem .56rem;font-size:.75rem}.exam-prompt{padding:28px 5px}.exam-mistake strong{min-width:62px}.footer-guide-links{width:100%;justify-content:center}}
+.progress-dialog .review-dialog-head,.exam-dialog .review-dialog-head,.guide-dialog .review-dialog-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 16px;margin:0;border-bottom:2px solid var(--retro-deep);background:linear-gradient(90deg,var(--retro-main),var(--retro-ribbon))}
+.progress-dialog .review-dialog-head .eyebrow,.exam-dialog .review-dialog-head .eyebrow,.guide-dialog .review-dialog-head .eyebrow{margin:0 0 3px;color:var(--accent);font-size:10px;letter-spacing:.09em}
+.progress-dialog .review-dialog-head h2,.exam-dialog .review-dialog-head h2,.guide-dialog .review-dialog-head h2{margin:0;font-family:Georgia, "Times New Roman", serif;font-size:clamp(1.8rem,3.4vw,2.35rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;color:var(--ink)}
+.progress-dialog .review-dialog-head .mini-button,.exam-dialog .review-dialog-head .mini-button,.guide-dialog .review-dialog-head .mini-button{min-width:42px;min-height:42px;padding:0 12px;border:2px solid var(--retro-deep);background:var(--paper);border-radius:4px;box-shadow:2px 2px 0 var(--retro-shadow);font-size:1rem}
+.progress-dialog-scroll{padding:18px 20px 24px;background:linear-gradient(180deg,color-mix(in srgb, var(--retro-cream) 42%, transparent) 0 128px, transparent 128px)}
+.progress-dialog .subtle{font-size:.95rem;line-height:1.7;color:var(--muted)}
+.progress-account-card,.progress-next,.progress-exam-card,.progress-history-row,.progress-account-details,.progress-nickname-form{background:var(--paper);border:2px solid var(--line);border-radius:4px;box-shadow:3px 3px 0 color-mix(in srgb, var(--retro-shadow) 25%, transparent)}
+.progress-account-card{padding:16px 18px;gap:14px;background:linear-gradient(180deg,color-mix(in srgb, var(--retro-ribbon) 36%, white) 0%, var(--paper) 100%)}
+.progress-account-card .eyebrow{margin-bottom:4px}
+.progress-auth-actions button{min-height:42px}
+.progress-sync-help{font-size:.82rem;margin:10px 0 16px;padding:10px 12px;background:color-mix(in srgb, var(--retro-cream) 55%, white);border:1px dashed var(--line);border-radius:4px}
+.progress-next{padding:16px 18px;margin:0 0 18px;background:linear-gradient(180deg,color-mix(in srgb, var(--green-soft) 65%, white) 0%, var(--paper) 100%)}
+.progress-next p{margin:5px 0 0;font-size:.97rem;line-height:1.55;font-weight:700}
+.progress-heading{margin:22px 0 10px;padding-bottom:8px;border-bottom:2px dashed var(--line)}
+.progress-heading h3{margin:0;font-family:Georgia, "Times New Roman", serif;font-size:1.25rem;letter-spacing:-.03em}
+.progress-heading p{margin:4px 0 0;font-size:.82rem;line-height:1.6}
+.progress-exam-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.progress-exam-card{padding:16px;gap:10px;background:linear-gradient(180deg,color-mix(in srgb, var(--retro-cream) 30%, white) 0%, var(--paper) 100%)}
+.progress-exam-head h3{font-family:Georgia, "Times New Roman", serif;font-size:1.08rem;letter-spacing:-.02em}
+.progress-exam-status{background:color-mix(in srgb, var(--retro-ribbon) 58%, white);border:1px solid var(--line);padding:4px 8px;font-size:.72rem;font-weight:800}
+.progress-exam-card p{font-size:.84rem;line-height:1.55}
+.progress-exam-card button{align-self:stretch}
+.progress-history{display:grid;gap:10px}
+.progress-history-row{padding:12px 14px;background:linear-gradient(180deg,color-mix(in srgb, var(--soft) 75%, white) 0%, var(--paper) 100%)}
+.progress-history-row strong{font-family:Georgia, "Times New Roman", serif;font-size:1rem}
+.progress-history-row small{font-size:.76rem;line-height:1.4}
+.progress-dashboard-footer{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.progress-dashboard-footer .button-secondary{min-height:42px}
+
+.guide-dialog{width:min(820px,calc(100vw - 24px))}
+.guide-dialog>p,.guide-dialog>#guideSections{margin:18px 20px}
+#guideIntro{font-size:.97rem;line-height:1.7;color:var(--muted)}
+#guideSections{display:grid;gap:12px}
+#guideSections section{padding:16px 18px;background:linear-gradient(180deg,color-mix(in srgb, var(--retro-cream) 28%, white) 0%, var(--paper) 100%);border:2px solid var(--line);border-radius:4px;box-shadow:3px 3px 0 color-mix(in srgb, var(--retro-shadow) 20%, transparent)}
+#guideSections h3{margin:0 0 8px;font-family:Georgia, "Times New Roman", serif;font-size:1.22rem;letter-spacing:-.03em}
+#guideSections p{margin:0;font-size:.93rem;line-height:1.72;color:var(--ink)}
+#guideClose{min-width:108px}
+
+.exam-dialog{width:min(760px,calc(100vw - 24px));max-width:760px}
+.exam-progress{padding:14px 18px 0;font-size:.84rem;font-weight:800;color:var(--muted)}
+.exam-progress .progress-track{height:10px;margin-top:9px;border:1px solid var(--line);background:var(--soft)}
+#examBody{padding:18px 18px 24px}
+#examBody::before{content:"";display:block;height:0}
+.exam-prompt{font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:clamp(3.3rem,10vw,6rem);font-weight:700;text-align:center;padding:22px 12px 28px;border:2px solid var(--line);border-radius:4px;background:linear-gradient(180deg,color-mix(in srgb, var(--retro-cream) 45%, white) 0%, var(--paper) 100%);min-height:208px;display:grid;place-items:center;line-height:1.18;box-shadow:3px 3px 0 color-mix(in srgb, var(--retro-shadow) 20%, transparent)}
+#examForm{display:grid;gap:12px;max-width:none;margin:16px 0 0;padding:16px;border:2px solid var(--line);border-radius:4px;background:linear-gradient(180deg,color-mix(in srgb, var(--soft) 72%, white) 0%, var(--paper) 100%);box-shadow:3px 3px 0 color-mix(in srgb, var(--retro-shadow) 20%, transparent)}
+#examForm label{font-family:Georgia,"Times New Roman",serif;font-size:1.02rem;font-weight:800;letter-spacing:-.02em}
+#examInput{width:100%;padding:14px 14px;border-radius:4px;border:2px solid var(--line);font-size:1.14rem;color:var(--ink);background:#fff;box-shadow:inset 2px 2px 0 rgba(0,0,0,.06)}
+#examInput:focus{border-color:var(--retro-deep)}
+#examNext{justify-self:stretch;min-height:48px;font-size:1rem}
+#examResult{padding:18px 18px 24px}
+#examResultTitle{font-family:Georgia, "Times New Roman", serif;font-size:1.45rem;margin:8px 0 4px}
+.exam-result-score{font-family:Georgia, "Times New Roman", serif;font-size:2.2rem;font-weight:900;letter-spacing:-.04em}
+.exam-result-passed{color:var(--green);display:block;margin-top:4px}
+.exam-result-review{color:var(--accent);display:block;margin-top:4px}
+#examResultNext{margin:12px 0 0;padding:12px 14px;border:1px dashed var(--line);border-radius:4px;background:color-mix(in srgb, var(--retro-cream) 45%, white);line-height:1.6}
+#examResultMistakes{max-height:34vh;overflow:auto;margin:14px 0;display:grid;gap:8px;padding-right:3px}
+#examResultMistakes h3{font-family:Georgia, "Times New Roman", serif;font-size:1.16rem;margin:2px 0 4px}
+.exam-mistake{display:grid;grid-template-columns:minmax(80px,120px) 1fr;gap:12px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:4px;background:linear-gradient(180deg,color-mix(in srgb, var(--accent-soft) 45%, white) 0%, var(--paper) 100%);overflow-wrap:anywhere}
+.exam-mistake strong{font-size:1.55rem;min-width:0;text-align:center;padding:6px 8px;background:#fff;border:1px solid var(--line);border-radius:4px}
+#examBack{width:100%;min-height:48px}
+
+@media(max-width:650px){.progress-exam-grid{grid-template-columns:1fr}.progress-dialog-scroll{padding:12px}.progress-account-card{align-items:stretch}.progress-auth-actions{width:100%}.progress-auth-actions button{flex:1}.progress-open-button{padding:.48rem .56rem;font-size:.75rem}.exam-prompt{padding:22px 8px;min-height:180px;font-size:clamp(2.8rem,18vw,4.7rem)}.exam-mistake{grid-template-columns:1fr}.exam-mistake strong{font-size:1.35rem}.guide-dialog>p,.guide-dialog>#guideSections{margin:14px}.footer-guide-links{width:100%;justify-content:center}}
 @media(max-width:340px){.progress-dialog,.exam-dialog,.guide-dialog{width:calc(100vw - 10px)}.progress-open-button{font-size:.7rem}}
-@media(max-width:680px){
-  .header-actions{flex-wrap:wrap;align-items:center}
+
+.header-actions .progress-open-button{order:4}
+@media (max-width: 600px){
+  .header-actions{justify-content:flex-end;gap:8px;flex-wrap:wrap}
   .header-actions .progress-open-button{order:5;flex:1 1 100%;min-height:35px;text-align:center}
-  .header-actions .language-picker{flex:1 1 115px}
-  .header-actions .theme-picker{flex:0 1 auto}
 }
 
 .progress-identity{display:grid;gap:4px;min-width:min(200px,100%)}
-.progress-nickname-form{display:grid;gap:8px;margin-top:10px;padding:13px;border:1px solid var(--line,#bd9db8);border-radius:9px;background:var(--panel,#fff)}
+.progress-nickname-form{display:grid;gap:8px;margin-top:10px;padding:13px;border:2px solid var(--line);border-radius:4px;background:var(--panel,#fff)}
 .progress-nickname-form label{font-weight:750;font-size:.85rem}
 .progress-nickname-fields{display:flex;flex-wrap:wrap;gap:7px}
-.progress-nickname-fields input{min-width:140px;flex:1 1 160px;min-height:39px;border:1px solid var(--line,#bd9db8);border-radius:7px;background:var(--paper,#fff8fb);color:var(--ink,#3d2b3e);padding:7px 10px;font:inherit}
+.progress-nickname-fields input{min-width:140px;flex:1 1 160px;min-height:39px;border:2px solid var(--line);border-radius:4px;background:var(--paper,#fff8fb);color:var(--ink,#3d2b3e);padding:7px 10px;font:inherit}
 .progress-nickname-fields button{font-size:.82rem;min-height:39px}
 .progress-nickname-form small{font-size:.75rem;opacity:.78}
 .progress-nickname-feedback{margin:9px 0 0;font-size:.78rem;font-weight:650}
-.progress-account-details{margin:10px 0 0;border:1px solid var(--line,#bd9db8);border-radius:8px;background:var(--panel,#fff);padding:9px 12px}
+.progress-account-details{margin:10px 0 0;padding:9px 12px}
 .progress-account-details summary{font-size:.79rem;font-weight:700;cursor:pointer}
 .progress-account-details-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 0 2px}
 .progress-account-details-inner>div{display:grid;gap:4px;min-width:0}
@@ -1274,3 +1291,44 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
 @media(max-width:450px){.progress-nickname-fields button{flex:1 1 auto}.progress-auth-actions button{white-space:normal}}
 
 .progress-nickname-form[hidden],.progress-nickname-feedback[hidden],.progress-account-details[hidden]{display:none}
+
+.exam-session{max-width:750px;min-height:70vh}
+.exam-session-title{padding:17px 19px 19px;margin:0 0 16px;background:var(--retro-cream);border:2px solid var(--retro-deep);box-shadow:3px 3px 0 var(--retro-shadow);border-radius:4px}
+.exam-session-title .eyebrow{margin:0 0 8px}
+.exam-session-title h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.75rem,4vw,2.25rem);line-height:1.16;letter-spacing:-.04em;margin:0 0 6px}
+.exam-session-title .subtle{font-size:.84rem;line-height:1.6}
+.exam-session>.learning-progress{padding:14px 16px;margin-bottom:15px;background:var(--paper);border:1px solid var(--retro-deep);box-shadow:2px 2px 0 var(--retro-shadow)}
+.exam-session>.learning-progress .progress-row{margin-bottom:8px}
+.exam-session>.learning-progress .progress-track{height:10px;border:1px solid var(--line);background:var(--soft)}
+.exam-session .quiz-top-right{display:flex;align-items:center;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.exam-session .quiz-pill{white-space:nowrap;font-size:.76rem}
+.exam-question-panel{overflow:hidden}
+.exam-question-panel:before{content:"▣  SKILL EXAM.EXE"}
+.exam-question-panel .quiz-head{font-size:1rem;font-weight:750;margin:4px 0 0;padding:15px 12px 3px}
+.exam-session .exam-prompt{background:transparent;box-shadow:none;border:0;border-radius:0;min-height:230px;margin:0;display:grid;place-items:center;padding:28px 20px 40px;font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:clamp(4.5rem,12vw,7.8rem);line-height:1.2;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
+.exam-session .exam-answer-area{border-top:2px dashed var(--retro-deep);background:var(--soft);padding:23px 27px 28px}
+.exam-session #examForm{margin:0;padding:0;max-width:none;display:grid;gap:12px;border:0;box-shadow:none;border-radius:0;background:transparent}
+.exam-session #examForm label{font-family:"Courier New",monospace;font-size:.89rem;font-weight:800}
+.exam-session #examInput{padding:13px 15px;background:var(--paper);color:var(--ink);border:2px solid var(--retro-deep);border-radius:3px;font-size:1.1rem;box-shadow:inset 2px 2px 0 #00000012;width:100%}
+.exam-session #examInput:focus{outline:3px dashed var(--retro-deep);outline-offset:3px}
+.exam-session #examNext{width:100%;min-height:50px;font-size:.96rem;justify-self:stretch}
+.exam-session .quiz-hint{text-align:center;margin:17px auto 0}
+.exam-results-card{padding:24px 26px 30px}
+.exam-results-card:before{content:"▣  EXAM RESULTS.EXE";margin:-24px -26px 24px}
+.exam-results-card .summary-intro{margin:0 0 16px}
+.exam-results-card #examResultTitle{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.75rem,4vw,2.25rem);margin:0 0 6px}
+.exam-results-card #examResultScore{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2rem,6vw,3rem);font-weight:900;margin:14px 0 10px}
+.exam-results-card #examResultPass{font-weight:750;margin:0;color:var(--green)}
+.exam-results-card #examResultPass.exam-result-review{color:var(--accent)}
+.exam-results-card #examResultNext{line-height:1.6;background:var(--retro-cream);border:1px dashed var(--retro-deep);padding:13px 15px;margin-top:12px}
+.exam-results-card .summary-actions{margin:20px 0 0}
+.exam-results-card .summary-actions button{width:100%}
+.exam-session #examResultMistakes{max-height:none;overflow:visible}
+@media(max-width:600px){.exam-session{min-height:68vh;padding-top:16px}.exam-session-title{padding:15px}.exam-session .exam-prompt{min-height:180px;font-size:clamp(3.4rem,20vw,6rem);padding:22px 12px 32px}.exam-session .exam-answer-area{padding:21px 16px 23px}.exam-session .quiz-top{align-items:center;gap:10px;flex-wrap:wrap}.exam-session .quiz-top-right{max-width:100%}.exam-session .quiz-pill{font-size:.7rem}.exam-results-card{padding:18px}.exam-results-card:before{margin:-18px -18px 18px}}
+
+.exam-session #examForm .quiz-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.66fr);gap:10px}
+.exam-session #examForm .quiz-actions button{min-width:0;width:100%;min-height:50px;padding:12px 8px}
+.footer-guide-links{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}
+.footer-guide-links button{background:var(--paper);color:var(--ink);border:1px solid var(--retro-deep);border-radius:3px;box-shadow:2px 2px 0 var(--retro-shadow);padding:7px 10px;font:bold 11px "Courier New",monospace;cursor:pointer}
+.footer-guide-links button:hover{background:var(--retro-cream)}
+@media(max-width:360px){.exam-session #examForm .quiz-actions{grid-template-columns:1fr}}

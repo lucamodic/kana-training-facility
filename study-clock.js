@@ -49,7 +49,7 @@
   const clockElement = $('globalStudyClock');
   const homeMarker = document.createComment('study clock position');
   clockElement.before(homeMarker);
-  const lesson = $('quizScreen');
+  let lesson = $('quizScreen');
   let lessonOpen = false;
   let isDocked = false;
   let isMinimized = false;
@@ -124,7 +124,8 @@
     titlebar.title = floating ? t('drag') : '';
     applyFloatingPosition();
   }
-  function viewChanged(open) {
+  function viewChanged(open, mode = 'practice') {
+    lesson = mode === 'exam' ? $('examScreen') : $('quizScreen');
     lessonOpen = open;
     if (open) {
       isDocked = false;

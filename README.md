@@ -190,3 +190,13 @@ The footer shows **v25.0**. Manga Reader stores uploaded pages in IndexedDB in c
 Before choosing image files, fill in **Manga title** (for example, *The Green Manga*) and **Chapter / batch** (for example, *Capítulo #1*), then add around four pages or up to 16. The chapter is saved locally with page order. **View analyzed manga** opens a library grouped by series and ordered naturally by chapter numbers, so Capítulo #2 appears before #10. **New chapter** preserves the current manga title and suggests the next chapter number. You can change an existing chapter title by editing the fields and leaving the field. Removing a chapter removes only its grouping: cached analyses are retained to avoid duplicate token charges. **Delete all local manga** removes both chapters and cached pages after confirmation.
 
 The library is indexed to the currently authorized Supabase User UID in this browser, is hidden from unauthorized users, and never syncs manga pages to Supabase. **It is not an encrypted vault**: browser profile/device access and clearing website storage affect availability/privacy. IndexedDB may be evicted by the browser; exporting backups is not supported yet. Images uploaded after future image compression or editing have different bytes and might not match previous SHA-256 values, even if visually identical.
+
+
+## Manga Reader v26.0 — Better Japanese OCR and manual page ordering
+
+- Thumbnails can now be dragged, and accessible left/right arrows work on desktop and mobile; chapter order is persisted locally and restored when the chapter is reopened, even when uploaded image hashes complete out of order. No OpenAI calls are made merely to rearrange pages.
+- OCR prompts now scan the whole manga image more carefully and incoming photos can be processed at up to 3000px on the longest side (subject to the backend size limit).
+- **Reanalyze with AI** triggers a thorough two-pass OCR process on that page. The second pass is asked to identify genuinely omitted dialogue only. Existing explanations are retained for unchanged text. The second pass costs extra tokens.
+- Optional Supabase secret `OPENAI_OCR_MODEL` overrides the OCR model without changing the main `OPENAI_MODEL` used for explanations; no value is required by default.
+- **No cache migration or deletion:** IndexedDB database/version, page cache versions, hashes, saved chapters, account IDs and text explanations remain intact. The footer displays `v26.0` and the PWA Service Worker cache ID has been bumped.
+- **Deployment:** upload all static files to GitHub Pages AND redeploy the new `supabase/functions/ktf-manga-analyze/index.ts` to activate the OCR fix. Existing Secrets and SQL stay unchanged.

@@ -1,7 +1,8 @@
 import { withSupabase } from 'npm:@supabase/server@^1'
 
 const MODEL = Deno.env.get('OPENAI_MODEL') || 'gpt-6-luna'
-const OCR_PROMPT = `Read this Japanese manga page and transcribe its legible speech bubbles and narration. Return the text EXACTLY as printed, including kanji and kana. Respect manga reading order (right-to-left panels, vertical columns top-to-bottom). Treat each coherent bubble or sentence as one segment. Furigana helps interpret the main text, but must not be repeated as separate dialogue. Ignore decorative sound effects unless clearly spoken. Do not translate, romanize, explain grammar, infer unreadable characters, or generate images. If a text region is obvious, optionally estimate its bounding box [top,left,bottom,right] scaled 0..1000; otherwise use null. Return JSON only: {"segments":[{"japanese":"original Japanese text","bbox":null}]}. If nothing is readable, return {"segments":[]}.`
+const OCR_PROMPT = `You are a meticulous Japanese manga text transcription specialist. Inspect the ENTIRE page, including small and faint writing. Read systematically from the top-right to bottom-left in Japanese manga reading order, checking each panel, every speech bubble, narration box, aside, and standalone line of spoken dialogue. Do a second careful visual scan before finalizing to ensure no text balloon was accidentally skipped. Transcribe all legible Japanese printed text EXACTLY as drawn, respecting kanji, kana, punctuation and line breaks when meaningful. A separate bubble must become a separate segment even if it is very short, and a multi-line bubble remains a single segment. Consider tiny peripheral bubbles as well as prominent ones. Do not omit a readable bubble merely because it is short, looks unimportant, or overlaps a drawing. Furigana can help identify words but must not be transcribed independently. Ignore decorative sound effects unless unmistakably spoken. Do not translate, romanize, infer obscured characters or generate images. For each region, estimate the bounding box [top,left,bottom,right] normalized to 0..1000 when possible, otherwise null. Return only a JSON object: {"segments":[{"japanese":"exact text","bbox":null}]}. If absolutely no text is readable return {"segments":[]}. Never fabricate text to increase the segment count.`
+const OCR_REVIEW_PROMPT = `You are a second-pass Japanese manga OCR auditor. You will be shown an image and a JSON list of dialogues that the first pass already transcribed. Your ONLY task is to find legible text bubbles, narration or spoken dialogue which are genuinely ABSENT from that list. Scan every panel and edge of the entire image, including small vertical text. Compare visually with the existing transcriptions and do NOT repeat an existing bubble, do NOT propose mere punctuation variants, do NOT infer unreadable words, and do NOT invent additional dialogue. Return a JSON object ONLY, with missing bubbles as {"segments":[{"japanese":"exact missing Japanese text","bbox":null}]}. If nothing was missed return {"segments":[]}. Try to estimate [top,left,bottom,right] 0..1000 for genuinely missing bubbles.`
 const EXPLAIN_PROMPT = `You are a careful Japanese reading tutor. You will receive an array of numbered manga dialogue transcriptions, not an image. For EACH entry, return exactly the same index and explain ONLY its given Japanese text. Provide: complete hiragana/katakana reading, Hepburn romaji, a natural English sentence translation, up to 12 useful vocabulary/particle entries with surface form, kana reading, romaji and English meaning, and up to 12 kanji with core English meaning, contextual reading where linguistically separable, and a brief note. For irregular jukujikun, do not invent per-kanji phonetics: use "part of whole word". Japanese proper names can be ambiguous: avoid unjustified certainty. Do not alter the supplied dialogue or invent missing words. Preserve indices. Return JSON only: {"segments":[{"index":0,"reading":"...","romaji":"...","english":"...","words":[{"surface":"...","reading":"...","romaji":"...","meaning":"..."}],"kanji":[{"character":"...","meaning":"...","reading_here":"...","note":"..."}]}]}.`
 
 const str = (value: unknown, max = 700) => typeof value === 'string' ? value.trim().slice(0, max) : ''
@@ -34,6 +35,29 @@ function normalizeExplanation(value: unknown) {
   }
 }
 
+function normalizeOCRSegments(value: unknown) {
+  return list(object(value).segments).slice(0, 55).map(row => {
+    const raw = object(row)
+    const b = list(raw.bbox)
+    const bbox = b.length === 4 && b.every(n => typeof n === 'number' && n >= 0 && n <= 1000) && Number(b[2]) > Number(b[0]) && Number(b[3]) > Number(b[1]) ? b : null
+    return { japanese: str(raw.japanese, 500), reading: '', romaji: '', english: '', words: [], kanji: [], bbox }
+  }).filter(row => row.japanese)
+}
+
+function isOCRDuplicate(a: {japanese:string,bbox:unknown}, b: {japanese:string,bbox:unknown}) {
+  const normalize = (text:string) => text.normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu, '')
+  const one = normalize(a.japanese)
+  const two = normalize(b.japanese)
+  if (one === two || (one.length > 3 && two.length > 3 && (one.includes(two) || two.includes(one)) && Math.min(one.length,two.length)/Math.max(one.length,two.length) > .72)) return true
+  const left = list(a.bbox).map(Number)
+  const right = list(b.bbox).map(Number)
+  if (left.length !== 4 || right.length !== 4) return false
+  const intersection = Math.max(0, Math.min(left[2],right[2])-Math.max(left[0],right[0])) * Math.max(0,Math.min(left[3],right[3])-Math.max(left[1],right[1]))
+  const aArea = (left[2]-left[0])*(left[3]-left[1])
+  const bArea = (right[2]-right[0])*(right[3]-right[1])
+  return aArea > 0 && bArea > 0 && intersection / Math.min(aArea,bArea) > .70
+}
+
 class OpenAIFailure extends Error {
   status: number
   constructor(message: string, status: number) {
@@ -42,13 +66,13 @@ class OpenAIFailure extends Error {
   }
 }
 
-async function callOpenAI(key: string, stage: 'ocr' | 'explain', content: unknown[]) {
+async function callOpenAI(key: string, stage: 'ocr' | 'ocr-review' | 'explain', content: unknown[]) {
   const requestBody = {
-    model: MODEL,
+    model: stage === 'explain' ? MODEL : (Deno.env.get('OPENAI_OCR_MODEL') || MODEL),
     store: false,
     reasoning: { effort: 'low' },
-    max_output_tokens: stage === 'ocr' ? 4096 : 8192,
-    instructions: stage === 'ocr' ? OCR_PROMPT : EXPLAIN_PROMPT,
+    max_output_tokens: stage === 'explain' ? 8192 : 4096,
+    instructions: stage === 'ocr' ? OCR_PROMPT : stage === 'ocr-review' ? OCR_REVIEW_PROMPT : EXPLAIN_PROMPT,
     input: [{ role: 'user', content }],
     text: { format: { type: 'json_object' } }
   }
@@ -61,7 +85,7 @@ async function callOpenAI(key: string, stage: 'ocr' | 'explain', content: unknow
         'Authorization': `Bearer ${key}`,
         'Content-Type': 'application/json'
       },
-      signal: AbortSignal.timeout(stage === 'ocr' ? 45000 : 60000),
+      signal: AbortSignal.timeout(stage === 'explain' ? 60000 : 45000),
       body: JSON.stringify(requestBody)
     })
   } catch (error) {
@@ -72,7 +96,7 @@ async function callOpenAI(key: string, stage: 'ocr' | 'explain', content: unknow
   const body = object(await response.json().catch(() => ({})))
   if (!response.ok) {
     const details = object(body.error)
-    console.warn('ktf-manga: OpenAI upstream error', JSON.stringify({ stage, model: MODEL, status: response.status, code: str(details.code, 80), message: str(details.message, 220) }))
+    console.warn('ktf-manga: OpenAI upstream error', JSON.stringify({ stage, model: requestBody.model, status: response.status, code: str(details.code, 80), message: str(details.message, 220) }))
     const status = response.status === 429 ? 429 : response.status >= 500 ? 503 : 502
     throw new OpenAIFailure(`OpenAI ${stage} request failed (HTTP ${response.status}).`, status)
   }
@@ -88,14 +112,14 @@ async function callOpenAI(key: string, stage: 'ocr' | 'explain', content: unknow
 
   if (body.status !== 'completed' || !text) {
     const incomplete = str(object(body.incomplete_details).reason, 100)
-    console.warn('ktf-manga: incomplete OpenAI response', JSON.stringify({ stage, model: MODEL, status: str(body.status, 80), reason: incomplete }))
+    console.warn('ktf-manga: incomplete OpenAI response', JSON.stringify({ stage, model: requestBody.model, status: str(body.status, 80), reason: incomplete }))
     throw new OpenAIFailure('OpenAI returned an incomplete response. Try fewer dialogues or a smaller page.', 502)
   }
 
   try {
     return JSON.parse(text)
   } catch {
-    console.warn('ktf-manga: invalid OpenAI JSON', JSON.stringify({ stage, model: MODEL, length: text.length }))
+    console.warn('ktf-manga: invalid OpenAI JSON', JSON.stringify({ stage, model: requestBody.model, length: text.length }))
     throw new OpenAIFailure('OpenAI returned invalid JSON. Try again.', 502)
   }
 }
@@ -134,6 +158,7 @@ export default {
     }
 
     const mode = str(data.mode, 30)
+    const thorough = data.thorough === true
     if (!['image', 'explain', 'text'].includes(mode)) return errorResponse('Invalid mode', 400)
     const imageData = mode === 'image' ? str(data.imageData, 5_400_000) : ''
     const text = mode === 'text' ? str(data.text, 500) : ''
@@ -148,16 +173,33 @@ export default {
 
     try {
       if (mode === 'image') {
-        const output = await callOpenAI(key, 'ocr', [{ type: 'input_text', text: 'Transcribe the Japanese text in this image. Return the requested JSON object only.' }, { type: 'input_image', image_url: `data:image/jpeg;base64,${imageData}`, detail: 'high' }])
-        const results = list(object(output).segments).slice(0, 55).map(row => {
-          const raw = object(row)
-          const b = list(raw.bbox)
-          const bbox = b.length === 4 && b.every(n => typeof n === 'number' && n >= 0 && n <= 1000) && Number(b[2]) > Number(b[0]) && Number(b[3]) > Number(b[1]) ? b : null
-          return { japanese: str(raw.japanese, 500), reading: '', romaji: '', english: '', words: [], kanji: [], bbox }
-        }).filter(row => row.japanese)
-        return Response.json({ segments: results, stage: 'ocr' }, { headers: { 'Cache-Control': 'no-store' } })
+        const image = { type: 'input_image', image_url: `data:image/jpeg;base64,${imageData}`, detail: 'high' }
+        const output = await callOpenAI(key, 'ocr', [
+          { type: 'input_text', text: 'Transcribe every legible Japanese dialogue bubble and narration in this entire manga page. Return the requested JSON object only, and double-check that no bubble was missed.' },
+          image
+        ])
+        const results = normalizeOCRSegments(output)
+        let addedByReview = 0
+        let reviewSucceeded = false
+        if (thorough) {
+          try {
+            const review = await callOpenAI(key, 'ocr-review', [
+              { type: 'input_text', text: `Double-check the image to find ONLY missed Japanese dialogue. Here are the bubbles already transcribed; do not repeat them. Return missing bubbles as a JSON object, or {"segments":[]} when none are missing.\n\nAlready found:\n${JSON.stringify(results.map(row => ({japanese:row.japanese,bbox:row.bbox})))}` },
+              image
+            ])
+            reviewSucceeded = true
+            for (const candidate of normalizeOCRSegments(review)) {
+              if (results.length >= 55) break
+              if (results.some(original => isOCRDuplicate(original,candidate))) continue
+              results.push(candidate)
+              addedByReview++
+            }
+          } catch (error) {
+            console.warn('ktf-manga: OCR review skipped',String(error).slice(0,180))
+          }
+        }
+        return Response.json({ segments: results, stage: 'ocr', reviewed: reviewSucceeded, addedByReview }, { headers: { 'Cache-Control': 'no-store' } })
       }
-
       const input = mode === 'text' ? [{ index: 0, japanese: text }] : segments
       const output = await callOpenAI(key, 'explain', [{ type: 'input_text', text: `Explain this Japanese text and return the requested JSON object.\n\nInput:\n${JSON.stringify(input)}` }])
       const responses = list(object(output).segments)

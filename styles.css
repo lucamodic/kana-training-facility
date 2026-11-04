@@ -1586,3 +1586,13 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .manga-upload-intro{order:1}
 .manga-chapter-form{order:2;width:100%;margin:0}
 .manga-upload-buttons{order:3}
+
+.manga-page-card{flex:0 0 108px;min-width:0;border-radius:4px;padding:2px;transition:background-color 120ms ease}
+.manga-page-card[draggable="true"]{cursor:grab}
+.manga-page-card.is-drop-target{outline:2px dashed var(--retro-deep);outline-offset:1px;background:var(--retro-cream)}
+.manga-page-card .manga-page-thumb{width:100%;min-height:127px;flex:none}
+.manga-page-order{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}
+.manga-page-order button{min-height:31px;padding:3px;border:1px solid var(--retro-deep);border-radius:3px;background:var(--retro-button);color:var(--ink);cursor:pointer;font:bold 18px Georgia,serif}
+.manga-page-order button:hover:not(:disabled){background:var(--retro-cream)}
+.manga-page-order button:disabled{opacity:.35;cursor:default}
+#mangaOrderHint{margin:-1px 0 10px}

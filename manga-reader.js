@@ -10,6 +10,9 @@
   let libraryOpen = false;
   let activeChapterId = null;
   let chapterReady = Promise.resolve();
+  let orderRevision = 0;
+  let orderSave = Promise.resolve();
+  let draggedPageId = null;
   let historySerial = 0;
   let cacheWarningShown = false;
   const ownerId = () => cloud?.getStatus?.()?.user?.id || '';
@@ -44,6 +47,8 @@
       chapters = [];
       activeChapterId = null;
       chapterReady = Promise.resolve();
+      orderRevision++;
+      draggedPageId = null;
       libraryOpen = false;
       $('mangaSeriesName').value = '';
       $('mangaChapterName').value = '';
@@ -126,8 +131,8 @@
       .replace(/tsu/g,'tu').replace(/fu/g,'hu').replace(/ji/g,'zi');
   }
   const cacheLabels = {
-    en:{history:'My manga library',historyHelp:'Each chapter keeps the order of your pages, OCR and explanations. Saved only in this browser for your signed-in account.',historyEmpty:'No saved chapters yet.',historyOpen:'Open saved page',historyDelete:'Delete',historyClear:'Delete all local manga',historyConfirm:'Delete ALL saved chapters, images and analyses on this device? This cannot be undone.',historyDeleteConfirm:'Remove this cached page from this browser?',force:'Reanalyze with AI',forceConfirm:'This makes new paid OCR and explanation requests. Continue?',cacheHit:'Loaded from local cache · no tokens used.',cacheFail:'Local storage is unavailable or full. Your work might be lost when reloading.',cacheLoading:'Checking saved analysis…',cacheRestored:'Opened from the local library.',series:'Manga title',chapter:'Chapter / batch',newChapter:'New chapter',viewLibrary:'View analyzed manga',hideLibrary:'Hide my library',needTitle:'Enter the manga title and chapter before adding pages.',deleteChapter:'Delete chapter',confirmDeleteChapter:'Remove this chapter from the library? The image analyses will remain cached to avoid spending tokens again.',orphans:'Other cached pages',pages:'pages',analyzedPages:'analyzed',opened:'Chapter opened without using tokens.',chapterSaved:'Chapter saved on this device.',chapterMissing:'This chapter has no cached image available.',chapterBusy:'Saving pages on this device…'},
-    es:{history:'Mis mangas y capítulos',historyHelp:'Cada capítulo mantiene el orden de las páginas, OCR y explicaciones. Solo en este navegador y para tu cuenta.',historyEmpty:'Todavía no guardaste capítulos.',historyOpen:'Abrir página guardada',historyDelete:'Eliminar',historyClear:'Borrar todos los mangas locales',historyConfirm:'¿Eliminar TODOS los capítulos, imágenes y análisis guardados en este dispositivo? No se puede deshacer.',historyDeleteConfirm:'¿Eliminar esta página del caché de este navegador?',force:'Volver a analizar con IA',forceConfirm:'Esto vuelve a gastar solicitudes pagas de OCR y explicaciones. ¿Continuar?',cacheHit:'Cargado desde caché local · sin gastar tokens.',cacheFail:'El almacenamiento local no está disponible o está lleno. Podrías perder el trabajo al recargar.',cacheLoading:'Buscando análisis guardado…',cacheRestored:'Abierto desde la biblioteca local.',series:'Título del manga',chapter:'Capítulo / lote',newChapter:'Nuevo capítulo',viewLibrary:'Ver mangas analizados',hideLibrary:'Ocultar biblioteca',needTitle:'Ingresá el nombre del manga y del capítulo antes de agregar páginas.',deleteChapter:'Eliminar capítulo',confirmDeleteChapter:'¿Quitar este capítulo de la biblioteca? Los análisis de sus imágenes seguirán en caché para no gastar tokens otra vez.',orphans:'Otras páginas guardadas',pages:'páginas',analyzedPages:'analizadas',opened:'Capítulo abierto sin gastar tokens.',chapterSaved:'Capítulo guardado en este dispositivo.',chapterMissing:'Este capítulo no tiene imágenes guardadas disponibles.',chapterBusy:'Guardando las páginas en el dispositivo…'}
+    en:{history:'My manga library',historyHelp:'Each chapter keeps the order of your pages, OCR and explanations. Saved only in this browser for your signed-in account.',historyEmpty:'No saved chapters yet.',historyOpen:'Open saved page',historyDelete:'Delete',historyClear:'Delete all local manga',historyConfirm:'Delete ALL saved chapters, images and analyses on this device? This cannot be undone.',historyDeleteConfirm:'Remove this cached page from this browser?',force:'Reanalyze with AI',forceConfirm:'This makes new paid OCR and explanation requests. Continue?',cacheHit:'Loaded from local cache · no tokens used.',cacheFail:'Local storage is unavailable or full. Your work might be lost when reloading.',cacheLoading:'Checking saved analysis…',cacheRestored:'Opened from the local library.',series:'Manga title',chapter:'Chapter / batch',newChapter:'New chapter',viewLibrary:'View analyzed manga',hideLibrary:'Hide my library',needTitle:'Enter the manga title and chapter before adding pages.',deleteChapter:'Delete chapter',confirmDeleteChapter:'Remove this chapter from the library? The image analyses will remain cached to avoid spending tokens again.',orphans:'Other cached pages',pages:'pages',analyzedPages:'analyzed',opened:'Chapter opened without using tokens.',chapterSaved:'Chapter saved on this device.',chapterMissing:'This chapter has no cached image available.',chapterBusy:'Saving pages on this device…',orderHint:'Drag the thumbnails or use the arrows to put pages in the correct reading order.',orderSaved:'Page order saved locally.',orderError:'Could not save page order. Try again.'},
+    es:{history:'Mis mangas y capítulos',historyHelp:'Cada capítulo mantiene el orden de las páginas, OCR y explicaciones. Solo en este navegador y para tu cuenta.',historyEmpty:'Todavía no guardaste capítulos.',historyOpen:'Abrir página guardada',historyDelete:'Eliminar',historyClear:'Borrar todos los mangas locales',historyConfirm:'¿Eliminar TODOS los capítulos, imágenes y análisis guardados en este dispositivo? No se puede deshacer.',historyDeleteConfirm:'¿Eliminar esta página del caché de este navegador?',force:'Volver a analizar con IA',forceConfirm:'Esto vuelve a gastar solicitudes pagas de OCR y explicaciones. ¿Continuar?',cacheHit:'Cargado desde caché local · sin gastar tokens.',cacheFail:'El almacenamiento local no está disponible o está lleno. Podrías perder el trabajo al recargar.',cacheLoading:'Buscando análisis guardado…',cacheRestored:'Abierto desde la biblioteca local.',series:'Título del manga',chapter:'Capítulo / lote',newChapter:'Nuevo capítulo',viewLibrary:'Ver mangas analizados',hideLibrary:'Ocultar biblioteca',needTitle:'Ingresá el nombre del manga y del capítulo antes de agregar páginas.',deleteChapter:'Eliminar capítulo',confirmDeleteChapter:'¿Quitar este capítulo de la biblioteca? Los análisis de sus imágenes seguirán en caché para no gastar tokens otra vez.',orphans:'Otras páginas guardadas',pages:'páginas',analyzedPages:'analizadas',opened:'Capítulo abierto sin gastar tokens.',chapterSaved:'Capítulo guardado en este dispositivo.',chapterMissing:'Este capítulo no tiene imágenes guardadas disponibles.',chapterBusy:'Guardando las páginas en el dispositivo…',orderHint:'Arrastrá las miniaturas o usá las flechas para acomodar el orden de lectura.',orderSaved:'Orden de páginas guardado en este dispositivo.',orderError:'No se pudo guardar el orden. Intentá de nuevo.'}
   };
   const ct = key => cacheLabels[lang()][key] || key;
   function cacheWarning() {
@@ -186,6 +191,8 @@
     pages.length = 0;
     activeId = null;
     selectedItem = null;
+    orderRevision++;
+    draggedPageId = null;
     $('mangaImage').dataset.page = '';
   }
   async function awaitPendingSaves() {
@@ -376,6 +383,7 @@
     $('mangaSeriesLabel').textContent=ct('series');
     $('mangaChapterLabel').textContent=ct('chapter');
     $('mangaNewChapter').textContent=ct('newChapter');
+    $('mangaOrderHint').textContent=ct('orderHint');
     renderHistory();
   }
   function showReader() {
@@ -405,9 +413,46 @@
     document.dispatchEvent(new CustomEvent('ktf:mangascreenchange',{detail:{active:false}}));
     $('setupScreen').scrollIntoView({block:'start',behavior:'instant'});
   }
+  async function persistChapterOrder() {
+    const id = activeChapterId;
+    const uid = ownerId();
+    const revision = ++orderRevision;
+    if (!id || !authorized || !uid || !cache?.reorderChapter) return;
+    const pendingPages = pages.filter(page => page.chapterId === id);
+    orderSave = orderSave.catch(() => {}).then(async () => {
+      await chapterReady;
+      await Promise.allSettled(pendingPages.map(page => page.cacheReady).filter(Boolean));
+      if (revision !== orderRevision || !authorized || ownerId() !== uid || activeChapterId !== id) return;
+      const hashes = pages.filter(page => page.chapterId === id).map(page => page.hash).filter(Boolean);
+      await cache.reorderChapter(uid, id, hashes);
+      await refreshHistory();
+    }).catch(error => {
+      console.warn('Could not persist manga page order', String(error));
+      cacheWarning();
+    });
+    return orderSave;
+  }
+  function movePage(sourceId, targetId) {
+    if (!authorized || running || !sourceId || !targetId || sourceId === targetId) return;
+    const from = pages.findIndex(page => page.id === sourceId);
+    const to = pages.findIndex(page => page.id === targetId);
+    if (from < 0 || to < 0) return;
+    if (pages[from].chapterId !== pages[to].chapterId) return;
+    const [moved] = pages.splice(from, 1);
+    pages.splice(to, 0, moved);
+    persistChapterOrder().catch(() => {});
+    render();
+  }
+  function moveOnePage(id, delta) {
+    const from = pages.findIndex(page => page.id === id);
+    const to = from + delta;
+    if (from < 0 || to < 0 || to >= pages.length) return;
+    movePage(id, pages[to].id);
+  }
   function renderStrip() {
-    $('mangaPageStrip').innerHTML=pages.map((page,index)=>`<button type="button" class="manga-page-thumb ${page.id===activeId?'is-active':''}" data-page="${page.id}" aria-pressed="${page.id===activeId}" title="${escapeHtml(page.name)}"><img src="${page.url}" alt="" loading="lazy"><span>${index+1}</span><small>${escapeHtml(page.name.length>15?page.name.slice(0,13)+'…':page.name)}</small></button>`).join('');
+    $('mangaPageStrip').innerHTML=pages.map((page,index)=>`<div class="manga-page-card" data-page-card="${page.id}" draggable="${!running}" aria-label="${escapeHtml(page.name)}"><button type="button" class="manga-page-thumb ${page.id===activeId?'is-active':''}" data-page="${page.id}" aria-pressed="${page.id===activeId}" title="${escapeHtml(page.name)}"><img src="${page.url}" alt="" loading="lazy"><span>${index+1}</span><small>${escapeHtml(page.name.length>15?page.name.slice(0,13)+'…':page.name)}</small></button><div class="manga-page-order"><button type="button" data-move-left="${page.id}" aria-label="${lang()==='es'?'Mover página a la izquierda':'Move page left'}" title="${lang()==='es'?'Mover a la izquierda':'Move left'}" ${index===0||running?'disabled':''}>←</button><button type="button" data-move-right="${page.id}" aria-label="${lang()==='es'?'Mover página a la derecha':'Move page right'}" title="${lang()==='es'?'Mover a la derecha':'Move right'}" ${index===pages.length-1||running?'disabled':''}>→</button></div></div>`).join('');
     $('mangaPageStrip').hidden=!pages.length;
+    $('mangaOrderHint').hidden=pages.length<2;
   }
   function render() {
     updateText();
@@ -491,6 +536,7 @@
       page.cacheReady=lookupPage(page);
     }
     toast('');
+    persistChapterOrder().catch(() => {});
     render();
   }
   function removePage() {
@@ -504,6 +550,7 @@
     }
     activeId=pages[0]?.id||null;
     selectedItem=null;
+    persistChapterOrder().catch(() => {});
     render();
   }
   function clearAll() {
@@ -513,15 +560,20 @@
   }
   async function imageForAPI(file) {
     const bitmap=await createImageBitmap(file);
-    const ratio=Math.min(1,2000/Math.max(bitmap.width,bitmap.height));
-    const width=Math.max(1,Math.round(bitmap.width*ratio));
-    const height=Math.max(1,Math.round(bitmap.height*ratio));
-    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+    const canvas=document.createElement('canvas');
     const ctx=canvas.getContext('2d',{alpha:false});
     if(!ctx)throw new Error('Canvas is not supported.');
-    ctx.fillStyle='#ffffff';ctx.fillRect(0,0,width,height);
-    ctx.drawImage(bitmap,0,0,width,height);bitmap.close?.();
-    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.89));
+    let blob=null;
+    for (const [longSide, quality] of [[3000,.91],[2800,.88],[2400,.84],[2000,.78]]) {
+      const ratio=Math.min(1,longSide/Math.max(bitmap.width,bitmap.height));
+      canvas.width=Math.max(1,Math.round(bitmap.width*ratio));
+      canvas.height=Math.max(1,Math.round(bitmap.height*ratio));
+      ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
+      blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));
+      if(blob && blob.size<=3_900_000)break;
+    }
+    bitmap.close?.();
     if(!blob)throw new Error('Could not prepare page image.');
     const base64=await new Promise((resolve,reject)=>{
       const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=()=>reject(new Error('Could not read image.'));reader.readAsDataURL(blob);
@@ -535,7 +587,7 @@
     const session=await cloud.getAccessToken();
     if(!session)throw new Error(t('needLogin'));
     aborter=new AbortController();
-    const timeout=setTimeout(()=>aborter?.abort(),75000);
+    const timeout=setTimeout(()=>aborter?.abort(),payload?.mode==='image'&&payload.thorough?135000:75000);
     try{
       const response=await fetch(`${window.KTF_CONFIG.SUPABASE_URL}/functions/v1/ktf-manga-analyze`,{
         method:'POST',signal:aborter.signal,headers:{'Content-Type':'application/json',Authorization:`Bearer ${session}`,apikey:window.KTF_CONFIG.SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify(payload)
@@ -565,17 +617,46 @@
       } catch (error) { console.warn('Local text cache unavailable',String(error)); }
     }
   }
-  async function analyzePage(page) {
+  async function analyzePage(page, force=false) {
     if (page.cacheReady) await page.cacheReady;
     if (!authorized || !pages.includes(page)) return;
-    if (page.status === 'completed') return;
-    if (page.status !== 'transcribed') {
-      page.status = 'processing';render();
-      const prepared = await imageForAPI(page.file);
-      const result = await sendRequest({mode:'image',imageData:prepared.base64,mimeType:'image/jpeg'});
-      if (!Array.isArray(result.segments)) throw new Error('The transcription did not return Japanese dialogue.');
+    if (page.status === 'completed' && !force) return;
+    if (force || page.status !== 'transcribed') {
+      const previousItems=page.items;
+      const previousStatus=page.status;
+      page.status='processing';render();
+      let result;
+      let prepared;
+      try {
+        prepared = await imageForAPI(page.file);
+        result = await sendRequest({mode:'image',imageData:prepared.base64,mimeType:'image/jpeg',thorough:force});
+        if (!Array.isArray(result.segments)) throw new Error('The transcription did not return Japanese dialogue.');
+      } catch(error) {
+        page.items=previousItems;
+        page.status=previousStatus;
+        render();
+        throw error;
+      }
+      const japaneseKey = text => String(text || '').normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu,'');
+      const matches = (a,b) => {
+        const first=japaneseKey(a);
+        const second=japaneseKey(b);
+        return first === second || (first.length > 3 && second.length > 3 && (first.includes(second) || second.includes(first)) && Math.min(first.length,second.length) / Math.max(first.length,second.length) > .78);
+      };
+      const previousByText = new Map(previousItems.map(item => [japaneseKey(item.japanese),item]));
+      const incoming = result.segments.map(raw => {
+        const found = previousByText.get(japaneseKey(raw.japanese));
+        if (found?.romaji && !found.dirty) return toItem({...raw,reading:found.reading,romaji:found.romaji,english:found.english,words:found.words,kanji:found.kanji},found);
+        return toItem(raw,found);
+      }).filter(item=>item.japanese);
+      if (force) {
+        for (const item of previousItems) {
+          const match = incoming.some(found=>matches(found.japanese,item.japanese));
+          if (!match && item.japanese && (item.manual || item.dirty || item.romaji)) incoming.push(item);
+        }
+      }
       page.previewBlob = prepared.blob;
-      page.items = result.segments.map(raw=>toItem(raw)).filter(item=>item.japanese);
+      page.items = incoming;
       page.status = page.items.length ? 'transcribed' : 'completed';
       if (activeId === page.id) selectedItem = page.items[0]?.id || null;
       await rememberPage(page);
@@ -624,15 +705,10 @@
       ix++;
       toast(all?`${t('processingMany')} ${ix} ${t('of')} ${queue.length}: ${page.name}`:t('working'));
       try{
-        if (force) {
-          if (page.cacheReady) await page.cacheReady;
-          page.status='pending';
-          page.items=[];
-        }
-        await analyzePage(page);
+        await analyzePage(page,force);
         toast(`${t('done')} ${page.name}`);
       }
-      catch(err){if(page.status!=='transcribed')page.status='pending';toast(`${t('error')} ${err.message||err}`,true);if(all)break;}
+      catch(err){if(page.status==='processing')page.status='pending';toast(`${t('error')} ${err.message||err}`,true);if(all)break;}
       if(all && !analyzeAll)break;
       render();
     }
@@ -698,7 +774,42 @@
     $('mangaDrop').addEventListener('dragover',event=>{event.preventDefault();event.currentTarget.classList.add('drag-over');});
     $('mangaDrop').addEventListener('dragleave',event=>event.currentTarget.classList.remove('drag-over'));
     $('mangaDrop').addEventListener('drop',event=>{event.preventDefault();event.currentTarget.classList.remove('drag-over');loadFiles(event.dataTransfer.files);});
-    $('mangaPageStrip').addEventListener('click',event=>{const btn=event.target.closest('[data-page]');if(!btn)return;activeId=btn.dataset.page;selectedItem=null;render();});
+    $('mangaPageStrip').addEventListener('click',event=>{
+      const left=event.target.closest('[data-move-left]');
+      const right=event.target.closest('[data-move-right]');
+      if(left){moveOnePage(left.dataset.moveLeft,-1);return;}
+      if(right){moveOnePage(right.dataset.moveRight,1);return;}
+      const btn=event.target.closest('[data-page]');
+      if(!btn)return;
+      activeId=btn.dataset.page;selectedItem=null;render();
+    });
+    $('mangaPageStrip').addEventListener('dragstart',event=>{
+      const card=event.target.closest('[data-page-card]');
+      if(!card||running)return;
+      draggedPageId=card.dataset.pageCard;
+      event.dataTransfer?.setData('text/plain',draggedPageId);
+      if(event.dataTransfer)event.dataTransfer.effectAllowed='move';
+    });
+    $('mangaPageStrip').addEventListener('dragover',event=>{
+      const card=event.target.closest('[data-page-card]');
+      if(!card||!draggedPageId||running)return;
+      event.preventDefault();
+      if(event.dataTransfer)event.dataTransfer.dropEffect='move';
+      for(const other of $('mangaPageStrip').querySelectorAll('.is-drop-target'))other.classList.remove('is-drop-target');
+      card.classList.add('is-drop-target');
+    });
+    $('mangaPageStrip').addEventListener('drop',event=>{
+      const card=event.target.closest('[data-page-card]');
+      if(!card||!draggedPageId||running)return;
+      event.preventDefault();
+      movePage(draggedPageId,card.dataset.pageCard);
+      draggedPageId=null;
+      for(const other of $('mangaPageStrip').querySelectorAll('.is-drop-target'))other.classList.remove('is-drop-target');
+    });
+    $('mangaPageStrip').addEventListener('dragend',()=>{
+      draggedPageId=null;
+      for(const other of $('mangaPageStrip').querySelectorAll('.is-drop-target'))other.classList.remove('is-drop-target');
+    });
     $('mangaRemove').addEventListener('click',removePage);
     $('mangaClear').addEventListener('click',clearAll);
     $('mangaAnalyze').addEventListener('click',()=>runAnalyze(false));

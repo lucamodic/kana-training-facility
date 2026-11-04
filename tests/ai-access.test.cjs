@@ -11,12 +11,13 @@ const serverJs = ts.transpileModule(serverSource, {compilerOptions:{module:ts.Mo
 const ocrSample = {segments:[{japanese:'おはよう',bbox:[0,0,100,100]}]};
 const explainSample = {segments:[{index:0,reading:'おはよう',romaji:'ohayou',english:'Good morning',words:[],kanji:[]}]};
 
-function serverScenario({email='owner@example.com',id='owner-uid',jwtId=id,allowedEmail='owner@example.com',allowedId='owner-uid',configured=true}={}) {
+function serverScenario({email='owner@example.com',id='owner-uid',jwtId=id,allowedEmail='owner@example.com',allowedId='owner-uid',configured=true,reviewSegments=null,ocrModel=null}={}) {
   const env = new Map([
     ['KTF_AI_ALLOWED_EMAIL',configured?allowedEmail:undefined],
     ['KTF_AI_ALLOWED_USER_ID',configured?allowedId:undefined],
     ['OPENAI_API_KEY','test-key'],
-    ['OPENAI_MODEL','gpt-6-luna']
+    ['OPENAI_MODEL','gpt-6-luna'],
+    ['OPENAI_OCR_MODEL',ocrModel]
   ]);
   let quotaCalls=0;
   const apiCalls=[];
@@ -32,7 +33,7 @@ function serverScenario({email='owner@example.com',id='owner-uid',jwtId=id,allow
     withSupabase:(_options,fn)=>fn,
     fetch:async (url,options)=>{
       apiCalls.push({url,options,body:JSON.parse(options.body)});
-      const data = options.body.includes('input_image')?ocrSample:explainSample;
+      const data = reviewSegments!==null && options.body.includes('second-pass Japanese manga OCR auditor') ? {segments:reviewSegments} : options.body.includes('input_image')?ocrSample:explainSample;
       return Response.json({status:'completed',output:[{type:'message',content:[{type:'output_text',text:JSON.stringify(data)}]}]});
     }
   };
@@ -154,4 +155,26 @@ test('frontend hides reader for guests and other users and reveals it for owner'
   await tick();
   assert.equal(mk('openMangaButton').hidden,true);
   assert.equal(calls.length,2);
+});
+
+
+test('thorough reanalysis performs a second OCR review and adds only actually missing dialogue',async()=>{
+  const s=serverScenario({reviewSegments:[{japanese:'おはよう',bbox:[0,0,100,100]},{japanese:'こんばんは',bbox:[200,400,300,600]}]});
+  const response=await s.call('POST',{mode:'image',thorough:true,mimeType:'image/jpeg',imageData:'A'.repeat(100)});
+  assert.equal(response.status,200);
+  const data=await response.json();
+  assert.equal(data.reviewed,true);
+  assert.equal(data.addedByReview,1);
+  assert.deepEqual(data.segments.map(row=>row.japanese),['おはよう','こんばんは']);
+  assert.equal(s.apiCalls.length,2);
+  assert.equal(s.quotaCalls,1);
+  assert.match(s.apiCalls[1].body.input[0].content[0].text,/json/i);
+});
+
+test('a higher-accuracy OCR-only model can be selected without changing explanation model or secrets',async()=>{
+  const s=serverScenario({ocrModel:'gpt-6.1-terra'});
+  await s.call('POST',{mode:'image',mimeType:'image/jpeg',imageData:'A'.repeat(100)});
+  await s.call('POST',{mode:'text',text:'おはよう'});
+  assert.equal(s.apiCalls[0].body.model,'gpt-6.1-terra');
+  assert.equal(s.apiCalls[1].body.model,'gpt-6-luna');
 });

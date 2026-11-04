@@ -132,8 +132,14 @@
   });
   const removePageFromChapter = (owner, id, hash) => modifyChapter(owner, id, record => ({...record,
     pages:record.pages.filter(item => item.hash !== hash)}));
+  const reorderChapter = (owner, id, hashes) => modifyChapter(owner, id, record => {
+    const rank = new Map(hashes.map((hash, index) => [hash, index]));
+    const next = [...record.pages].sort((a, b) => (rank.get(a.hash) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.hash) ?? Number.MAX_SAFE_INTEGER));
+    if (next.every((entry, index) => entry.hash === record.pages[index].hash)) return null;
+    return {...record, pages:next};
+  });
   const removeChapter = (owner, id) => query('chapters', 'readwrite', store => store.delete(chapterKey(owner,id)));
 
   window.KTFMangaCache = { OCR_VERSION, EXPLAIN_VERSION, fileHash, textHash, read, save, list, remove, clear, readText, saveText,
-    listChapters, readChapter, saveChapter, renameChapter, addPageToChapter, removePageFromChapter, removeChapter };
+    listChapters, readChapter, saveChapter, renameChapter, addPageToChapter, removePageFromChapter, reorderChapter, removeChapter };
 })();

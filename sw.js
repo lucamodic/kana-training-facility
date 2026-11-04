@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kana-training-facility-offline-v25-manga-chapters-1';
+const CACHE_NAME = 'kana-training-facility-offline-v26-page-order-ocr-1';
 const SHELL = [
   './', './index.html', './styles.css', './app.js', './study-clock.js', './config.js', './cloud-sync.js', './learning-progress.js', './manga-cache.js', './manga-reader.js', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',

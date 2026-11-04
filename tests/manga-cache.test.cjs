@@ -161,3 +161,25 @@ test('chapter metadata and cached images survive until owner clears local data',
   assert.equal((await c.listChapters('owner')).length,0);
   assert.equal(await c.read('owner',hash),null);
 });
+
+
+test('reordering pages persists in IndexedDB and does not discard analyses or alter other chapters',async()=>{
+  const c=makeCache();
+  const hashes=['a','b','c'].map(c=>c.repeat(64));
+  await c.saveChapter('owner',{id:'chapter-1',mangaTitle:'Green',chapterTitle:'Capítulo #1'});
+  await c.saveChapter('owner',{id:'chapter-2',mangaTitle:'Green',chapterTitle:'Capítulo #2'});
+  for(let i=0;i<hashes.length;i++){
+    await c.save('owner',{hash:hashes[i],name:`${i+1}.jpg`,status:'completed',items:[{japanese:`頁${i+1}`,romaji:`page${i+1}`}],imageBlob:new Blob([String(i)])});
+    await c.addPageToChapter('owner','chapter-1',{hash:hashes[i],name:`${i+1}.jpg`});
+  }
+  await c.addPageToChapter('owner','chapter-2',{hash:hashes[0],name:'separate.jpg'});
+  await c.reorderChapter('owner','chapter-1',[hashes[2],hashes[0],hashes[1]]);
+  let order=await c.readChapter('owner','chapter-1');
+  assert.deepEqual(Array.from(order.pages,p=>p.hash),[hashes[2],hashes[0],hashes[1]]);
+  assert.equal((await c.read('owner',hashes[2])).items[0].romaji,'page3');
+  assert.deepEqual(Array.from((await c.readChapter('owner','chapter-2')).pages,p=>p.hash),[hashes[0]]);
+  await c.reorderChapter('owner','chapter-1',[hashes[1]]);
+  order=await c.readChapter('owner','chapter-1');
+  assert.equal(order.pages.length,3);
+  assert.deepEqual(Array.from(order.pages,p=>p.hash),[hashes[1],hashes[2],hashes[0]]);
+});

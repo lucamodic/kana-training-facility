@@ -25,7 +25,7 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 
 - **Browse unlocked vocabulary:** Open Word Challenge and choose **Browse unlocked vocabulary** before starting. Search and filter every unlocked word across Hiragana, Katakana, Kanji, and mixed scripts. Each entry includes Japanese, romaji and **English meaning**, even when the interface language is set to Spanish.
 - **Kanji breakdown after answers:** Whenever a word contains kanji, its result shows the contextual reading for each kanji or (for irregular compounds such as 今日, 明日 and 大人) the inseparable whole-word reading. Notes explain relevant sound changes such as rendaku and the doubled consonant in 学校. These are curated explanations, not an automatic phonetic decomposition.
-- The word list respects the selected tiles on all three tabs. Your saved selections, study progress, PWA, themes and lesson modes are not changed. No manga features are included.
+- The word list respects the selected tiles on all three tabs. Your saved selections, study progress, PWA, themes and lesson modes are not changed. The private Manga Reader is restricted to an allowed Supabase account.
 
 ## Install as a phone/desktop app (PWA)
 
@@ -168,12 +168,16 @@ Refined the Learning Progress account area, skill cards, guide layout, and exam 
 - Local selections still persist immediately, even offline.
 - The PWA service worker cache version has been updated for this release. No database migration is needed.
 
-## Optional Manga Reader (v22)
+## Private Manga Reader (v24)
 
 New temporary page reader to the left of Word Challenge. Multiple manga pages can be uploaded without being persisted or synced, and each detected dialogue lets you attempt its romaji before revealing the reading, English translation, vocabulary and kanji explanations. Corrections are supported. No manga art is generated or bundled.
 
-**One-time online setup required:** see `setup/MANGA_READER_SETUP.md` for the Google AI Studio key, Supabase secret, `setup/manga-quota.sql` and deployment of `supabase/functions/ktf-manga-analyze/index.ts`. Online AI analysis requires a Google/Supabase session; other app features remain offline. The function sends page images to Google Gemini for analysis when requested, but does not save them in Supabase.
+**One-time online setup required:** see `setup/MANGA_READER_SETUP.md` for the OpenAI API key, the allowed email and user ID Secrets, `setup/manga-quota.sql` and deployment of `supabase/functions/ktf-manga-analyze/index.ts`. Online AI analysis requires a Google/Supabase session; other app features remain offline. The function sends page images to OpenAI GPT-6 Luna for analysis when requested, but does not save them in Supabase.
 
-## Manga Reader v23: staged analysis
+## Manga Reader v24: staged analysis + private access
 
 Manga Reader uses two stages: image transcription and text-only explanation. It displays transcribed Japanese immediately and retains it if explanations fail. The **Retry explanations** button does not repeat OCR. Both the PWA JavaScript and the Supabase function must be deployed together. See `setup/MANGA_READER_SETUP.md`.
+
+## v24 private GPT-6 Luna access
+
+The Manga Reader button remains hidden for every visitor until a signed-in account is authorized by `GET /functions/v1/ktf-manga-analyze`. The Edge Function checks both the authenticated Supabase user ID and email against Supabase Edge Function Secrets, with no nickname restriction. A `403` blocks all AI modes even if somebody calls the endpoint manually. The frontend contains no allowed email, allowed user ID or OpenAI API key. Set `OPENAI_API_KEY`, `OPENAI_MODEL`, `KTF_AI_ALLOWED_EMAIL`, and `KTF_AI_ALLOWED_USER_ID` as described in `setup/MANGA_READER_SETUP.md`.

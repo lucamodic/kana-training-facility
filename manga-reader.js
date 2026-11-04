@@ -9,13 +9,85 @@
   let analyzeAll = false;
   let aborter = null;
   let selectedItem = null;
+  let authorized = false;
+  let accessIdentity = '';
+  let accessExpiresAt = 0;
+  let accessSerial = 0;
+  let accessPending = null;
+  const accessEndpoint = () => `${window.KTF_CONFIG.SUPABASE_URL}/functions/v1/ktf-manga-analyze`;
+  function setAuthorized(value) {
+    const previous = authorized;
+    authorized = Boolean(value);
+    $('openMangaButton').hidden = !authorized;
+    $('openMangaButton').setAttribute('aria-hidden', String(!authorized));
+    if (previous !== authorized) document.dispatchEvent(new CustomEvent('ktf:aiaccesschange', {detail:{allowed:authorized}}));
+    if (previous && !authorized) {
+      if (!$('mangaScreen').hidden) closeReader();
+      analyzeAll = false;
+      aborter?.abort();
+      running = false;
+      for (const page of pages) URL.revokeObjectURL(page.url);
+      pages.length = 0;
+      activeId = null;
+      selectedItem = null;
+    }
+  }
+  async function refreshAccess(force = false) {
+    const uid = cloud?.getStatus?.()?.user?.id || '';
+    if (!uid || !navigator.onLine) {
+      accessSerial++;
+      accessIdentity = '';
+      accessExpiresAt = 0;
+      accessPending = null;
+      setAuthorized(false);
+      return false;
+    }
+    if (uid !== accessIdentity) {
+      accessSerial++;
+      accessIdentity = uid;
+      accessExpiresAt = 0;
+      accessPending = null;
+      setAuthorized(false);
+    }
+    if (!force && Date.now() < accessExpiresAt) return authorized;
+    if (accessPending) return accessPending;
+    const revision = ++accessSerial;
+    const task = (async () => {
+      let allowed = false;
+      try {
+        const token = await cloud.getAccessToken();
+        if (token) {
+          const response = await fetch(accessEndpoint(), {
+            method: 'GET',
+            cache: 'no-store',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              apikey: window.KTF_CONFIG.SUPABASE_PUBLISHABLE_KEY
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            allowed = data.allowed === true;
+          }
+        }
+      } catch (_) {}
+      if (revision === accessSerial && uid === cloud?.getStatus?.()?.user?.id) {
+        setAuthorized(allowed);
+        accessExpiresAt = Date.now() + (allowed ? 300000 : 30000);
+      }
+      return allowed;
+    })();
+    accessPending = task;
+    try { return await task; }
+    finally { if (accessPending === task) accessPending = null; }
+  }
   const MAX_PAGES = 16;
   const MAX_FILE = 18 * 1024 * 1024;
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const lang = () => bridge?.getLanguage?.() === 'es' ? 'es' : 'en';
   const labels = {
-    en:{title:'Manga Reader',subtitle:'Read real Japanese pages at your own pace',choose:'Add manga pages',empty:'Drop some manga pages here or choose files to begin.',read:'Analyze this page',all:'Analyze all pages',retry:'Try again',add:'Add pages',remove:'Remove page',signIn:'Sign in with Google to analyze',signed:'Google sign-in is only required for online analysis.',noSave:'Pages and results stay in this browser tab. They are not synced or saved between visits.',sent:'When you analyze, the image is sent to Google Gemini through your Supabase function.',noItems:'No dialogue detected. You can add Japanese text yourself.',noAnalysis:'Select Analyze to recognize Japanese text on this page.',working:'Reading Japanese text…',line:'Text',readPrompt:'Write this in romaji',check:'Check my reading',show:'Show reading & translation',hide:'Hide answer',words:'Word meanings',edit:'Correct Japanese text',saveEdit:'Update explanation',cancel:'Cancel',addText:'Add a text manually',correct:'Looks right!',incorrect:'Not quite. Try again or reveal the answer.',romaji:'Reading (romaji)',english:'English translation',notReady:'Sign in and deploy the Manga Reader function to enable AI analysis.',error:'Could not analyze this page.',done:'Page analyzed.',pending:'Ready to analyze',processing:'Analyzing',completed:'Analyzed',manual:'Manual text',yourReading:'Your reading',loadError:'Could not read these files.',long:'Pages are only kept until you close or reload the app.',help:'You can try the romaji first, then reveal the reading or individual word meanings. OCR and translations may be imperfect.',continue:'Next page',chooseNext:'Choose a page above.',noInternet:'Manga Reader needs an internet connection for analysis. Your other study modes still work offline.',tooMany:'Up to 16 pages per batch.',bigFile:'A file exceeds 18 MB.',invalid:'Choose PNG, JPG or WEBP images.',missing:'Enter some Japanese text first.',editing:'Correct the OCR and refresh its explanation.',reveal:'Reveal word meanings',hideWords:'Hide word meanings',noWords:'No word breakdown available. Try refreshing the explanation.',failed:'Not ready',processingMany:'Analyzing page',of:'of',analyzed:'Done',cancelAnalysis:'Stop analyzing',close:'Back to selection',needLogin:'Sign in with Google in My Progress or use the button here. Pages will not be synced.',privacy:'PRIVATE READING SPACE',noRegions:'If a bubble is missed, choose Add a text manually.',skip:'Skip page',reset:'Clear all pages',confirmReset:'Clear all pages and their unsaved notes?',recognition:'Recognized dialogue',ocrDone:'Text recognized · preparing explanations',retryExplanation:'Retry explanations',needExplanation:'Explanations are not ready yet. Your transcription is preserved.',hint:'Words can have context-dependent readings; check uncertain results against the image.',newPage:'Add another manga page'},
-    es:{title:'Lector de manga',subtitle:'Leé páginas reales en japonés a tu ritmo',choose:'Agregar páginas de manga',empty:'Arrastrá páginas acá o elegí archivos para comenzar.',read:'Analizar esta página',all:'Analizar todas',retry:'Reintentar',add:'Agregar páginas',remove:'Quitar página',signIn:'Iniciar sesión con Google para analizar',signed:'Solo necesitás iniciar sesión para el análisis online.',noSave:'Las páginas y los resultados quedan en esta pestaña. No se sincronizan ni se guardan entre visitas.',sent:'Al analizar, la imagen se envía a Google Gemini mediante tu función de Supabase.',noItems:'No se detectaron diálogos. Podés agregar texto japonés manualmente.',noAnalysis:'Elegí Analizar para reconocer el japonés de esta página.',working:'Reconociendo texto japonés…',line:'Texto',readPrompt:'Escribí esto en romaji',check:'Comprobar lectura',show:'Mostrar lectura y traducción',hide:'Ocultar respuesta',words:'Significado de palabras',edit:'Corregir japonés detectado',saveEdit:'Actualizar explicación',cancel:'Cancelar',addText:'Agregar texto manualmente',correct:'¡Muy bien!',incorrect:'No coincide. Probá de nuevo o revelá la respuesta.',romaji:'Lectura (romaji)',english:'Traducción al inglés',notReady:'Iniciá sesión y publicá la función de Manga Reader para activar el análisis.',error:'No se pudo analizar esta página.',done:'Página analizada.',pending:'Lista para analizar',processing:'Analizando',completed:'Analizada',manual:'Texto manual',yourReading:'Tu lectura',loadError:'No se pudieron leer esos archivos.',long:'Las páginas se conservan solo hasta que cierres o recargues la app.',help:'Podés intentar el romaji primero y después revelar la lectura o el significado de cada palabra. El OCR y las traducciones pueden equivocarse.',continue:'Página siguiente',chooseNext:'Elegí una página arriba.',noInternet:'Manga Reader necesita internet para el análisis. Los demás modos siguen funcionando offline.',tooMany:'Hasta 16 páginas por lote.',bigFile:'Un archivo supera los 18 MB.',invalid:'Elegí imágenes PNG, JPG o WEBP.',missing:'Ingresá primero un texto en japonés.',editing:'Corregí el OCR y actualizá la explicación.',reveal:'Revelar palabras',hideWords:'Ocultar palabras',noWords:'No hay desglose disponible. Probá actualizar la explicación.',failed:'Sin analizar',processingMany:'Analizando página',of:'de',analyzed:'Terminado',cancelAnalysis:'Detener análisis',close:'Volver a selección',needLogin:'Iniciá sesión con Google en Mi progreso o usá el botón acá. Las páginas no se sincronizan.',privacy:'ESPACIO DE LECTURA PRIVADO',noRegions:'Si falta una burbuja, elegí Agregar texto manualmente.',skip:'Saltar página',reset:'Limpiar páginas',confirmReset:'¿Borrar todas las páginas y notas temporales?',recognition:'Diálogos reconocidos',ocrDone:'Texto reconocido · preparando explicaciones',retryExplanation:'Reintentar explicaciones',needExplanation:'Las explicaciones todavía no están listas. El texto reconocido se conserva.',hint:'Las lecturas pueden cambiar según el contexto: revisá los resultados dudosos contra la imagen.',newPage:'Agregar otra página'}
+    en:{title:'Manga Reader',subtitle:'Read real Japanese pages at your own pace',choose:'Add manga pages',empty:'Drop some manga pages here or choose files to begin.',read:'Analyze this page',all:'Analyze all pages',retry:'Try again',add:'Add pages',remove:'Remove page',signIn:'Sign in with Google to analyze',signed:'Google sign-in is only required for online analysis.',noSave:'Pages and results stay in this browser tab. They are not synced or saved between visits.',sent:'When you analyze, the image is sent to OpenAI GPT-6 Luna through your protected Supabase function.',noItems:'No dialogue detected. You can add Japanese text yourself.',noAnalysis:'Select Analyze to recognize Japanese text on this page.',working:'Reading Japanese text…',line:'Text',readPrompt:'Write this in romaji',check:'Check my reading',show:'Show reading & translation',hide:'Hide answer',words:'Word meanings',edit:'Correct Japanese text',saveEdit:'Update explanation',cancel:'Cancel',addText:'Add a text manually',correct:'Looks right!',incorrect:'Not quite. Try again or reveal the answer.',romaji:'Reading (romaji)',english:'English translation',notReady:'Sign in and deploy the Manga Reader function to enable AI analysis.',error:'Could not analyze this page.',done:'Page analyzed.',pending:'Ready to analyze',processing:'Analyzing',completed:'Analyzed',manual:'Manual text',yourReading:'Your reading',loadError:'Could not read these files.',long:'Pages are only kept until you close or reload the app.',help:'You can try the romaji first, then reveal the reading or individual word meanings. OCR and translations may be imperfect.',continue:'Next page',chooseNext:'Choose a page above.',noInternet:'Manga Reader needs an internet connection for analysis. Your other study modes still work offline.',tooMany:'Up to 16 pages per batch.',bigFile:'A file exceeds 18 MB.',invalid:'Choose PNG, JPG or WEBP images.',missing:'Enter some Japanese text first.',editing:'Correct the OCR and refresh its explanation.',reveal:'Reveal word meanings',hideWords:'Hide word meanings',noWords:'No word breakdown available. Try refreshing the explanation.',failed:'Not ready',processingMany:'Analyzing page',of:'of',analyzed:'Done',cancelAnalysis:'Stop analyzing',close:'Back to selection',needLogin:'Sign in with Google in My Progress or use the button here. Pages will not be synced.',privacy:'PRIVATE READING SPACE',noRegions:'If a bubble is missed, choose Add a text manually.',skip:'Skip page',reset:'Clear all pages',confirmReset:'Clear all pages and their unsaved notes?',recognition:'Recognized dialogue',ocrDone:'Text recognized · preparing explanations',retryExplanation:'Retry explanations',needExplanation:'Explanations are not ready yet. Your transcription is preserved.',hint:'Words can have context-dependent readings; check uncertain results against the image.',newPage:'Add another manga page'},
+    es:{title:'Lector de manga',subtitle:'Leé páginas reales en japonés a tu ritmo',choose:'Agregar páginas de manga',empty:'Arrastrá páginas acá o elegí archivos para comenzar.',read:'Analizar esta página',all:'Analizar todas',retry:'Reintentar',add:'Agregar páginas',remove:'Quitar página',signIn:'Iniciar sesión con Google para analizar',signed:'Solo necesitás iniciar sesión para el análisis online.',noSave:'Las páginas y los resultados quedan en esta pestaña. No se sincronizan ni se guardan entre visitas.',sent:'Al analizar, la imagen se envía a OpenAI GPT-6 Luna mediante tu función protegida de Supabase.',noItems:'No se detectaron diálogos. Podés agregar texto japonés manualmente.',noAnalysis:'Elegí Analizar para reconocer el japonés de esta página.',working:'Reconociendo texto japonés…',line:'Texto',readPrompt:'Escribí esto en romaji',check:'Comprobar lectura',show:'Mostrar lectura y traducción',hide:'Ocultar respuesta',words:'Significado de palabras',edit:'Corregir japonés detectado',saveEdit:'Actualizar explicación',cancel:'Cancelar',addText:'Agregar texto manualmente',correct:'¡Muy bien!',incorrect:'No coincide. Probá de nuevo o revelá la respuesta.',romaji:'Lectura (romaji)',english:'Traducción al inglés',notReady:'Iniciá sesión y publicá la función de Manga Reader para activar el análisis.',error:'No se pudo analizar esta página.',done:'Página analizada.',pending:'Lista para analizar',processing:'Analizando',completed:'Analizada',manual:'Texto manual',yourReading:'Tu lectura',loadError:'No se pudieron leer esos archivos.',long:'Las páginas se conservan solo hasta que cierres o recargues la app.',help:'Podés intentar el romaji primero y después revelar la lectura o el significado de cada palabra. El OCR y las traducciones pueden equivocarse.',continue:'Página siguiente',chooseNext:'Elegí una página arriba.',noInternet:'Manga Reader necesita internet para el análisis. Los demás modos siguen funcionando offline.',tooMany:'Hasta 16 páginas por lote.',bigFile:'Un archivo supera los 18 MB.',invalid:'Elegí imágenes PNG, JPG o WEBP.',missing:'Ingresá primero un texto en japonés.',editing:'Corregí el OCR y actualizá la explicación.',reveal:'Revelar palabras',hideWords:'Ocultar palabras',noWords:'No hay desglose disponible. Probá actualizar la explicación.',failed:'Sin analizar',processingMany:'Analizando página',of:'de',analyzed:'Terminado',cancelAnalysis:'Detener análisis',close:'Volver a selección',needLogin:'Iniciá sesión con Google en Mi progreso o usá el botón acá. Las páginas no se sincronizan.',privacy:'ESPACIO DE LECTURA PRIVADO',noRegions:'Si falta una burbuja, elegí Agregar texto manualmente.',skip:'Saltar página',reset:'Limpiar páginas',confirmReset:'¿Borrar todas las páginas y notas temporales?',recognition:'Diálogos reconocidos',ocrDone:'Texto reconocido · preparando explicaciones',retryExplanation:'Reintentar explicaciones',needExplanation:'Las explicaciones todavía no están listas. El texto reconocido se conserva.',hint:'Las lecturas pueden cambiar según el contexto: revisá los resultados dudosos contra la imagen.',newPage:'Agregar otra página'}
   };
   const t = key => labels[lang()][key] || key;
   const currentPage = () => pages.find(page => page.id === activeId) || null;
@@ -55,6 +127,7 @@
     $('mangaPrivacyEyebrow').textContent=t('privacy');
   }
   function showReader() {
+    if (!authorized) return;
     if (bridge.isQuizActive() || !$('examScreen').hidden) {
       toast(lang()==='es'?'Terminá tu práctica o examen antes de abrir el lector.':'Finish your practice or exam before opening the reader.',true);
       return;
@@ -136,6 +209,7 @@
     overlay.hidden=false;
   }
   function loadFiles(fileList) {
+    if (!authorized) return;
     const files=[...fileList];
     if(!files.length)return;
     const validTypes=['image/jpeg','image/png','image/webp'];
@@ -186,6 +260,7 @@
     return base64;
   }
   async function sendRequest(payload) {
+    if (!authorized) throw new Error('AI access denied.');
     if(!navigator.onLine)throw new Error(t('noInternet'));
     const session=await cloud.getAccessToken();
     if(!session)throw new Error(t('needLogin'));
@@ -197,6 +272,7 @@
       });
       const raw=await response.text();
       let body;try{body=JSON.parse(raw)}catch{body={error:raw.slice(0,250)}}
+      if(response.status===403){setAuthorized(false);accessExpiresAt=0;}
       if(!response.ok)throw new Error(body.error||`${response.status}: ${t('error')}`);
       return body;
     } finally {clearTimeout(timeout);aborter=null;}
@@ -225,7 +301,7 @@
       const group=remaining.slice(offset,offset+12);
       const original=group.map(item=>({id:item.id,japanese:item.japanese}));
       const details=await sendRequest({mode:'explain',segments:original.map(item=>({japanese:item.japanese}))});
-      if(!Array.isArray(details.segments))throw new Error('Gemini did not return the requested explanations.');
+      if(!Array.isArray(details.segments))throw new Error('OpenAI did not return the requested explanations.');
       original.forEach((source,index)=>{
         const item=page.items.find(entry=>entry.id===source.id);
         const detail=details.segments[index];
@@ -238,7 +314,7 @@
     render();
   }
   async function runAnalyze(all=false) {
-    if(running)return;
+    if(running || !authorized)return;
     if(!navigator.onLine){toast(t('noInternet'),true);return;}
     const auth=cloud.getStatus();
     if(!auth.user){toast(t('needLogin'),true);$('mangaLogin').hidden=false;return;}
@@ -259,6 +335,7 @@
     running=false;analyzeAll=false;render();
   }
   async function analyzeText(page,item,corrected) {
+    if (!authorized) return;
     const newText=String(corrected||'').trim();
     if(!newText){toast(t('missing'),true);return;}
     if(!cloud.getStatus().user){toast(t('needLogin'),true);return;}
@@ -337,7 +414,20 @@
     $('mangaLoginTop').addEventListener('click',login);
     $('mangaScreen').addEventListener('keydown',event=>{if(event.key==='Escape'){event.stopPropagation();closeReader();}});
     document.addEventListener('ktf:languagechange',()=>{if(!$('mangaScreen').hidden)render();else updateText();});
-    cloud?.subscribe?.(()=>{if(!$('mangaScreen').hidden){const logged=Boolean(cloud.getStatus().user);$('mangaLogin').hidden=logged;$('mangaLoginTop').hidden=logged;}});
+    cloud?.subscribe?.(() => {
+      refreshAccess().catch(() => {});
+      if (!$('mangaScreen').hidden) {
+        const logged = Boolean(cloud.getStatus().user);
+        $('mangaLogin').hidden = logged;
+        $('mangaLoginTop').hidden = logged;
+      }
+    });
+    window.addEventListener('online', () => refreshAccess(true).catch(() => {}));
+    window.addEventListener('offline', () => refreshAccess().catch(() => {}));
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) refreshAccess(true).catch(() => {});
+    });
+    refreshAccess().catch(() => {});
     window.addEventListener('beforeunload',()=>{for(const page of pages)URL.revokeObjectURL(page.url);});
     updateText();
   }

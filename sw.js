@@ -1,6 +1,4 @@
-/* Kana Training Facility offline shell, scoped for GitHub Pages subpaths.
-   Bump CACHE_NAME on each future release to trigger the update prompt. */
-const CACHE_NAME = 'kana-training-facility-offline-v23-staged-manga-reader';
+const CACHE_NAME = 'kana-training-facility-offline-v24-openai-private-manga';
 const SHELL = [
   './', './index.html', './styles.css', './app.js', './study-clock.js', './config.js', './cloud-sync.js', './learning-progress.js', './manga-reader.js', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
@@ -10,9 +8,7 @@ const SHELL_URLS = new Set(SHELL.map(path => new URL(path, self.registration.sco
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // Bypass browser HTTP caches when preparing a complete new release.
     await cache.addAll(SHELL.map(path => new Request(path, {cache: 'reload'})));
-    // Intentionally don't skipWaiting: the user decides when to update.
   })());
 });
 self.addEventListener('message', event => {
@@ -32,8 +28,6 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin || !url.href.startsWith(self.registration.scope)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // Keep HTML/CSS/JS in sync. The new version is swapped in only after
-    // "Update now" is clicked, while still remaining available offline.
     if (SHELL_URLS.has(url.href)) {
       const cached = await cache.match(request);
       if (cached) return cached;

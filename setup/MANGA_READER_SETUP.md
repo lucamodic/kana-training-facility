@@ -1,91 +1,75 @@
-# Kana Training Facility — Manga Reader (v23 two-stage)
+# Kana Training Facility v24 — Private Manga Reader with OpenAI GPT-6 Luna
 
-Manga Reader is an optional **online-only** feature. The rest of the PWA continues working offline. It does not create or generate manga images. It accepts real manga images selected by the visitor.
+This is the complete v23 application with the Manga Reader migrated from Gemini to OpenAI. The entire Manga Reader is hidden from guests and every account other than the single authorized account. Hiragana, katakana, kanji, exercises, exam history, Word Challenge, nickname, themes, Google sign-in, cloud sync and offline PWA support remain available to everyone as before.
 
-## What it does
+## 1. Configure OpenAI
 
-- Multiple JPG/PNG/WebP pages in a temporary in-memory list, up to 16 pages per batch (18 MB each).
-- Transcribe each page first, then request readings, romaji, vocabulary and English translations in separate text-only requests.
-- Left: original uploaded image. Right: scrollable text snippets.
-- Each snippet has an answer field for the user's own romaji before showing the correct reading.
-- Reveal complete romaji, English sentence translation, individual word definitions, and kanji core meanings/contextual readings.
-- Manually correct missing/incorrect transcriptions and reanalyze the corrected text.
-- The entire batch disappears on reload or when the browser tab is closed. No image or reading history is saved in Supabase, IndexedDB, localStorage or Storage buckets.
+- Open https://platform.openai.com/api-keys and create a project API key. API billing is separate from ChatGPT Plus.
+- Set a project budget/alerts in the OpenAI Platform to limit surprise spending.
+- Never put the OpenAI API key in GitHub, `config.js`, client JavaScript, or an HTML file.
 
-**Privacy:** When Analyze is clicked, the selected page is compressed to JPEG **in the browser** and sent through your protected Supabase Edge Function to **Google Gemini**. Google may process or retain data according to its service terms. Do not upload confidential images. Images are never sent to your own Supabase Storage bucket or database. The only server-side record added by this module is a count of AI requests per account per UTC date.
+## 2. Identify your account
 
-**Login:** AI requests require a valid Google/Supabase session so a publicly reachable endpoint cannot be used anonymously to run up your costs. Sign in via My Progress **before uploading**. If you sign in during a reading session, Google OAuth redirects/reloads the app, and the temporary pages will need to be uploaded again.
+In Supabase Dashboard, select this application's project and go to **Authentication → Users**. Find the exact **User UID** and **Email** of the Google account that should have Manga Reader access. Nickname is not used to authorize AI access and may change freely.
 
-## One-time setup
+## 3. Set Supabase Edge Function Secrets
 
-### 1. Get the Gemini API key
+Open **Edge Functions → Secrets** and set these four server-side values:
 
-Open https://aistudio.google.com/apikey and create an API key for the Gemini API (this is **NOT** your Google OAuth Client Secret). Check your account's billing and usage settings, as model usage can have quotas and charges.
+| Secret | Example value |
+|---|---|
+| `OPENAI_API_KEY` | `sk-...` |
+| `OPENAI_MODEL` | `gpt-6-luna` |
+| `KTF_AI_ALLOWED_EMAIL` | `your-google-address@example.com` |
+| `KTF_AI_ALLOWED_USER_ID` | `your-user-uid-from-supabase` |
 
-In your Supabase project (`nkxmsnytchfyjozmqpeg`), open **Edge Functions → Secrets** (or the secrets screen in the dashboard). Add:
+Email comparison is case-insensitive. User ID comparison is exact. Both must match the *authenticated Supabase account*, not values supplied by the browser. If either Secret is absent, the function denies access. **Do not set `KTF_AI_ALLOWED_NICKNAME`: it is no longer needed.** These Secrets cannot be read from GitHub Pages.
 
-- Name: `GEMINI_API_KEY`
-- Value: your secret Gemini key
+Do not put these server-only values in GitHub Actions secrets unless you plan automated Edge Function deployment. Supabase Secrets are the runtime configuration. The `SUPABASE_URL` and Supabase publishable key already present in `config.js` are public, as intended for browser use.
 
-Do not add this key to GitHub Pages, `config.js`, the repo, or messages in chat.
+## 4. Install or keep the daily quota
 
-`GEMINI_MODEL` can optionally be set in the same screen (default is `gemini-3.8-flash`).
+From Supabase **SQL Editor**, run `setup/manga-quota.sql` once if you have not done so in v23. It implements an RLS-protected, per-account limit of **30 AI requests per UTC day**. Each page normally needs 1 OCR request plus 1 explanation request per 12 detected dialogues. Failed upstream API requests also consume quota. Preserve the current SQL function if already installed.
 
-### 2. Enable a per-account quota
+## 5. Deploy the function
 
-In Supabase → **SQL Editor**, run `setup/manga-quota.sql` from this archive. It adds `ktf_manga_daily_usage` and an authenticated-only RPC with a limit of **30 AI requests per UTC day per user**. A page now uses **one OCR request plus at least one explanation request**, one for every group of up to 12 dialogues. Failed attempts also count. For example, a page with 8 bubbles consumes 2 requests if both succeed. The table has RLS enabled and denies user-facing direct access. This is independent of your existing `ktf_progress_events` table.
-
-### 3. Deploy the Edge Function
-
-#### Supabase CLI (recommended)
-
-From the directory containing `supabase/functions/ktf-manga-analyze/index.ts` and `supabase/config.toml`:
+Using the Supabase CLI from the repository root:
 
 ```bash
 npx supabase login
 npx supabase link --project-ref nkxmsnytchfyjozmqpeg
-npx supabase functions deploy ktf-manga-analyze --no-verify-jwt
+npx supabase functions deploy ktf-manga-analyze
 ```
 
-The function uses `withSupabase({ auth: 'user' })` to validate each caller's user JWT; `--no-verify-jwt` only disables the older platform JWT check that can reject the newer Supabase publishable-key projects. **Do not remove the `auth: 'user'` wrapper.**
+The included `supabase/config.toml` sets `verify_jwt = true`, and the function additionally verifies a signed-in user with `withSupabase({ auth: 'user' })`, checks the fresh Supabase user profile and compares both ID and email against Secrets. If your specific Supabase project uses an auth configuration incompatible with platform-level JWT verification, investigate its Authorization headers before changing it; **never remove the `auth: 'user'` wrapper or the identity checks**.
 
-#### Dashboard editor (alternative)
+Alternatively replace the existing Edge Function's code in the Supabase Dashboard with `supabase/functions/ktf-manga-analyze/index.ts`, and ensure JWT verification is enabled for the function.
 
-In Supabase → Edge Functions, create a function named `ktf-manga-analyze`, paste `supabase/functions/ktf-manga-analyze/index.ts` into its editor, and deploy it. Under the function's settings disable the platform's **Verify JWT** setting while keeping the code's `withSupabase({ auth: 'user' })` validation intact.
+## 6. Publish GitHub Pages
 
-### 4. Publish the PWA
+Upload the entire repository content (including `index.html`, `manga-reader.js`, `sw.js`, `cloud-sync.js`, `styles.css`, `app.js`, assets and manifest) to the same GitHub Pages repository root. The PWA uses a new service-worker cache ID in `sw.js`: `v24-openai-private-manga`. Accept the app's update prompt or hard refresh if a previous cached version is still displayed.
 
-Upload the **v23 web files together** (`index.html`, `manga-reader.js`, `styles.css`, `app.js`, `cloud-sync.js`, etc., plus icons and manifest) to the **root** of your existing GitHub Pages repository. The `supabase/` and `setup/` directories are configuration/source files and do not need to be served by GitHub Pages. Accept the update notification for v22 when it appears.
+The Manga Reader launch button is initially marked `hidden` in the HTML. When a user signs in, `manga-reader.js` makes an authenticated GET request to the Edge Function. Only a `{ "allowed": true }` response with HTTP 200 reveals the button. Other users never see the button, and direct attempts to open the reader or invoke AI are also rejected. The authorization result is rechecked when the page regains focus, and every analysis request is authorized again by the server.
 
-### 5. Test
+## 7. Run optional automated tests
 
-1. Open My Progress → Google sign-in. If Google already works, no changes to OAuth configuration are needed.
-2. Open the **Manga Reader** button immediately left of **Word Challenge**.
-3. Add 2 PNG/JPG pages, click **Analyze all pages**.
-4. Type romaji, click **Check my reading**, then **Show reading & translation** and **Reveal word meanings**.
-5. For a bad OCR segment, click **Correct Japanese text**, fix it, and choose **Update explanation**.
-6. Reload the page and confirm the uploaded images disappeared. Verify the standard practice and exams still work offline.
+Install the dev-only test dependency with `npm install` and run `npm test`. These tests mock Supabase and OpenAI to check that other emails and IDs receive HTTP 403 and that the reader is hidden for unauthorized users. The application itself does not require npm to run on GitHub Pages.
 
-If an error says `GEMINI_API_KEY has not been configured`, revisit step 1. If the error mentions quota, run step 2. If you receive 404, the function was not deployed; if you receive 401, sign in and check the function's JWT setting and the `auth: 'user'` wrapper. AI errors about models or quota may require checking your Google AI Studio account and model access.
+## 8. Test the result
 
-## Model and answer quality
+1. As a guest, confirm the Manga Reader button is absent but Word Challenge remains visible.
+2. Sign in as a different Google user and confirm Manga Reader remains hidden.
+3. Sign in as the allowed account and confirm Manga Reader appears to the left of Word Challenge.
+4. Select a manga page and analyze it. Check both OCR output and the romaji, English translation and word explanations.
+5. Modify `KTF_AI_ALLOWED_EMAIL` temporarily to a different value, reload and confirm Manga Reader disappears; restore the correct value.
+6. Use Developer Tools / Network as the different Google user to call `GET /functions/v1/ktf-manga-analyze`: expect HTTP 403, and POST also must return 403. When not signed in, expect HTTP 401.
+7. Log out while the reader is open: its session is closed and its temporary pages are cleared.
+8. Verify kana practice and other content still works offline.
 
-Google Gemini may misread vertical type, furigana, stylized sound effects or handwritten text. Romanization and translations are AI suggestions; they should not be treated as infallible. The answer checker is based on the model's full romaji and accepts a few common Hepburn romanization variants. It is not a standardized grading engine.
+If you receive 401 for an otherwise valid owner session, inspect the actual Supabase Auth access JWT and your project's Edge Function JWT setting. If you receive 403, check both Secrets and the exact Supabase Authentication User UID/email, and redeploy if needed. If you receive a quota error, confirm the `setup/manga-quota.sql` function has been installed. If you receive 404, deploy the Edge Function. If OpenAI returns 401 or 429 upstream, verify your OpenAI API key, model access and project billing/rate limits.
 
-## No other changes
+## Privacy and limitations
 
-This build is based on **v21 Smooth Selection**, preserving the prior kana/kanji selection performance fix, exam history, Google authentication, nicknames, Word Challenge, global study clock and all themes. It does not reintroduce any bundled manga scans or generated artwork.
+The app sends only the page actively selected for analysis, compressed to JPEG, through the function to OpenAI. It does not upload or store manga images in Supabase Storage. Pages and explanations remain local to the active browser tab. Server-side quota counters are persisted. OpenAI handles submitted images and text under its API terms. OCR and translations may have errors, and no manga images are bundled or generated.
 
-## v23 deployment note
-
-Replace both the Supabase Edge Function code and the PWA files. The v23 frontend uses a new `mode: explain` request; it will not work with the old v22 function. Conversely, the v22 frontend expects all explanations in the first response. Do not mix versions.
-
-After changing GitHub Pages files, approve the PWA update prompt. Analyze a single page first. Recognized Japanese appears as soon as OCR completes, even if explanation fails later; select **Retry explanations** to resume without uploading that image again. This reader only holds page data in the current browser tab.
-
-If Gemini returns HTTP 503 even for a one-stage OCR request, this can be a genuine API availability issue distinct from Google AI Studio. A successful AI Studio chat does not guarantee API-key requests from this project will succeed. Review the exact API key project and Google AI Studio rate limits. Do not put the Gemini secret in the webpage.
-
-## Testing the two-stage workflow
-
-When the image OCR call succeeds, Japanese text appears immediately. The interface then sends a text-only analysis request (one per 12 dialogues). Until an item has a reading, the Check / Reveal buttons are disabled so you are never graded against an empty answer. If the later request fails, the Japanese transcription stays on screen; choose **Retry explanations**. The app does not store this page or its text after reload.
-
-Both API calls use `gemini-3.8-flash` by default, a concise prompt and `thinkingLevel: low`. The Edge Function logs whether the failure happened at `ocr` or `explain`, without logging images, Japanese sentences or keys. This cannot guarantee Gemini API uptime: Google AI Studio and requests made using your own project API key may behave differently.
+The web application's source files remain publicly readable because it is hosted on GitHub Pages. Hiding the button prevents ordinary access to the UI, **not** inspection of the static HTML/JS; server-side authorization protects the private API operations and billing keys. `KTF_AI_ALLOWED_EMAIL` and `KTF_AI_ALLOWED_USER_ID` are never shipped to the browser.

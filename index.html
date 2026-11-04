@@ -92,7 +92,7 @@
           <button type="button" id="tabKanji" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="kanji">Kanji <span class="tab-counter" id="jCount">0</span></button>
         </div>
         <div class="manga-launch-group">
-          <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
+          <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
         <button type="button" id="openWordsButton" class="words-launch" aria-haspopup="dialog" aria-controls="wordsDialog"><span class="words-launch-icon" aria-hidden="true">✎</span> <span id="wordsLaunchText">Word Challenge</span> <span class="words-count" id="wordAvailableCount">0</span> <span aria-hidden="true">↗</span></button>
         </div>
           </div>
@@ -185,7 +185,7 @@
         <div class="manga-upload-buttons"><label class="button-primary manga-file-label" for="mangaFiles"><span aria-hidden="true">＋</span> <span id="mangaAddLabel">Choose images</span></label><input id="mangaFiles" class="manga-visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" multiple><button type="button" class="button-secondary" id="mangaClear">Clear pages</button></div>
       </div>
       <div class="manga-page-strip" id="mangaPageStrip" hidden></div>
-      <p id="mangaUploadHint" class="manga-privacy-subtle">When you analyze, the image is sent to Google Gemini through your Supabase function.</p>
+      <p id="mangaUploadHint" class="manga-privacy-subtle">When you analyze, the image is sent to OpenAI GPT-6 Luna through your protected Supabase function.</p>
       <p id="mangaNotice" class="manga-notice" role="status" aria-live="polite" hidden></p>
       <div class="manga-empty" id="mangaEmpty"><span aria-hidden="true">✿</span><p>Drop some manga pages here or choose files to begin.</p></div>
       <div class="manga-workspace" id="mangaWorkspace" hidden>

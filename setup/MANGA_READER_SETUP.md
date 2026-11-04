@@ -1,3 +1,7 @@
+## v26.1: resaltado de diálogos
+
+Al elegir un texto o enfocarse en el romaji, se intenta mostrar sobre la página la ubicación del globo. Si el OCR de una página guardada no tenía coordenadas, pulsá «Marcar texto en imagen» y arrastrá sobre el globo. Esto actualiza solo el resultado local en IndexedDB y no genera una llamada pagada. «Ajustar ubicación» permite corregir un rectángulo mal ubicado. La Edge Function incluida pide coordenadas para imágenes nuevas; desplegarla es opcional si solo querés el marcado manual.
+
 # Kana Training Facility v26 — Private Manga Reader with OpenAI GPT-6 Luna
 
 This is the complete v23 application with the Manga Reader migrated from Gemini to OpenAI. The entire Manga Reader is hidden from guests and every account other than the single authorized account. Hiragana, katakana, kanji, exercises, exam history, Word Challenge, nickname, themes, Google sign-in, cloud sync and offline PWA support remain available to everyone as before.

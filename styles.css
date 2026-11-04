@@ -1596,3 +1596,7 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .manga-page-order button:hover:not(:disabled){background:var(--retro-cream)}
 .manga-page-order button:disabled{opacity:.35;cursor:default}
 #mangaOrderHint{margin:-1px 0 10px}
+
+.manga-image-frame.is-locating>img{cursor:crosshair;touch-action:none;user-select:none;-webkit-user-select:none}
+.manga-location-hint{margin:9px 12px;padding:9px 11px;background:var(--retro-cream);border:1px dashed var(--retro-deep);font-size:12px;line-height:1.5;color:var(--ink)}
+.manga-locate-button[aria-pressed="true"]{background:var(--retro-cream);border-color:var(--retro-deep)}

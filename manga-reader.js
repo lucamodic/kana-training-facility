@@ -21,6 +21,8 @@
   let analyzeAll = false;
   let aborter = null;
   let selectedItem = null;
+  let locatingItemId = null;
+  let regionPointer = null;
   let authorized = false;
   let accessIdentity = '';
   let accessExpiresAt = 0;
@@ -42,6 +44,8 @@
       pages.length = 0;
       activeId = null;
       selectedItem = null;
+      locatingItemId = null;
+      regionPointer = null;
       historySerial++;
       history = [];
       chapters = [];
@@ -135,6 +139,11 @@
     es:{history:'Mis mangas y capítulos',historyHelp:'Cada capítulo mantiene el orden de las páginas, OCR y explicaciones. Solo en este navegador y para tu cuenta.',historyEmpty:'Todavía no guardaste capítulos.',historyOpen:'Abrir página guardada',historyDelete:'Eliminar',historyClear:'Borrar todos los mangas locales',historyConfirm:'¿Eliminar TODOS los capítulos, imágenes y análisis guardados en este dispositivo? No se puede deshacer.',historyDeleteConfirm:'¿Eliminar esta página del caché de este navegador?',force:'Volver a analizar con IA',forceConfirm:'Esto vuelve a gastar solicitudes pagas de OCR y explicaciones. ¿Continuar?',cacheHit:'Cargado desde caché local · sin gastar tokens.',cacheFail:'El almacenamiento local no está disponible o está lleno. Podrías perder el trabajo al recargar.',cacheLoading:'Buscando análisis guardado…',cacheRestored:'Abierto desde la biblioteca local.',series:'Título del manga',chapter:'Capítulo / lote',newChapter:'Nuevo capítulo',viewLibrary:'Ver mangas analizados',hideLibrary:'Ocultar biblioteca',needTitle:'Ingresá el nombre del manga y del capítulo antes de agregar páginas.',deleteChapter:'Eliminar capítulo',confirmDeleteChapter:'¿Quitar este capítulo de la biblioteca? Los análisis de sus imágenes seguirán en caché para no gastar tokens otra vez.',orphans:'Otras páginas guardadas',pages:'páginas',analyzedPages:'analizadas',opened:'Capítulo abierto sin gastar tokens.',chapterSaved:'Capítulo guardado en este dispositivo.',chapterMissing:'Este capítulo no tiene imágenes guardadas disponibles.',chapterBusy:'Guardando las páginas en el dispositivo…',orderHint:'Arrastrá las miniaturas o usá las flechas para acomodar el orden de lectura.',orderSaved:'Orden de páginas guardado en este dispositivo.',orderError:'No se pudo guardar el orden. Intentá de nuevo.'}
   };
   const ct = key => cacheLabels[lang()][key] || key;
+  const locatorLabels = {
+    en: {locate:'Mark text on page',adjust:'Adjust position',cancel:'Cancel marking',help:'Drag a rectangle around this speech bubble on the image. No AI calls or tokens are used.',missing:'The OCR did not locate this text. You can mark its position without reanalyzing.',saved:'Location saved locally, without using AI tokens.',retry:'Drag across the text area to draw a rectangle.'},
+    es: {locate:'Marcar texto en imagen',adjust:'Ajustar ubicación',cancel:'Cancelar marcado',help:'Arrastrá un rectángulo sobre este globo de texto en la imagen. No se usa IA ni tokens.',missing:'El OCR no ubicó este texto. Podés marcarlo sin volver a analizar.',saved:'Ubicación guardada localmente, sin gastar tokens.',retry:'Arrastrá sobre el texto para dibujar un rectángulo.'}
+  };
+  const lt = key => locatorLabels[lang()][key] || key;
   function cacheWarning() {
     if (cacheWarningShown) return;
     cacheWarningShown = true;
@@ -191,6 +200,8 @@
     pages.length = 0;
     activeId = null;
     selectedItem = null;
+    locatingItemId = null;
+    regionPointer = null;
     orderRevision++;
     draggedPageId = null;
     $('mangaImage').dataset.page = '';
@@ -408,6 +419,8 @@
     if(aborter)aborter.abort();
     running=false;
     $('mangaScreen').hidden=true;
+    locatingItemId=null;
+    regionPointer=null;
     $('setupScreen').hidden=false;
     toast('');
     document.dispatchEvent(new CustomEvent('ktf:mangascreenchange',{detail:{active:false}}));
@@ -470,7 +483,9 @@
     const authed=Boolean(cloud?.getStatus?.()?.user);
     $('mangaLogin').hidden=authed;
     $('mangaLoginTop').hidden=authed;
-    if(!page)return;
+    if(!page){locatingItemId=null;regionPointer=null;return;}
+    if(locatingItemId && !page.items.some(item=>item.id===locatingItemId)){locatingItemId=null;regionPointer=null;}
+    if(!selectedItem && page.items.length)selectedItem=page.items[0].id;
     const img=$('mangaImage');
     if(img.dataset.page!==page.id){img.dataset.page=page.id;img.src=page.url;img.alt=page.name;}
     $('mangaPageName').textContent=page.name;
@@ -482,6 +497,11 @@
     $('mangaTextEmpty').hidden=Boolean(page.items.length);
     renderItems(page);
     highlightRegion(page);
+    $('mangaImageFrame').classList.toggle('is-locating',Boolean(locatingItemId));
+    const selected=page.items.find(item=>item.id===selectedItem);
+    const hint=$('mangaLocateHint');
+    hint.hidden=!locatingItemId && (!selected || Boolean(selected.bbox));
+    hint.textContent=locatingItemId?lt('help'):lt('missing');
   }
   function renderItems(page) {
     $('mangaReadings').innerHTML=page.items.map((item,index)=>{
@@ -493,20 +513,112 @@
         <div class="manga-item-head"><span class="manga-item-number">${String(index+1).padStart(2,'0')}</span><span class="manga-item-type">${item.manual?t('manual'):t('line')}</span></div>
         <div class="manga-original" lang="ja">${escapeHtml(item.japanese)}</div>
         <form class="manga-romaji-form" data-check="${item.id}"><label for="manga-answer-${item.id}">${t('readPrompt')}</label><div class="manga-try-row"><input type="text" id="manga-answer-${item.id}" data-answer="${item.id}" value="${escapeHtml(item.answer||'')}" placeholder="romaji..." autocomplete="off" autocapitalize="none" spellcheck="false"><button class="button-primary" type="submit" ${item.dirty||!item.romaji?'disabled':''}>${t('check')}</button></div>${result}</form>
-        <div class="manga-card-actions"><button class="button-secondary" type="button" data-reveal="${item.id}" ${item.dirty||!item.romaji?'disabled':''}>${item.revealed?t('hide'):t('show')}</button><button class="button-secondary" type="button" data-words="${item.id}" ${item.dirty||!item.romaji?'disabled':''}>${item.showWords?t('hideWords'):t('reveal')}</button><button class="mini-button" type="button" data-edit="${item.id}">${t('edit')}</button></div>
+        <div class="manga-card-actions"><button class="button-secondary" type="button" data-reveal="${item.id}" ${item.dirty||!item.romaji?'disabled':''}>${item.revealed?t('hide'):t('show')}</button><button class="button-secondary" type="button" data-words="${item.id}" ${item.dirty||!item.romaji?'disabled':''}>${item.showWords?t('hideWords'):t('reveal')}</button><button class="mini-button" type="button" data-edit="${item.id}">${t('edit')}</button><button class="mini-button manga-locate-button" type="button" data-locate="${item.id}" aria-pressed="${locatingItemId===item.id}">${locatingItemId===item.id?lt('cancel'):item.bbox?lt('adjust'):lt('locate')}</button></div>
         ${explanation}
         <form class="manga-editor" data-save="${item.id}" ${item.editing?'':'hidden'}><label for="manga-edit-${item.id}">${t('edit')}</label><textarea id="manga-edit-${item.id}" rows="3" maxlength="500" required>${escapeHtml(item.japanese)}</textarea><div><button type="submit" class="button-primary">${t('saveEdit')}</button><button type="button" class="button-secondary" data-cancel-edit="${item.id}">${t('cancel')}</button></div></form>
       </article>`;
     }).join('');
   }
-  function highlightRegion(page) {
+  function drawRegion(box) {
     const overlay=$('mangaHighlight');
+    if(!Array.isArray(box)||box.length!==4){overlay.hidden=true;return;}
+    overlay.style.top=(box[0]/10)+'%';
+    overlay.style.left=(box[1]/10)+'%';
+    overlay.style.height=((box[2]-box[0])/10)+'%';
+    overlay.style.width=((box[3]-box[1])/10)+'%';
+    overlay.hidden=false;
+  }
+  function highlightRegion(page, scroll=false) {
     const item=page.items.find(x=>x.id===selectedItem);
     const box=item?.bbox;
-    if(!box||box.length!==4){overlay.hidden=true;return;}
-    overlay.style.top=(box[0]/10)+'%';overlay.style.left=(box[1]/10)+'%';
-    overlay.style.height=((box[2]-box[0])/10)+'%';overlay.style.width=((box[3]-box[1])/10)+'%';
-    overlay.hidden=false;
+    if(regionPointer)return;
+    drawRegion(box);
+    if(!scroll||!box)return;
+    const scroller=$('mangaImageScroller');
+    const image=$('mangaImage');
+    if(!scroller?.scrollTo||!scroller.clientHeight||!image.clientHeight)return;
+    const start=image.offsetTop+image.clientHeight*box[0]/1000;
+    const end=image.offsetTop+image.clientHeight*box[2]/1000;
+    const target=Math.max(0,(start+end-scroller.clientHeight)/2);
+    scroller.scrollTo({top:target,behavior:'smooth'});
+  }
+  function regionPoint(event) {
+    const rect=$('mangaImage').getBoundingClientRect?.();
+    if(!rect?.width||!rect?.height)return null;
+    const clamp=value=>Math.max(0,Math.min(1000,Math.round(value)));
+    return {y:clamp((event.clientY-rect.top)*1000/rect.height),x:clamp((event.clientX-rect.left)*1000/rect.width)};
+  }
+  function regionBox(a,b) {
+    return [Math.min(a.y,b.y),Math.min(a.x,b.x),Math.max(a.y,b.y),Math.max(a.x,b.x)];
+  }
+  function cancelLocate() {
+    locatingItemId=null;
+    regionPointer=null;
+    const page=currentPage();
+    if(page)render();
+  }
+  function selectItem(id, scroll=true) {
+    const page=currentPage();
+    if(!page||!page.items.some(item=>item.id===id))return;
+    if(locatingItemId&&locatingItemId!==id){locatingItemId=null;regionPointer=null;}
+    selectedItem=id;
+    document.querySelectorAll('.manga-item').forEach(node=>node.classList.toggle('is-selected',node.dataset.item===selectedItem));
+    highlightRegion(page,scroll);
+    const selected=page.items.find(item=>item.id===selectedItem);
+    $('mangaLocateHint').hidden=!locatingItemId&&Boolean(selected?.bbox);
+    $('mangaLocateHint').textContent=locatingItemId?lt('help'):lt('missing');
+    $('mangaImageFrame').classList.toggle('is-locating',Boolean(locatingItemId));
+  }
+  function setLocate(id) {
+    if(running)return;
+    const page=currentPage();
+    if(!page||!page.items.some(item=>item.id===id))return;
+    if(locatingItemId===id){cancelLocate();return;}
+    locatingItemId=id;
+    regionPointer=null;
+    selectedItem=id;
+    render();
+  }
+  function regionDown(event) {
+    if(!locatingItemId||running||(event.pointerType==='mouse'&&event.button!==0))return;
+    const point=regionPoint(event);
+    if(!point)return;
+    regionPointer={id:event.pointerId,first:point,last:point,pageId:activeId,itemId:locatingItemId};
+    $('mangaImage').setPointerCapture?.(event.pointerId);
+    drawRegion(regionBox(point,point));
+    event.preventDefault?.();
+  }
+  function regionMove(event) {
+    if(!regionPointer||regionPointer.id!==event.pointerId)return;
+    const point=regionPoint(event);
+    if(!point)return;
+    regionPointer.last=point;
+    drawRegion(regionBox(regionPointer.first,point));
+    event.preventDefault?.();
+  }
+  async function regionUp(event) {
+    const draft=regionPointer;
+    if(!draft||draft.id!==event.pointerId)return;
+    const point=regionPoint(event)||draft.last;
+    regionPointer=null;
+    const page=currentPage();
+    const item=page?.items.find(entry=>entry.id===draft.itemId);
+    if(!page||page.id!==draft.pageId||!item||!authorized||locatingItemId!==draft.itemId){if(page)render();return;}
+    const box=regionBox(draft.first,point);
+    if(box[2]-box[0]<10||box[3]-box[1]<10){render();toast(lt('retry'),true);return;}
+    item.bbox=box;
+    locatingItemId=null;
+    selectedItem=item.id;
+    render();
+    highlightRegion(page,true);
+    await rememberPage(page);
+    toast(lt('saved'));
+  }
+  function regionCancel() {
+    if(!regionPointer)return;
+    regionPointer=null;
+    const page=currentPage();
+    if(page)render();
   }
   function loadFiles(fileList) {
     if (!authorized || running) return;
@@ -755,8 +867,9 @@
     const page=currentPage();if(!page)return;
     const button=target.closest('button');
     const card=target.closest('[data-item]');
-    if(card){selectedItem=card.dataset.item;highlightRegion(page);document.querySelectorAll('.manga-item').forEach(node=>node.classList.toggle('is-selected',node.dataset.item===selectedItem));}
+    if(card)selectItem(card.dataset.item);
     if(!button)return;
+    if(button.dataset.locate){setLocate(button.dataset.locate);return;}
     const action=['reveal','words','edit','cancelEdit'].find(key=>button.dataset[key]);
     if(!action)return;
     const item=page.items.find(x=>x.id===button.dataset[action]);if(!item)return;
@@ -781,7 +894,7 @@
       if(right){moveOnePage(right.dataset.moveRight,1);return;}
       const btn=event.target.closest('[data-page]');
       if(!btn)return;
-      activeId=btn.dataset.page;selectedItem=null;render();
+      activeId=btn.dataset.page;selectedItem=null;locatingItemId=null;regionPointer=null;render();
     });
     $('mangaPageStrip').addEventListener('dragstart',event=>{
       const card=event.target.closest('[data-page-card]');
@@ -833,6 +946,11 @@
     $('mangaCancel').addEventListener('click',()=>{analyzeAll=false;aborter?.abort();});
     $('mangaManual').addEventListener('click',addText);
     $('mangaReadings').addEventListener('click',controls);
+    $('mangaReadings').addEventListener('focusin',event=>{const card=event.target.closest?.('[data-item]');if(card)selectItem(card.dataset.item);});
+    $('mangaImage').addEventListener('pointerdown',regionDown);
+    $('mangaImage').addEventListener('pointermove',regionMove);
+    $('mangaImage').addEventListener('pointerup',regionUp);
+    $('mangaImage').addEventListener('pointercancel',regionCancel);
     $('mangaReadings').addEventListener('input',event=>{const id=event.target.dataset.answer;const item=currentPage()?.items.find(x=>x.id===id);if(item){item.answer=event.target.value;item.check=null;}});
     $('mangaReadings').addEventListener('submit',event=>{
       const form=event.target;

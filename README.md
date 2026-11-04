@@ -1,3 +1,17 @@
+# Kana Training Facility v26.1 — ubicaciones de diálogo
+
+Esta actualización recupera y refuerza el resaltado de la zona de la imagen correspondiente a cada texto japonés al seleccionar su tarjeta, al hacer foco en el campo de romaji o al revelar la respuesta.
+
+Cuando el OCR proporciona coordenadas, la región aparece automáticamente. En los capítulos analizados que no tengan coordenadas, usá **Marcar texto en imagen**, arrastrá un rectángulo sobre el globo y soltá. Se guarda dentro del capítulo en IndexedDB y no consume tokens de OpenAI. Si la ubicación automática es imprecisa, usá **Ajustar ubicación**.
+
+Se conserva el mismo nombre de base IndexedDB, la versión del esquema, los hashes y las versiones de OCR y explicaciones de v26. Ninguna migración borra registros; no hace falta volver a subir las páginas guardadas.
+
+Para instalar: subí el contenido de este ZIP a GitHub Pages. Después actualizá `supabase/functions/ktf-manga-analyze/index.ts` en Supabase Edge Functions y elegí **Deploy updates** si querés que los OCR nuevos soliciten coordenadas de forma más insistente. No se modifican los Secrets ni el SQL.
+
+**Los resultados antiguos no reciben coordenadas de forma automática**, porque el cache ya tiene la transcripción sin esa información. Podés marcarlos manualmente sin repetir el análisis, o volver a analizar una página cuando quieras.
+
+---
+
 # Kana Training Facility
 
 A retro-inspired Japanese study website. Everything runs in your browser, with **no accounts, analytics, external libraries, server, or build tools**.

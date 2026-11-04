@@ -167,3 +167,9 @@ Refined the Learning Progress account area, skill cards, guide layout, and exam 
 - Supabase changes are batched after a short idle period. A remote sync cannot overwrite newer local edits or interrupt an active drag.
 - Local selections still persist immediately, even offline.
 - The PWA service worker cache version has been updated for this release. No database migration is needed.
+
+## Optional Manga Reader (v22)
+
+New temporary page reader to the left of Word Challenge. Multiple manga pages can be uploaded without being persisted or synced, and each detected dialogue lets you attempt its romaji before revealing the reading, English translation, vocabulary and kanji explanations. Corrections are supported. No manga art is generated or bundled.
+
+**One-time online setup required:** see `setup/MANGA_READER_SETUP.md` for the Google AI Studio key, Supabase secret, `setup/manga-quota.sql` and deployment of `supabase/functions/ktf-manga-analyze/index.ts`. Online AI analysis requires a Google/Supabase session; other app features remain offline. The function sends page images to Google Gemini for analysis when requested, but does not save them in Supabase.

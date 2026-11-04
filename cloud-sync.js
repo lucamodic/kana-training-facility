@@ -350,8 +350,16 @@
     if (client && navigator.onLine) await client.auth.signOut();
     await setGuest();
   }
+  async function getAccessToken() {
+    if (!user || !navigator.onLine) return null;
+    const api=await loadClient();
+    const {data,error}=await api.auth.getSession();
+    if(error)throw error;
+    if(!data.session?.user || data.session.user.id !== user.id)return null;
+    return data.session.access_token;
+  }
   window.KTFCloud = {
-    addAttempt,getAttempts,signIn,signOut,sync,initialize,updateNickname,getNickname:nicknameForAccount,
+    addAttempt,getAttempts,signIn,signOut,sync,initialize,updateNickname,getNickname:nicknameForAccount,getAccessToken,
     subscribe(callback){listeners.add(callback);return()=>listeners.delete(callback);},
     getStatus(){return {status,details:statusDetails,user,owner,online:navigator.onLine};}
   };

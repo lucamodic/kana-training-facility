@@ -1444,3 +1444,104 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .progress-exam-card > button.button-secondary{align-self:stretch;width:100%;min-height:43px;}
 .guide-dialog #guideClose{min-width:42px;width:42px;min-height:42px;height:42px;padding:0;display:grid;place-items:center;font-size:17px;}
 @media(max-width:380px){.progress-exam-head{grid-template-columns:minmax(0,1fr) auto;}.progress-exam-head .progress-exam-status{max-width:106px;white-space:normal;text-align:center;}}
+
+.manga-launch-group{display:flex;align-self:stretch;align-items:stretch;gap:7px;margin-left:auto;min-width:0}
+.study-switcher .manga-launch-group .words-launch{margin:0 0 -2px;min-height:49px;white-space:nowrap}
+.study-switcher .manga-launch{background:var(--retro-cream);color:var(--ink);border:2px solid var(--retro-deep);box-shadow:none}
+.study-switcher .manga-launch:hover{background:var(--retro-ribbon)}
+.manga-reader-screen{padding:18px 0 65px;min-width:0}
+.manga-top-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 17px;flex-wrap:wrap}
+.manga-header{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:23px 24px;background:var(--retro-cream);border:2px solid var(--retro-deep);box-shadow:4px 4px 0 var(--retro-shadow);margin-bottom:20px}
+.manga-header h2{font:bold clamp(28px,4vw,38px) Georgia,"Times New Roman",serif;letter-spacing:-.05em;margin:2px 0 7px}
+.manga-header .eyebrow{margin:0 0 6px}
+.manga-header-deco{font:bold 55px Georgia,serif;color:var(--retro-deep);opacity:.5}
+.manga-upload{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;border:2px dashed var(--retro-deep);background:var(--paper);border-radius:4px}
+.manga-upload.drag-over{background:var(--accent-soft);outline:3px solid var(--accent)}
+.manga-upload-intro{display:flex;align-items:center;gap:12px;flex:1 1 290px;min-width:0}
+.manga-upload-symbol{width:42px;height:42px;display:grid;place-items:center;flex:none;font-size:26px;color:var(--ink);background:var(--retro-main);border:1px solid var(--retro-deep)}
+.manga-upload-intro strong{display:block;font:bold 16px Georgia,serif;margin-bottom:5px}
+.manga-upload-intro .subtle{font-size:11px;line-height:1.6}
+.manga-upload-buttons{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.manga-file-label{width:auto;display:inline-flex;min-height:44px;gap:7px;align-items:center;justify-content:center;padding:11px 16px;cursor:pointer;border-radius:4px}
+.manga-upload-buttons .button-secondary{min-height:44px}
+.manga-privacy-subtle,.manga-pane-footnote{font-size:11px;color:var(--muted);line-height:1.6;margin:12px 1px}
+.manga-notice{padding:11px 14px;margin:13px 0;border:1px solid var(--line);background:var(--soft);color:var(--ink);line-height:1.6;font-size:12px;border-radius:4px}
+.manga-notice[data-type="error"]{border-color:var(--accent);background:var(--accent-soft)}
+.manga-page-strip{display:flex;gap:10px;padding:12px 2px;margin:12px 0 5px;overflow-x:auto;overscroll-behavior-x:contain}
+.manga-page-thumb{position:relative;flex:0 0 100px;display:flex;flex-direction:column;gap:5px;align-items:center;padding:7px;background:var(--paper);border:2px solid var(--line);color:var(--ink);min-width:0;border-radius:4px;cursor:pointer}
+.manga-page-thumb.is-active{border-color:var(--retro-deep);box-shadow:2px 2px 0 var(--retro-shadow);background:var(--retro-cream)}
+.manga-page-thumb img{width:70px;height:88px;object-fit:contain;background:var(--soft)}
+.manga-page-thumb span{position:absolute;top:5px;left:5px;background:var(--retro-main);border:1px solid var(--retro-deep);padding:3px 5px;font:bold 10px "Courier New",monospace}
+.manga-page-thumb small{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:90px}
+.manga-empty{display:grid;place-items:center;text-align:center;min-height:210px;border:2px dashed var(--line);background:var(--paper);padding:35px 20px;color:var(--muted);margin-top:18px;gap:7px}
+.manga-empty>span{font-size:32px;color:var(--retro-deep)}
+.manga-empty p{margin:0;line-height:1.6}
+.manga-workspace{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:18px;align-items:start;min-width:0;margin-top:16px}
+.manga-page-column,.manga-reading-column{min-width:0;background:var(--paper);border:2px solid var(--retro-deep);box-shadow:3px 3px 0 var(--retro-shadow);border-radius:4px;overflow:hidden}
+.manga-pane-head{padding:11px 12px;background:linear-gradient(90deg,var(--retro-main),var(--retro-ribbon));border-bottom:2px solid var(--retro-deep);display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:57px}
+.manga-pane-head>div{display:grid;gap:4px;min-width:0}
+.manga-pane-head strong{overflow-wrap:anywhere;font:700 13px Georgia,serif}
+.manga-pane-head span{color:var(--muted);font-size:11px}
+.manga-pane-head .mini-button{flex:none;padding:9px;font-size:11px}
+.manga-image-scroller{max-height:min(73vh,860px);overflow:auto;overscroll-behavior:contain;background:var(--soft);padding:12px;min-height:310px}
+.manga-image-frame{position:relative;width:100%;line-height:0;max-width:900px;margin:auto}
+.manga-image-frame>img{display:block;width:100%;height:auto;object-fit:contain;background:#fff}
+.manga-image-highlight{position:absolute;border:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 15%,transparent);box-shadow:0 0 0 2px #fff6;pointer-events:none;transition:all 120ms ease}
+.manga-page-column .manga-pane-footnote{margin:7px 12px 12px}
+.manga-readings-scroll{height:min(73vh,860px);min-height:400px;overflow:auto;overscroll-behavior:contain;padding:12px;background:var(--paper)}
+.manga-reading-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
+.manga-reading-controls button{width:100%;min-height:44px;font-size:12px;padding:10px 9px}
+.manga-reading-controls #mangaAnalyze{grid-column:1/-1}
+.manga-reading-controls #mangaLogin{grid-column:1/-1}
+.manga-reading-controls #mangaManual{grid-column:1/-1}
+.manga-reading-help{font-size:11px;line-height:1.65;color:var(--muted);margin:12px 1px 15px}
+.manga-text-empty{border:1px dashed var(--line);padding:18px 12px;text-align:center;color:var(--muted);font-size:12px;line-height:1.65}
+.manga-readings{display:grid;gap:13px}
+.manga-item{background:var(--paper);border:2px solid var(--line);padding:14px;border-radius:4px;min-width:0;box-shadow:2px 2px 0 color-mix(in srgb,var(--retro-shadow) 22%,transparent)}
+.manga-item.is-selected{border-color:var(--retro-deep)}
+.manga-item-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 9px;font:700 11px "Courier New",monospace;color:var(--muted)}
+.manga-item-number{padding:3px 6px;border:1px solid var(--retro-deep);background:var(--retro-cream);color:var(--ink)}
+.manga-original{font-family:"Yu Gothic","Noto Sans JP",sans-serif;font-weight:600;font-size:clamp(19px,2.2vw,25px);line-height:1.55;overflow-wrap:anywhere;margin-bottom:12px;color:var(--ink)}
+.manga-romaji-form{border-top:1px dashed var(--line);padding-top:11px}
+.manga-romaji-form label,.manga-editor label{display:block;margin:0 0 7px;font:bold 11px "Courier New",monospace}
+.manga-try-row{display:flex;align-items:stretch;gap:7px}
+.manga-try-row input,.manga-editor textarea{min-width:0;width:100%;padding:10px 11px;background:var(--paper);border:1px solid var(--retro-deep);border-radius:4px;color:var(--ink);font:13px Verdana,sans-serif}
+.manga-try-row input{flex:1 1 0}
+.manga-try-row .button-primary{flex:none;width:auto;padding:10px 10px;min-height:43px;font-size:11px}
+.manga-check{display:block;margin-top:9px;padding:6px 9px;border:1px solid var(--line);background:var(--soft);font-size:11px;font-weight:700;line-height:1.5}
+.manga-check.success{color:var(--green)}
+.manga-check.wrong{color:var(--accent)}
+.manga-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.manga-card-actions button{width:auto;font-size:11px;padding:9px 10px;min-height:37px;flex:1 1 auto}
+.manga-reveal{margin-top:12px;padding:12px;background:var(--retro-cream);border:1px solid var(--retro-deep);border-radius:4px;display:grid;gap:12px}
+.manga-reveal-line span{display:block;font:bold 10px "Courier New",monospace;color:var(--accent);margin-bottom:6px}
+.manga-reveal-line strong{font-size:15px;line-height:1.6;overflow-wrap:anywhere}
+.manga-reveal-line p{margin:0;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.manga-words{margin-top:11px;display:grid;gap:6px}
+.manga-word{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);gap:3px 9px;padding:9px 10px;border:1px solid var(--line);background:var(--soft);align-items:baseline}
+.manga-word strong{font:700 16px "Yu Gothic",sans-serif;grid-row:span 2;overflow-wrap:anywhere}
+.manga-word span{font:700 12px "Courier New",monospace;overflow-wrap:anywhere}
+.manga-word small{color:var(--muted);font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.manga-editor{padding:11px;margin-top:12px;border:1px dashed var(--retro-deep);background:var(--soft)}
+.manga-editor textarea{font:15px "Yu Gothic","Noto Sans JP",sans-serif;resize:vertical}
+.manga-editor>div{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+.manga-editor button{width:auto;padding:10px 12px;font-size:12px}
+.manga-item-warning{font-size:11px;color:var(--accent);padding:9px;background:var(--accent-soft);border:1px dashed var(--accent)}
+@media(max-width:1120px){.manga-launch-group{width:100%;justify-content:flex-end}.study-switcher{flex-wrap:wrap}.manga-launch-group .words-launch{flex:1 1 0}.study-switcher .manga-launch-group .words-launch{border-radius:4px;height:45px;min-height:45px;margin:0}}
+@media(max-width:800px){.manga-workspace{grid-template-columns:1fr}.manga-image-scroller{max-height:65vh}.manga-readings-scroll{height:auto;max-height:80vh;min-height:280px}.manga-header{padding:18px}}
+@media(max-width:600px){.study-switcher{grid-template-columns:minmax(0,1fr)}.study-switcher .manga-launch-group{width:100%;gap:7px;margin:0}.study-switcher .manga-launch-group .words-launch{min-width:0;flex:1 1 0;margin:0;padding:7px 6px;font-size:11px;white-space:normal;height:auto;min-height:45px}.study-switcher .manga-launch-group .words-launch .words-count{display:none}.manga-launch-group .words-launch>span:last-child{display:none}.manga-upload{padding:12px}.manga-upload-buttons{width:100%}.manga-upload-buttons>*{flex:1 1 120px}.manga-header-deco{font-size:38px}.manga-reading-controls{grid-template-columns:1fr}.manga-reading-controls button{grid-column:1!important}.manga-readings-scroll{padding:9px}.manga-item{padding:11px}.manga-try-row{flex-wrap:wrap}.manga-try-row input{min-height:44px}.manga-try-row button{width:100%!important}.manga-card-actions button{flex:1 1 115px}.manga-image-scroller{min-height:240px}}
+@media(max-width:350px){.manga-launch-group{flex-direction:column}.manga-page-thumb{flex-basis:85px}.manga-page-thumb small{max-width:75px}}
+
+.manga-kanji-header{font:bold 10px "Courier New",monospace;color:var(--accent);margin:9px 0 3px;letter-spacing:.08em}
+.manga-kanji{display:flex;align-items:center;gap:12px;padding:9px 10px;background:var(--retro-cream);border:1px solid var(--line);border-radius:3px}
+.manga-kanji>strong{font-size:26px;flex:0 0 38px;text-align:center}
+.manga-kanji>div{min-width:0;display:grid;gap:3px}
+.manga-kanji b{font-size:12px;overflow-wrap:anywhere}
+.manga-kanji small{font-size:11px;color:var(--muted);line-height:1.5;overflow-wrap:anywhere}
+
+.manga-visually-hidden{position:absolute;width:1px;height:1px;margin:0;padding:0;opacity:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.manga-file-label:focus-within{outline:2px dashed var(--accent);outline-offset:3px}
+
+.manga-top-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;justify-content:flex-end}
+.manga-top-actions .button-secondary{width:auto;min-height:39px;padding:9px 12px;font-size:12px}
+@media(max-width:450px){.manga-top-actions{width:100%;justify-content:space-between}.manga-top-actions .button-secondary{flex:1 1 100%;order:2}}

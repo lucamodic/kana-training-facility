@@ -1,11 +1,11 @@
-# Kana Training Facility — Manga Reader (v22)
+# Kana Training Facility — Manga Reader (v23 two-stage)
 
 Manga Reader is an optional **online-only** feature. The rest of the PWA continues working offline. It does not create or generate manga images. It accepts real manga images selected by the visitor.
 
 ## What it does
 
 - Multiple JPG/PNG/WebP pages in a temporary in-memory list, up to 16 pages per batch (18 MB each).
-- Read a whole page or all pages one at a time via Gemini multimodal analysis.
+- Transcribe each page first, then request readings, romaji, vocabulary and English translations in separate text-only requests.
 - Left: original uploaded image. Right: scrollable text snippets.
 - Each snippet has an answer field for the user's own romaji before showing the correct reading.
 - Reveal complete romaji, English sentence translation, individual word definitions, and kanji core meanings/contextual readings.
@@ -33,7 +33,7 @@ Do not add this key to GitHub Pages, `config.js`, the repo, or messages in chat.
 
 ### 2. Enable a per-account quota
 
-In Supabase → **SQL Editor**, run `setup/manga-quota.sql` from this archive. It adds `ktf_manga_daily_usage` and an authenticated-only RPC with a limit of **30 AI requests per UTC day per user**, including reanalysis after manually editing text. The table has RLS enabled and denies user-facing direct access. This is independent of your existing `ktf_progress_events` table.
+In Supabase → **SQL Editor**, run `setup/manga-quota.sql` from this archive. It adds `ktf_manga_daily_usage` and an authenticated-only RPC with a limit of **30 AI requests per UTC day per user**. A page now uses **one OCR request plus at least one explanation request**, one for every group of up to 12 dialogues. Failed attempts also count. For example, a page with 8 bubbles consumes 2 requests if both succeed. The table has RLS enabled and denies user-facing direct access. This is independent of your existing `ktf_progress_events` table.
 
 ### 3. Deploy the Edge Function
 
@@ -55,7 +55,7 @@ In Supabase → Edge Functions, create a function named `ktf-manga-analyze`, pas
 
 ### 4. Publish the PWA
 
-Upload the web files (`index.html`, `manga-reader.js`, `styles.css`, `app.js`, `cloud-sync.js`, etc., plus icons and manifest) to the **root** of your existing GitHub Pages repository. The `supabase/` and `setup/` directories are configuration/source files and do not need to be served by GitHub Pages. Accept the update notification for v22 when it appears.
+Upload the **v23 web files together** (`index.html`, `manga-reader.js`, `styles.css`, `app.js`, `cloud-sync.js`, etc., plus icons and manifest) to the **root** of your existing GitHub Pages repository. The `supabase/` and `setup/` directories are configuration/source files and do not need to be served by GitHub Pages. Accept the update notification for v22 when it appears.
 
 ### 5. Test
 
@@ -75,3 +75,17 @@ Google Gemini may misread vertical type, furigana, stylized sound effects or han
 ## No other changes
 
 This build is based on **v21 Smooth Selection**, preserving the prior kana/kanji selection performance fix, exam history, Google authentication, nicknames, Word Challenge, global study clock and all themes. It does not reintroduce any bundled manga scans or generated artwork.
+
+## v23 deployment note
+
+Replace both the Supabase Edge Function code and the PWA files. The v23 frontend uses a new `mode: explain` request; it will not work with the old v22 function. Conversely, the v22 frontend expects all explanations in the first response. Do not mix versions.
+
+After changing GitHub Pages files, approve the PWA update prompt. Analyze a single page first. Recognized Japanese appears as soon as OCR completes, even if explanation fails later; select **Retry explanations** to resume without uploading that image again. This reader only holds page data in the current browser tab.
+
+If Gemini returns HTTP 503 even for a one-stage OCR request, this can be a genuine API availability issue distinct from Google AI Studio. A successful AI Studio chat does not guarantee API-key requests from this project will succeed. Review the exact API key project and Google AI Studio rate limits. Do not put the Gemini secret in the webpage.
+
+## Testing the two-stage workflow
+
+When the image OCR call succeeds, Japanese text appears immediately. The interface then sends a text-only analysis request (one per 12 dialogues). Until an item has a reading, the Check / Reveal buttons are disabled so you are never graded against an empty answer. If the later request fails, the Japanese transcription stays on screen; choose **Retry explanations**. The app does not store this page or its text after reload.
+
+Both API calls use `gemini-3.8-flash` by default, a concise prompt and `thinkingLevel: low`. The Edge Function logs whether the failure happened at `ocr` or `explain`, without logging images, Japanese sentences or keys. This cannot guarantee Gemini API uptime: Google AI Studio and requests made using your own project API key may behave differently.

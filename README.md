@@ -173,3 +173,7 @@ Refined the Learning Progress account area, skill cards, guide layout, and exam 
 New temporary page reader to the left of Word Challenge. Multiple manga pages can be uploaded without being persisted or synced, and each detected dialogue lets you attempt its romaji before revealing the reading, English translation, vocabulary and kanji explanations. Corrections are supported. No manga art is generated or bundled.
 
 **One-time online setup required:** see `setup/MANGA_READER_SETUP.md` for the Google AI Studio key, Supabase secret, `setup/manga-quota.sql` and deployment of `supabase/functions/ktf-manga-analyze/index.ts`. Online AI analysis requires a Google/Supabase session; other app features remain offline. The function sends page images to Google Gemini for analysis when requested, but does not save them in Supabase.
+
+## Manga Reader v23: staged analysis
+
+Manga Reader uses two stages: image transcription and text-only explanation. It displays transcribed Japanese immediately and retains it if explanations fail. The **Retry explanations** button does not repeat OCR. Both the PWA JavaScript and the Supabase function must be deployed together. See `setup/MANGA_READER_SETUP.md`.

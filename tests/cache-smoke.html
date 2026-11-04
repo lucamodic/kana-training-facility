@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="UTF-8"><script src="../manga-cache.js"></script></head><body>RUNNING<script>
+(async () => {
+  const c = window.KTFMangaCache;
+  let n=0;
+  const ok = (condition, message) => { if (!condition) throw Error(message); n++; };
+  const hash = await c.fileHash(new File([new Blob(['sample manga jpeg'])], 'sample.jpg', {type:'image/jpeg'}));
+  ok(/^[a-f0-9]{64}$/.test(hash), 'sha256 hash');
+  const blob = new Blob(['compressed preview'], {type:'image/jpeg'});
+  await c.save('owner-a', {hash,name:'sample.jpg',imageBlob:blob,items:[{japanese:'こんにちは',romaji:'konnichiwa',english:'hello',words:[],kanji:[],manual:false}],status:'completed'});
+  let r = await c.read('owner-a',hash);
+  ok(r.name==='sample.jpg', 'save and read');
+  ok(r.ocrVersion===c.OCR_VERSION, 'ocr version');
+  ok(r.explainVersion===c.EXPLAIN_VERSION, 'explain version');
+  ok((await r.imageBlob.text())==='compressed preview','blob preserved');
+  ok((await c.read('owner-b',hash))===null, 'owner isolated');
+  ok((await c.list('owner-a')).length===1, 'local history contains page');
+  ok((await c.list('owner-b')).length===0, 'history isolated');
+  const th = await c.textHash(' こんにちは ');
+  await c.saveText('owner-a',th,{romaji:'konnichiwa'});
+  ok((await c.readText('owner-a',th)).romaji==='konnichiwa','cached explanation reused');
+  ok((await c.readText('owner-b',th))===null,'text owner isolated');
+  await c.remove('owner-a',hash);
+  ok((await c.list('owner-a')).length===0,'remove page');
+  await c.save('owner-a', {hash,name:'sample.jpg',imageBlob:blob,items:[],status:'completed'});
+  await c.clear('owner-a');
+  ok((await c.list('owner-a')).length===0,'clear history');
+  ok((await c.readText('owner-a',th))===null,'clear explanations');
+  document.body.textContent = `PASS ${n} checks`;
+  document.body.dataset.ok='true';
+})().catch(error => {document.body.textContent = `FAIL ${error.stack}`;document.body.dataset.ok='false';});
+</script></body></html>

@@ -19,6 +19,7 @@
   <script src="./config.js" defer></script>
   <script src="./cloud-sync.js" defer></script>
   <script src="./learning-progress.js" defer></script>
+  <script src="./manga-cache.js" defer></script>
   <script src="./manga-reader.js" defer></script>
 </head>
 <body>
@@ -92,7 +93,7 @@
           <button type="button" id="tabKanji" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="kanji">Kanji <span class="tab-counter" id="jCount">0</span></button>
         </div>
         <div class="manga-launch-group">
-          <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
+          <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
         <button type="button" id="openWordsButton" class="words-launch" aria-haspopup="dialog" aria-controls="wordsDialog"><span class="words-launch-icon" aria-hidden="true">✎</span> <span id="wordsLaunchText">Word Challenge</span> <span class="words-count" id="wordAvailableCount">0</span> <span aria-hidden="true">↗</span></button>
         </div>
           </div>
@@ -181,16 +182,27 @@
       <div class="manga-top-bar"><button class="back" type="button" id="mangaBack">← Back to selection</button><div class="manga-top-actions"><button class="button-secondary" type="button" id="mangaLoginTop">Sign in with Google first</button><span class="quiz-pill" id="mangaPrivacyEyebrow">PRIVATE READING SPACE</span></div></div>
       <div class="manga-header"><div><span class="eyebrow">✦ JAPANESE READING STUDIO</span><h2 id="mangaTitle">Manga Reader</h2><p class="subtle" id="mangaIntro">Read real Japanese pages at your own pace</p></div><div class="manga-header-deco" lang="ja">読</div></div>
       <div class="manga-upload" id="mangaDrop">
-        <div class="manga-upload-intro"><span class="manga-upload-symbol" aria-hidden="true">▣</span><div><strong id="mangaChooseLabel">Add manga pages</strong><p class="subtle" id="mangaPrivacy">Pages stay in this tab only.</p></div></div>
+        <div class="manga-upload-intro"><span class="manga-upload-symbol" aria-hidden="true">▣</span><div><strong id="mangaChooseLabel">Add manga pages</strong><p class="subtle" id="mangaPrivacy">Analyzed pages are saved locally in your browser.</p></div></div>
+        <div class="manga-chapter-form" id="mangaChapterForm">
+          <label for="mangaSeriesName"><span id="mangaSeriesLabel">Manga</span><input id="mangaSeriesName" type="text" maxlength="120" placeholder="Nombre del manga" autocomplete="off"></label>
+          <label for="mangaChapterName"><span id="mangaChapterLabel">Capítulo</span><input id="mangaChapterName" type="text" maxlength="80" placeholder="Capítulo #1" autocomplete="off"></label>
+          <button type="button" class="button-secondary" id="mangaNewChapter">Nuevo capítulo</button>
+        </div>
         <div class="manga-upload-buttons"><label class="button-primary manga-file-label" for="mangaFiles"><span aria-hidden="true">＋</span> <span id="mangaAddLabel">Choose images</span></label><input id="mangaFiles" class="manga-visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" multiple><button type="button" class="button-secondary" id="mangaClear">Clear pages</button></div>
+      </div>
+      <div class="manga-library-toolbar"><button type="button" class="button-secondary" id="mangaLibraryToggle" aria-controls="mangaHistoryPanel" aria-expanded="false">Ver mangas analizados</button><span id="mangaActiveChapter" class="manga-active-chapter" hidden></span></div>
+      <div class="manga-history-panel" id="mangaHistoryPanel" hidden>
+        <div class="manga-history-head"><strong id="mangaHistoryHeading">Mis mangas y capítulos</strong><button type="button" class="button-secondary" id="mangaHistoryClear">Borrar historial local</button></div>
+        <p class="manga-privacy-subtle" id="mangaHistoryHelp">Saved on this device only; open any analyzed page without uploading it again.</p>
+        <div id="mangaHistoryList" class="manga-history-list"></div>
       </div>
       <div class="manga-page-strip" id="mangaPageStrip" hidden></div>
       <p id="mangaUploadHint" class="manga-privacy-subtle">When you analyze, the image is sent to OpenAI GPT-6 Luna through your protected Supabase function.</p>
       <p id="mangaNotice" class="manga-notice" role="status" aria-live="polite" hidden></p>
       <div class="manga-empty" id="mangaEmpty"><span aria-hidden="true">✿</span><p>Drop some manga pages here or choose files to begin.</p></div>
       <div class="manga-workspace" id="mangaWorkspace" hidden>
-        <section class="manga-page-column" aria-label="Uploaded manga page"><div class="manga-pane-head"><div><strong id="mangaPageName">manga.png</strong><span id="mangaPageState">Ready</span></div><button type="button" class="mini-button" id="mangaRemove">Remove page</button></div><div class="manga-image-scroller"><div class="manga-image-frame"><img id="mangaImage" alt="Uploaded manga page"><div id="mangaHighlight" class="manga-image-highlight" hidden></div></div></div><p class="manga-pane-footnote">Your image stays in this browser tab.</p></section>
-        <section class="manga-reading-column" aria-label="Japanese dialogue and reading practice"><div class="manga-pane-head"><div><strong id="mangaRightHeading">Recognized dialogue</strong><span id="mangaRightCount">—</span></div></div><div class="manga-readings-scroll"><div class="manga-reading-controls" id="mangaControls"><button type="button" id="mangaAnalyze" class="button-primary">Analyze this page</button><button type="button" id="mangaAnalyzeAll" class="button-secondary">Analyze all pages</button><button type="button" id="mangaCancel" class="button-secondary" hidden>Stop analyzing</button><button type="button" id="mangaLogin" class="button-secondary">Sign in with Google to analyze</button><button type="button" id="mangaManual" class="button-secondary">Add a text manually</button></div><p class="manga-reading-help" id="mangaNoSave">Try romaji first, then reveal readings and explanations.</p><p class="manga-text-empty" id="mangaTextEmpty"></p><div id="mangaReadings" class="manga-readings" aria-live="off"></div></div></section>
+        <section class="manga-page-column" aria-label="Uploaded manga page"><div class="manga-pane-head"><div><strong id="mangaPageName">manga.png</strong><span id="mangaPageState">Ready</span></div><button type="button" class="mini-button" id="mangaRemove">Remove page</button></div><div class="manga-image-scroller"><div class="manga-image-frame"><img id="mangaImage" alt="Uploaded manga page"><div id="mangaHighlight" class="manga-image-highlight" hidden></div></div></div><p class="manga-pane-footnote">Analyzed images are stored locally in compressed form to reopen them later.</p></section>
+        <section class="manga-reading-column" aria-label="Japanese dialogue and reading practice"><div class="manga-pane-head"><div><strong id="mangaRightHeading">Recognized dialogue</strong><span id="mangaRightCount">—</span></div></div><div class="manga-readings-scroll"><div class="manga-reading-controls" id="mangaControls"><button type="button" id="mangaAnalyze" class="button-primary">Analyze this page</button><button type="button" id="mangaAnalyzeAll" class="button-secondary">Analyze all pages</button><button type="button" id="mangaReanalyze" class="button-secondary" hidden>Reanalyze with AI</button><button type="button" id="mangaCancel" class="button-secondary" hidden>Stop analyzing</button><button type="button" id="mangaLogin" class="button-secondary">Sign in with Google to analyze</button><button type="button" id="mangaManual" class="button-secondary">Add a text manually</button></div><p class="manga-reading-help" id="mangaNoSave">Try romaji first, then reveal readings and explanations.</p><p class="manga-text-empty" id="mangaTextEmpty"></p><div id="mangaReadings" class="manga-readings" aria-live="off"></div></div></section>
       </div>
     </section>
 
@@ -218,7 +230,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v25.0</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

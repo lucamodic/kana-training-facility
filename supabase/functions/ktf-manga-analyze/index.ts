@@ -148,7 +148,7 @@ export default {
 
     try {
       if (mode === 'image') {
-        const output = await callOpenAI(key, 'ocr', [{ type: 'input_image', image_url: `data:image/jpeg;base64,${imageData}`, detail: 'high' }])
+        const output = await callOpenAI(key, 'ocr', [{ type: 'input_text', text: 'Transcribe the Japanese text in this image. Return the requested JSON object only.' }, { type: 'input_image', image_url: `data:image/jpeg;base64,${imageData}`, detail: 'high' }])
         const results = list(object(output).segments).slice(0, 55).map(row => {
           const raw = object(row)
           const b = list(raw.bbox)
@@ -159,7 +159,7 @@ export default {
       }
 
       const input = mode === 'text' ? [{ index: 0, japanese: text }] : segments
-      const output = await callOpenAI(key, 'explain', [{ type: 'input_text', text: `Input:\n${JSON.stringify(input)}` }])
+      const output = await callOpenAI(key, 'explain', [{ type: 'input_text', text: `Explain this Japanese text and return the requested JSON object.\n\nInput:\n${JSON.stringify(input)}` }])
       const responses = list(object(output).segments)
       const used = new Set<number>()
       const results = input.map((source, pos) => {

@@ -1545,3 +1545,44 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .manga-top-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;justify-content:flex-end}
 .manga-top-actions .button-secondary{width:auto;min-height:39px;padding:9px 12px;font-size:12px}
 @media(max-width:450px){.manga-top-actions{width:100%;justify-content:space-between}.manga-top-actions .button-secondary{flex:1 1 100%;order:2}}
+
+.manga-history-panel { border: 1px solid var(--line); border-radius: 4px; background: var(--paper); padding: 13px 15px; margin: 12px 0 17px; }
+.manga-history-panel[hidden] { display: none !important; }
+.manga-history-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.manga-history-head strong { font: bold 15px Georgia, serif; }
+.manga-history-head .button-secondary { font-size: 12px; padding: 6px 10px; }
+.manga-history-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr)); gap: 8px; margin-top: 11px; max-height: 185px; overflow-y: auto; }
+.manga-history-entry { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--line); border-radius: 3px; padding: 7px 9px; gap: 8px; background: var(--soft); min-width: 0; }
+.manga-history-entry > button:first-child { text-align: left; border: 0; background: transparent; padding: 3px; color: var(--ink); cursor: pointer; min-width: 0; flex: 1; }
+.manga-history-entry > button:first-child strong { display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.manga-history-entry > button:first-child small { color: var(--muted); display: block; font-size: 11px; margin-top: 3px; }
+.manga-history-entry .mini-button { flex-shrink: 0; font-size: 11px; padding: 6px 8px; }
+.manga-history-entry > button:first-child:hover strong { text-decoration: underline; }
+
+.ktf-footer-version{font:700 11px "Courier New",monospace;white-space:nowrap;letter-spacing:.07em;opacity:.75}
+.manga-chapter-form{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr) auto;gap:10px;margin:13px 0;align-items:end}
+.manga-chapter-form label{display:grid;gap:5px;font:bold 11px "Courier New",monospace;min-width:0}
+.manga-chapter-form input{min-height:40px;padding:9px 11px;border:1px solid var(--retro-deep);border-radius:3px;background:var(--paper);color:var(--ink);font:13px Verdana,sans-serif;width:100%;min-width:0}
+.manga-chapter-form button{min-height:40px;padding:8px 12px;white-space:nowrap;font-size:12px}
+.manga-library-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:9px;margin:13px 0}
+.manga-library-toolbar button{font-size:12px;min-height:39px}
+.manga-active-chapter{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.manga-history-panel{margin-top:7px}
+.manga-history-list{display:block;max-height:460px}
+.manga-series{margin:12px 0 16px}
+.manga-series h3{font:bold 15px Georgia,serif;margin:0 0 8px;padding-bottom:7px;border-bottom:1px dashed var(--line);overflow-wrap:anywhere}
+.manga-chapter-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr));gap:10px}
+.manga-chapter-entry{min-width:0;background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:8px;display:flex;gap:8px;align-items:center}
+.manga-chapter-open{border:0;background:transparent;text-align:left;color:var(--ink);cursor:pointer;flex:1;min-width:0;padding:5px}
+.manga-chapter-open strong{display:block;font:700 13px Georgia,serif;overflow-wrap:anywhere}
+.manga-chapter-open small{display:block;margin-top:5px;font-size:11px;color:var(--muted)}
+.manga-chapter-entry .mini-button{font-size:11px;flex-shrink:0;padding:7px 8px}
+.manga-chapter-open:hover strong{text-decoration:underline}
+.manga-orphans{border-top:1px dashed var(--line);padding-top:11px;margin-top:14px}
+.manga-orphans h3{font:bold 13px Georgia,serif;margin:0 0 9px}
+@media(max-width:650px){.manga-chapter-form{grid-template-columns:1fr 1fr}.manga-chapter-form button{grid-column:1/-1}.manga-library-toolbar{align-items:stretch}.manga-library-toolbar button{flex:1}}
+@media(max-width:450px){.manga-chapter-form{grid-template-columns:1fr}.manga-chapter-form button{grid-column:auto}}
+
+.manga-upload-intro{order:1}
+.manga-chapter-form{order:2;width:100%;margin:0}
+.manga-upload-buttons{order:3}

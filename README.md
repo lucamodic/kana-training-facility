@@ -168,9 +168,9 @@ Refined the Learning Progress account area, skill cards, guide layout, and exam 
 - Local selections still persist immediately, even offline.
 - The PWA service worker cache version has been updated for this release. No database migration is needed.
 
-## Private Manga Reader (v24)
+## Private Manga Reader (v25)
 
-New temporary page reader to the left of Word Challenge. Multiple manga pages can be uploaded without being persisted or synced, and each detected dialogue lets you attempt its romaji before revealing the reading, English translation, vocabulary and kanji explanations. Corrections are supported. No manga art is generated or bundled.
+New private page reader to the left of Word Challenge. Multiple manga pages can be uploaded and cached locally (not synced), and each detected dialogue lets you attempt its romaji before revealing the reading, English translation, vocabulary and kanji explanations. Corrections are supported. No manga art is generated or bundled.
 
 **One-time online setup required:** see `setup/MANGA_READER_SETUP.md` for the OpenAI API key, the allowed email and user ID Secrets, `setup/manga-quota.sql` and deployment of `supabase/functions/ktf-manga-analyze/index.ts`. Online AI analysis requires a Google/Supabase session; other app features remain offline. The function sends page images to OpenAI GPT-6 Luna for analysis when requested, but does not save them in Supabase.
 
@@ -181,3 +181,12 @@ Manga Reader uses two stages: image transcription and text-only explanation. It 
 ## v24 private GPT-6 Luna access
 
 The Manga Reader button remains hidden for every visitor until a signed-in account is authorized by `GET /functions/v1/ktf-manga-analyze`. The Edge Function checks both the authenticated Supabase user ID and email against Supabase Edge Function Secrets, with no nickname restriction. A `403` blocks all AI modes even if somebody calls the endpoint manually. The frontend contains no allowed email, allowed user ID or OpenAI API key. Set `OPENAI_API_KEY`, `OPENAI_MODEL`, `KTF_AI_ALLOWED_EMAIL`, and `KTF_AI_ALLOWED_USER_ID` as described in `setup/MANGA_READER_SETUP.md`.
+
+
+## Manga Reader v25: Local chapter library and version footer
+
+The footer shows **v25.0**. Manga Reader stores uploaded pages in IndexedDB in compressed JPEG form, with OCR and explanations. Pages are deduplicated by the SHA-256 hash of the **original uploaded file**; uploading identical bytes again restores the cached result rather than repeating a paid OpenAI call. A new `manga-cache.js` file handles this storage; keep it in the repository. Cached Japanese text explanations are also reusable independently of OCR. Manual **Reanalyze with AI** deliberately creates new paid requests.
+
+Before choosing image files, fill in **Manga title** (for example, *The Green Manga*) and **Chapter / batch** (for example, *Capítulo #1*), then add around four pages or up to 16. The chapter is saved locally with page order. **View analyzed manga** opens a library grouped by series and ordered naturally by chapter numbers, so Capítulo #2 appears before #10. **New chapter** preserves the current manga title and suggests the next chapter number. You can change an existing chapter title by editing the fields and leaving the field. Removing a chapter removes only its grouping: cached analyses are retained to avoid duplicate token charges. **Delete all local manga** removes both chapters and cached pages after confirmation.
+
+The library is indexed to the currently authorized Supabase User UID in this browser, is hidden from unauthorized users, and never syncs manga pages to Supabase. **It is not an encrypted vault**: browser profile/device access and clearing website storage affect availability/privacy. IndexedDB may be evicted by the browser; exporting backups is not supported yet. Images uploaded after future image compression or editing have different bytes and might not match previous SHA-256 values, even if visually identical.

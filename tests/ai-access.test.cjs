@@ -86,6 +86,7 @@ test('authorized text request calls GPT-6 Luna through Responses API',async()=>{
   assert.equal(s.apiCalls[0].url,'https://api.openai.com/v1/responses');
   assert.equal(s.apiCalls[0].body.model,'gpt-6-luna');
   assert.equal(s.apiCalls[0].body.store,false);
+  assert.match(s.apiCalls[0].body.input[0].content[0].text,/json/i);
 });
 
 test('authorized image request sends jpeg input_image',async()=>{
@@ -94,7 +95,9 @@ test('authorized image request sends jpeg input_image',async()=>{
   assert.equal(response.status,200);
   assert.equal((await response.json()).segments[0].japanese,'おはよう');
   assert.equal(s.apiCalls.length,1);
-  assert.equal(s.apiCalls[0].body.input[0].content[0].type,'input_image');
+  assert.equal(s.apiCalls[0].body.input[0].content[0].type,'input_text');
+  assert.match(s.apiCalls[0].body.input[0].content[0].text,/json/i);
+  assert.equal(s.apiCalls[0].body.input[0].content[1].type,'input_image');
 });
 
 test('frontend hides reader for guests and other users and reveals it for owner',async()=>{

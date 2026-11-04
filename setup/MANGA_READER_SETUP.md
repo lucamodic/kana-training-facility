@@ -1,4 +1,4 @@
-# Kana Training Facility v24 — Private Manga Reader with OpenAI GPT-6 Luna
+# Kana Training Facility v25 — Private Manga Reader with OpenAI GPT-6 Luna
 
 This is the complete v23 application with the Manga Reader migrated from Gemini to OpenAI. The entire Manga Reader is hidden from guests and every account other than the single authorized account. Hiragana, katakana, kanji, exercises, exam history, Word Challenge, nickname, themes, Google sign-in, cloud sync and offline PWA support remain available to everyone as before.
 
@@ -47,7 +47,7 @@ Alternatively replace the existing Edge Function's code in the Supabase Dashboar
 
 ## 6. Publish GitHub Pages
 
-Upload the entire repository content (including `index.html`, `manga-reader.js`, `sw.js`, `cloud-sync.js`, `styles.css`, `app.js`, assets and manifest) to the same GitHub Pages repository root. The PWA uses a new service-worker cache ID in `sw.js`: `v24-openai-private-manga`. Accept the app's update prompt or hard refresh if a previous cached version is still displayed.
+Upload the entire repository content (including `index.html`, `manga-reader.js`, `sw.js`, `cloud-sync.js`, `styles.css`, `app.js`, assets and manifest) to the same GitHub Pages repository root. The PWA uses a new service-worker cache ID in `sw.js`: `v25-manga-chapters-1`. Accept the app's update prompt or hard refresh if a previous cached version is still displayed.
 
 The Manga Reader launch button is initially marked `hidden` in the HTML. When a user signs in, `manga-reader.js` makes an authenticated GET request to the Edge Function. Only a `{ "allowed": true }` response with HTTP 200 reveals the button. Other users never see the button, and direct attempts to open the reader or invoke AI are also rejected. The authorization result is rechecked when the page regains focus, and every analysis request is authorized again by the server.
 
@@ -70,6 +70,19 @@ If you receive 401 for an otherwise valid owner session, inspect the actual Supa
 
 ## Privacy and limitations
 
-The app sends only the page actively selected for analysis, compressed to JPEG, through the function to OpenAI. It does not upload or store manga images in Supabase Storage. Pages and explanations remain local to the active browser tab. Server-side quota counters are persisted. OpenAI handles submitted images and text under its API terms. OCR and translations may have errors, and no manga images are bundled or generated.
+The app sends only the page actively selected for analysis, compressed to JPEG, through the function to OpenAI. It does not upload or store manga images in Supabase Storage. Pages, compressed previews, OCR and explanations are stored locally in IndexedDB per authorized Supabase User ID. They can be reopened by chapter. The local browser database is not encrypted or synced and can be cleared or evicted. Server-side quota counters are persisted. OpenAI handles submitted images and text under its API terms. OCR and translations may have errors, and no manga images are bundled or generated.
 
 The web application's source files remain publicly readable because it is hosted on GitHub Pages. Hiding the button prevents ordinary access to the UI, **not** inspection of the static HTML/JS; server-side authorization protects the private API operations and billing keys. `KTF_AI_ALLOWED_EMAIL` and `KTF_AI_ALLOWED_USER_ID` are never shipped to the browser.
+
+
+## v25 — Manga chapter library
+
+- Footer: `v25.0`.
+- While authorized, open Manga Reader and enter a **Manga title** and a **Chapter / batch** title (for example `Capítulo #1`). Then upload 1–16 PNG/JPEG/WebP pages, usually four at a time.
+- The app creates a chapter in IndexedDB and retains the order of uploaded pages. It also stores compressed JPEG previews so saved chapters can be reopened without selecting files again.
+- Press **View analyzed manga** to see chapters grouped under their manga title and sorted numerically (`#1`, `#2`, `#10`). Click a chapter to reopen all stored pages without paid requests.
+- Press **New chapter** to prepare a new batch; it keeps the manga name and proposes the next chapter number. Existing names can be edited and are saved on change.
+- Exact duplicate original image bytes are recognized by SHA-256 and restored from cache, including OCR and explanations. If explanations failed, retrying reuses saved OCR. Press **Reanalyze with AI** only when you intentionally want to pay for a fresh reading.
+- **Clear pages** empties the open view only. **Delete chapter** removes its grouping, retaining the cached image analyses as ungrouped pages to avoid paying for the same image again. **Delete all local manga** clears pages, explanations and chapters.
+- All manga history is local to the browser profile and keyed by the authorized account's User ID. It is neither synchronized with Google/Supabase nor encrypted, and is subject to browser storage limits or deletion. To preserve the library, keep the browser's site data.
+- This update changes the static frontend and PWA cache. If the already deployed Edge Function contains both JSON-input corrections, it does not require a new deploy; the ZIP includes the current function for reference.

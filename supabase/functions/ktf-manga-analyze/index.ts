@@ -1,7 +1,7 @@
 import { withSupabase } from 'npm:@supabase/server@^1'
 
 const MODEL = Deno.env.get('OPENAI_MODEL') || 'gpt-6-luna'
-const OCR_PROMPT = `You are a meticulous Japanese manga text transcription specialist. Inspect the ENTIRE page, including small and faint writing. Read systematically from the top-right to bottom-left in Japanese manga reading order, checking each panel, every speech bubble, narration box, aside, and standalone line of spoken dialogue. Do a second careful visual scan before finalizing to ensure no text balloon was accidentally skipped. Transcribe all legible Japanese printed text EXACTLY as drawn, respecting kanji, kana, punctuation and line breaks when meaningful. A separate bubble must become a separate segment even if it is very short, and a multi-line bubble remains a single segment. Consider tiny peripheral bubbles as well as prominent ones. Do not omit a readable bubble merely because it is short, looks unimportant, or overlaps a drawing. Furigana can help identify words but must not be transcribed independently. Ignore decorative sound effects unless unmistakably spoken. Do not translate, romanize, infer obscured characters or generate images. For EACH transcribed bubble, provide a tight approximate bounding rectangle covering the actual written text: [top,left,bottom,right], measured against the entire image and normalized to integer coordinates 0..1000. Top and bottom refer to vertical location; left and right to horizontal location. This is required whenever the text is visibly localized, including tiny balloons and vertical lines. Example for a bubble in the upper right: {"japanese":"こんにちは","bbox":[90,690,230,920]}. Use bbox:null ONLY if the text position is genuinely impossible to determine. Return only a JSON object: {"segments":[{"japanese":"exact text","bbox":[90,690,230,920]}]}. If absolutely no text is readable return {"segments":[]}. Never fabricate text to increase the segment count.`
+const OCR_PROMPT = `You are a meticulous Japanese manga text transcription specialist. Inspect the ENTIRE page, including small and faint writing. Read systematically from the top-right to bottom-left in Japanese manga reading order, checking each panel, every speech bubble, narration box, aside, and standalone line of spoken dialogue. Do a second careful visual scan before finalizing to ensure no text balloon was accidentally skipped. Transcribe all legible Japanese printed text EXACTLY as drawn, respecting kanji, kana, punctuation and line breaks when meaningful. A separate bubble must become a separate segment even if it is very short, and a multi-line bubble remains a single segment. Never add a separate segment that simply concatenates two or more already transcribed speech bubbles. Consider tiny peripheral bubbles as well as prominent ones. Do not omit a readable bubble merely because it is short, looks unimportant, or overlaps a drawing. Furigana can help identify words but must not be transcribed independently. Ignore decorative sound effects unless unmistakably spoken. Do not translate, romanize, infer obscured characters or generate images. For EACH transcribed bubble, provide a tight approximate bounding rectangle covering the actual written text: [top,left,bottom,right], measured against the entire image and normalized to integer coordinates 0..1000. Top and bottom refer to vertical location; left and right to horizontal location. This is required whenever the text is visibly localized, including tiny balloons and vertical lines. Example for a bubble in the upper right: {"japanese":"こんにちは","bbox":[90,690,230,920]}. Use bbox:null ONLY if the text position is genuinely impossible to determine. Return only a JSON object: {"segments":[{"japanese":"exact text","bbox":[90,690,230,920]}]}. If absolutely no text is readable return {"segments":[]}. Never fabricate text to increase the segment count.`
 const OCR_REVIEW_PROMPT = `You are a second-pass Japanese manga OCR auditor. You will be shown an image and a JSON list of dialogues that the first pass already transcribed. Your ONLY task is to find legible text bubbles, narration or spoken dialogue which are genuinely ABSENT from that list. Scan every panel and edge of the entire image, including small vertical text. Compare visually with the existing transcriptions and do NOT repeat an existing bubble, do NOT propose mere punctuation variants, do NOT infer unreadable words, and do NOT invent additional dialogue. Return a JSON object ONLY, with missing bubbles as {"segments":[{"japanese":"exact missing Japanese text","bbox":null}]}. If nothing was missed return {"segments":[]}. For each genuinely missing bubble, return its tight bounding rectangle as [top,left,bottom,right] with integers 0..1000 relative to the entire image. Use null only if the location cannot be estimated.`
 const EXPLAIN_PROMPT = `You are a careful Japanese reading tutor. You will receive an array of numbered manga dialogue transcriptions, not an image. For EACH entry, return exactly the same index and explain ONLY its given Japanese text. Provide: complete hiragana/katakana reading, Hepburn romaji, a natural English sentence translation, up to 12 useful vocabulary/particle entries with surface form, kana reading, romaji and English meaning, and up to 12 kanji with core English meaning, contextual reading where linguistically separable, and a brief note. For irregular jukujikun, do not invent per-kanji phonetics: use "part of whole word". Japanese proper names can be ambiguous: avoid unjustified certainty. Do not alter the supplied dialogue or invent missing words. Preserve indices. Return JSON only: {"segments":[{"index":0,"reading":"...","romaji":"...","english":"...","words":[{"surface":"...","reading":"...","romaji":"...","meaning":"..."}],"kanji":[{"character":"...","meaning":"...","reading_here":"...","note":"..."}]}]}.`
 
@@ -39,23 +39,58 @@ function normalizeOCRSegments(value: unknown) {
   return list(object(value).segments).slice(0, 55).map(row => {
     const raw = object(row)
     const b = list(raw.bbox)
-    const bbox = b.length === 4 && b.every(n => typeof n === 'number' && n >= 0 && n <= 1000) && Number(b[2]) > Number(b[0]) && Number(b[3]) > Number(b[1]) ? b : null
+    const bbox = b.length === 4 && b.every(n => typeof n === 'number' && n >= 0 && n <= 1000) && Number(b[2]) > Number(b[0]) && Number(b[3]) > Number(b[1]) ? b as number[] : null
     return { japanese: str(raw.japanese, 500), reading: '', romaji: '', english: '', words: [], kanji: [], bbox }
   }).filter(row => row.japanese)
 }
 
-function isOCRDuplicate(a: {japanese:string,bbox:unknown}, b: {japanese:string,bbox:unknown}) {
-  const normalize = (text:string) => text.normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu, '')
-  const one = normalize(a.japanese)
-  const two = normalize(b.japanese)
-  if (one === two || (one.length > 3 && two.length > 3 && (one.includes(two) || two.includes(one)) && Math.min(one.length,two.length)/Math.max(one.length,two.length) > .72)) return true
-  const left = list(a.bbox).map(Number)
-  const right = list(b.bbox).map(Number)
-  if (left.length !== 4 || right.length !== 4) return false
-  const intersection = Math.max(0, Math.min(left[2],right[2])-Math.max(left[0],right[0])) * Math.max(0,Math.min(left[3],right[3])-Math.max(left[1],right[1]))
-  const aArea = (left[2]-left[0])*(left[3]-left[1])
-  const bArea = (right[2]-right[0])*(right[3]-right[1])
-  return aArea > 0 && bArea > 0 && intersection / Math.min(aArea,bArea) > .70
+function textKey(value: string) {
+  return value.normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu, '')
+}
+
+function sameRegion(a: {bbox: number[] | null}, b: {bbox: number[] | null}) {
+  if (!a.bbox || !b.bbox) return true
+  const first = a.bbox
+  const second = b.bbox
+  const intersection = Math.max(0, Math.min(first[2],second[2])-Math.max(first[0],second[0])) * Math.max(0,Math.min(first[3],second[3])-Math.max(first[1],second[1]))
+  const firstArea = (first[2]-first[0])*(first[3]-first[1])
+  const secondArea = (second[2]-second[0])*(second[3]-second[1])
+  return firstArea > 0 && secondArea > 0 && intersection / Math.min(firstArea,secondArea) > .45
+}
+
+type OCRItem = ReturnType<typeof normalizeOCRSegments>[number]
+
+function isComposite(item: OCRItem, all: OCRItem[]) {
+  const full = textKey(item.japanese)
+  if (full.length < 8) return false
+  const parts = all.filter(other => other !== item).map(other => ({other, text:textKey(other.japanese)}))
+    .filter(part => part.text.length >= 2 && part.text.length < full.length && full.includes(part.text))
+  function search(offset: number, used: Set<number>, count: number, locationMatched: boolean): boolean {
+    if (offset === full.length) return count >= 2 && locationMatched
+    for (let i=0; i<parts.length; i++) {
+      const part = parts[i]
+      if (used.has(i) || !full.startsWith(part.text, offset)) continue
+      const match = locationMatched || sameRegion(item,part.other)
+      used.add(i)
+      if (search(offset+part.text.length, used, count+1, match)) return true
+      used.delete(i)
+    }
+    return false
+  }
+  return search(0, new Set(), 0, false)
+}
+
+function dedupeOCR(items: OCRItem[]) {
+  const singles = items.filter(item => !isComposite(item, items))
+  const kept: OCRItem[] = []
+  for (const item of singles) {
+    const key = textKey(item.japanese)
+    const duplicate = kept.findIndex(other => textKey(other.japanese) === key &&
+      (key.length >= 6 || (other.bbox !== null && item.bbox !== null)) && sameRegion(other,item))
+    if (duplicate < 0) kept.push(item)
+    else if (!kept[duplicate].bbox && item.bbox) kept[duplicate] = item
+  }
+  return kept
 }
 
 class OpenAIFailure extends Error {
@@ -178,7 +213,7 @@ export default {
           { type: 'input_text', text: 'Transcribe every legible Japanese dialogue bubble and narration in this entire manga page. Return the requested JSON object only, and double-check that no bubble was missed.' },
           image
         ])
-        const results = normalizeOCRSegments(output)
+        let results = dedupeOCR(normalizeOCRSegments(output))
         let addedByReview = 0
         let reviewSucceeded = false
         if (thorough) {
@@ -188,12 +223,10 @@ export default {
               image
             ])
             reviewSucceeded = true
-            for (const candidate of normalizeOCRSegments(review)) {
-              if (results.length >= 55) break
-              if (results.some(original => isOCRDuplicate(original,candidate))) continue
-              results.push(candidate)
-              addedByReview++
-            }
+            const merged = dedupeOCR([...results, ...normalizeOCRSegments(review)].slice(0, 55))
+            addedByReview = merged.filter(candidate => !results.some(original =>
+              textKey(candidate.japanese) === textKey(original.japanese) && sameRegion(candidate, original))).length
+            results = merged
           } catch (error) {
             console.warn('ktf-manga: OCR review skipped',String(error).slice(0,180))
           }

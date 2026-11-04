@@ -1,3 +1,13 @@
+# Kana Training Facility v27.0 — OCR sin duplicados y eliminación de textos
+
+- Los resultados OCR nuevos se limpian antes de solicitar explicaciones, descartando bloques que son la concatenación exacta de dos o más bloques ya detectados. También se eliminan duplicados idénticos cuando provienen de la misma región; textos iguales en posiciones claramente diferentes se conservan.
+- Al abrir una página previamente analizada, se aplica la misma limpieza y se guarda de vuelta en IndexedDB. No se repite ningún análisis ni se consumen tokens; se mantienen los bloques y las explicaciones válidas.
+- Cada tarjeta de diálogo ahora ofrece **Quitar texto**, con confirmación. Borra únicamente ese bloque de la página y persiste el cambio en el caché local; se conservan el capítulo, la imagen y los demás resultados.
+- Ningún cambio en el esquema, identificadores de usuario, hash de imágenes, versiones OCR/explicación de IndexedDB ni Secret de Supabase.
+- Para publicar, actualizá los archivos estáticos en GitHub Pages (incluido `sw.js`) y desplegá también `supabase/functions/ktf-manga-analyze/index.ts` para el filtrado adicional en el servidor.
+
+---
+
 # Kana Training Facility v26.1 — ubicaciones de diálogo
 
 Esta actualización recupera y refuerza el resaltado de la zona de la imagen correspondiente a cada texto japonés al seleccionar su tarjeta, al hacer foco en el campo de romaji o al revelar la respuesta.

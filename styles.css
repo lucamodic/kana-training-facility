@@ -1513,6 +1513,8 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .manga-check.wrong{color:var(--accent)}
 .manga-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .manga-card-actions button{width:auto;font-size:11px;padding:9px 10px;min-height:37px;flex:1 1 auto}
+.manga-card-actions .manga-remove-text{border-color:var(--accent);color:var(--accent);background:transparent;flex:1 1 110px}
+.manga-card-actions .manga-remove-text:hover{background:var(--soft)}
 .manga-reveal{margin-top:12px;padding:12px;background:var(--retro-cream);border:1px solid var(--retro-deep);border-radius:4px;display:grid;gap:12px}
 .manga-reveal-line span{display:block;font:bold 10px "Courier New",monospace;color:var(--accent);margin-bottom:6px}
 .manga-reveal-line strong{font-size:15px;line-height:1.6;overflow-wrap:anywhere}

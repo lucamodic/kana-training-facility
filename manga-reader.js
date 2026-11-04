@@ -118,6 +118,8 @@
     en:{title:'Manga Reader',subtitle:'Read real Japanese pages at your own pace',choose:'Add manga pages',empty:'Drop some manga pages here or choose files to begin.',read:'Analyze this page',all:'Analyze all pages',retry:'Try again',add:'Add pages',remove:'Remove page',signIn:'Sign in with Google to analyze',signed:'Google sign-in is only required for online analysis.',noSave:'Analyzed pages, compressed images and explanations are saved privately in this browser (IndexedDB), not synced between devices.',sent:'When you analyze, the image is sent to OpenAI GPT-6 Luna through your protected Supabase function.',noItems:'No dialogue detected. You can add Japanese text yourself.',noAnalysis:'Select Analyze to recognize Japanese text on this page.',working:'Reading Japanese text…',line:'Text',readPrompt:'Write this in romaji',check:'Check my reading',show:'Show reading & translation',hide:'Hide answer',words:'Word meanings',edit:'Correct Japanese text',saveEdit:'Update explanation',cancel:'Cancel',addText:'Add a text manually',correct:'Looks right!',incorrect:'Not quite. Try again or reveal the answer.',romaji:'Reading (romaji)',english:'English translation',notReady:'Sign in and deploy the Manga Reader function to enable AI analysis.',error:'Could not analyze this page.',done:'Page analyzed.',pending:'Ready to analyze',processing:'Analyzing',completed:'Analyzed',manual:'Manual text',yourReading:'Your reading',loadError:'Could not read these files.',long:'Unanalyzed pages are temporary. Analyzed pages are saved locally.',help:'You can try the romaji first, then reveal the reading or individual word meanings. OCR and translations may be imperfect.',continue:'Next page',chooseNext:'Choose a page above.',noInternet:'Manga Reader needs an internet connection for analysis. Your other study modes still work offline.',tooMany:'Up to 16 pages per batch.',bigFile:'A file exceeds 18 MB.',invalid:'Choose PNG, JPG or WEBP images.',missing:'Enter some Japanese text first.',editing:'Correct the OCR and refresh its explanation.',reveal:'Reveal word meanings',hideWords:'Hide word meanings',noWords:'No word breakdown available. Try refreshing the explanation.',failed:'Not ready',processingMany:'Analyzing page',of:'of',analyzed:'Done',cancelAnalysis:'Stop analyzing',close:'Back to selection',needLogin:'Sign in with Google in My Progress or use the button here. Pages will not be synced.',privacy:'PRIVATE READING SPACE',noRegions:'If a bubble is missed, choose Add a text manually.',skip:'Skip page',reset:'Clear all pages',confirmReset:'Clear all pages and their unsaved notes?',recognition:'Recognized dialogue',ocrDone:'Text recognized · preparing explanations',retryExplanation:'Retry explanations',needExplanation:'Explanations are not ready yet. Your transcription is preserved.',hint:'Words can have context-dependent readings; check uncertain results against the image.',newPage:'Add another manga page'},
     es:{title:'Lector de manga',subtitle:'Leé páginas reales en japonés a tu ritmo',choose:'Agregar páginas de manga',empty:'Arrastrá páginas acá o elegí archivos para comenzar.',read:'Analizar esta página',all:'Analizar todas',retry:'Reintentar',add:'Agregar páginas',remove:'Quitar página',signIn:'Iniciar sesión con Google para analizar',signed:'Solo necesitás iniciar sesión para el análisis online.',noSave:'Las páginas analizadas, imágenes comprimidas y explicaciones se guardan localmente en este navegador (IndexedDB), sin sincronizarse entre dispositivos.',sent:'Al analizar, la imagen se envía a OpenAI GPT-6 Luna mediante tu función protegida de Supabase.',noItems:'No se detectaron diálogos. Podés agregar texto japonés manualmente.',noAnalysis:'Elegí Analizar para reconocer el japonés de esta página.',working:'Reconociendo texto japonés…',line:'Texto',readPrompt:'Escribí esto en romaji',check:'Comprobar lectura',show:'Mostrar lectura y traducción',hide:'Ocultar respuesta',words:'Significado de palabras',edit:'Corregir japonés detectado',saveEdit:'Actualizar explicación',cancel:'Cancelar',addText:'Agregar texto manualmente',correct:'¡Muy bien!',incorrect:'No coincide. Probá de nuevo o revelá la respuesta.',romaji:'Lectura (romaji)',english:'Traducción al inglés',notReady:'Iniciá sesión y publicá la función de Manga Reader para activar el análisis.',error:'No se pudo analizar esta página.',done:'Página analizada.',pending:'Lista para analizar',processing:'Analizando',completed:'Analizada',manual:'Texto manual',yourReading:'Tu lectura',loadError:'No se pudieron leer esos archivos.',long:'Las páginas sin analizar son temporales. Las analizadas quedan guardadas localmente.',help:'Podés intentar el romaji primero y después revelar la lectura o el significado de cada palabra. El OCR y las traducciones pueden equivocarse.',continue:'Página siguiente',chooseNext:'Elegí una página arriba.',noInternet:'Manga Reader necesita internet para el análisis. Los demás modos siguen funcionando offline.',tooMany:'Hasta 16 páginas por lote.',bigFile:'Un archivo supera los 18 MB.',invalid:'Elegí imágenes PNG, JPG o WEBP.',missing:'Ingresá primero un texto en japonés.',editing:'Corregí el OCR y actualizá la explicación.',reveal:'Revelar palabras',hideWords:'Ocultar palabras',noWords:'No hay desglose disponible. Probá actualizar la explicación.',failed:'Sin analizar',processingMany:'Analizando página',of:'de',analyzed:'Terminado',cancelAnalysis:'Detener análisis',close:'Volver a selección',needLogin:'Iniciá sesión con Google en Mi progreso o usá el botón acá. Las páginas no se sincronizan.',privacy:'ESPACIO DE LECTURA PRIVADO',noRegions:'Si falta una burbuja, elegí Agregar texto manualmente.',skip:'Saltar página',reset:'Limpiar páginas',confirmReset:'¿Borrar todas las páginas y notas temporales?',recognition:'Diálogos reconocidos',ocrDone:'Texto reconocido · preparando explicaciones',retryExplanation:'Reintentar explicaciones',needExplanation:'Las explicaciones todavía no están listas. El texto reconocido se conserva.',hint:'Las lecturas pueden cambiar según el contexto: revisá los resultados dudosos contra la imagen.',newPage:'Agregar otra página'}
   };
+  Object.assign(labels.en, {removeText:'Remove text',confirmRemoveText:'Remove this text block? Other readings and explanations will be kept.',removedText:'Text removed from this page.'});
+  Object.assign(labels.es, {removeText:'Quitar texto',confirmRemoveText:'¿Quitar este bloque de texto? Las demás lecturas y explicaciones se conservarán.',removedText:'Texto quitado de esta página.'});
   const t = key => labels[lang()][key] || key;
   const currentPage = () => pages.find(page => page.id === activeId) || null;
   const uuid = () => crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
@@ -133,6 +135,54 @@
       .replace(/[ēê]/g,'ee').replace(/[ōô]/g,'ou')
       .replace(/[^a-z]/g,'').replace(/shi/g,'si').replace(/chi/g,'ti')
       .replace(/tsu/g,'tu').replace(/fu/g,'hu').replace(/ji/g,'zi');
+  }
+  function mangaTextKey(value) {
+    return String(value || '').normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu, '');
+  }
+  function mangaSameRegion(first, second) {
+    const a = first.bbox;
+    const b = second.bbox;
+    if (!Array.isArray(a) || !Array.isArray(b)) return true;
+    const intersection = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])) * Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+    const areaA = (a[2]-a[0])*(a[3]-a[1]);
+    const areaB = (b[2]-b[0])*(b[3]-b[1]);
+    return areaA > 0 && areaB > 0 && intersection / Math.min(areaA, areaB) > 0.45;
+  }
+  function mangaIsComposite(item, all) {
+    if (item.manual) return false;
+    const full = mangaTextKey(item.japanese);
+    if (full.length < 8) return false;
+    const parts = all.filter(other => other !== item && !other.manual)
+      .map(other => ({other, text:mangaTextKey(other.japanese)}))
+      .filter(part => part.text.length >= 2 && part.text.length < full.length && full.includes(part.text));
+    const search = (offset, used, count, hasLocationMatch) => {
+      if (offset === full.length) return count >= 2 && hasLocationMatch;
+      for (let i=0; i<parts.length; i++) {
+        const part = parts[i];
+        if (used.has(i) || !full.startsWith(part.text, offset)) continue;
+        const locationMatch = hasLocationMatch || mangaSameRegion(item, part.other);
+        used.add(i);
+        if (search(offset+part.text.length, used, count+1, locationMatch)) return true;
+        used.delete(i);
+      }
+      return false;
+    };
+    return search(0, new Set(), 0, false);
+  }
+  function mangaDedupe(items) {
+    const unique = items.filter(item => item.manual || !mangaIsComposite(item, items));
+    const kept = [];
+    for (const item of unique) {
+      const key = mangaTextKey(item.japanese);
+      if (!key || item.manual) { kept.push(item); continue; }
+      const duplicateIndex = kept.findIndex(other => !other.manual && mangaTextKey(other.japanese) === key &&
+        (key.length >= 6 || (Array.isArray(other.bbox) && Array.isArray(item.bbox))) && mangaSameRegion(other, item));
+      if (duplicateIndex < 0) { kept.push(item); continue; }
+      const previous = kept[duplicateIndex];
+      const strength = row => Number(Boolean(row.romaji)) * 4 + Number(Array.isArray(row.bbox)) * 2 + Number(Boolean(row.dirty));
+      if (strength(item) > strength(previous)) kept[duplicateIndex] = item;
+    }
+    return kept;
   }
   const cacheLabels = {
     en:{history:'My manga library',historyHelp:'Each chapter keeps the order of your pages, OCR and explanations. Saved only in this browser for your signed-in account.',historyEmpty:'No saved chapters yet.',historyOpen:'Open saved page',historyDelete:'Delete',historyClear:'Delete all local manga',historyConfirm:'Delete ALL saved chapters, images and analyses on this device? This cannot be undone.',historyDeleteConfirm:'Remove this cached page from this browser?',force:'Reanalyze with AI',forceConfirm:'This makes new paid OCR and explanation requests. Continue?',cacheHit:'Loaded from local cache · no tokens used.',cacheFail:'Local storage is unavailable or full. Your work might be lost when reloading.',cacheLoading:'Checking saved analysis…',cacheRestored:'Opened from the local library.',series:'Manga title',chapter:'Chapter / batch',newChapter:'New chapter',viewLibrary:'View analyzed manga',hideLibrary:'Hide my library',needTitle:'Enter the manga title and chapter before adding pages.',deleteChapter:'Delete chapter',confirmDeleteChapter:'Remove this chapter from the library? The image analyses will remain cached to avoid spending tokens again.',orphans:'Other cached pages',pages:'pages',analyzedPages:'analyzed',opened:'Chapter opened without using tokens.',chapterSaved:'Chapter saved on this device.',chapterMissing:'This chapter has no cached image available.',chapterBusy:'Saving pages on this device…',orderHint:'Drag the thumbnails or use the arrows to put pages in the correct reading order.',orderSaved:'Page order saved locally.',orderError:'Could not save page order. Try again.'},
@@ -252,6 +302,9 @@
       selectedItem = pages[0]?.items[0]?.id || null;
       libraryOpen = false;
       render();
+      for (const page of savedPages) {
+        if (page.cleanupNeeded) { page.cleanupNeeded = false; await rememberPage(page); }
+      }
       toast(pages.length ? ct('opened') : ct('chapterMissing'), !pages.length);
     } catch (error) {console.warn('Could not open manga chapter',String(error)); cacheWarning();}
   }
@@ -284,12 +337,14 @@
     page.hash = record.hash;
     page.previewBlob = record.imageBlob;
     const explanationValid = record.explainVersion === cache.EXPLAIN_VERSION;
-    page.items = (Array.isArray(record.items) ? record.items : []).map(raw => {
-      const item = toItem(raw, {manual: Boolean(raw.manual)});
+    const restored = (Array.isArray(record.items) ? record.items : []).map(raw => {
+      const item = toItem(raw, {manual:Boolean(raw.manual)});
+      item.dirty = Boolean(raw.dirty);
       if (!explanationValid) Object.assign(item, {reading:'',romaji:'',english:'',words:[],kanji:[]});
       return item;
     }).filter(item => item.japanese);
-    page.items.forEach((item,index) => { item.dirty = Boolean(record.items[index]?.dirty); });
+    page.items = mangaDedupe(restored);
+    page.cleanupNeeded = page.items.length !== restored.length;
     page.status = page.items.length ? (page.items.some(item => !item.romaji || item.dirty) ? 'transcribed' : 'completed') : (record.status === 'completed' ? 'completed' : 'pending');
     return true;
   }
@@ -319,6 +374,7 @@
       const found = await cache.read(uid, page.hash);
       if (found && authorized && uid === ownerId() && pages.includes(page) && hydrate(page, found)) {
         if (activeId === page.id) selectedItem = page.items[0]?.id || null;
+        if (page.cleanupNeeded) { page.cleanupNeeded = false; await rememberPage(page); }
         if (page.status !== 'pending') toast(ct('cacheHit'));
       } else if (authorized && uid === ownerId() && pages.includes(page)) {
         await rememberPage(page);
@@ -345,6 +401,7 @@
       activeId = page.id;
       selectedItem = page.items[0]?.id || null;
       render();
+      if (page.cleanupNeeded) { page.cleanupNeeded = false; await rememberPage(page); }
       toast(ct('cacheRestored'));
     } catch (error) { console.warn('Could not reopen saved manga page',String(error)); cacheWarning(); }
   }
@@ -513,7 +570,7 @@
         <div class="manga-item-head"><span class="manga-item-number">${String(index+1).padStart(2,'0')}</span><span class="manga-item-type">${item.manual?t('manual'):t('line')}</span></div>
         <div class="manga-original" lang="ja">${escapeHtml(item.japanese)}</div>
         <form class="manga-romaji-form" data-check="${item.id}"><label for="manga-answer-${item.id}">${t('readPrompt')}</label><div class="manga-try-row"><input type="text" id="manga-answer-${item.id}" data-answer="${item.id}" value="${escapeHtml(item.answer||'')}" placeholder="romaji..." autocomplete="off" autocapitalize="none" spellcheck="false"><button class="button-primary" type="submit" ${item.dirty||!item.romaji?'disabled':''}>${t('check')}</button></div>${result}</form>
-        <div class="manga-card-actions"><button class="button-secondary" type="button" data-reveal="${item.id}" ${item.dirty||!item.romaji?'disabled':''}>${item.revealed?t('hide'):t('show')}</button><button class="button-secondary" type="button" data-words="${item.id}" ${item.dirty||!item.romaji?'disabled':''}>${item.showWords?t('hideWords'):t('reveal')}</button><button class="mini-button" type="button" data-edit="${item.id}">${t('edit')}</button><button class="mini-button manga-locate-button" type="button" data-locate="${item.id}" aria-pressed="${locatingItemId===item.id}">${locatingItemId===item.id?lt('cancel'):item.bbox?lt('adjust'):lt('locate')}</button></div>
+        <div class="manga-card-actions"><button class="button-secondary" type="button" data-reveal="${item.id}" ${item.dirty||!item.romaji?'disabled':''}>${item.revealed?t('hide'):t('show')}</button><button class="button-secondary" type="button" data-words="${item.id}" ${item.dirty||!item.romaji?'disabled':''}>${item.showWords?t('hideWords'):t('reveal')}</button><button class="mini-button" type="button" data-edit="${item.id}">${t('edit')}</button><button class="mini-button manga-locate-button" type="button" data-locate="${item.id}" aria-pressed="${locatingItemId===item.id}">${locatingItemId===item.id?lt('cancel'):item.bbox?lt('adjust'):lt('locate')}</button><button class="mini-button manga-remove-text" type="button" data-remove-item="${item.id}" ${running?'disabled':''}>${t('removeText')}</button></div>
         ${explanation}
         <form class="manga-editor" data-save="${item.id}" ${item.editing?'':'hidden'}><label for="manga-edit-${item.id}">${t('edit')}</label><textarea id="manga-edit-${item.id}" rows="3" maxlength="500" required>${escapeHtml(item.japanese)}</textarea><div><button type="submit" class="button-primary">${t('saveEdit')}</button><button type="button" class="button-secondary" data-cancel-edit="${item.id}">${t('cancel')}</button></div></form>
       </article>`;
@@ -749,15 +806,10 @@
         render();
         throw error;
       }
-      const japaneseKey = text => String(text || '').normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu,'');
-      const matches = (a,b) => {
-        const first=japaneseKey(a);
-        const second=japaneseKey(b);
-        return first === second || (first.length > 3 && second.length > 3 && (first.includes(second) || second.includes(first)) && Math.min(first.length,second.length) / Math.max(first.length,second.length) > .78);
-      };
-      const previousByText = new Map(previousItems.map(item => [japaneseKey(item.japanese),item]));
-      const incoming = result.segments.map(raw => {
-        const found = previousByText.get(japaneseKey(raw.japanese));
+      const matches = (a,b) => mangaTextKey(a) === mangaTextKey(b);
+      const previousByText = new Map(previousItems.map(item => [mangaTextKey(item.japanese),item]));
+      let incoming = mangaDedupe(result.segments).map(raw => {
+        const found = previousByText.get(mangaTextKey(raw.japanese));
         if (found?.romaji && !found.dirty) return toItem({...raw,reading:found.reading,romaji:found.romaji,english:found.english,words:found.words,kanji:found.kanji},found);
         return toItem(raw,found);
       }).filter(item=>item.japanese);
@@ -767,6 +819,7 @@
           if (!match && item.japanese && (item.manual || item.dirty || item.romaji)) incoming.push(item);
         }
       }
+      incoming = mangaDedupe(incoming);
       page.previewBlob = prepared.blob;
       page.items = incoming;
       page.status = page.items.length ? 'transcribed' : 'completed';
@@ -845,11 +898,12 @@
         if (replacement?.romaji && cache && hash) { try { await cache.saveText(ownerId(),hash,replacement); } catch (_) { cacheWarning(); } }
       }
       if(!replacement)throw new Error('Could not explain that text.');
+      if (!page.items.includes(item)) return;
       Object.assign(item,toItem({...replacement,japanese:newText},item));
       page.status=page.items.every(entry=>entry.romaji)?'completed':'transcribed';
       await rememberPage(page);
       toast(t('done'));
-    }catch(err){toast(err.message||String(err),true);item.dirty=true;await rememberPage(page);}
+    }catch(err){if (!page.items.includes(item)) return;toast(err.message||String(err),true);item.dirty=true;await rememberPage(page);}
     render();
   }
   async function addText() {
@@ -869,6 +923,18 @@
     const card=target.closest('[data-item]');
     if(card)selectItem(card.dataset.item);
     if(!button)return;
+    if (button.dataset.removeItem) {
+      if (running || !confirm(t('confirmRemoveText'))) return;
+      const id = button.dataset.removeItem;
+      if (!page.items.some(item => item.id === id)) return;
+      page.items = page.items.filter(item => item.id !== id);
+      if (selectedItem === id) selectedItem = page.items[0]?.id || null;
+      if (locatingItemId === id) { locatingItemId = null; regionPointer = null; }
+      page.status = page.items.some(item => !item.romaji || item.dirty) ? 'transcribed' : 'completed';
+      render();
+      rememberPage(page).then(() => toast(t('removedText'))).catch(() => cacheWarning());
+      return;
+    }
     if(button.dataset.locate){setLocate(button.dataset.locate);return;}
     const action=['reveal','words','edit','cancelEdit'].find(key=>button.dataset[key]);
     if(!action)return;

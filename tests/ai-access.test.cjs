@@ -11,7 +11,7 @@ const serverJs = ts.transpileModule(serverSource, {compilerOptions:{module:ts.Mo
 const ocrSample = {segments:[{japanese:'おはよう',bbox:[0,0,100,100]}]};
 const explainSample = {segments:[{index:0,reading:'おはよう',romaji:'ohayou',english:'Good morning',words:[],kanji:[]}]};
 
-function serverScenario({email='owner@example.com',id='owner-uid',jwtId=id,allowedEmail='owner@example.com',allowedId='owner-uid',configured=true,reviewSegments=null,ocrModel=null}={}) {
+function serverScenario({email='owner@example.com',id='owner-uid',jwtId=id,allowedEmail='owner@example.com',allowedId='owner-uid',configured=true,reviewSegments=null,ocrSegments=ocrSample,ocrModel=null}={}) {
   const env = new Map([
     ['KTF_AI_ALLOWED_EMAIL',configured?allowedEmail:undefined],
     ['KTF_AI_ALLOWED_USER_ID',configured?allowedId:undefined],
@@ -33,7 +33,7 @@ function serverScenario({email='owner@example.com',id='owner-uid',jwtId=id,allow
     withSupabase:(_options,fn)=>fn,
     fetch:async (url,options)=>{
       apiCalls.push({url,options,body:JSON.parse(options.body)});
-      const data = reviewSegments!==null && options.body.includes('second-pass Japanese manga OCR auditor') ? {segments:reviewSegments} : options.body.includes('input_image')?ocrSample:explainSample;
+      const data = reviewSegments!==null && options.body.includes('second-pass Japanese manga OCR auditor') ? {segments:reviewSegments} : options.body.includes('input_image')?ocrSegments:explainSample;
       return Response.json({status:'completed',output:[{type:'message',content:[{type:'output_text',text:JSON.stringify(data)}]}]});
     }
   };
@@ -177,4 +177,35 @@ test('a higher-accuracy OCR-only model can be selected without changing explanat
   await s.call('POST',{mode:'text',text:'おはよう'});
   assert.equal(s.apiCalls[0].body.model,'gpt-6.1-terra');
   assert.equal(s.apiCalls[1].body.model,'gpt-6-luna');
+});
+
+
+test('OCR drops composed duplicate while retaining truly repeated dialogue in different positions',async()=>{
+  const first='カウンター越しにつまんなそうにしている';
+  const second='黒ずくめのおにーさんだ';
+  const ocrSegments={segments:[
+    {japanese:first,bbox:[100,620,280,760]},
+    {japanese:second,bbox:[120,220,310,360]},
+    {japanese:first+'\n'+second,bbox:null},
+    {japanese:'はい',bbox:[400,650,450,750]},
+    {japanese:'はい',bbox:[550,130,620,210]},
+    {japanese:first,bbox:[102,624,285,765]}
+  ]};
+  const s=serverScenario({ocrSegments});
+  const response=await s.call('POST',{mode:'image',mimeType:'image/jpeg',imageData:'A'.repeat(100)});
+  assert.equal(response.status,200);
+  const data=await response.json();
+  assert.deepEqual(data.segments.map(item=>item.japanese),[first,second,'はい','はい']);
+  assert.equal(s.apiCalls.length,1);
+});
+
+test('second OCR review does not reinsert combined duplicates',async()=>{
+  const a='カウンター越しにつまんなそうにしている';
+  const b='黒ずくめのおにーさんだ';
+  const s=serverScenario({ocrSegments:{segments:[{japanese:a,bbox:[100,550,240,730]},{japanese:b,bbox:[250,200,400,400]}]},
+    reviewSegments:[{japanese:a+b,bbox:null},{japanese:'こんにちは',bbox:[500,500,610,740]}]});
+  const response=await s.call('POST',{mode:'image',thorough:true,mimeType:'image/jpeg',imageData:'A'.repeat(100)});
+  const data=await response.json();
+  assert.deepEqual(data.segments.map(item=>item.japanese),[a,b,'こんにちは']);
+  assert.equal(data.addedByReview,1);
 });

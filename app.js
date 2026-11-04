@@ -1667,6 +1667,7 @@ function applySavedData(data) {
       .filter(ch => typeof ch === 'string' && catalogMap[script].has(ch))
   )]));
   state.selected = imported;
+  unlockedWordsCache = null;
   state.script = SCRIPTS.includes(data.script) ? data.script : 'hiragana';
   applyTheme(PALETTES.includes(data.theme) ? data.theme : 'pastel');
   // New visitors use No limit. Migrate previous timer presets into the
@@ -1804,7 +1805,8 @@ function wordIsUnlocked(word) {
   }
   return true;
 }
-const eligibleWords = () => words.filter(wordIsUnlocked);
+let unlockedWordsCache = null;
+const eligibleWords = () => unlockedWordsCache || (unlockedWordsCache = words.filter(wordIsUnlocked));
 function wordLibraryI18n(key) {
   const en={eyebrow:'YOUR STUDY DICTIONARY',title:'Unlocked vocabulary',intro:'Every word unlocked by the characters selected across all three tabs. Review the readings and English meanings before practicing.',search:'Find a word',placeholder:'Japanese, romaji or English...',system:'Writing system',all:'All words',mixed:'Mixed scripts',back:'← Back to Word Challenge',browse:'Browse unlocked vocabulary',empty:'No matching unlocked words. Select more characters or change your search.',counter:'{shown} of {total} unlocked words',english:'ENGLISH MEANING',hiragana:'Hiragana',katakana:'Katakana',kanji:'Kanji',countLabel:'words unlocked'};
   const es={eyebrow:'TU DICCIONARIO DE ESTUDIO',title:'Vocabulario disponible',intro:'Todas las palabras que desbloqueaste con los caracteres seleccionados en las tres pestañas. Repasá las lecturas y los significados en inglés antes de practicar.',search:'Buscar una palabra',placeholder:'Japonés, romaji o inglés...',system:'Sistema de escritura',all:'Todas',mixed:'Escrituras combinadas',back:'← Volver a Desafío de palabras',browse:'Ver palabras disponibles',empty:'No hay palabras que coincidan. Seleccioná más caracteres o cambiá la búsqueda.',counter:'{shown} de {total} palabras disponibles',english:'SIGNIFICADO EN INGLÉS',hiragana:'Hiragana',katakana:'Katakana',kanji:'Kanji',countLabel:'palabras disponibles'};
@@ -1841,17 +1843,12 @@ function currentVisible() {
   const query = normalized($('search').value);
   return catalog[state.script].filter(item => !query || [item.kana, item.answer, ...(item.answers || []), item.meaning || ''].some(x => normalized(x).includes(query)));
 }
-function render() {
+function refreshSelectionSummary() {
   const script = state.script;
   const selected = state.selected[script];
-  SCRIPTS.forEach((s, i) => {
-    const tab = $(`tab${s[0].toUpperCase()}${s.slice(1)}`);
-    tab.setAttribute('aria-selected', String(s === script));
-    tab.tabIndex = s === script ? 0 : -1;
+  for (const s of SCRIPTS) {
     $(({hiragana:'hCount',katakana:'kCount',kanji:'jCount'})[s]).textContent = state.selected[s].size;
-  });
-  $('characterPanel').setAttribute('aria-labelledby', `tab${script[0].toUpperCase()}${script.slice(1)}`);
-  $('selectionHeading').textContent = t('choose',{script:script[0].toUpperCase()+script.slice(1)});
+  }
   $('selectedCount').textContent = selected.size;
   $('selectedDescription').textContent = selected.size ? t('selectedDesc',{count:selected.size}) : t('emptySelection');
   $('learnButton').disabled = !selected.size;
@@ -1874,6 +1871,47 @@ function render() {
   $('wordCountDescription').textContent = unlocked.length
     ? t('wordReady',{count:unlocked.length,word:unlocked.length===1?t('wordSingular'):t('wordPlural')})
     : t('wordLocked');
+}
+function refreshCategoryCounters() {
+  const selected = state.selected[state.script];
+  const counts = new Map();
+  for (const item of currentVisible()) {
+    const current = counts.get(item.category) || 0;
+    counts.set(item.category,current + (selected.has(item.kana) ? 1 : 0));
+  }
+  for (const label of $('categories').querySelectorAll('[data-category-count]')) {
+    const count = counts.get(label.dataset.categoryCount) || 0;
+    label.textContent = `${count}/${label.dataset.categoryTotal} · ${label.dataset.categoryDescription}`;
+  }
+}
+function updateTileState(tile) {
+  const kana = tile.dataset.kana;
+  const selected = state.selected[state.script].has(kana);
+  tile.setAttribute('aria-pressed',String(selected));
+  const item = catalogMap[state.script].get(kana);
+  if (item) tile.setAttribute('aria-label',`${kana}, ${item.answer}${item.meaning ? ', ' + itemMeaning(item) : ''}, ${t(selected ? 'selected' : 'notSelected')}`);
+}
+function refreshVisibleSelectionTiles() {
+  for (const tile of $('categories').querySelectorAll('button[data-action="toggle"]')) updateTileState(tile);
+}
+function selectionChanged(refreshTiles=false) {
+  unlockedWordsCache = null;
+  if (refreshTiles) refreshVisibleSelectionTiles();
+  refreshCategoryCounters();
+  refreshSelectionSummary();
+  save();
+}
+function render() {
+  const script = state.script;
+  const selected = state.selected[script];
+  SCRIPTS.forEach(s => {
+    const tab = $(`tab${s[0].toUpperCase()}${s.slice(1)}`);
+    tab.setAttribute('aria-selected', String(s === script));
+    tab.tabIndex = s === script ? 0 : -1;
+  });
+  $('characterPanel').setAttribute('aria-labelledby', `tab${script[0].toUpperCase()}${script.slice(1)}`);
+  $('selectionHeading').textContent = t('choose',{script:script[0].toUpperCase()+script.slice(1)});
+  refreshSelectionSummary();
   const visible = currentVisible();
   const filtered = !!$('search').value.trim();
   $('selectAll').textContent = filtered ? t('chooseVisible') : (state.language==='es'?'Seleccionar todo':'Select all');
@@ -1886,7 +1924,7 @@ function render() {
     if (!entries.length) continue;
     const count = entries.filter(item => selected.has(item.kana)).length;
     const [heading, desc] = state.language === 'es' ? (script === 'kanji' ? localKanjiCategory[category] : localCategory[category]) || [title,description] : [title,description];
-    html += `<section class="category" aria-label="${escapeHtml(heading)}"><div class="category-heading"><div><h3>${escapeHtml(heading)} <small>${count}/${entries.length} · ${escapeHtml(desc)}</small></h3></div><div class="category-actions"><button class="ghost-button" type="button" data-action="add-group" data-category="${escapeHtml(category)}">${t('groupSelect')}</button><button class="ghost-button" type="button" data-action="clear-group" data-category="${escapeHtml(category)}">${t('groupClear')}</button></div></div><div class="kana-grid">`;
+    html += `<section class="category" aria-label="${escapeHtml(heading)}"><div class="category-heading"><div><h3>${escapeHtml(heading)} <small data-category-count="${escapeHtml(category)}" data-category-total="${entries.length}" data-category-description="${escapeHtml(desc)}">${count}/${entries.length} · ${escapeHtml(desc)}</small></h3></div><div class="category-actions"><button class="ghost-button" type="button" data-action="add-group" data-category="${escapeHtml(category)}">${t('groupSelect')}</button><button class="ghost-button" type="button" data-action="clear-group" data-category="${escapeHtml(category)}">${t('groupClear')}</button></div></div><div class="kana-grid">`;
     html += entries.map(item => `<button type="button" class="kana-tile ${script === 'kanji' ? 'kanji-tile' : ''}" data-action="toggle" data-kana="${escapeHtml(item.kana)}" aria-pressed="${selected.has(item.kana)}" aria-label="${escapeHtml(item.kana+', '+item.answer+(item.meaning ? ', '+itemMeaning(item) : '')+', '+(selected.has(item.kana) ? t('selected') : t('notSelected')))}"><span class="glyph" aria-hidden="true">${escapeHtml(item.kana)}</span><span class="roman" aria-hidden="true">${escapeHtml(item.answer)}</span>${item.meaning ? `<span class="tile-meaning" aria-hidden="true">${escapeHtml(itemMeaning(item).split(';')[0])}</span>` : ''}</button>`).join('');
     html += '</div></section>';
   }
@@ -1900,13 +1938,16 @@ function selectScript(script) {
 }
 function updateSelection(characters, mode) {
   const selected = state.selected[state.script];
-  characters.forEach(ch => {
+  let changed = false;
+  for (const ch of characters) {
+    const before = selected.has(ch);
     if (mode === 'add') selected.add(ch);
     else if (mode === 'remove') selected.delete(ch);
-    else if (selected.has(ch)) selected.delete(ch);
+    else if (before) selected.delete(ch);
     else selected.add(ch);
-  });
-  save(); render();
+    if (before !== selected.has(ch)) changed = true;
+  }
+  if (changed) selectionChanged(true);
 }
 
 function answersFor(quiz, item) {
@@ -2491,8 +2532,7 @@ function endSelectionStroke(event) {
   if (categoriesEl.hasPointerCapture?.(oldStroke.pointerId)) {
     categoriesEl.releasePointerCapture(oldStroke.pointerId);
   }
-  save();
-  render();
+  if (oldStroke.seen.size) selectionChanged();
 }
 categoriesEl.addEventListener('pointerdown', event => {
   // Native touch scrolling is disabled only on tiles; users can still scroll
@@ -2568,7 +2608,7 @@ $('clearAll').addEventListener('click', () => updateSelection(currentVisible().m
 $('randomTen').addEventListener('click', () => {
   const subset = shuffle(currentVisible()).slice(0,10);
   state.selected[state.script] = new Set(subset.map(x => x.kana));
-  save();render();toast(t('toastSelect',{count:subset.length}));
+  selectionChanged(true);toast(t('toastSelect',{count:subset.length}));
 });
 $('learnButton').addEventListener('click', () => startQuiz('learn'));
 $('startButton').addEventListener('click', () => startQuiz('practice'));
@@ -2665,6 +2705,7 @@ window.KTFBridge = {
   getSettings: () => structuredClone(payload()),
   getLanguage: () => state.language,
   isQuizActive: () => Boolean(state.quiz),
+  isSelectionActive: () => Boolean(selectionStroke),
   applySettings: settings => {
     if (!settings || state.quiz) return false;
     applySavedData(settings);

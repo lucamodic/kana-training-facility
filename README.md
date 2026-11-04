@@ -159,3 +159,11 @@ Skill exams now appear in the main study area with the same card-and-answer layo
 ### UI polish release v20
 
 Refined the Learning Progress account area, skill cards, guide layout, and exam typography/responsive spacing. Exam word prompts use a smaller, context-aware size than individual kana/kanji. No changes to authentication, stored progress, exams, or schema. Offline service-worker cache version updated.
+
+## v21 — Smooth selection and deferred cloud sync
+
+- Character selection and deselection now update only the touched tiles and selection counters. The character grid is not reconstructed after each click or drag.
+- Vocabulary unlock calculations are cached until the selection changes; all and random selections also update tiles in place.
+- Supabase changes are batched after a short idle period. A remote sync cannot overwrite newer local edits or interrupt an active drag.
+- Local selections still persist immediately, even offline.
+- The PWA service worker cache version has been updated for this release. No database migration is needed.

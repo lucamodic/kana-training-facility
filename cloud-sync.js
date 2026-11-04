@@ -16,6 +16,10 @@
   let applying = false;
   let lastSettings = JSON.stringify(bridge.getSettings());
   let saveDebounce;
+  let syncDebounce;
+  let settingsRevision = 0;
+  let settingsDirty = false;
+  let syncRequestedAgain = false;
   let dbPromise;
   const listeners = new Set();
   const notify = () => listeners.forEach(callback => { try { callback(); } catch (_) {} });
@@ -89,21 +93,38 @@
   function hasMeaningfulSettings(settings) {
     return Object.values(settings.selected || {}).some(values => Array.isArray(values) && values.length > 0);
   }
+  function scheduleSync(delay=1200) {
+    if (!user || !navigator.onLine) return;
+    clearTimeout(syncDebounce);
+    syncDebounce=setTimeout(() => {sync().catch(() => {});},delay);
+  }
   async function settingsChanged() {
     if (applying) return;
+    const revision = settingsRevision;
+    const account = owner;
     const settings = bridge.getSettings();
     const raw = JSON.stringify(settings);
-    if (raw === lastSettings) return;
-    lastSettings = raw;
-    if (owner === 'guest' && !hasMeaningfulSettings(settings)) return;
-    await putMany([newEvent('settings',settings)]);
+    if (raw === lastSettings) {
+      if (revision === settingsRevision) settingsDirty = false;
+      return;
+    }
+    if (account === 'guest' && !hasMeaningfulSettings(settings)) {
+      lastSettings = raw;
+      if (revision === settingsRevision) settingsDirty = false;
+      return;
+    }
+    await putMany([newEvent('settings',settings,account)]);
+    if (account === owner) lastSettings = raw;
+    if (revision === settingsRevision) settingsDirty = false;
     notify();
-    if (user && navigator.onLine) sync().catch(() => {});
+    scheduleSync();
   }
   document.addEventListener('ktf:settingschange', () => {
     if (applying) return;
+    settingsRevision++;
+    settingsDirty = true;
     clearTimeout(saveDebounce);
-    saveDebounce = setTimeout(() => {settingsChanged().catch(() => {});}, 750);
+    saveDebounce = setTimeout(() => {settingsChanged().catch(() => {});}, 650);
   });
   function nicknameForAccount() {
     if (!user && owner === 'guest') return '';
@@ -184,6 +205,9 @@
   async function setAccount(account) {
     user = account;
     const previousOwner = owner;
+    clearTimeout(saveDebounce);
+    clearTimeout(syncDebounce);
+    settingsDirty = false;
     owner = account.id;
     localStorage.setItem(ownerKey,owner);
     status = navigator.onLine ? 'connecting' : 'offline';
@@ -197,6 +221,9 @@
     notify();
   }
   async function setGuest() {
+    clearTimeout(saveDebounce);
+    clearTimeout(syncDebounce);
+    settingsDirty = false;
     user = null;
     owner = 'guest';
     localStorage.removeItem(ownerKey);
@@ -235,7 +262,11 @@
   }
   async function sync() {
     if (!user || !navigator.onLine) return;
-    if (syncing) return syncing;
+    if (syncing) {
+      syncRequestedAgain = true;
+      return syncing;
+    }
+    const revisionAtStart = settingsRevision;
     syncing = (async () => {
       status = 'syncing';statusDetails='';notify();
       try {
@@ -265,7 +296,7 @@
             const record=newEvent('settings',target);
             await putMany([record]);
           }
-          if (!bridge.isQuizActive() && JSON.stringify(target)!==JSON.stringify(localSettings)) {
+          if (!settingsDirty && settingsRevision === revisionAtStart && !bridge.isSelectionActive?.() && !bridge.isQuizActive() && JSON.stringify(target)!==JSON.stringify(localSettings)) {
             applying=true;
             try { bridge.applySettings(target);lastSettings=JSON.stringify(bridge.getSettings()); }
             finally {applying=false;}
@@ -285,7 +316,13 @@
       } catch (error) {
         status='error';statusDetails=String(error.message || error);notify();
       }
-    })().finally(()=>{syncing=null;});
+    })().finally(()=>{
+      syncing=null;
+      if (syncRequestedAgain) {
+        syncRequestedAgain=false;
+        scheduleSync(450);
+      }
+    });
     return syncing;
   }
   async function initialize() {

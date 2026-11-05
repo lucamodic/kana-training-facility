@@ -34,10 +34,10 @@ test('Release assets are cache-busted together without changing existing manga c
   const html=read('index.html');
   const sw=read('sw.js');
   for (const file of ['styles.css','manga-reader.js','custom-collection.js','cloud-sync.js']) {
-    assert.ok(html.includes(file+'?v=29.1'));
-    assert.ok(sw.includes(file+'?v=29.1'));
+    assert.ok(html.includes(file+'?v=29.2'));
+    assert.ok(sw.includes(file+'?v=29.2'));
   }
-  assert.match(sw,/offline-v29-1-custom-practice-parity/);
-  assert.match(html,/id="appVersion">v29\.1</);
+  assert.match(sw,/offline-v29-2-custom-main-parity/);
+  assert.match(html,/id="appVersion">v29\.2</);
   assert.match(read('manga-cache.js'),/ktf-manga-reader-cache/);
 });

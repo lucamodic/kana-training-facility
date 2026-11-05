@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kana-training-facility-offline-v29-1-custom-practice-parity';
+const CACHE_NAME = 'kana-training-facility-offline-v29-2-custom-main-parity';
 const SHELL = [
-  './', './index.html', './styles.css?v=29.1', './app.js?v=29.1', './study-clock.js?v=29.1', './config.js?v=29.1', './cloud-sync.js?v=29.1', './learning-progress.js?v=29.1', './manga-cache.js?v=29.1', './manga-reader.js?v=29.1', './custom-collection.js?v=29.1', './manifest.webmanifest',
+  './', './index.html', './styles.css?v=29.2', './app.js?v=29.2', './study-clock.js?v=29.2', './config.js?v=29.2', './cloud-sync.js?v=29.2', './learning-progress.js?v=29.2', './manga-cache.js?v=29.2', './manga-reader.js?v=29.2', './custom-collection.js?v=29.2', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

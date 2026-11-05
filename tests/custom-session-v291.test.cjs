@@ -67,12 +67,12 @@ test('the new version uses unique element ids and updates all PWA assets',()=>{
   const html=read('index.html');
   const ids=Array.from(html.matchAll(/\bid="([^"]+)"/g),match=>match[1]);
   assert.equal(new Set(ids).size,ids.length);
-  assert.match(html,/id="appVersion">v29\.1/);
+  assert.match(html,/id="appVersion">v29\.2/);
   const sw=read('sw.js');
-  assert.match(sw,/offline-v29-1-custom-practice-parity/);
+  assert.match(sw,/offline-v29-2-custom-main-parity/);
   for(const file of ['styles.css','app.js','cloud-sync.js','manga-reader.js','custom-collection.js']){
-    assert.ok(html.includes(`${file}?v=29.1`));
-    assert.ok(sw.includes(`${file}?v=29.1`));
+    assert.ok(html.includes(`${file}?v=29.2`));
+    assert.ok(sw.includes(`${file}?v=29.2`));
   }
-  assert.equal(JSON.parse(read('package.json')).version,'29.1.0');
+  assert.equal(JSON.parse(read('package.json')).version,'29.2.0');
 });

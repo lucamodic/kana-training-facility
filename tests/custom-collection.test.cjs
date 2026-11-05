@@ -59,8 +59,8 @@ test('reader and navigation include custom collection hooks',()=>{
   const cloud=fs.readFileSync(path.join(root,'cloud-sync.js'),'utf8');
   assert.match(html,/id="customScreen"/);
   assert.match(html,/id="openCustomButton"/);
-  assert.match(html,/src="\.\/custom-collection\.js\?v=29\.1"/);
+  assert.match(html,/src="\.\/custom-collection\.js\?v=29\.2"/);
   assert.match(reader,/data-custom-word/);
   assert.match(reader,/data-custom-kanji/);
-  assert.match(cloud,/addCustomEvent,getCustomEvents/);
+  assert.match(cloud,/addCustomEvent,addCustomEvents,getCustomEvents/);
 });

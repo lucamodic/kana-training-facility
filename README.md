@@ -1,3 +1,12 @@
+## v29.2 — Custom practice UI parity and bulk deletion
+
+- Custom collection now follows the main selection-page layout, with compact selectable tiles on the left and a complete session settings panel on the right.
+- Delete selected items using the trash button after Deselect visible. A confirmation is required; cloud event storage writes all tombstones in one batch.
+- Custom sessions now reuse the main quiz layout for progress, statistics, timer, question cards and answer controls.
+- Finish lesson opens the same style results screen as the main trainer, including errors, score and options to retry or practice mistakes.
+- Existing words, kanji, manga reader, custom practice options, and user-scoped synchronization are preserved.
+- No new SQL migrations. Cached data is not cleared.
+
 ## v29.1 — Custom practice mode parity
 
 - Custom now supports Infinite Practice, Learn My Selection (3 guided passes + 3 memory-test passes), and One Pass across all selected custom tabs.

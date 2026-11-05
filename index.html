@@ -13,15 +13,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=29.1">
-  <script src="./app.js?v=29.1" defer></script>
-  <script src="./study-clock.js?v=29.1" defer></script>
-  <script src="./config.js?v=29.1" defer></script>
-  <script src="./cloud-sync.js?v=29.1" defer></script>
-  <script src="./learning-progress.js?v=29.1" defer></script>
-  <script src="./manga-cache.js?v=29.1" defer></script>
-  <script src="./manga-reader.js?v=29.1" defer></script>
-  <script src="./custom-collection.js?v=29.1" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=29.2">
+  <script src="./app.js?v=29.2" defer></script>
+  <script src="./study-clock.js?v=29.2" defer></script>
+  <script src="./config.js?v=29.2" defer></script>
+  <script src="./cloud-sync.js?v=29.2" defer></script>
+  <script src="./learning-progress.js?v=29.2" defer></script>
+  <script src="./manga-cache.js?v=29.2" defer></script>
+  <script src="./manga-reader.js?v=29.2" defer></script>
+  <script src="./custom-collection.js?v=29.2" defer></script>
 </head>
 <body>
   <header class="top">
@@ -221,7 +221,7 @@
     </section>
 
     <section id="customScreen" class="custom-screen" aria-label="Custom characters and vocabulary" hidden>
-      <div class="custom-top"><button class="back" type="button" id="customBack">← Back to selection</button><span class="quiz-pill" id="customTotal">0 saved</span></div>
+      <div class="custom-top" id="customTop"><button class="back" type="button" id="customBack">← Back to selection</button><span class="quiz-pill" id="customTotal">0 saved</span></div>
       <p class="manga-notice" id="customNotice" role="status" aria-live="polite" hidden></p>
       <header class="custom-heading" hidden><span id="customEyebrow"></span><h2 id="customTitle"></h2><p id="customIntro"></p></header>
       <div id="customBrowse" class="custom-browse">
@@ -238,6 +238,7 @@
             <div class="custom-form-actions"><button type="submit" class="button-primary" id="customSave">Save to collection</button><button type="button" class="button-secondary" id="customCancel">Cancel edit</button></div>
           </form>
         </dialog>
+        <div class="custom-content">
         <div class="tabs custom-tabs" role="tablist" aria-label="Custom collection categories">
           <button type="button" class="tab" role="tab" data-custom-filter="kanji" aria-selected="true" aria-controls="customItems"><span id="customTabCharacters">Characters</span> <span class="tab-counter" id="customCharacterCount">0</span></button>
           <button type="button" class="tab" role="tab" data-custom-filter="word" aria-selected="false" aria-controls="customItems"><span id="customTabWords">Words</span> <span class="tab-counter" id="customWordCount">0</span></button>
@@ -246,10 +247,17 @@
         <section class="custom-library" role="tabpanel" aria-label="Custom items"><div class="custom-library-head"><div class="custom-library-title"><h3 id="customListTitle">Your collection</h3><span class="quiz-pill" id="customSelected">0 selected</span></div><button type="button" class="button-primary custom-add-button" id="customAddButton" aria-haspopup="dialog" aria-controls="customEditorDialog"><span aria-hidden="true">＋</span><span id="customAddButtonLabel">Add custom</span></button></div>
           <div class="custom-toolbar">
             <input type="search" id="customSearch" class="custom-search" placeholder="Search collection…" aria-label="Search custom collection">
-            <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button></div>
+            <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button><button class="mini-button custom-delete-button" type="button" id="customDeleteSelected" aria-label="Delete selected items" title="Delete selected items" disabled><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M5 6l1 14h12l1-14M10 10v7m4-7v7"/></svg><span id="customDeleteLabel" class="custom-delete-label">Delete selected</span></button></div>
           </div>
           <div id="customItems" class="custom-items"></div>
-          <div class="custom-study-actions">
+
+        </section>
+        </div>
+        <aside class="side-panel custom-side-panel" aria-label="Custom session options">
+          <div class="side-grid">
+            <div class="custom-side-selection"><span class="side-label" id="customSideSelectionLabel">YOUR SELECTION</span><div class="big-number"><strong id="customSideSelected">0</strong><span id="customSideSelectedUnit">items selected</span></div><p id="customSideSelectionHint" class="subtle">Choose the characters and words you want to practice.</p></div>
+            <div class="side-rule"></div>
+                      <div class="custom-study-actions">
             <div class="custom-session-settings">
               <span class="side-label" id="customSessionLabel">YOUR SESSION.INI</span>
               <div class="custom-session-fields">
@@ -274,17 +282,37 @@
               <button type="button" class="button-secondary" id="customOnePassButton">One Pass · Daily review →</button><p class="choice-explanation" id="customOnePassHelp">Each selected custom item appears once.</p>
             </div>
           </div>
-        </section>
+          </div>
+        </aside>
       </div>
-      <div id="customPractice" class="custom-practice" hidden>
-        <div class="custom-practice-header"><span id="customPracticeTitle">Personal practice</span><span id="customPracticeProgress"></span></div>
-        <div class="custom-session-topbar"><span class="quiz-pill" id="customSessionKind">Infinite practice</span><div class="custom-session-clock"><span id="customPracticeClock" aria-live="off">00:00</span><button type="button" class="mini-button" id="customClockToggle" aria-pressed="true">Hide clock</button><button type="button" class="mini-button" id="customPauseSession" aria-pressed="false">Pause</button></div></div>
-        <div class="custom-practice-stats" id="customPracticeStats"><span><small id="customStatsAnsweredLabel">Answered</small><strong id="customStatsAnswered">0</strong></span><span><small id="customStatsCorrectLabel">Correct</small><strong id="customStatsCorrect">0</strong></span><span><small id="customStatsAccuracyLabel">Accuracy</small><strong id="customStatsAccuracy">—</strong></span></div>
-        <div class="custom-practice-card" id="customPracticeCard"><h3 id="customPracticeQuestion">Write the reading</h3><div class="custom-practice-symbol" id="customPracticeSymbol" lang="ja">字</div><p class="subtle" id="customPracticeInfo"></p>
-          <div id="customGuidedBlock" class="custom-guided" hidden><span class="side-label" id="customGuidedLabel">GUIDED LEARNING</span><strong id="customGuidedAnswer"></strong><p class="subtle" id="customGuidedTip">Look at the reading and meaning, then continue.</p><button type="button" class="button-primary" id="customGuidedNext">Got it, next →</button></div>
-          <form id="customPracticeForm"><label for="customPracticeAnswer" id="customPracticeAnswerLabel">Your answer</label><input id="customPracticeAnswer" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"><p id="customPracticeFeedback" class="custom-feedback" role="status" hidden></p><div class="custom-practice-actions"><button type="submit" id="customPracticeCheck" class="button-primary">Check</button><button type="button" id="customPracticeSkip" class="button-secondary">I do not know</button></div></form>
-          <button type="button" id="customPracticeNext" class="button-primary" hidden>Next question →</button>
-        </div><button type="button" class="button-secondary" id="customPracticeExit">Finish lesson &amp; view results</button>
+      <div id="customPractice" class="custom-practice quiz-wrap" hidden>
+        <div class="quiz-top">
+          <button type="button" class="back" id="customPracticeExit">← Finish lesson</button>
+          <div class="quiz-top-right">
+            <span class="quiz-pill" id="customSessionKind">Infinite practice</span>
+            <div class="timer-area custom-session-clock" id="customSessionClockArea"><span class="timer-area-glyph" aria-hidden="true">◷</span><span id="customPracticeClock" aria-live="off">00:00</span><button type="button" class="mini-button" id="customClockToggle" aria-pressed="true">Hide clock</button><button type="button" class="mini-button" id="customPauseSession" aria-pressed="false">Pause</button></div>
+          </div>
+        </div>
+        <div class="stats" id="customPracticeStats"><div class="stat"><span class="stat-answered" id="customStatsAnsweredLabel">Answered</span><b id="customStatsAnswered">0</b></div><div class="stat"><span class="stat-correct" id="customStatsCorrectLabel">Correct</span><b id="customStatsCorrect">0</b></div><div class="stat"><span class="stat-accuracy" id="customStatsAccuracyLabel">Accuracy</span><b id="customStatsAccuracy">—</b></div></div>
+        <p class="quiz-sublabel" id="customPracticeProgress">Question 1</p>
+        <div class="quiz-panel custom-practice-card" id="customPracticeCard">
+          <div class="quiz-head"><h3 id="customPracticeQuestion">Write the reading</h3></div>
+          <div class="kana-display"><div class="quiz-symbol custom-practice-symbol" id="customPracticeSymbol" lang="ja">字</div><p class="printed-note" id="customPracticeInfo"></p></div>
+          <div id="customGuidedBlock" class="guided-block custom-guided" hidden><span class="guided-caption" id="customGuidedLabel">GUIDED LEARNING</span><strong class="guided-reading" id="customGuidedAnswer"></strong><p class="guided-tip" id="customGuidedTip">Look at the reading and meaning, then continue.</p><button type="button" class="button-primary" id="customGuidedNext">Got it, next →</button></div>
+          <div class="quiz-bottom" id="customPracticeAnswerArea">
+            <form id="customPracticeForm" autocomplete="off"><label for="customPracticeAnswer" id="customPracticeAnswerLabel">Your answer</label><input id="customPracticeAnswer" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required><p id="customPracticeFeedback" class="feedback custom-feedback" role="status" hidden></p><div class="quiz-actions custom-practice-actions"><button type="submit" id="customPracticeCheck" class="button-primary">Check ↵</button><button type="button" id="customPracticeSkip" class="button-secondary">I don't know</button></div></form>
+            <button type="button" id="customPracticeNext" class="button-primary" hidden>Next question →</button>
+          </div>
+        </div>
+        <p class="quiz-hint" id="customQuizHint">Enter to check / continue · Esc to finish</p>
+        <button type="button" class="button-secondary end-lesson" id="customFinishLesson">Finish lesson &amp; view results</button>
+      </div>
+      <div id="customSummary" class="summary-wrap custom-summary" hidden>
+        <div class="summary-card"><span class="eyebrow" id="customSummaryEyebrow">Session complete</span><div class="summary-intro"><h2 id="customSummaryTitle">Here's how you did.</h2><p class="subtle" id="customSummaryDescription">Your results from this session.</p><div class="summary-progress" id="customSummaryProgress"></div></div>
+          <div class="stats summary-stats"><div class="stat"><span class="stat-answered" id="customSummaryAnsweredLabel">Answered</span><b id="customSummaryAnswered">0</b></div><div class="stat"><span class="stat-correct" id="customSummaryCorrectLabel">Correct</span><b id="customSummaryCorrect">0</b></div><div class="stat"><span class="stat-accuracy" id="customSummaryAccuracyLabel">Accuracy</span><b id="customSummaryAccuracy">—</b></div></div>
+          <h3 class="hardest-heading" id="customSummaryMistakesTitle">Your trickiest items</h3><p class="subtle" id="customSummaryMistakesHelp">Ranked by incorrect and skipped answers.</p><div id="customHardestResults"></div>
+          <div class="summary-actions"><button type="button" class="button-secondary" id="customSummaryBack">Back to collection</button><button type="button" class="button-secondary" id="customSummaryAgain">Try again →</button><button type="button" class="button-primary" id="customSummaryReview" hidden>Practice my toughest items →</button></div>
+        </div>
       </div>
     </section>
 
@@ -312,7 +340,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v29.1</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v29.2</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

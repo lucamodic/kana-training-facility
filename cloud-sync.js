@@ -98,6 +98,14 @@
     scheduleSync(200);
     return record;
   }
+  async function addCustomEvents(events) {
+    if (!Array.isArray(events) || !events.length || events.length > 2000 || events.some(event=>!['custom_upsert','custom_delete','custom_review'].includes(event.type))) throw new Error('Invalid custom events.');
+    const records=events.map(event=>newEvent(event.type,event.payload));
+    await putMany(records);
+    notify();
+    scheduleSync(200);
+    return records;
+  }
   async function getCustomEvents() {
     return (await readAll()).filter(row => row.owner === owner && ['custom_upsert','custom_delete','custom_review'].includes(row.type));
   }
@@ -370,7 +378,7 @@
     return data.session.access_token;
   }
   window.KTFCloud = {
-    addAttempt,getAttempts,addCustomEvent,getCustomEvents,signIn,signOut,sync,initialize,updateNickname,getNickname:nicknameForAccount,getAccessToken,
+    addAttempt,getAttempts,addCustomEvent,addCustomEvents,getCustomEvents,signIn,signOut,sync,initialize,updateNickname,getNickname:nicknameForAccount,getAccessToken,
     subscribe(callback){listeners.add(callback);return()=>listeners.delete(callback);},
     getStatus(){return {status,details:statusDetails,user,owner,online:navigator.onLine};}
   };

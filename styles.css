@@ -1879,3 +1879,80 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
   .top-inner .brand{flex:1 1 100%}
   .top-inner .header-actions{width:100%;justify-content:flex-end;flex-wrap:wrap}
 }
+
+
+.custom-screen .custom-browse{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,320px);column-gap:20px;row-gap:0;align-items:start;max-width:100%;}
+.custom-screen .custom-content{min-width:0}
+.custom-screen .custom-library{box-sizing:border-box;min-width:0}
+.custom-screen .custom-side-panel{box-sizing:border-box;min-width:0;margin:47px 0 0;padding:24px;background:var(--paper);border:2px solid var(--retro-deep);border-radius:4px;box-shadow:var(--shadow);position:sticky;top:18px}
+.custom-screen .custom-side-panel::before{content:'▣  YOUR SESSION.INI';margin:-24px -24px 22px}
+.custom-screen .custom-side-selection .big-number strong{font-size:52px}
+.custom-screen .custom-side-selection .big-number span{max-width:120px}
+.custom-screen .custom-side-selection .subtle{margin:8px 0 0;font-size:12px;line-height:1.6}
+.custom-screen .custom-side-panel .custom-study-actions{display:block!important;width:100%;max-width:none;margin:0;padding:0;border:0}
+.custom-screen .custom-side-panel .custom-session-settings{display:grid;gap:13px;min-width:0;padding:0;background:transparent;border:0}
+.custom-screen .custom-side-panel .custom-session-settings>.side-label{padding:0;margin:0;border:0;font-size:11px}
+.custom-screen .custom-side-panel .custom-session-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:11px}
+.custom-screen .custom-side-panel .custom-session-settings select{font:700 12px 'Courier New',monospace}
+.custom-screen .custom-side-panel .custom-duration-fields{gap:7px}
+.custom-screen .custom-side-panel .custom-rapid-card{background:var(--retro-cream)}
+.custom-screen .custom-side-panel .custom-session-choices{display:grid;grid-template-columns:minmax(0,1fr);gap:5px;margin:20px 0 0;max-width:none}
+.custom-screen .custom-side-panel .custom-session-choices>button{width:100%;min-height:46px;height:auto;padding:11px 9px;flex:none}
+.custom-screen .custom-side-panel .custom-session-choices>.choice-explanation{font-size:11px;margin:1px 0 10px}
+.custom-screen .custom-side-panel .custom-settings-note{display:none}
+.custom-screen .custom-delete-button{width:auto;min-width:42px;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;border-color:var(--accent);color:var(--accent);background:var(--paper)}
+.custom-screen .custom-delete-button:not(:disabled):hover{color:var(--paper);background:var(--accent)}
+.custom-screen .custom-delete-button:disabled{opacity:.4;cursor:not-allowed}
+.custom-screen .custom-delete-button svg{flex:none}
+.custom-screen .custom-delete-button .custom-delete-label{font:700 11px 'Courier New',monospace}
+.custom-screen .custom-practice.quiz-wrap{width:100%;max-width:700px;margin:0 auto;padding:12px 0 65px}
+.custom-screen .custom-practice .quiz-top{margin:0 0 18px}
+.custom-screen .custom-practice .quiz-top-right{min-width:0}
+.custom-screen .custom-practice .custom-session-clock{border:1px solid var(--retro-deep);padding:5px 7px 5px 12px;background:var(--retro-cream);display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px;min-width:0}
+.custom-screen .custom-practice .custom-session-clock #customPracticeClock{font:bold 17px 'Courier New',monospace;min-width:58px;text-align:center;font-variant-numeric:tabular-nums}
+.custom-screen .custom-practice .custom-session-clock .mini-button{font-size:11px;padding:6px 8px;min-height:32px}
+.custom-screen .custom-practice .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.custom-screen .custom-practice .stats .stat{min-width:0;min-height:77px;background:var(--paper);padding:14px 13px;text-align:left;display:block;border:1px solid var(--retro-deep);border-radius:4px;box-shadow:none}
+.custom-screen .custom-practice .stats .stat span{font-size:10px;color:var(--muted);font-weight:800;display:block}
+.custom-screen .custom-practice .stats .stat b{display:block;color:var(--ink);font:700 24px Georgia,serif;margin:5px 0 0}
+.custom-screen .custom-practice .quiz-sublabel{margin:0 0 18px;font-size:12px;text-align:center}
+.custom-screen .custom-practice .custom-practice-card.quiz-panel{display:block;overflow:hidden;padding:0!important;margin:0;background:var(--paper);border:2px solid var(--retro-deep);box-shadow:var(--shadow);text-align:center}
+.custom-screen .custom-practice .custom-practice-card::before{content:'▣  PRACTICE ROOM.EXE';display:block;margin:0!important;padding:9px 12px;background:linear-gradient(90deg,var(--retro-main),var(--retro-ribbon));border-bottom:2px solid var(--retro-deep);font:700 12px 'Courier New',monospace;text-align:left}
+html[lang='es'] .custom-screen .custom-practice .custom-practice-card::before{content:'▣ SALA DE PRÁCTICA.EXE'}
+.custom-screen .custom-practice .quiz-head{padding:24px 14px 0;text-align:center}
+.custom-screen .custom-practice .quiz-head h3{margin:0;font:700 13px Verdana,sans-serif;color:var(--muted)}
+.custom-screen .custom-practice .kana-display{padding:0 14px 22px}
+.custom-screen .custom-practice .custom-practice-symbol.quiz-symbol{font-size:clamp(75px,15vw,145px);min-height:185px;line-height:1.2;margin:2px 0;display:grid;place-items:center;font-weight:500;overflow-wrap:anywhere}
+.custom-screen .custom-practice #customPracticeInfo.printed-note{display:inline-flex;max-width:100%;font:11px Verdana,sans-serif;border:1px solid var(--line);border-radius:3px;margin:0 auto;padding:7px 13px;line-height:1.5;white-space:normal}
+.custom-screen .custom-practice .custom-guided.guided-block{max-width:none;width:100%;margin:0;padding:22px 28px 26px;display:block;border:0;border-top:1px solid var(--line);border-radius:0;background:var(--soft);text-align:center}
+.custom-screen .custom-practice .custom-guided .guided-reading{font-size:clamp(22px,4vw,35px);display:block;margin:12px 0 15px}
+.custom-screen .custom-practice .custom-guided .guided-tip{margin:0 0 20px}
+.custom-screen .custom-practice .custom-guided button{width:auto;max-width:350px;margin:0 auto}
+.custom-screen .custom-practice .quiz-bottom{padding:25px 32px 30px;background:var(--soft);border-top:1px solid var(--line);text-align:left}
+.custom-screen .custom-practice .quiz-bottom #customPracticeForm{display:block;margin:0;max-width:none;gap:0;text-align:left}
+.custom-screen .custom-practice .quiz-bottom label{display:block;margin:0 0 9px;font-size:12px;font-weight:800}
+.custom-screen .custom-practice .quiz-bottom input.answer-input{width:100%;height:55px;padding:10px 13px;text-align:center;font-size:20px;font-weight:750;letter-spacing:.02em;background:var(--paper);border:1px solid var(--retro-deep);border-radius:4px}
+.custom-screen .custom-practice .quiz-bottom .custom-feedback.feedback{font-size:13px;font-weight:650;line-height:1.6;margin:15px 0 0;padding:13px;border:1px solid var(--line);border-radius:4px;display:block}
+.custom-screen .custom-practice .quiz-bottom .custom-feedback.is-correct{color:var(--green);background:var(--green-soft);border-color:var(--green)}
+.custom-screen .custom-practice .quiz-bottom .custom-feedback.is-wrong{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
+.custom-screen .custom-practice .quiz-bottom .custom-practice-actions.quiz-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin:17px 0 0}
+.custom-screen .custom-practice .quiz-bottom .custom-practice-actions>button{min-height:44px;min-width:0;flex:none}
+.custom-screen .custom-practice .quiz-bottom #customPracticeNext{display:block;width:100%;min-width:0;min-height:45px;margin:16px 0 0}
+.custom-screen .custom-practice .quiz-hint{margin:20px 0 14px}
+.custom-screen .custom-practice #customFinishLesson{min-height:44px;width:100%;max-width:none}
+.custom-screen .custom-summary.summary-wrap{max-width:700px;margin:0 auto;padding:30px 0 65px}
+.custom-screen .custom-summary .summary-card{padding:30px}
+.custom-screen .custom-summary .summary-card::before{margin:-30px -30px 27px}
+.custom-screen .custom-summary .stats{margin:22px 0}
+.custom-screen .custom-summary .hardest-heading{margin:28px 0 8px}
+.custom-screen .custom-summary .hardest-item{border-radius:4px;background:var(--paper)}
+.custom-screen .custom-summary .summary-actions{margin-top:25px}
+.custom-screen .custom-summary .summary-actions button{min-height:45px}
+.custom-screen [hidden]{display:none!important}
+@media(max-width:980px){.custom-screen .custom-browse{grid-template-columns:minmax(0,1fr)}.custom-screen .custom-side-panel{position:static;margin:17px 0 0;max-width:none;order:2}.custom-screen .custom-side-panel .custom-session-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.custom-screen .custom-side-panel .custom-session-choices{grid-template-columns:minmax(0,1fr)}.custom-screen .custom-content{order:1}}
+@media(max-width:600px){.custom-screen .custom-side-panel{padding:17px}.custom-screen .custom-side-panel::before{margin:-17px -17px 21px}.custom-screen .custom-side-panel .custom-session-fields{grid-template-columns:minmax(0,1fr)}.custom-screen .custom-practice .quiz-bottom{padding:20px 16px 23px}.custom-screen .custom-practice .custom-practice-symbol.quiz-symbol{min-height:160px;font-size:clamp(65px,19vw,125px)}.custom-screen .custom-practice .stats{gap:7px}.custom-screen .custom-practice .stats .stat{padding:12px 10px}.custom-screen .custom-practice .quiz-top{flex-wrap:wrap}.custom-screen .custom-practice .quiz-top-right{width:100%;justify-content:space-between}.custom-screen .custom-summary .summary-card{padding:18px}.custom-screen .custom-summary .summary-card::before{margin:-18px -18px 25px}.custom-screen .custom-summary .summary-actions{flex-direction:column}.custom-screen .custom-delete-label{display:none}}
+
+.custom-screen .custom-side-panel .custom-session-settings>.side-label{display:none}
+.custom-screen .custom-summary .hardest-item .hardest-glyph{flex:0 1 auto;min-width:75px;max-width:150px;font-size:clamp(22px,3vw,34px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
+
+@media(max-width:480px){.custom-screen .custom-practice .quiz-top-right{display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px}.custom-screen .custom-practice .quiz-top-right .quiz-pill{height:42px;min-height:42px;align-self:flex-start;flex:0 1 auto}.custom-screen .custom-practice .quiz-top-right .custom-session-clock{flex:1 1 100%;min-height:42px;flex-wrap:nowrap;justify-content:space-between;padding:5px 8px}.custom-screen .custom-practice .quiz-top-right .custom-session-clock .mini-button{padding:6px 7px}}

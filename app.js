@@ -1670,13 +1670,12 @@ function applySavedData(data) {
   unlockedWordsCache = null;
   state.script = SCRIPTS.includes(data.script) ? data.script : 'hiragana';
   applyTheme(PALETTES.includes(data.theme) ? data.theme : 'pastel');
-  // New visitors use No limit. Migrate previous timer presets into the
-  // same custom timer input rather than silently discarding their duration.
+  // Keep legacy values readable for backups, but the home timer was retired.
+  // Saved limits must not silently stop a practice with no visible controls.
   const isLegacy = Number(data.version || 1) < 3;
   const oldMode = String(data.timerSetting || 'off');
   const oldPresetMinutes = {'300':5, '600':10, '900':15}[oldMode];
-  state.timerSetting = oldPresetMinutes ? 'custom'
-    : (['off','custom','guesses'].includes(oldMode) ? oldMode : 'off');
+  state.timerSetting = 'off';
   if (isLegacy) {
     const oldMinutes = Number(data.customMinutes);
     const oldSeconds = Number(data.customSeconds);

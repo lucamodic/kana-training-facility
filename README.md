@@ -1,4 +1,8 @@
-# Kana Training Facility v31.0
+# Kana Training Facility v31.1
+
+Se retiró el bloque «Your little study timer / Focus time» del home, incluidos sus textos de ayuda. Las prácticas originales comienzan sin límite de sesión aunque existiera un temporizador guardado. Rapid Fire, el reloj general y las opciones de Custom/Grammar siguen disponibles.
+
+### Cambios de v31.0
 
 - Navegación compartida entre las bibliotecas, transición breve y recuperación del scroll al volver. El historial del navegador acompaña los cambios de sección; las prácticas activas deben finalizar antes de cambiar a otra actividad.
 - Custom y Grammar usan las tarjetas de temporizador y Rapid Fire del diseño original. Los paneles de biblioteca y configuración quedan alineados en escritorio y se apilan en móvil. El panel original del home conserva su estructura.
@@ -10,7 +14,7 @@
 - Exportación/importación de la biblioteca de manga con imágenes y análisis. La importación es una combinación atómica por cuenta: conserva los registros existentes y rechaza copias inválidas antes de escribir. El límite del archivo de importación es 200 MB. Las páginas siguen siendo locales; no se agregó sincronización de imágenes ni llamadas a la IA.
 - Desde el lector se puede practicar la colección guardada con el origen del capítulo actual.
 
-No requiere migraciones SQL ni cambios de configuración en Vercel/Supabase. Las sesiones usan el evento existente `exam_attempt`; se conserva la base IndexedDB del lector. Los recursos y el service worker están versionados como `31.0`.
+No requiere migraciones SQL ni cambios de configuración en Vercel/Supabase. Las sesiones usan el evento existente `exam_attempt`; se conserva la base IndexedDB del lector. Los recursos y el service worker están versionados como `31.1`.
 
 ## Desarrollo y verificación
 

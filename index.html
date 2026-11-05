@@ -13,19 +13,19 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=31.0">
-  <script src="./romaji.js?v=31.0" defer></script>
-  <script src="./study-ui.js?v=31.0" defer></script>
-  <script src="./app.js?v=31.0" defer></script>
-  <script src="./study-clock.js?v=31.0" defer></script>
-  <script src="./config.js?v=31.0" defer></script>
-  <script src="./cloud-sync.js?v=31.0" defer></script>
-  <script src="./learning-progress.js?v=31.0" defer></script>
-  <script src="./manga-cache.js?v=31.0" defer></script>
-  <script src="./manga-reader.js?v=31.0" defer></script>
-  <script src="./custom-collection.js?v=31.0" defer></script>
-  <script src="./grammar-data.js?v=31.0" defer></script>
-  <script src="./grammar.js?v=31.0" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=31.1">
+  <script src="./romaji.js?v=31.1" defer></script>
+  <script src="./study-ui.js?v=31.1" defer></script>
+  <script src="./app.js?v=31.1" defer></script>
+  <script src="./study-clock.js?v=31.1" defer></script>
+  <script src="./config.js?v=31.1" defer></script>
+  <script src="./cloud-sync.js?v=31.1" defer></script>
+  <script src="./learning-progress.js?v=31.1" defer></script>
+  <script src="./manga-cache.js?v=31.1" defer></script>
+  <script src="./manga-reader.js?v=31.1" defer></script>
+  <script src="./custom-collection.js?v=31.1" defer></script>
+  <script src="./grammar-data.js?v=31.1" defer></script>
+  <script src="./grammar.js?v=31.1" defer></script>
 </head>
 <body>
   <header class="top">
@@ -119,6 +119,7 @@
             <div><span class="side-label">YOUR SELECTION</span><div class="big-number"><strong id="selectedCount">0</strong><span id="selectedUnit">characters on this tab</span></div><p id="selectedDescription" class="subtle">Pick at least one to begin.</p></div>
             <div class="side-rule"></div>
             <div class="setting-group">
+              <div id="legacySessionTimer" hidden>
               <div class="timer-header"><span class="timer-decoration" aria-hidden="true">✿</span><label class="side-label" for="timerSetting">YOUR LITTLE STUDY TIMER</label><span class="timer-decoration" aria-hidden="true">✧</span></div>
               <div class="timer-card">
                 <div class="timer-card-head"><span aria-hidden="true" class="timer-clock">◷</span><span class="timer-card-title">Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div>
@@ -137,6 +138,7 @@
                 <p class="timer-footnote" id="timerFootnote">✧ One tiny study session at a time.</p>
               </div>
               <p class="choice-explanation" id="countdownHelp">Practice with no limit. Show or hide your elapsed clock during Infinite Practice.</p>
+              </div>
               <div class="rapid-fire-card" id="rapidFireCard">
                 <label class="rapid-fire-toggle" for="rapidFireEnabled">
                   <span class="rapid-fire-symbol" aria-hidden="true">✦</span>
@@ -399,7 +401,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.0</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.1</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

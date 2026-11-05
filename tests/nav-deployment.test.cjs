@@ -18,9 +18,9 @@ test('Word Challenge appears only once and is inside the right-hand practice con
 });
 
 test('version, package, and updated offline cache match this release', () => {
-  assert.match(html, /id="appVersion">v28\.3</);
-  assert.equal(pkg.version, '28.3.0');
-  assert.match(sw, /offline-v28-3-word-challenge-side/);
+  assert.match(html, /id="appVersion">v28\.4</);
+  assert.equal(pkg.version, '28.4.0');
+  assert.match(sw, /offline-v28-4-custom-save-feedback/);
   assert.doesNotMatch(sw, /if \(SHELL_URLS\.has\(url\.href\)\)/);
   assert.match(sw, /await cache\.match\(request\)/);
 });

@@ -13,15 +13,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css">
-  <script src="./app.js" defer></script>
-  <script src="./study-clock.js" defer></script>
-  <script src="./config.js" defer></script>
-  <script src="./cloud-sync.js" defer></script>
-  <script src="./learning-progress.js" defer></script>
-  <script src="./manga-cache.js" defer></script>
-  <script src="./manga-reader.js" defer></script>
-  <script src="./custom-collection.js" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=28.4">
+  <script src="./app.js?v=28.4" defer></script>
+  <script src="./study-clock.js?v=28.4" defer></script>
+  <script src="./config.js?v=28.4" defer></script>
+  <script src="./cloud-sync.js?v=28.4" defer></script>
+  <script src="./learning-progress.js?v=28.4" defer></script>
+  <script src="./manga-cache.js?v=28.4" defer></script>
+  <script src="./manga-reader.js?v=28.4" defer></script>
+  <script src="./custom-collection.js?v=28.4" defer></script>
 </head>
 <body>
   <header class="top">
@@ -94,7 +94,7 @@
           <button type="button" id="tabKanji" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="kanji">Kanji <span class="tab-counter" id="jCount">0</span></button>
         </div>
         <div class="manga-launch-group">
-          <button type="button" id="openCustomButton" class="words-launch custom-launch" aria-controls="customScreen"><span class="words-launch-icon" aria-hidden="true">字</span><span id="customNavLabel">Custom</span><span class="words-count" id="customCount">0</span><span aria-hidden="true">↗</span></button>
+          <button type="button" id="openCustomButton" class="words-launch custom-launch" aria-controls="customScreen" aria-label="Open Custom Characters &amp; Words"><span class="words-launch-icon" aria-hidden="true">字</span><span id="customNavLabel">Custom</span><span class="words-count" id="customCount">0</span><span aria-hidden="true">↗</span></button>
           <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
         </div>
           </div>
@@ -186,7 +186,7 @@
 
 
     <section id="mangaScreen" class="manga-reader-screen" aria-label="Manga Reader" hidden>
-      <div class="manga-top-bar"><button class="back" type="button" id="mangaBack">← Back to selection</button><div class="manga-top-actions"><button class="button-secondary" type="button" id="mangaLoginTop">Sign in with Google first</button><span class="quiz-pill" id="mangaPrivacyEyebrow">PRIVATE READING SPACE</span></div></div>
+      <div class="manga-top-bar"><button class="back" type="button" id="mangaBack">← Back to selection</button><div class="manga-top-actions"><button type="button" class="button-secondary manga-open-custom" id="mangaOpenCustom" aria-controls="customScreen"><span aria-hidden="true">字</span> <span id="mangaCustomLinkLabel">My Custom Collection</span> <span aria-hidden="true">↗</span></button><button class="button-secondary" type="button" id="mangaLoginTop">Sign in with Google first</button><span class="quiz-pill" id="mangaPrivacyEyebrow">PRIVATE READING SPACE</span></div></div>
       <div class="manga-header"><div><span class="eyebrow">✦ JAPANESE READING STUDIO</span><h2 id="mangaTitle">Manga Reader</h2><p class="subtle" id="mangaIntro">Read real Japanese pages at your own pace</p></div><div class="manga-header-deco" lang="ja">読</div></div>
       <div class="manga-upload" id="mangaDrop">
         <div class="manga-upload-intro"><span class="manga-upload-symbol" aria-hidden="true">▣</span><div><strong id="mangaChooseLabel">Add manga pages</strong><p class="subtle" id="mangaPrivacy">Analyzed pages are saved locally in your browser.</p></div></div>
@@ -266,7 +266,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v28.3</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v28.4</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

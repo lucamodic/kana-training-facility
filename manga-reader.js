@@ -450,6 +450,7 @@
     $('mangaReanalyze').textContent=ct('force');
     $('mangaSeriesLabel').textContent=ct('series');
     $('mangaChapterLabel').textContent=ct('chapter');
+    $('mangaCustomLinkLabel').textContent=lang()==='es'?'Mi colección custom':'My Custom Collection';
     $('mangaNewChapter').textContent=ct('newChapter');
     $('mangaOrderHint').textContent=ct('orderHint');
     renderHistory();
@@ -560,11 +561,47 @@
     hint.hidden=!locatingItemId && (!selected || Boolean(selected.bbox));
     hint.textContent=locatingItemId?lt('help'):lt('missing');
   }
+  function saveButtonLabel(kind, saved) {
+    if (saved) return lang() === 'es' ? '✓ Guardado' : '✓ Saved';
+    return kind === 'word' ? lang() === 'es' ? '+ Guardar palabra' : '+ Save word' : lang() === 'es' ? '+ Guardar' : '+ Save';
+  }
+  function updateSaveButton(button, kind, saved, animate = false) {
+    if (!button || !button.isConnected) return;
+    button.disabled = saved;
+    button.classList.toggle('is-saved',saved);
+    button.classList.remove('is-saving');
+    button.textContent = saveButtonLabel(kind,saved);
+    button.title = saved ? lang() === 'es' ? 'Ya está en tu colección' : 'Already in your collection' : lang() === 'es' ? 'Guardar en Custom' : 'Save to Custom';
+    if (saved && animate) {
+      button.classList.remove('just-saved');
+      void button.offsetWidth;
+      button.classList.add('just-saved');
+      button.addEventListener('animationend',() => button.classList.remove('just-saved'),{once:true});
+    }
+  }
+  function syncSaveButtons() {
+    const page = currentPage();
+    if (!page || $('mangaScreen').hidden) return;
+    $('mangaReadings').querySelectorAll('.manga-save-custom').forEach(button => {
+      const card = button.closest('[data-item]');
+      const entry = page.items.find(item => item.id === card?.dataset.item);
+      const kind = button.dataset.customWord !== undefined ? 'word' : 'kanji';
+      const index = Number(kind === 'word' ? button.dataset.customWord : button.dataset.customKanji);
+      const data = kind === 'word' ? entry?.words?.[index] : entry?.kanji?.[index];
+      if (data) updateSaveButton(button,kind,Boolean(window.KTFCustomCollection?.isSaved?.(kind,data)));
+    });
+  }
   function renderItems(page) {
     $('mangaReadings').innerHTML=page.items.map((item,index)=>{
       const result=item.check==='correct'?`<span class="manga-check success">${t('correct')}</span>`:item.check==='wrong'?`<span class="manga-check wrong">${t('incorrect')}</span>`:'';
-      const words=item.words?.length?item.words.map((word,index)=>`<div class="manga-word"><strong lang="ja">${escapeHtml(word.surface)}</strong><span>${escapeHtml(word.romaji||word.reading||'—')}</span><small>${escapeHtml(word.meaning||'—')}</small><button type="button" class="mini-button manga-save-custom" data-custom-word="${index}" title="${lang()==='es'?'Guardar palabra para practicar':'Save word to practice'}">${lang()==='es'?'+ Guardar palabra':'+ Save word'}</button></div>`).join(''):`<p class="subtle">${t('noWords')}</p>`;
-      const kanji=item.kanji?.length?`<div class="manga-kanji-header">KANJI BREAKDOWN</div>${item.kanji.map((entry,index)=>`<div class="manga-kanji"><strong lang="ja">${escapeHtml(entry.character)}</strong><div><b>${escapeHtml(entry.meaning)}</b><small>${escapeHtml(entry.reading_here)}${entry.note?' · '+escapeHtml(entry.note):''}</small></div><button type="button" class="mini-button manga-save-custom" data-custom-kanji="${index}" title="${lang()==='es'?'Guardar kanji para practicar':'Save kanji to practice'}">${lang()==='es'?'+ Guardar':'+ Save'}</button></div>`).join('')}`:'';
+      const words=item.words?.length?item.words.map((word,index)=>{
+        const saved=Boolean(window.KTFCustomCollection?.isSaved?.('word',word));
+        return `<div class="manga-word"><strong lang="ja">${escapeHtml(word.surface)}</strong><span>${escapeHtml(word.romaji||word.reading||'—')}</span><small>${escapeHtml(word.meaning||'—')}</small><button type="button" class="mini-button manga-save-custom${saved?' is-saved':''}" data-custom-word="${index}" ${saved?'disabled':''}>${saveButtonLabel('word',saved)}</button></div>`;
+      }).join(''):`<p class="subtle">${t('noWords')}</p>`;
+      const kanji=item.kanji?.length?`<div class="manga-kanji-header">KANJI BREAKDOWN</div>${item.kanji.map((entry,index)=>{
+        const saved=Boolean(window.KTFCustomCollection?.isSaved?.('kanji',entry));
+        return `<div class="manga-kanji"><strong lang="ja">${escapeHtml(entry.character)}</strong><div><b>${escapeHtml(entry.meaning)}</b><small>${escapeHtml(entry.reading_here)}${entry.note?' · '+escapeHtml(entry.note):''}</small></div><button type="button" class="mini-button manga-save-custom${saved?' is-saved':''}" data-custom-kanji="${index}" ${saved?'disabled':''}>${saveButtonLabel('kanji',saved)}</button></div>`;
+      }).join('')}`:'';
       const explanation=item.dirty?`<p class="manga-item-warning">${t('editing')}</p>`:!item.romaji?`<p class="manga-item-warning">${t('needExplanation')}</p>`:`<div class="manga-reveal" ${item.revealed?'':'hidden'}><div class="manga-reveal-line"><span>${t('romaji')}</span><strong>${escapeHtml(item.romaji||'—')}</strong></div><div class="manga-reveal-line"><span>${t('english')}</span><p>${escapeHtml(item.english||'—')}</p></div></div><div class="manga-words" ${item.showWords?'':'hidden'}>${words}${kanji}</div>`;
       return `<article class="manga-item ${selectedItem===item.id?'is-selected':''}" data-item="${item.id}">
         <div class="manga-item-head"><span class="manga-item-number">${String(index+1).padStart(2,'0')}</span><span class="manga-item-type">${item.manual?t('manual'):t('line')}</span></div>
@@ -928,13 +965,38 @@
       const kind=button.dataset.customWord !== undefined?'word':'kanji';
       const index=Number(kind==='word'?button.dataset.customWord:button.dataset.customKanji);
       const data=kind==='word'?entry?.words?.[index]:entry?.kanji?.[index];
-      if(!data || !window.KTFCustomCollection)return;
+      if (!data) return;
+      if (!window.KTFCustomCollection) {
+        toast(lang() === 'es' ? 'La colección no está disponible. Actualizá la página.' : 'Custom Collection is unavailable. Reload the page.',true);
+        return;
+      }
+      button.disabled=true;
+      button.classList.add('is-saving');
+      button.textContent=lang()==='es'?'Guardando…':'Saving…';
       const series=$('mangaSeriesName').value.trim();
       const chapter=$('mangaChapterName').value.trim();
       const source=[series,chapter].filter(Boolean).join(' · ') || 'Manga Reader';
       window.KTFCustomCollection.addFromManga(kind,data,source).then(saved=>{
-        toast(saved ? lang()==='es'?'Guardado en Caracteres custom.':'Saved to Custom Characters.' : lang()==='es'?'Ya estaba guardado en tu colección.':'Already in your collection.');
-      }).catch(error=>toast(error.message || String(error),true));
+        const isSaved=Boolean(window.KTFCustomCollection.isSaved(kind,data));
+        updateSaveButton(button,kind,isSaved,saved);
+        if (isSaved) {
+          const row=button.closest('.manga-word, .manga-kanji');
+          if (row) {
+            let feedback=row.querySelector('.manga-save-feedback');
+            if (!feedback) {
+              feedback=document.createElement('span');
+              feedback.className='manga-save-feedback';
+              feedback.setAttribute('role','status');
+              row.append(feedback);
+            }
+            feedback.textContent=saved ? lang()==='es'?'Añadido a tu colección':'Added to your collection' : lang()==='es'?'Ya estaba guardado':'Already saved';
+          }
+        }
+        toast(isSaved ? lang()==='es'?'Guardado en tu colección custom.':'Saved to your Custom Collection.' : lang()==='es'?'No se pudo confirmar el guardado.':'Could not confirm the save.',!isSaved);
+      }).catch(error=>{
+        updateSaveButton(button,kind,false);
+        toast(error.message || String(error),true);
+      });
       return;
     }
     if (button.dataset.removeItem) {
@@ -1026,6 +1088,7 @@
     $('mangaCancel').addEventListener('click',()=>{analyzeAll=false;aborter?.abort();});
     $('mangaManual').addEventListener('click',addText);
     $('mangaReadings').addEventListener('click',controls);
+    document.addEventListener('ktf:custom-collection-changed',syncSaveButtons);
     $('mangaReadings').addEventListener('focusin',event=>{const card=event.target.closest?.('[data-item]');if(card)selectItem(card.dataset.item);});
     $('mangaImage').addEventListener('pointerdown',regionDown);
     $('mangaImage').addEventListener('pointermove',regionMove);

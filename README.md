@@ -1,3 +1,12 @@
+## v28.4 — Colección Custom y guardado desde Manga Reader
+
+- El botón Custom abre una pantalla funcional de colección, con regreso a la pantalla de origen.
+- Manga Reader incluye «My Custom Collection» para abrirla sin pasar por el inicio.
+- Los botones para guardar palabras y kanjis muestran «Saving…» y, al guardarse, «✓ Saved», con animación breve y confirmación junto al elemento.
+- Lo que ya está guardado se indica al volver al manga, evitando duplicados y cambios de botón engañosos.
+- Los archivos CSS y JavaScript usan identificadores v28.4, con nuevo caché de service worker para reducir versiones mezcladas en deploys.
+- No modifica las páginas de manga ni sus análisis almacenados localmente. No requiere SQL adicional si ya se instaló la v28.0.
+
 ## v28.3 — Word Challenge en el panel derecho y actualización PWA
 
 - Word Challenge ahora aparece una sola vez, debajo de One Pass, junto a los otros modos de práctica del panel derecho. No está en la barra superior.

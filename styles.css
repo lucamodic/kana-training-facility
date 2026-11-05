@@ -1669,3 +1669,26 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .word-challenge-icon{font-size:16px;line-height:1}
 .word-challenge-panel .words-count{flex:0 0 auto;display:inline-grid;place-items:center;min-width:28px;min-height:26px}
 .word-challenge-panel .choice-explanation{margin:0}
+
+
+.study-switcher{flex-wrap:wrap;justify-content:flex-start;column-gap:10px;row-gap:7px}
+.study-switcher .tabs{flex:0 1 auto;max-width:100%;min-width:0}
+.study-switcher .tabs .tab{flex-shrink:0}
+.study-switcher .manga-launch-group{flex:0 1 auto;min-width:0;max-width:100%;margin-left:0;width:auto;flex-wrap:wrap;gap:7px}
+.study-switcher .manga-launch-group .words-launch{min-width:max-content;flex-shrink:0}
+@media(max-width:650px){
+  .study-switcher .tabs{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+  .study-switcher .tabs .tab{min-width:0;flex-shrink:1;padding-inline:6px;font-size:clamp(11px,2.8vw,13px);gap:5px}
+  .study-switcher .manga-launch-group{width:100%;justify-content:stretch}
+  .study-switcher .manga-launch-group .words-launch{flex:1 1 auto;min-width:0}
+}
+.manga-open-custom{display:inline-flex;align-items:center;gap:7px}
+.manga-save-custom{transition:transform 150ms ease,background-color 180ms ease,border-color 180ms ease,color 180ms ease}
+.manga-save-custom.is-saving{opacity:.72;cursor:wait}
+.manga-save-custom.is-saved,.manga-save-custom.is-saved:disabled{background:var(--green-soft);color:var(--green);border-color:var(--green);opacity:1;cursor:default;box-shadow:none}
+.manga-save-custom.just-saved{animation:ktf-save-confirm 420ms ease-out}
+.manga-save-feedback{display:block;font:700 11px "Courier New",monospace;color:var(--green);line-height:1.5}
+.manga-word .manga-save-feedback{grid-column:2}
+.manga-kanji .manga-save-feedback{width:100%;text-align:right}
+@keyframes ktf-save-confirm{0%{transform:scale(.9)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.manga-save-custom.just-saved{animation:none}}

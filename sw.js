@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kana-training-facility-offline-v28-3-word-challenge-side';
+const CACHE_NAME = 'kana-training-facility-offline-v28-4-custom-save-feedback';
 const SHELL = [
-  './', './index.html', './styles.css', './app.js', './study-clock.js', './config.js', './cloud-sync.js', './learning-progress.js', './manga-cache.js', './manga-reader.js', './custom-collection.js', './manifest.webmanifest',
+  './', './index.html', './styles.css?v=28.4', './app.js?v=28.4', './study-clock.js?v=28.4', './config.js?v=28.4', './cloud-sync.js?v=28.4', './learning-progress.js?v=28.4', './manga-cache.js?v=28.4', './manga-reader.js?v=28.4', './custom-collection.js?v=28.4', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

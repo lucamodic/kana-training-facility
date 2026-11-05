@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kana-training-facility-offline-v28-5-layout-refresh';
+const CACHE_NAME = 'kana-training-facility-offline-v29-reader-custom-cohesion';
 const SHELL = [
-  './', './index.html', './styles.css?v=28.5', './app.js?v=28.5', './study-clock.js?v=28.5', './config.js?v=28.5', './cloud-sync.js?v=28.5', './learning-progress.js?v=28.5', './manga-cache.js?v=28.5', './manga-reader.js?v=28.5', './custom-collection.js?v=28.5', './manifest.webmanifest',
+  './', './index.html', './styles.css?v=29.0', './app.js?v=29.0', './study-clock.js?v=29.0', './config.js?v=29.0', './cloud-sync.js?v=29.0', './learning-progress.js?v=29.0', './manga-cache.js?v=29.0', './manga-reader.js?v=29.0', './custom-collection.js?v=29.0', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

@@ -1,3 +1,10 @@
+## v29.0 — Cohesive Custom practice and focused Manga Reader
+
+- Custom collection now uses the same tab navigation and compact selectable tiles as Kana practice. Click or drag across tiles to select multiple; use the search, Select visible, and Deselect visible controls to manage selection. Editing and deleting controls are no longer shown on individual tiles. Custom additions remain available from the Add Custom modal and Manga Reader.
+- Characters / Words / All are now top-level tabs with selected counters. Practice controls are aligned with consistent heights.
+- Manga Reader has distinct Library & Chapters and Reading views. In the Reading view, the upload form, large heading and manga library controls are hidden, while page thumbnails, reordering, AI analysis and saved explanations remain accessible. Use Library & chapters to go back to management, or Continue reading to return.
+- No new SQL, no IndexedDB migrations, no changes to OCR, image hashes or Supabase secrets. The offline/PWA cache is bumped to 29.0.
+
 ## v28.5 — Interfaz Custom compacta y timer flotante
 
 - **Custom** utiliza el mismo estilo retro de los paneles de práctica. Los filtros, la búsqueda y los botones de selección comparten una barra horizontal cuando entra en pantalla y se adaptan en filas ordenadas en dispositivos pequeños. Los elementos guardados aparecen como tarjetas seleccionables.

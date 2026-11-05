@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root,file),'utf8');
 
-test('custom input is in a real dialog with add and edit actions', () => {
+test('custom input is in a separate add-item dialog', () => {
   const html = read('index.html');
   const js = read('custom-collection.js');
   assert.match(html, /<dialog id="customEditorDialog"[^>]+aria-labelledby="customAddTitle"/);
@@ -13,17 +13,20 @@ test('custom input is in a real dialog with add and edit actions', () => {
   assert.match(js, /\$\('customAddButton'\)\.addEventListener\('click',\(\)=>showEditor\(\)\)/);
   assert.match(js, /if \(!dialog\.open\) dialog\.showModal\(\)/);
   assert.match(js, /if \(ok\) hideEditor\(\)/);
-  assert.match(js, /showEditor\(item\)/);
+  assert.doesNotMatch(js, /data-custom-edit/);
+  assert.doesNotMatch(js, /data-custom-remove/);
   assert.match(js, /\$\('customEditorDialog'\)\.addEventListener\('close',resetForm\)/);
 });
 
-test('custom filters, search and selection share a toolbar and practice uses matching panel', () => {
+test('custom uses tabs, shared search toolbar and compact selectable tiles', () => {
   const html = read('index.html');
   const css = read('styles.css');
   const toolbar = html.slice(html.indexOf('<div class="custom-toolbar">'),html.indexOf('<div id="customItems"'));
   for (const id of ['customSearch','customSelectAll','customSelectNone']) assert.ok(toolbar.includes(`id="${id}"`));
-  for (const filter of ['all','kanji','word']) assert.ok(toolbar.includes(`data-custom-filter="${filter}"`));
-  assert.match(css,/\.custom-toolbar\{display:grid;grid-template-columns:auto minmax\(150px,1fr\) auto/);
+  for (const filter of ['all','kanji','word']) assert.ok(html.includes(`data-custom-filter="${filter}"`));
+  assert.match(css,/\.custom-screen \.custom-toolbar\{display:grid/);
+  assert.match(read('custom-collection.js'),/data-custom-tile/);
+  assert.match(read('custom-collection.js'),/aria-pressed/);
   assert.match(css,/\.custom-browse\[hidden\]/);
   assert.match(css,/\.custom-practice-card::before/);
 });

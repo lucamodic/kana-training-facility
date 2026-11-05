@@ -54,7 +54,7 @@
   let items = [];
   let stats = new Map();
   let selected = new Set();
-  let filter = 'all';
+  let filter = 'kanji';
   let search = '';
   let editId = null;
   let loaded = false;
@@ -114,7 +114,7 @@
     owner = activeOwner;
     items = output.items;
     stats = output.scores;
-    selected = wasLoaded ? new Set(items.filter(item => previous.has(item.id)).map(item => item.id)) : new Set(items.map(item => item.id));
+    selected = wasLoaded ? new Set(items.filter(item => previous.has(item.id)).map(item => item.id)) : new Set();
     loaded = true;
     $('customCount').textContent = String(items.length);
     if (isOpen() && !practice) renderList();
@@ -125,6 +125,9 @@
   }
   function labelText() {
     $('customNavLabel').textContent = t('nav');
+    $('customTabCharacters').textContent = t('onlyKanji');
+    $('customTabWords').textContent = t('onlyWords');
+    $('customTabAll').textContent = t('all');
     $('customBack').textContent = t(returnView === 'manga' ? 'backManga' : 'back');
     for (const [id,key] of [['customEyebrow','eyebrow'],['customTitle','title'],['customIntro','intro'],['customAddTitle','add'],['customKindLabel','kind'],['customJapaneseLabel','japanese'],['customRomajiLabel','reading'],['customKanaLabel','kana'],['customMeaningLabel','meaning'],['customNotesLabel','notes'],['customListTitle','list'],['customSelectAll','selectAll'],['customSelectNone','selectNone'],['customPracticeButton','study'],['customModeLabel','mode']]) $(id).textContent = t(key);
     $('customKind').options[0].textContent = t('kanji');
@@ -149,22 +152,22 @@
     $('customTotal').textContent = `${items.length} ${t('total')}`;
     $('customSelected').textContent = `${selected.size} ${t('selected')}`;
     $('customPracticeButton').disabled = !selected.size;
+    $('customCharacterCount').textContent = String(items.filter(item => item.kind === 'kanji' && selected.has(item.id)).length);
+    $('customWordCount').textContent = String(items.filter(item => item.kind === 'word' && selected.has(item.id)).length);
+    $('customAllCount').textContent = String(selected.size);
     document.querySelectorAll('[data-custom-filter]').forEach(button => {
-      button.classList.toggle('is-active',button.dataset.customFilter === filter);
-      button.setAttribute('aria-pressed',String(button.dataset.customFilter === filter));
-      button.textContent = t(button.dataset.customFilter === 'all' ? 'all' : button.dataset.customFilter === 'kanji' ? 'onlyKanji' : 'onlyWords');
+      const active = button.dataset.customFilter === filter;
+      button.setAttribute('aria-selected',String(active));
+      button.tabIndex = active ? 0 : -1;
     });
     $('customItems').innerHTML = displayed.length ? displayed.map(item => {
-      const score = stats.get(item.id) || {correct:0,total:0};
-      return `<article class="custom-item">
-        <label class="custom-item-select"><input type="checkbox" data-custom-select="${escapeHtml(item.id)}" ${selected.has(item.id)?'checked':''} aria-label="${escapeHtml(t('select'))}: ${escapeHtml(item.surface)}"></label>
-        <div class="custom-item-body"><div class="custom-item-heading"><strong class="custom-item-japanese" lang="ja">${escapeHtml(item.surface)}</strong><span class="custom-type">${t(item.kind === 'kanji' ? 'kanji' : 'word')}</span></div>
-        <div class="custom-item-fields"><span>${escapeHtml(item.romaji || item.kana || '—')}</span><strong>${escapeHtml(item.meaning || '—')}</strong></div>
-        ${item.kana && item.romaji ? `<small>${escapeHtml(item.kana)}</small>` : ''}
-        ${item.notes ? `<p class="custom-item-notes">${escapeHtml(item.notes)}</p>` : ''}
-        <div class="custom-item-meta"><span>${escapeHtml(item.source || t('manual'))}</span><span>${score.correct} / ${score.total} ${t('count')}</span></div></div>
-        <div class="custom-item-actions"><button type="button" class="mini-button" data-custom-edit="${escapeHtml(item.id)}">${t('edit')}</button><button type="button" class="mini-button" data-custom-remove="${escapeHtml(item.id)}">${t('remove')}</button></div>
-      </article>`;
+      const selectedItem = selected.has(item.id);
+      const details = [item.romaji || item.kana,item.meaning].filter(Boolean);
+      return `<button type="button" class="kana-tile custom-item" data-custom-tile="${escapeHtml(item.id)}" aria-pressed="${selectedItem}" title="${escapeHtml([item.surface,...details,item.notes].filter(Boolean).join(' · '))}">
+        <span class="glyph custom-item-japanese" lang="ja">${escapeHtml(item.surface)}</span>
+        ${item.romaji || item.kana ? `<span class="roman custom-item-reading">${escapeHtml(item.romaji || item.kana)}</span>` : ''}
+        ${item.meaning ? `<span class="custom-item-meaning">${escapeHtml(item.meaning)}</span>` : ''}
+      </button>`;
     }).join('') : `<p class="subtle custom-empty">${t('empty')}</p>`;
   }
   function showEditor(item = null) {
@@ -336,6 +339,26 @@
     $('customPractice').hidden = true;
     renderList();
   }
+  let dragState = null;
+  let pointerHandled = null;
+  function toggleTile(id) {
+    if (selected.has(id)) selected.delete(id);
+    else selected.add(id);
+    renderList();
+  }
+  function applyDrag(tile) {
+    const id = tile?.dataset?.customTile;
+    if (!dragState || !id || dragState.seen.has(id)) return;
+    dragState.seen.add(id);
+    if (dragState.value) selected.add(id);
+    else selected.delete(id);
+    tile.setAttribute('aria-pressed',String(selected.has(id)));
+    $('customSelected').textContent = `${selected.size} ${t('selected')}`;
+    $('customPracticeButton').disabled = !selected.size;
+    $('customCharacterCount').textContent = String(items.filter(item => item.kind === 'kanji' && selected.has(item.id)).length);
+    $('customWordCount').textContent = String(items.filter(item => item.kind === 'word' && selected.has(item.id)).length);
+    $('customAllCount').textContent = String(selected.size);
+  }
   function attach() {
     $('openCustomButton').addEventListener('click',open);
     $('mangaOpenCustom').addEventListener('click',open);
@@ -356,36 +379,39 @@
     $('customCancel').addEventListener('click',hideEditor);
     $('customSearch').addEventListener('input',event => {search = event.target.value;renderList();});
     document.querySelectorAll('[data-custom-filter]').forEach(button => button.addEventListener('click',() => {filter = button.dataset.customFilter;renderList();}));
-    $('customItems').addEventListener('change',event => {
-      const input = event.target.closest('[data-custom-select]');
-      if (!input) return;
-      if (input.checked) selected.add(input.dataset.customSelect);
-      else selected.delete(input.dataset.customSelect);
-      $('customSelected').textContent = `${selected.size} ${t('selected')}`;
-      $('customPracticeButton').disabled = !selected.size;
+    $('customItems').addEventListener('click',event => {
+      const tile = event.target.closest('[data-custom-tile]');
+      if (!tile) return;
+      if (pointerHandled && pointerHandled.id === tile.dataset.customTile && Date.now() - pointerHandled.time < 650) {
+        pointerHandled = null;
+        return;
+      }
+      toggleTile(tile.dataset.customTile);
     });
-    $('customItems').addEventListener('click',async event => {
-      const edit = event.target.closest('[data-custom-edit]');
-      const remove = event.target.closest('[data-custom-remove]');
-      if (edit) {
-        const item = items.find(entry => entry.id === edit.dataset.customEdit);
-        if (!item) return;
-        editId = item.id;
-        $('customKind').value = item.kind;
-        $('customJapanese').value = item.surface;
-        $('customRomaji').value = item.romaji;
-        $('customKana').value = item.kana;
-        $('customMeaning').value = item.meaning;
-        $('customNotes').value = item.notes;
-        labelText();
-        showEditor(item);
-      }
-      if (remove && window.confirm(t('confirm'))) {
-        const id = remove.dataset.customRemove;
-        await persist('custom_delete',{id});
-        if (editId === id) hideEditor();
-        notify(t('deleted'));
-      }
+    $('customItems').addEventListener('pointerdown',event => {
+      if (event.button !== 0 || event.target.closest('[data-custom-tile]') === null) return;
+      const tile = event.target.closest('[data-custom-tile]');
+      dragState = {value:!selected.has(tile.dataset.customTile),seen:new Set()};
+      applyDrag(tile);
+      pointerHandled = {id:tile.dataset.customTile,time:Date.now()};
+      event.preventDefault();
+    });
+    document.addEventListener('pointermove',event => {
+      if (!dragState || !isOpen()) return;
+      const tile = document.elementFromPoint(event.clientX,event.clientY)?.closest?.('[data-custom-tile]');
+      if (tile && $('customItems').contains(tile)) applyDrag(tile);
+    });
+    document.addEventListener('pointerup',() => {dragState=null;});
+    document.addEventListener('pointercancel',() => {dragState=null;});
+    document.addEventListener('keydown',event => {
+      if (!isOpen() || !event.target.matches?.('[data-custom-filter]')) return;
+      if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+      event.preventDefault();
+      const tabs=[...document.querySelectorAll('[data-custom-filter]')];
+      const index=tabs.indexOf(event.target);
+      const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length;
+      tabs[next].click();
+      tabs[next].focus();
     });
     $('customSelectAll').addEventListener('click',()=>{visible().forEach(item => selected.add(item.id));renderList();});
     $('customSelectNone').addEventListener('click',()=>{visible().forEach(item => selected.delete(item.id));renderList();});

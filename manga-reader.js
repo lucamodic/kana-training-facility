@@ -8,6 +8,7 @@
   let history = [];
   let chapters = [];
   let libraryOpen = false;
+  let mangaView = 'manage';
   let activeChapterId = null;
   let chapterReady = Promise.resolve();
   let orderRevision = 0;
@@ -301,6 +302,7 @@
       activeId = pages[0]?.id || null;
       selectedItem = pages[0]?.items[0]?.id || null;
       libraryOpen = false;
+      mangaView = pages.length ? 'read' : 'manage';
       render();
       for (const page of savedPages) {
         if (page.cleanupNeeded) { page.cleanupNeeded = false; await rememberPage(page); }
@@ -400,6 +402,7 @@
       pages.push(page);
       activeId = page.id;
       selectedItem = page.items[0]?.id || null;
+      mangaView = 'read';
       render();
       if (page.cleanupNeeded) { page.cleanupNeeded = false; await rememberPage(page); }
       toast(ct('cacheRestored'));
@@ -465,6 +468,8 @@
     $('summaryScreen') && ($('summaryScreen').hidden=true);
     $('examScreen').hidden=true;
     $('mangaScreen').hidden=false;
+    mangaView = pages.length ? 'read' : 'manage';
+    if (!pages.length) libraryOpen = true;
     updateText();
     render();
     refreshHistory().catch(() => {});
@@ -524,10 +529,34 @@
     $('mangaPageStrip').hidden=!pages.length;
     $('mangaOrderHint').hidden=pages.length<2;
   }
+  function renderMangaView() {
+    if (mangaView === 'read' && !pages.length) mangaView = 'manage';
+    const managing = mangaView === 'manage';
+    $('mangaManageView').hidden = !managing;
+    $('mangaReadView').hidden = managing;
+    $('mangaContinue').hidden = !pages.length;
+    $('mangaReadingChapter').textContent = [ String($('mangaSeriesName').value || '').trim(), String($('mangaChapterName').value || '').trim() ].filter(Boolean).join(' · ') || (lang() === 'es' ? 'Páginas actuales' : 'Current pages');
+    $('mangaManageToggle').textContent = lang() === 'es' ? '← Biblioteca y capítulos' : '← Library & chapters';
+    $('mangaContinue').textContent = lang() === 'es' ? 'Continuar leyendo →' : 'Continue reading →';
+    $('mangaLibraryTitle').textContent = lang() === 'es' ? 'BIBLIOTECA DE MANGAS' : 'MANGA LIBRARY';
+    $('mangaReadingLabel').textContent = lang() === 'es' ? 'LEYENDO AHORA' : 'NOW READING';
+  }
+  function switchMangaView(view) {
+    if (running && view === 'manage') return;
+    mangaView = view === 'read' && pages.length ? 'read' : 'manage';
+    if (mangaView === 'manage') {
+      libraryOpen = true;
+      renderHistory();
+      refreshHistory().catch(() => {});
+    }
+    render();
+    $('mangaScreen').scrollIntoView({block:'start',behavior:'instant'});
+  }
   function render() {
     updateText();
     renderStrip();
     const page=currentPage();
+    renderMangaView();
     $('mangaWorkspace').hidden=!page;
     $('mangaEmpty').hidden=Boolean(page);
     $('mangaControls').hidden=!page;
@@ -742,6 +771,7 @@
     }
     toast('');
     persistChapterOrder().catch(() => {});
+    mangaView = 'read';
     render();
   }
   function removePage() {
@@ -1024,6 +1054,8 @@
   function attach() {
     $('openMangaButton').addEventListener('click',showReader);
     $('mangaBack').addEventListener('click',closeReader);
+    $('mangaManageToggle').addEventListener('click',()=>switchMangaView('manage'));
+    $('mangaContinue').addEventListener('click',()=>switchMangaView('read'));
     $('mangaFiles').addEventListener('change',event=>{loadFiles(event.target.files);event.target.value='';});
     $('mangaDrop').addEventListener('dragover',event=>{event.preventDefault();event.currentTarget.classList.add('drag-over');});
     $('mangaDrop').addEventListener('dragleave',event=>event.currentTarget.classList.remove('drag-over'));

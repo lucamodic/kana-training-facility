@@ -13,15 +13,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=28.5">
-  <script src="./app.js?v=28.5" defer></script>
-  <script src="./study-clock.js?v=28.5" defer></script>
-  <script src="./config.js?v=28.5" defer></script>
-  <script src="./cloud-sync.js?v=28.5" defer></script>
-  <script src="./learning-progress.js?v=28.5" defer></script>
-  <script src="./manga-cache.js?v=28.5" defer></script>
-  <script src="./manga-reader.js?v=28.5" defer></script>
-  <script src="./custom-collection.js?v=28.5" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=29.0">
+  <script src="./app.js?v=29.0" defer></script>
+  <script src="./study-clock.js?v=29.0" defer></script>
+  <script src="./config.js?v=29.0" defer></script>
+  <script src="./cloud-sync.js?v=29.0" defer></script>
+  <script src="./learning-progress.js?v=29.0" defer></script>
+  <script src="./manga-cache.js?v=29.0" defer></script>
+  <script src="./manga-reader.js?v=29.0" defer></script>
+  <script src="./custom-collection.js?v=29.0" defer></script>
 </head>
 <body>
   <header class="top">
@@ -187,6 +187,8 @@
 
     <section id="mangaScreen" class="manga-reader-screen" aria-label="Manga Reader" hidden>
       <div class="manga-top-bar"><button class="back" type="button" id="mangaBack">← Back to selection</button><div class="manga-top-actions"><button type="button" class="button-secondary manga-open-custom" id="mangaOpenCustom" aria-controls="customScreen"><span aria-hidden="true">字</span> <span id="mangaCustomLinkLabel">My Custom Collection</span> <span aria-hidden="true">↗</span></button><button class="button-secondary" type="button" id="mangaLoginTop">Sign in with Google first</button><span class="quiz-pill" id="mangaPrivacyEyebrow">PRIVATE READING SPACE</span></div></div>
+      <div id="mangaManageView" class="manga-manage-view">
+        <div class="manga-manage-heading"><span class="eyebrow" id="mangaLibraryTitle">MANGA LIBRARY</span><button type="button" id="mangaContinue" class="button-primary" hidden>Continue reading →</button></div>
       <div class="manga-header"><div><span class="eyebrow">✦ JAPANESE READING STUDIO</span><h2 id="mangaTitle">Manga Reader</h2><p class="subtle" id="mangaIntro">Read real Japanese pages at your own pace</p></div><div class="manga-header-deco" lang="ja">読</div></div>
       <div class="manga-upload" id="mangaDrop">
         <div class="manga-upload-intro"><span class="manga-upload-symbol" aria-hidden="true">▣</span><div><strong id="mangaChooseLabel">Add manga pages</strong><p class="subtle" id="mangaPrivacy">Analyzed pages are saved locally in your browser.</p></div></div>
@@ -203,6 +205,9 @@
         <p class="manga-privacy-subtle" id="mangaHistoryHelp">Saved on this device only; open any analyzed page without uploading it again.</p>
         <div id="mangaHistoryList" class="manga-history-list"></div>
       </div>
+      </div>
+      <div id="mangaReadView" class="manga-read-view" hidden>
+        <div class="manga-reading-topline"><div class="manga-reading-chapter"><span class="eyebrow" id="mangaReadingLabel">NOW READING</span><strong id="mangaReadingChapter"></strong></div><button type="button" id="mangaManageToggle" class="button-secondary">Manage manga & chapters</button></div>
       <div class="manga-page-strip" id="mangaPageStrip" hidden></div>
       <p id="mangaOrderHint" class="manga-privacy-subtle" hidden>Arrastrá las miniaturas o usá las flechas para ordenar las páginas.</p>
       
@@ -212,12 +217,13 @@
         <section class="manga-page-column" aria-label="Uploaded manga page"><div class="manga-pane-head"><div><strong id="mangaPageName">manga.png</strong><span id="mangaPageState">Ready</span></div><button type="button" class="mini-button" id="mangaRemove">Remove page</button></div><div class="manga-image-scroller" id="mangaImageScroller"><div class="manga-image-frame" id="mangaImageFrame"><img id="mangaImage" alt="Uploaded manga page"><div id="mangaHighlight" class="manga-image-highlight" hidden></div></div></div><p class="manga-location-hint" id="mangaLocateHint" hidden></p><p class="manga-pane-footnote">Analyzed images are stored locally in compressed form to reopen them later.</p></section>
         <section class="manga-reading-column" aria-label="Japanese dialogue and reading practice"><div class="manga-pane-head"><div><strong id="mangaRightHeading">Recognized dialogue</strong><span id="mangaRightCount">—</span></div></div><div class="manga-readings-scroll"><div class="manga-reading-controls" id="mangaControls"><button type="button" id="mangaAnalyze" class="button-primary">Analyze this page</button><button type="button" id="mangaAnalyzeAll" class="button-secondary">Analyze all pages</button><button type="button" id="mangaReanalyze" class="button-secondary" hidden>Reanalyze with AI</button><button type="button" id="mangaCancel" class="button-secondary" hidden>Stop analyzing</button><button type="button" id="mangaLogin" class="button-secondary">Sign in with Google to analyze</button><button type="button" id="mangaManual" class="button-secondary">Add a text manually</button></div><p class="manga-reading-help" id="mangaNoSave">Try romaji first, then reveal readings and explanations.</p><p class="manga-text-empty" id="mangaTextEmpty"></p><div id="mangaReadings" class="manga-readings" aria-live="off"></div></div></section>
       </div>
+      </div>
     </section>
 
     <section id="customScreen" class="custom-screen" aria-label="Custom characters and vocabulary" hidden>
       <div class="custom-top"><button class="back" type="button" id="customBack">← Back to selection</button><span class="quiz-pill" id="customTotal">0 saved</span></div>
-      <header class="custom-heading"><span class="eyebrow" id="customEyebrow">✦ YOUR PERSONAL STUDY DECK</span><h2 id="customTitle">Custom Characters &amp; Words</h2><p class="subtle" id="customIntro">Save characters and words you find in manga, then practice them here.</p></header>
       <p class="manga-notice" id="customNotice" role="status" aria-live="polite" hidden></p>
+      <header class="custom-heading" hidden><span id="customEyebrow"></span><h2 id="customTitle"></h2><p id="customIntro"></p></header>
       <div id="customBrowse" class="custom-browse">
         <dialog id="customEditorDialog" class="custom-editor custom-editor-dialog" aria-labelledby="customAddTitle">
           <div class="custom-dialog-title"><h3 id="customAddTitle">Add a character or word</h3><button type="button" class="mini-button" id="customEditorClose" aria-label="Close editor">✕</button></div>
@@ -232,9 +238,13 @@
             <div class="custom-form-actions"><button type="submit" class="button-primary" id="customSave">Save to collection</button><button type="button" class="button-secondary" id="customCancel">Cancel edit</button></div>
           </form>
         </dialog>
-        <section class="custom-library"><div class="custom-library-head"><div class="custom-library-title"><h3 id="customListTitle">Your collection</h3><span class="quiz-pill" id="customSelected">0 selected</span></div><button type="button" class="button-primary custom-add-button" id="customAddButton" aria-haspopup="dialog" aria-controls="customEditorDialog"><span aria-hidden="true">＋</span><span id="customAddButtonLabel">Add custom</span></button></div>
+        <div class="tabs custom-tabs" role="tablist" aria-label="Custom collection categories">
+          <button type="button" class="tab" role="tab" data-custom-filter="kanji" aria-selected="true" aria-controls="customItems"><span id="customTabCharacters">Characters</span> <span class="tab-counter" id="customCharacterCount">0</span></button>
+          <button type="button" class="tab" role="tab" data-custom-filter="word" aria-selected="false" aria-controls="customItems"><span id="customTabWords">Words</span> <span class="tab-counter" id="customWordCount">0</span></button>
+          <button type="button" class="tab" role="tab" data-custom-filter="all" aria-selected="false" aria-controls="customItems"><span id="customTabAll">All</span> <span class="tab-counter" id="customAllCount">0</span></button>
+        </div>
+        <section class="custom-library" role="tabpanel" aria-label="Custom items"><div class="custom-library-head"><div class="custom-library-title"><h3 id="customListTitle">Your collection</h3><span class="quiz-pill" id="customSelected">0 selected</span></div><button type="button" class="button-primary custom-add-button" id="customAddButton" aria-haspopup="dialog" aria-controls="customEditorDialog"><span aria-hidden="true">＋</span><span id="customAddButtonLabel">Add custom</span></button></div>
           <div class="custom-toolbar">
-            <div class="custom-filters"><button class="mini-button is-active" type="button" data-custom-filter="all" aria-pressed="true">All</button><button class="mini-button" type="button" data-custom-filter="kanji" aria-pressed="false">Characters</button><button class="mini-button" type="button" data-custom-filter="word" aria-pressed="false">Words</button></div>
             <input type="search" id="customSearch" class="custom-search" placeholder="Search collection…" aria-label="Search custom collection">
             <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button></div>
           </div>
@@ -269,7 +279,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v28.5</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v29.0</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

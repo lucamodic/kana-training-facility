@@ -1661,3 +1661,11 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .manga-kanji .manga-save-custom{margin-left:auto;flex:0 0 auto;max-width:110px;font-size:11px}
 @media(max-width:850px){.custom-browse{grid-template-columns:minmax(0,1fr)}.custom-editor,.custom-library{padding:16px}}
 @media(max-width:600px){.custom-screen{padding-top:10px}.custom-form{grid-template-columns:minmax(0,1fr)}.custom-item{grid-template-columns:auto minmax(0,1fr)}.custom-item-actions{grid-column:2;display:flex;justify-content:flex-end}.manga-kanji{flex-wrap:wrap}.manga-kanji .manga-save-custom{margin-left:auto}.custom-practice-card{padding:20px 14px}.custom-practice-actions{flex-wrap:wrap}}
+
+
+.word-challenge-panel{margin-top:14px;padding:13px;border:1px solid var(--retro-deep);border-radius:8px;background:var(--retro-cream);display:grid;gap:10px}
+.word-challenge-button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;padding:10px 12px;text-align:left}
+.word-challenge-button-main{display:inline-flex;align-items:center;gap:9px;min-width:0}
+.word-challenge-icon{font-size:16px;line-height:1}
+.word-challenge-panel .words-count{flex:0 0 auto;display:inline-grid;place-items:center;min-width:28px;min-height:26px}
+.word-challenge-panel .choice-explanation{margin:0}

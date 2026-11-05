@@ -1828,3 +1828,54 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .custom-screen .custom-search{grid-column:1!important;grid-row:auto!important;order:0!important;width:100%;min-width:0;max-width:none;flex:none}
 .custom-screen .custom-select-actions{grid-column:1!important;grid-row:auto!important;order:1!important;width:100%;min-width:0;margin:0}
 }
+
+.custom-screen .custom-study-actions{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(240px,.85fr);align-items:start;gap:20px;max-width:none;width:100%;margin:22px 0 0;padding:21px 0 0;border-top:1px dashed var(--retro-deep)}
+.custom-screen .custom-session-settings{border:1px solid var(--retro-deep);background:var(--retro-cream);border-radius:6px;padding:15px;display:grid;gap:14px;min-width:0}
+.custom-screen .custom-session-settings>.side-label{display:block;margin:0;padding:0 0 9px;border-bottom:1px dashed var(--line)}
+.custom-screen .custom-session-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.custom-screen .custom-session-settings label{display:grid;gap:7px;min-width:0;margin:0;color:var(--ink);font:bold 11px 'Courier New',monospace}
+.custom-screen .custom-session-fields select{border:1px solid var(--retro-deep);min-height:43px;height:43px;width:100%;padding:8px 10px;background:var(--paper);color:var(--ink);font:700 12px 'Courier New',monospace}
+.custom-screen .custom-duration-fields{display:flex;align-items:end;gap:10px}
+.custom-screen .custom-duration-fields label{flex:1 1 0;min-width:0}
+.custom-screen .custom-duration-fields>span{font:bold 22px Georgia,serif;align-self:end;padding-bottom:9px;color:var(--accent)}
+.custom-screen .custom-session-settings input[type=number]{width:100%;max-width:100%;min-width:0;min-height:43px;padding:9px 10px;color:var(--ink);background:var(--paper);border:1px solid var(--retro-deep);border-radius:4px;font:700 17px 'Courier New',monospace}
+.custom-screen .custom-guess-fields label{max-width:250px}
+.custom-screen .custom-rapid-card{border:1px solid var(--retro-deep);border-radius:5px;background:var(--paper);padding:12px;display:grid;gap:12px}
+.custom-screen .custom-rapid-card .custom-rapid-toggle{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:12px;cursor:pointer}
+.custom-screen .custom-rapid-title{display:grid;gap:4px;min-width:0}
+.custom-screen .custom-rapid-title strong{font:700 14px Georgia,serif}
+.custom-screen .custom-rapid-title small{font:11px Verdana,sans-serif;color:var(--muted);line-height:1.4}
+.custom-screen .custom-rapid-toggle input{width:19px;height:19px;accent-color:var(--accent);flex:0 0 auto;cursor:pointer}
+.custom-screen .custom-rapid-fields{max-width:230px}
+.custom-screen .custom-settings-note{font:11px Verdana,sans-serif;line-height:1.5;color:var(--muted);margin:0}
+.custom-screen .custom-session-choices{display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:5px;margin:0;min-width:0}
+.custom-screen .custom-session-choices button{width:100%;height:auto;min-height:45px;max-width:none;margin:0;padding:10px 12px;text-align:center}
+.custom-screen .custom-session-choices .choice-explanation{margin:2px 0 14px;font-size:11px;line-height:1.5}
+.custom-screen .custom-session-choices .choice-explanation:last-child{margin-bottom:0}
+.custom-screen .custom-practice{max-width:760px}
+.custom-screen .custom-session-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:9px 0 12px}
+.custom-screen .custom-session-topbar .quiz-pill{min-height:39px;display:inline-flex;align-items:center}
+.custom-screen .custom-session-clock{display:flex;align-items:center;gap:10px;min-height:40px;padding:5px 8px 5px 14px;border:1px solid var(--retro-deep);border-radius:5px;background:var(--paper);font:700 16px 'Courier New',monospace;white-space:nowrap}
+.custom-screen .custom-session-clock #customPracticeClock.is-urgent{color:var(--accent)}
+.custom-screen .custom-session-clock .mini-button{min-height:30px;padding:5px 11px;font-size:11px}
+.custom-screen .custom-practice-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:13px}
+.custom-screen .custom-practice-stats>span{border:1px solid var(--retro-deep);border-radius:4px;background:var(--retro-cream);display:grid;gap:5px;justify-items:center;padding:10px 6px}
+.custom-screen .custom-practice-stats small{font:700 10px 'Courier New',monospace;color:var(--muted)}
+.custom-screen .custom-practice-stats strong{font:700 23px Georgia,serif;color:var(--ink)}
+.custom-screen .custom-guided{max-width:440px;margin:24px auto 12px;display:grid;justify-items:center;gap:12px;border:1px dashed var(--retro-deep);border-radius:5px;padding:21px 13px;background:var(--retro-cream)}
+.custom-screen .custom-guided strong{font:700 clamp(17px,2.5vw,25px) Georgia,serif;color:var(--ink);overflow-wrap:anywhere}
+.custom-screen .custom-guided button{width:auto;min-width:185px;margin-top:4px}
+.custom-screen .custom-practice-card.is-paused{opacity:.65}
+.custom-screen .custom-practice-card.is-paused button{cursor:not-allowed}
+.custom-screen .custom-practice-card h3{margin-bottom:5px}
+.custom-screen .custom-practice-card #customPracticeNext{width:auto;min-width:200px}
+.custom-screen .custom-practice>#customPracticeExit{width:auto;min-height:43px}
+.custom-screen [hidden]{display:none!important}
+@media(max-width:840px){.custom-screen .custom-study-actions{grid-template-columns:minmax(0,1fr);gap:17px}.custom-screen .custom-session-choices{max-width:none}}
+@media(max-width:480px){.custom-screen .custom-session-settings{padding:12px}.custom-screen .custom-session-fields{grid-template-columns:minmax(0,1fr);gap:11px}.custom-screen .custom-practice-stats{gap:6px}.custom-screen .custom-session-topbar{justify-content:stretch}.custom-screen .custom-session-clock{flex:1;justify-content:space-between}.custom-screen .custom-session-topbar .quiz-pill{flex:1 1 auto}}
+.custom-screen .custom-session-clock #customClockToggle{font-size:10px;padding:6px 8px}
+@media(min-width:681px) and (max-width:900px){
+  .top-inner{flex-wrap:wrap;gap:10px;padding-block:12px}
+  .top-inner .brand{flex:1 1 100%}
+  .top-inner .header-actions{width:100%;justify-content:flex-end;flex-wrap:wrap}
+}

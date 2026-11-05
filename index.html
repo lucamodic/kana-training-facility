@@ -13,15 +13,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=29.0">
-  <script src="./app.js?v=29.0" defer></script>
-  <script src="./study-clock.js?v=29.0" defer></script>
-  <script src="./config.js?v=29.0" defer></script>
-  <script src="./cloud-sync.js?v=29.0" defer></script>
-  <script src="./learning-progress.js?v=29.0" defer></script>
-  <script src="./manga-cache.js?v=29.0" defer></script>
-  <script src="./manga-reader.js?v=29.0" defer></script>
-  <script src="./custom-collection.js?v=29.0" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=29.1">
+  <script src="./app.js?v=29.1" defer></script>
+  <script src="./study-clock.js?v=29.1" defer></script>
+  <script src="./config.js?v=29.1" defer></script>
+  <script src="./cloud-sync.js?v=29.1" defer></script>
+  <script src="./learning-progress.js?v=29.1" defer></script>
+  <script src="./manga-cache.js?v=29.1" defer></script>
+  <script src="./manga-reader.js?v=29.1" defer></script>
+  <script src="./custom-collection.js?v=29.1" defer></script>
 </head>
 <body>
   <header class="top">
@@ -249,10 +249,43 @@
             <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button></div>
           </div>
           <div id="customItems" class="custom-items"></div>
-          <div class="custom-study-actions"><label><span id="customModeLabel">Practice mode</span><select id="customMode"><option value="mixed">Mixed</option><option value="romaji">Romaji reading</option><option value="meaning">Meaning</option></select></label><button type="button" class="button-primary" id="customPracticeButton">Practice selected</button></div>
+          <div class="custom-study-actions">
+            <div class="custom-session-settings">
+              <span class="side-label" id="customSessionLabel">YOUR SESSION.INI</span>
+              <div class="custom-session-fields">
+                <label><span id="customModeLabel">Practice mode</span><select id="customMode" class="setting-select"><option value="mixed">Mixed</option><option value="romaji">Romaji reading</option><option value="meaning">Meaning</option></select></label>
+                <label><span id="customTimerLabel">Session timer</span><select id="customTimerMode" class="setting-select"><option value="off">No limit</option><option value="custom">Timer</option><option value="guesses">Guess limit</option></select></label>
+              </div>
+              <div id="customSessionTimerFields" class="custom-duration-fields" hidden>
+                <label><span id="customHoursLabel">Hours</span><input type="number" id="customSessionHours" min="0" max="99" step="1" value="0" inputmode="numeric"></label>
+                <span aria-hidden="true">:</span>
+                <label><span id="customMinutesLabel">Minutes</span><input type="number" id="customSessionMinutes" min="0" max="59" step="1" value="5" inputmode="numeric"></label>
+              </div>
+              <div id="customGuessFields" class="custom-guess-fields" hidden><label><span id="customGuessLabel">Number of guesses</span><input type="number" id="customGuessCount" min="1" max="10000" step="1" value="200" inputmode="numeric"></label></div>
+              <div class="custom-rapid-card">
+                <label class="custom-rapid-toggle" for="customRapidEnabled"><span class="custom-rapid-title"><strong id="customRapidTitle">Rapid Fire</strong><small id="customRapidSubtitle">A timed challenge for each answer</small></span><input id="customRapidEnabled" type="checkbox" role="switch" aria-controls="customRapidFields" aria-expanded="false"></label>
+                <div id="customRapidFields" class="custom-rapid-fields" hidden><label><span id="customRapidSecondsLabel">Seconds per answer</span><input type="number" id="customRapidSeconds" min="1" max="300" value="10" step="1" inputmode="numeric"></label></div>
+              </div>
+              <p class="custom-settings-note" id="customSettingsNote">Study settings apply to your custom collection.</p>
+            </div>
+            <div class="custom-session-choices session-choices">
+              <button type="button" class="button-secondary" id="customLearnButton">Learn my selection →</button><p class="choice-explanation" id="customLearnHelp">3 guided passes and 3 memory-test passes.</p>
+              <button type="button" class="button-primary" id="customPracticeButton">Infinite practice →</button><p class="choice-explanation" id="customInfiniteHelp">Shuffled questions until you decide to finish.</p>
+              <button type="button" class="button-secondary" id="customOnePassButton">One Pass · Daily review →</button><p class="choice-explanation" id="customOnePassHelp">Each selected custom item appears once.</p>
+            </div>
+          </div>
         </section>
       </div>
-      <div id="customPractice" class="custom-practice" hidden><div class="custom-practice-header"><span id="customPracticeTitle">Personal practice</span><span id="customPracticeProgress"></span></div><div class="custom-practice-card"><h3 id="customPracticeQuestion">Write the reading</h3><div class="custom-practice-symbol" id="customPracticeSymbol" lang="ja">字</div><p class="subtle" id="customPracticeInfo"></p><form id="customPracticeForm"><label for="customPracticeAnswer" id="customPracticeAnswerLabel">Your answer</label><input id="customPracticeAnswer" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"><p id="customPracticeFeedback" class="custom-feedback" role="status" hidden></p><div class="custom-practice-actions"><button type="submit" id="customPracticeCheck" class="button-primary">Check</button><button type="button" id="customPracticeSkip" class="button-secondary">I do not know</button></div></form><button type="button" id="customPracticeNext" class="button-primary" hidden>Next question →</button></div><button type="button" class="button-secondary" id="customPracticeExit">Back to collection</button></div>
+      <div id="customPractice" class="custom-practice" hidden>
+        <div class="custom-practice-header"><span id="customPracticeTitle">Personal practice</span><span id="customPracticeProgress"></span></div>
+        <div class="custom-session-topbar"><span class="quiz-pill" id="customSessionKind">Infinite practice</span><div class="custom-session-clock"><span id="customPracticeClock" aria-live="off">00:00</span><button type="button" class="mini-button" id="customClockToggle" aria-pressed="true">Hide clock</button><button type="button" class="mini-button" id="customPauseSession" aria-pressed="false">Pause</button></div></div>
+        <div class="custom-practice-stats" id="customPracticeStats"><span><small id="customStatsAnsweredLabel">Answered</small><strong id="customStatsAnswered">0</strong></span><span><small id="customStatsCorrectLabel">Correct</small><strong id="customStatsCorrect">0</strong></span><span><small id="customStatsAccuracyLabel">Accuracy</small><strong id="customStatsAccuracy">—</strong></span></div>
+        <div class="custom-practice-card" id="customPracticeCard"><h3 id="customPracticeQuestion">Write the reading</h3><div class="custom-practice-symbol" id="customPracticeSymbol" lang="ja">字</div><p class="subtle" id="customPracticeInfo"></p>
+          <div id="customGuidedBlock" class="custom-guided" hidden><span class="side-label" id="customGuidedLabel">GUIDED LEARNING</span><strong id="customGuidedAnswer"></strong><p class="subtle" id="customGuidedTip">Look at the reading and meaning, then continue.</p><button type="button" class="button-primary" id="customGuidedNext">Got it, next →</button></div>
+          <form id="customPracticeForm"><label for="customPracticeAnswer" id="customPracticeAnswerLabel">Your answer</label><input id="customPracticeAnswer" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"><p id="customPracticeFeedback" class="custom-feedback" role="status" hidden></p><div class="custom-practice-actions"><button type="submit" id="customPracticeCheck" class="button-primary">Check</button><button type="button" id="customPracticeSkip" class="button-secondary">I do not know</button></div></form>
+          <button type="button" id="customPracticeNext" class="button-primary" hidden>Next question →</button>
+        </div><button type="button" class="button-secondary" id="customPracticeExit">Finish lesson &amp; view results</button>
+      </div>
     </section>
 
     <section id="examScreen" class="quiz-wrap exam-session" aria-label="Skill exam" hidden>
@@ -279,7 +312,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v29.0</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v29.1</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

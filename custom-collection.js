@@ -40,6 +40,7 @@
       
       add:'Add a character or word',addButton:'Add custom',closeEditor:'Close editor',kind:'Type',kanji:'Kanji / character',word:'Word / expression',japanese:'Japanese text',reading:'Romaji reading (optional)',kana:'Kana reading (optional)',meaning:'Meaning (optional)',notes:'Notes (optional)',save:'Save to collection',update:'Save changes',cancel:'Cancel edit',source:'Source',manual:'Added manually',manga:'Manga Reader',list:'Your collection',all:'All',onlyKanji:'Characters',onlyWords:'Words',search:'Find a character, reading or meaning…',empty:'No saved items match this filter. Add some here or save them directly from a manga.',
       total:'saved',selectAll:'Select visible',selectNone:'Deselect visible',selected:'selected',study:'Practice selected',mode:'Practice mode',mixed:'Mixed',readingMode:'Romaji reading',meaningMode:'Meaning',edit:'Edit',remove:'Remove',confirm:'Remove this item from your custom collection?',duplicates:'This item is already in your collection.',added:'Added to your custom collection.',saved:'Changes saved.',deleted:'Removed from your custom collection.',invalid:'Enter a Japanese character or word.',
+      sessionLabel:'YOUR SESSION.INI',timerLabel:'Session timer',timerNone:'No limit',timerCustom:'Timer',timerGuesses:'Guess limit',hoursLabel:'Hours',minutesLabel:'Minutes',guessLabel:'Number of guesses',rapidTitle:'Rapid Fire',rapidSubtitle:'A timed challenge for each answer',rapidSecondsLabel:'Seconds per answer',settingsNote:'Your custom session uses the same practice options as the main trainer.',learnButton:'Learn my selection →',learnHelp:'3 guided passes followed by 3 memory-test passes.',infiniteButton:'Infinite practice →',infiniteHelp:'Shuffled questions until you decide to finish.',onePassButton:'One Pass · Daily review →',onePassHelp:'Each selected item appears once, across all tabs. Timer and guess limit do not apply.',guidedLabel:'GUIDED LEARNING',guidedTip:'Study the reading and meaning before continuing.',guidedNext:'Got it, next →',memoryPass:'Memory test',guidedPass:'Guided pass',infiniteTitle:'Infinite practice',learnTitle:'Guided learning',onePassTitle:'One Pass · Daily review',statsAnswered:'Answered',statsCorrect:'Correct',statsAccuracy:'Accuracy',pause:'Pause',resume:'Resume',endSession:'Finish lesson & view results',timeUp:'Time is up!',guessComplete:'Guess limit reached',rapidTimeUp:'Time is up! This counts as a mistake.',hideClock:'Hide clock',showClock:'Show clock',settingsInvalid:'Check the timer, guess limit or Rapid Fire values.',sessionDuration:'Study time',sessionReason:'Session finished',timedOutCount:'Rapid Fire timeouts',
       practiceTitle:'Personal practice',question:'Question',askReading:'Write the romaji reading',askMeaning:'Write the meaning',answer:'Your answer',check:'Check',skip:'I do not know',next:'Next question →',finish:'Finish practice',end:'Back to collection',correct:'Correct!',wrong:'Not quite',answerWas:'Expected answer:',noQuestions:'Choose at least one item with a meaning or romaji reading.',result:'Session completed',success:'Correct answers',attempts:'Attempts',practiceHint:'Practice results are saved in your account too.',count:'correct',review:'Review',imported:'Saved from manga', select:'Select for practice', remaining:'questions remaining'
     },
     es: {
@@ -47,6 +48,7 @@
       
       add:'Agregar carácter o palabra',addButton:'Agregar custom',closeEditor:'Cerrar editor',kind:'Tipo',kanji:'Kanji / carácter',word:'Palabra / expresión',japanese:'Texto japonés',reading:'Lectura en romaji (opcional)',kana:'Lectura en kana (opcional)',meaning:'Significado (opcional)',notes:'Notas (opcional)',save:'Guardar en mi colección',update:'Guardar cambios',cancel:'Cancelar edición',source:'Origen',manual:'Agregado manualmente',manga:'Manga Reader',list:'Mi colección',all:'Todos',onlyKanji:'Caracteres',onlyWords:'Palabras',search:'Buscar carácter, lectura o significado…',empty:'No hay elementos con ese filtro. Agregá uno acá o guardalo directamente desde un manga.',
       total:'guardados',selectAll:'Seleccionar visibles',selectNone:'Deseleccionar visibles',selected:'seleccionados',study:'Practicar seleccionados',mode:'Modo de práctica',mixed:'Mixto',readingMode:'Lectura en romaji',meaningMode:'Significado',edit:'Editar',remove:'Eliminar',confirm:'¿Eliminar este elemento de tu colección?',duplicates:'Ya tenés este elemento guardado.',added:'Agregado a tus caracteres custom.',saved:'Cambios guardados.',deleted:'Eliminado de tus caracteres custom.',invalid:'Ingresá un carácter o una palabra japonesa.',
+      sessionLabel:'TU SESIÓN.INI',timerLabel:'Temporizador',timerNone:'Sin límite',timerCustom:'Temporizador',timerGuesses:'Límite de intentos',hoursLabel:'Horas',minutesLabel:'Minutos',guessLabel:'Cantidad de intentos',rapidTitle:'Ráfaga',rapidSubtitle:'Un desafío contrarreloj por respuesta',rapidSecondsLabel:'Segundos por respuesta',settingsNote:'Tu colección custom tiene las mismas opciones que la práctica principal.',learnButton:'Aprender mi selección →',learnHelp:'3 pasadas guiadas y 3 pasadas de memoria.',infiniteButton:'Práctica infinita →',infiniteHelp:'Preguntas mezcladas hasta que decidas terminar.',onePassButton:'Una pasada · Repaso diario →',onePassHelp:'Cada elemento seleccionado aparece una vez, incluso en otras pestañas. Sin temporizador ni límite de intentos.',guidedLabel:'APRENDIZAJE GUIADO',guidedTip:'Estudiá la lectura y el significado antes de continuar.',guidedNext:'Entendido, siguiente →',memoryPass:'Prueba de memoria',guidedPass:'Pasada guiada',infiniteTitle:'Práctica infinita',learnTitle:'Aprendizaje guiado',onePassTitle:'Una pasada · Repaso diario',statsAnswered:'Respondidas',statsCorrect:'Correctas',statsAccuracy:'Precisión',pause:'Pausar',resume:'Reanudar',endSession:'Terminar y ver resultados',timeUp:'¡Se acabó el tiempo!',guessComplete:'Límite de intentos alcanzado',rapidTimeUp:'¡Tiempo agotado! Cuenta como error.',hideClock:'Ocultar reloj',showClock:'Mostrar reloj',settingsInvalid:'Revisá los valores del temporizador, intentos o Ráfaga.',sessionDuration:'Tiempo de estudio',sessionReason:'Sesión terminada',timedOutCount:'Respuestas agotadas por tiempo',
       practiceTitle:'Práctica personalizada',question:'Pregunta',askReading:'Escribí la lectura en romaji',askMeaning:'Escribí el significado',answer:'Tu respuesta',check:'Comprobar',skip:'No sé',next:'Siguiente →',finish:'Terminar práctica',end:'Volver a la colección',correct:'¡Correcto!',wrong:'No del todo',answerWas:'Respuesta esperada:',noQuestions:'Seleccioná al menos un elemento con significado o lectura en romaji.',result:'Práctica terminada',success:'Respuestas correctas',attempts:'Intentos',practiceHint:'Tus resultados también se guardan en tu cuenta.',count:'aciertos',review:'Repaso',imported:'Guardado desde el manga',select:'Seleccionar para practicar',remaining:'preguntas restantes'
     }
   };
@@ -60,6 +62,16 @@
   let loaded = false;
   let owner = null;
   let practice = null;
+  const sessionSettingsKey = 'ktf-custom-session-settings-v1';
+  const sessionDefaults = {timerMode:'off',hours:0,minutes:5,guesses:200,rapidFire:false,rapidSeconds:10,showClock:true};
+  let sessionSettings = {...sessionDefaults};
+  try {
+    const stored = JSON.parse(localStorage.getItem(sessionSettingsKey) || '{}');
+    if (stored && typeof stored === 'object') sessionSettings = {...sessionSettings,...Object.fromEntries(Object.keys(sessionDefaults).filter(key => Object.hasOwn(stored,key)).map(key => [key,stored[key]]))};
+  } catch (_) {}
+  function saveSessionSettings() {
+    try {localStorage.setItem(sessionSettingsKey,JSON.stringify(sessionSettings));} catch (_) {}
+  }
   let renderRevision = 0;
   let messageTimeout = null;
   let returnView = 'setup';
@@ -145,13 +157,16 @@
     $('customPracticeAnswerLabel').textContent = t('answer');
     $('customPracticeSkip').textContent = t('skip');
     $('customPracticeNext').textContent = t('next');
+    for (const [id,key] of [['customSessionLabel','sessionLabel'],['customTimerLabel','timerLabel'],['customHoursLabel','hoursLabel'],['customMinutesLabel','minutesLabel'],['customGuessLabel','guessLabel'],['customRapidTitle','rapidTitle'],['customRapidSubtitle','rapidSubtitle'],['customRapidSecondsLabel','rapidSecondsLabel'],['customSettingsNote','settingsNote'],['customLearnButton','learnButton'],['customLearnHelp','learnHelp'],['customPracticeButton','infiniteButton'],['customInfiniteHelp','infiniteHelp'],['customOnePassButton','onePassButton'],['customOnePassHelp','onePassHelp'],['customGuidedLabel','guidedLabel'],['customGuidedTip','guidedTip'],['customGuidedNext','guidedNext'],['customStatsAnsweredLabel','statsAnswered'],['customStatsCorrectLabel','statsCorrect'],['customStatsAccuracyLabel','statsAccuracy']]) $(id).textContent=t(key);
+    for (const [index,key] of ['timerNone','timerCustom','timerGuesses'].entries()) $('customTimerMode').options[index].textContent=t(key);
+    if (!practice) $('customPracticeExit').textContent=t('end');
   }
   function renderList() {
     labelText();
     const displayed = visible();
     $('customTotal').textContent = `${items.length} ${t('total')}`;
     $('customSelected').textContent = `${selected.size} ${t('selected')}`;
-    $('customPracticeButton').disabled = !selected.size;
+    updateActionAvailability();
     $('customCharacterCount').textContent = String(items.filter(item => item.kind === 'kanji' && selected.has(item.id)).length);
     $('customWordCount').textContent = String(items.filter(item => item.kind === 'word' && selected.has(item.id)).length);
     $('customAllCount').textContent = String(selected.size);
@@ -169,6 +184,57 @@
         ${item.meaning ? `<span class="custom-item-meaning">${escapeHtml(item.meaning)}</span>` : ''}
       </button>`;
     }).join('') : `<p class="subtle custom-empty">${t('empty')}</p>`;
+  }
+  function updateActionAvailability() {
+    const allowed = items.some(item => selected.has(item.id) && answerTypes(item,$('customMode').value).length);
+    for (const id of ['customPracticeButton','customLearnButton','customOnePassButton']) $(id).disabled = !allowed;
+  }
+  function answerTypes(item,answerMode) {
+    const types=[];
+    if (answerMode !== 'meaning' && item.romaji) types.push('romaji');
+    if (answerMode !== 'romaji' && item.meaning) types.push('meaning');
+    return types;
+  }
+  function restoreSessionOptions() {
+    $('customTimerMode').value=['off','custom','guesses'].includes(sessionSettings.timerMode) ? sessionSettings.timerMode : 'off';
+    $('customSessionHours').value=String(sessionSettings.hours);
+    $('customSessionMinutes').value=String(sessionSettings.minutes);
+    $('customGuessCount').value=String(sessionSettings.guesses);
+    $('customRapidEnabled').checked=sessionSettings.rapidFire === true;
+    $('customRapidSeconds').value=String(sessionSettings.rapidSeconds);
+    updateSessionFields();
+  }
+  function updateSessionFields() {
+    $('customSessionTimerFields').hidden=$('customTimerMode').value !== 'custom';
+    $('customGuessFields').hidden=$('customTimerMode').value !== 'guesses';
+    $('customRapidFields').hidden=!$('customRapidEnabled').checked;
+    $('customRapidEnabled').setAttribute('aria-expanded',String($('customRapidEnabled').checked));
+  }
+  function validInteger(value,minimum,maximum) {
+    const text=String(value).trim();
+    return /^\d+$/.test(text) && Number.isSafeInteger(Number(text)) && Number(text)>=minimum && Number(text)<=maximum ? Number(text) : null;
+  }
+  function readSessionOptions(mode) {
+    const timerMode=mode==='onepass'?'off':$('customTimerMode').value;
+    let timerSeconds=null,guessLimit=null;
+    if (timerMode === 'custom') {
+      const hours=validInteger($('customSessionHours').value,0,99);
+      const minutes=validInteger($('customSessionMinutes').value,0,59);
+      if (hours===null || minutes===null || hours+minutes===0) return null;
+      timerSeconds=hours*3600+minutes*60;
+    }
+    if (timerMode === 'guesses') {
+      guessLimit=validInteger($('customGuessCount').value,1,10000);
+      if (guessLimit===null) return null;
+    }
+    const rapidSeconds=$('customRapidEnabled').checked ? validInteger($('customRapidSeconds').value,1,300) : null;
+    if ($('customRapidEnabled').checked && rapidSeconds===null) return null;
+    return {timerMode,timerSeconds,guessLimit,rapidSeconds};
+  }
+  function updateSessionSettings() {
+    sessionSettings={timerMode:$('customTimerMode').value,hours:$('customSessionHours').value,minutes:$('customSessionMinutes').value,guesses:$('customGuessCount').value,rapidFire:$('customRapidEnabled').checked,rapidSeconds:$('customRapidSeconds').value};
+    saveSessionSettings();
+    updateSessionFields();
   }
   function showEditor(item = null) {
     if (!item) resetForm();
@@ -231,6 +297,7 @@
     $('customScreen').hidden = false;
     $('customPractice').hidden = true;
     $('customBrowse').hidden = false;
+    stopSessionClock();
     practice = null;
     hideEditor();
     renderList();
@@ -243,6 +310,7 @@
     const backToManga = !forceSetup && returnView === 'manga' && !$('openMangaButton').hidden;
     $('mangaScreen').hidden = !backToManga;
     $('setupScreen').hidden = backToManga;
+    stopSessionClock();
     practice = null;
     returnView = 'setup';
     (backToManga ? $('mangaScreen') : $('setupScreen')).scrollIntoView({block:'start',behavior:'instant'});
@@ -255,88 +323,203 @@
     if (kind === 'romaji') return options.some(option => option.replace(/[\s.'-]/g,'') === answer.replace(/[\s.'-]/g,''));
     return options.includes(answer);
   }
-  function questionBank() {
-    const mode = $('customMode').value;
-    const bank = [];
-    for (const item of items.filter(row => selected.has(row.id))) {
-      const types = [];
-      if (mode !== 'meaning' && item.romaji) types.push('romaji');
-      if (mode !== 'romaji' && item.meaning) types.push('meaning');
-      if (!types.length) continue;
-      const type = types[Math.floor(Math.random()*types.length)];
-      bank.push({item,type});
+  function questionBank(answerMode) {
+    return items.filter(item => selected.has(item.id) && answerTypes(item,answerMode).length);
+  }
+  function shuffledQuestions(session) {
+    const deck=session.pool.map(item => {
+      const types=answerTypes(item,session.answerMode);
+      return {item,type:types[Math.floor(Math.random()*types.length)]};
+    });
+    for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+    if (deck.length>1 && deck[0].item.id===session.lastItem) {
+      const alternative=deck.findIndex(question=>question.item.id!==session.lastItem);
+      if (alternative>0) [deck[0],deck[alternative]]=[deck[alternative],deck[0]];
     }
-    for (let i=bank.length-1;i>0;i--) {const j=Math.floor(Math.random()*(i+1));[bank[i],bank[j]]=[bank[j],bank[i]];}
-    return bank.slice(0,20);
+    return deck;
   }
-  function startPractice() {
-    const bank = questionBank();
-    if (!bank.length) {notify(t('noQuestions'),true);return;}
-    practice = {bank,index:0,correct:0,answered:0,checked:false,lastCorrect:false};
-    $('customBrowse').hidden = true;
-    $('customPractice').hidden = false;
-    renderPractice();
+  function formatDuration(milliseconds) {
+    const seconds=Math.max(0,Math.floor(milliseconds/1000));
+    const hours=Math.floor(seconds/3600);
+    const minutes=Math.floor(seconds%3600/60);
+    const rest=seconds%60;
+    return hours ? `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(rest).padStart(2,'0')}` : `${String(minutes).padStart(2,'0')}:${String(rest).padStart(2,'0')}`;
   }
-  function renderPractice() {
+  function stopSessionClock() {
     if (!practice) return;
-    const {bank,index} = practice;
-    $('customPracticeTitle').textContent = t('practiceTitle');
-    const item = bank[index];
-    if (!item) {
-      $('customPracticeQuestion').textContent = t('result');
-      $('customPracticeSymbol').textContent = `${practice.correct} / ${practice.answered}`;
-      $('customPracticeInfo').textContent = `${t('success')}: ${practice.correct} · ${t('attempts')}: ${practice.answered}. ${t('practiceHint')}`;
-      $('customPracticeForm').hidden = true;
-      $('customPracticeProgress').textContent = '';
-      $('customPracticeNext').hidden = true;
-      $('customPracticeExit').textContent = t('end');
+    if (practice.interval !== null) {clearInterval(practice.interval);practice.interval=null;}
+    if (practice.advanceTimeout !== null) {clearTimeout(practice.advanceTimeout);practice.advanceTimeout=null;}
+  }
+  function showSessionStats(session) {
+    $('customStatsAnswered').textContent=String(session.answered);
+    $('customStatsCorrect').textContent=String(session.correct);
+    $('customStatsAccuracy').textContent=session.answered ? `${Math.round(session.correct/session.answered*100)}%` : '—';
+  }
+  function showSessionClock(session) {
+    if (!session) return;
+    $('customPracticeClock').textContent=formatDuration(session.timerSeconds === null ? session.elapsedMs : Math.max(0,session.timerSeconds*1000-session.elapsedMs));
+    $('customPracticeClock').hidden=!session.showClock && session.timerSeconds===null;
+    $('customClockToggle').hidden=session.timerSeconds!==null;
+    $('customClockToggle').textContent=t(session.showClock?'hideClock':'showClock');
+    $('customClockToggle').setAttribute('aria-pressed',String(session.showClock));
+    $('customPracticeClock').classList.toggle('is-urgent',session.timerSeconds!==null && session.timerSeconds*1000-session.elapsedMs<=30000);
+    const rapidActive=session.rapidSeconds!==null && !session.guided && !session.checked && !session.done;
+    $('customPracticeProgress').textContent=session.done ? '' : `${session.mode==='learn' ? `${session.round<=3?t('guidedPass'):t('memoryPass')} ${session.round<=3?session.round:session.round-3}/3 · ` : ''}${t('question')} ${session.index}${session.mode!=='infinite'?` / ${session.mode==='learn'?session.pool.length*6:session.pool.length}`:''}${rapidActive ? ` · ${Math.max(0,Math.ceil((session.rapidSeconds*1000-session.rapidElapsedMs)/1000))}s` : ''}`;
+    $('customPauseSession').textContent=t(session.paused?'resume':'pause');
+    $('customPauseSession').setAttribute('aria-pressed',String(session.paused));
+    $('customPracticeCard').classList.toggle('is-paused',session.paused);
+    $('customPracticeAnswer').disabled=session.paused || session.checked || session.guided || session.done;
+    $('customPracticeCheck').disabled=session.paused || session.checked;
+    $('customPracticeSkip').disabled=session.paused || session.checked;
+    $('customGuidedNext').disabled=session.paused;
+    $('customPracticeNext').disabled=session.paused;
+  }
+  function startPractice(mode='infinite') {
+    const answerMode=$('customMode').value;
+    const pool=questionBank(answerMode);
+    if (!pool.length) {notify(t('noQuestions'),true);return;}
+    const options=readSessionOptions(mode);
+    if (!options) {notify(t('settingsInvalid'),true);return;}
+    stopSessionClock();
+    practice={mode,answerMode,pool,showClock:sessionSettings.showClock!==false,deck:[],round:0,index:0,lastItem:null,current:null,checked:false,guided:false,done:false,paused:false,correct:0,answered:0,rapidTimeouts:0,elapsedMs:0,rapidElapsedMs:0,lastTick:performance.now(),interval:null,advanceTimeout:null,...options};
+    $('customBrowse').hidden=true;
+    $('customPractice').hidden=false;
+    $('customPracticeExit').textContent=t('endSession');
+    $('customSessionKind').textContent=t(mode==='onepass'?'onePassTitle':mode==='learn'?'learnTitle':'infiniteTitle');
+    $('customPauseSession').hidden=false;
+    $('customPracticeStats').hidden=false;
+    $('customPracticeCard').classList.remove('is-paused');
+    showSessionStats(practice);
+    nextSessionQuestion();
+    if (practice && !practice.done) {
+      practice.lastTick=performance.now();
+      practice.interval=setInterval(tickSession,100);
+    }
+    $('customPractice').scrollIntoView({block:'start',behavior:'instant'});
+  }
+  function tickSession() {
+    const session=practice;
+    if (!session || session.done) return;
+    const now=performance.now();
+    const delta=Math.max(0,now-session.lastTick);
+    session.lastTick=now;
+    if (session.paused) return;
+    session.elapsedMs+=delta;
+    if (session.timerSeconds!==null && session.elapsedMs>=session.timerSeconds*1000) {
+      session.elapsedMs=session.timerSeconds*1000;
+      completeSession(t('timeUp'));
       return;
     }
-    $('customPracticeForm').hidden = false;
-    $('customPracticeQuestion').textContent = t(item.type === 'romaji' ? 'askReading' : 'askMeaning');
-    $('customPracticeSymbol').textContent = item.item.surface;
-    $('customPracticeInfo').textContent = `${item.item.kind === 'kanji' ? t('kanji') : t('word')} · ${t('review')}`;
-    $('customPracticeProgress').textContent = `${t('question')} ${index + 1} / ${bank.length}`;
-    $('customPracticeAnswer').value = '';
-    $('customPracticeAnswer').disabled = false;
-    $('customPracticeCheck').disabled = false;
-    $('customPracticeSkip').hidden = false;
-    $('customPracticeFeedback').hidden = true;
-    $('customPracticeNext').hidden = true;
-    $('customPracticeCheck').textContent = t('check');
-    $('customPracticeSkip').textContent = t('skip');
-    practice.checked = false;
-    $('customPracticeAnswer').focus({preventScroll:true});
+    if (session.rapidSeconds!==null && !session.guided && !session.checked) {
+      session.rapidElapsedMs+=delta;
+      if (session.rapidElapsedMs>=session.rapidSeconds*1000) {
+        session.rapidElapsedMs=session.rapidSeconds*1000;
+        checkPractice(true,true).catch(error=>notify(error.message || String(error),true));
+      }
+    }
+    showSessionClock(session);
   }
-  async function checkPractice(skipped = false) {
-    if (!practice || practice.checked) return;
-    const question = practice.bank[practice.index];
-    if (!question) return;
-    const expected = question.type === 'romaji' ? question.item.romaji : question.item.meaning;
-    const answer = $('customPracticeAnswer').value;
+  function toggleSessionPause() {
+    if (!practice || practice.done) return;
+    tickSession();
+    if (!practice || practice.done) return;
+    practice.paused=!practice.paused;
+    practice.lastTick=performance.now();
+    showSessionClock(practice);
+    if (!practice.paused && !practice.guided && !practice.checked) $('customPracticeAnswer').focus({preventScroll:true});
+  }
+  function nextSessionQuestion() {
+    const session=practice;
+    if (!session || session.done) return;
+    if (session.guessLimit !== null && session.answered>=session.guessLimit) {completeSession(t('guessComplete'));return;}
+    if (!session.deck.length) {
+      if ((session.mode==='learn' && session.round===6) || (session.mode==='onepass' && session.round===1)) {completeSession();return;}
+      session.deck=shuffledQuestions(session);
+      session.round++;
+    }
+    session.current=session.deck.shift();
+    session.lastItem=session.current.item.id;
+    session.index++;
+    session.guided=session.mode==='learn' && session.round<=3;
+    session.checked=false;
+    session.rapidElapsedMs=0;
+    if (session.advanceTimeout!==null) {clearTimeout(session.advanceTimeout);session.advanceTimeout=null;}
+    $('customPracticeForm').hidden=session.guided;
+    $('customGuidedBlock').hidden=!session.guided;
+    $('customPracticeNext').hidden=true;
+    $('customPracticeSymbol').textContent=session.current.item.surface;
+    $('customPracticeInfo').textContent=`${session.current.item.kind==='kanji'?t('kanji'):t('word')} · ${t('review')}`;
+    $('customPracticeQuestion').textContent=session.guided?t('guidedPass') : t(session.current.type==='romaji'?'askReading':'askMeaning');
+    $('customGuidedAnswer').textContent=[session.current.item.kana || session.current.item.romaji,session.current.item.meaning].filter(Boolean).join(' · ');
+    $('customPracticeAnswer').value='';
+    $('customPracticeFeedback').hidden=true;
+    $('customPracticeCheck').textContent=t('check');
+    $('customPracticeSkip').textContent=t('skip');
+    $('customPracticeSkip').hidden=false;
+    showSessionClock(session);
+    if (!session.paused) (session.guided?$('customGuidedNext'):$('customPracticeAnswer')).focus({preventScroll:true});
+  }
+  async function checkPractice(skipped=false,timedOut=false) {
+    const session=practice;
+    if (!session || session.done || session.paused || session.guided || session.checked) return;
+    const question=session.current;
+    const expected=question.type==='romaji' ? question.item.romaji : question.item.meaning;
+    const answer=$('customPracticeAnswer').value;
     if (!skipped && !answer.trim()) return;
-    const correct = !skipped && accepted(answer,expected,question.type);
-    practice.checked = true;
-    practice.answered++;
-    if (correct) practice.correct++;
-    const feedback = $('customPracticeFeedback');
-    feedback.hidden = false;
+    const correct=!skipped && accepted(answer,expected,question.type);
+    session.checked=true;
+    session.answered++;
+    if(correct) session.correct++;
+    if(timedOut)session.rapidTimeouts++;
+    const feedback=$('customPracticeFeedback');
+    feedback.hidden=false;
     feedback.classList.toggle('is-correct',correct);
     feedback.classList.toggle('is-wrong',!correct);
-    feedback.textContent = `${t(correct?'correct':'wrong')} ${t('answerWas')} ${expected}${question.item.kana ? ` (${question.item.kana})` : ''}`;
-    $('customPracticeAnswer').disabled = true;
-    $('customPracticeCheck').disabled = true;
-    $('customPracticeSkip').hidden = true;
-    $('customPracticeNext').hidden = false;
-    $('customPracticeNext').textContent = practice.index === practice.bank.length - 1 ? t('finish') : t('next');
-    try { await persist('custom_review',{itemId:question.item.id,correct,mode:question.type,answeredAt:new Date().toISOString()}); }
-    catch (error) {notify(error.message || String(error),true);}
-    $('customPracticeNext').focus({preventScroll:true});
+    feedback.textContent=`${timedOut?t('rapidTimeUp'):(t(correct?'correct':'wrong'))} ${t('answerWas')} ${expected}${question.item.kana ? ` (${question.item.kana})` : ''}`;
+    $('customPracticeSkip').hidden=true;
+    $('customPracticeNext').hidden=false;
+    $('customPracticeNext').textContent=(session.guessLimit!==null && session.answered>=session.guessLimit) || (session.mode==='onepass' && session.round===1 && !session.deck.length) || (session.mode==='learn' && session.round===6 && !session.deck.length) ? t('finish') : t('next');
+    showSessionStats(session);
+    showSessionClock(session);
+    try {await persist('custom_review',{itemId:question.item.id,correct,mode:question.type,answeredAt:new Date().toISOString()});}
+    catch(error){notify(error.message || String(error),true);}
+    if(practice!==session || session.done)return;
+    if(timedOut) session.advanceTimeout=setTimeout(()=>{if(practice===session && !session.paused)nextSessionQuestion();},850);
+    else $('customPracticeNext').focus({preventScroll:true});
+  }
+  function completeSession(reason='') {
+    const session=practice;
+    if(!session || session.done)return;
+    stopSessionClock();
+    session.done=true;
+    session.paused=false;
+    $('customPracticeForm').hidden=true;
+    $('customGuidedBlock').hidden=true;
+    $('customPracticeNext').hidden=true;
+    $('customPauseSession').hidden=true;
+    $('customPracticeStats').hidden=false;
+    session.finishReason=reason;
+    renderSessionResult(session);
+    $('customPracticeProgress').textContent='';
+    $('customPracticeClock').textContent=formatDuration(session.elapsedMs);
+    $('customPracticeClock').classList.remove('is-urgent');
+    $('customPracticeCard').classList.remove('is-paused');
+    $('customPracticeExit').textContent=t('end');
+    showSessionStats(session);
+  }
+  function renderSessionResult(session) {
+    $('customPracticeQuestion').textContent=t('result');
+    $('customPracticeSymbol').textContent=`${session.correct} / ${session.answered}`;
+    $('customPracticeInfo').textContent=`${session.finishReason || t('sessionReason')} · ${t('sessionDuration')}: ${formatDuration(session.elapsedMs)}${session.rapidTimeouts?` · ${t('timedOutCount')}: ${session.rapidTimeouts}`:''}`;
+    $('customPracticeExit').textContent=t('end');
+    $('customSessionKind').textContent=t(session.mode==='onepass'?'onePassTitle':session.mode==='learn'?'learnTitle':'infiniteTitle');
   }
   function finishPractice() {
-    practice = null;
-    $('customBrowse').hidden = false;
-    $('customPractice').hidden = true;
+    if(practice && !practice.done){completeSession();return;}
+    stopSessionClock();
+    practice=null;
+    $('customBrowse').hidden=false;
+    $('customPractice').hidden=true;
     renderList();
   }
   let dragState = null;
@@ -354,12 +537,13 @@
     else selected.delete(id);
     tile.setAttribute('aria-pressed',String(selected.has(id)));
     $('customSelected').textContent = `${selected.size} ${t('selected')}`;
-    $('customPracticeButton').disabled = !selected.size;
+    updateActionAvailability();
     $('customCharacterCount').textContent = String(items.filter(item => item.kind === 'kanji' && selected.has(item.id)).length);
     $('customWordCount').textContent = String(items.filter(item => item.kind === 'word' && selected.has(item.id)).length);
     $('customAllCount').textContent = String(selected.size);
   }
   function attach() {
+    restoreSessionOptions();
     $('openCustomButton').addEventListener('click',open);
     $('mangaOpenCustom').addEventListener('click',open);
     $('customBack').addEventListener('click',()=>close());
@@ -415,16 +599,29 @@
     });
     $('customSelectAll').addEventListener('click',()=>{visible().forEach(item => selected.add(item.id));renderList();});
     $('customSelectNone').addEventListener('click',()=>{visible().forEach(item => selected.delete(item.id));renderList();});
-    $('customPracticeButton').addEventListener('click',startPractice);
+    $('customPracticeButton').addEventListener('click',()=>startPractice('infinite'));
+    $('customLearnButton').addEventListener('click',()=>startPractice('learn'));
+    $('customOnePassButton').addEventListener('click',()=>startPractice('onepass'));
+    $('customMode').addEventListener('change',updateActionAvailability);
+    for(const id of ['customTimerMode','customSessionHours','customSessionMinutes','customGuessCount','customRapidEnabled','customRapidSeconds']) $(id).addEventListener(id==='customTimerMode'||id==='customRapidEnabled'?'change':'input',updateSessionSettings);
+    $('customPauseSession').addEventListener('click',toggleSessionPause);
+    $('customClockToggle').addEventListener('click',()=>{
+      if(!practice || practice.done || practice.timerSeconds!==null)return;
+      practice.showClock=!practice.showClock;
+      sessionSettings.showClock=practice.showClock;
+      saveSessionSettings();
+      showSessionClock(practice);
+    });
+    $('customGuidedNext').addEventListener('click',()=>{if(practice && !practice.done && !practice.paused && practice.guided)nextSessionQuestion();});
     $('customPracticeForm').addEventListener('submit',event => {event.preventDefault();checkPractice().catch(() => {});});
     $('customPracticeSkip').addEventListener('click',()=>checkPractice(true).catch(() => {}));
-    $('customPracticeNext').addEventListener('click',()=>{if (!practice)return;practice.index++;renderPractice();});
+    $('customPracticeNext').addEventListener('click',()=>{if(practice && !practice.paused && practice.checked)nextSessionQuestion();});
     $('customPracticeExit').addEventListener('click',finishPractice);
     cloud.subscribe(() => {
-      if (owner !== currentOwner()) {loaded = false;practice = null;if(isOpen()){ $('customBrowse').hidden=false;$('customPractice').hidden=true;hideEditor(); }}
+      if (owner !== currentOwner()) {loaded = false;stopSessionClock();practice = null;if(isOpen()){ $('customBrowse').hidden=false;$('customPractice').hidden=true;hideEditor(); }}
       refresh().catch(() => {});
     });
-    document.addEventListener('ktf:languagechange',()=>{labelText();if (isOpen() && !practice) renderList();if (practice)renderPractice();});
+    document.addEventListener('ktf:languagechange',()=>{labelText();if(isOpen() && !practice)renderList();if(practice){showSessionStats(practice);showSessionClock(practice);if(practice.done)renderSessionResult(practice);}});
     window.addEventListener('ktf:custom-added',event => {addFromManga(event.detail.kind,event.detail.item,event.detail.source).catch(error => notify(String(error.message||error),true));});
     document.addEventListener('keydown',event => {if(isOpen() && event.key === 'Escape' && !practice && !$('customEditorDialog').open) close();});
   }

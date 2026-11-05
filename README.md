@@ -1,3 +1,13 @@
+## v29.1 — Custom practice mode parity
+
+- Custom now supports Infinite Practice, Learn My Selection (3 guided passes + 3 memory-test passes), and One Pass across all selected custom tabs.
+- Custom session settings include no-limit or timed practice, guess limit, Rapid Fire per-answer countdown, and pause/resume.
+- Custom no longer stops automatically after 20 questions in Infinite mode.
+- One Pass ignores the Custom session countdown and guess limit to match the main trainer, but supports Rapid Fire. The floating My Study Time clock remains independent.
+- Session results retain per-item review history through the existing cloud event system; guided learning passes do not create scored attempts.
+- Session settings persist locally. No SQL changes or new manga image storage.
+- Footer and PWA asset versions updated to 29.1; deploy all files together.
+
 ## v29.0 — Cohesive Custom practice and focused Manga Reader
 
 - Custom collection now uses the same tab navigation and compact selectable tiles as Kana practice. Click or drag across tiles to select multiple; use the search, Select visible, and Deselect visible controls to manage selection. Editing and deleting controls are no longer shown on individual tiles. Custom additions remain available from the Add Custom modal and Manga Reader.

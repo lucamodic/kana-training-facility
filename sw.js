@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kana-training-facility-offline-v29-2-custom-main-parity';
+const CACHE_NAME = 'kana-training-facility-offline-v30-grammar-foundations';
 const SHELL = [
-  './', './index.html', './styles.css?v=29.2', './app.js?v=29.2', './study-clock.js?v=29.2', './config.js?v=29.2', './cloud-sync.js?v=29.2', './learning-progress.js?v=29.2', './manga-cache.js?v=29.2', './manga-reader.js?v=29.2', './custom-collection.js?v=29.2', './manifest.webmanifest',
+  './', './index.html', './styles.css?v=30.0', './app.js?v=30.0', './study-clock.js?v=30.0', './config.js?v=30.0', './cloud-sync.js?v=30.0', './learning-progress.js?v=30.0', './manga-cache.js?v=30.0', './manga-reader.js?v=30.0', './custom-collection.js?v=30.0', './grammar-data.js?v=30.0', './grammar.js?v=30.0', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

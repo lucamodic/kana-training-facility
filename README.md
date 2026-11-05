@@ -1,3 +1,38 @@
+# Kana Training Facility v30.0 — Grammar Foundations
+
+## Novedades
+
+- **Grammar / Gramática** es una sección independiente. Está entre Custom y Manga Reader en la navegación; en pantallas medianas y móviles la barra se reorganiza automáticamente.
+- 13 lecciones agrupadas en Basics, Particles, Verbs y Adjectives, con 39 oraciones de práctica y explicaciones en inglés y español.
+- Cada pregunta muestra una oración en japonés y exige **dos respuestas separadas**: lectura en romaji y significado. Ambas deben acertarse para sumar un punto.
+- El corrector acepta variantes de significado precargadas; cuando una traducción válida no coincide con las variantes, el usuario puede marcarla como válida después de revisar la corrección. La lectura se corrige por separado.
+- Modos **Learn my selection** (3 pasadas guiadas y 3 evaluadas), **Infinite practice** y **One Pass**, con temporizador, límite de intentos y Rapid Fire.
+- Panel de opciones a la derecha como en Custom/Hiragana, tarjetas seleccionables, ventana de lección, estadísticas y pantalla de resultados con oraciones para repasar.
+- Los resultados de sesiones terminadas se guardan mediante el sistema existente de progreso (`exam_attempt`, `examId: grammar-practice`). Si el usuario inició sesión, el sistema existente de sincronización se encarga de enviarlos a Supabase. **No hace falta ejecutar SQL adicional**.
+- La selección de lecciones se guarda localmente para cada perfil del navegador.
+- **Manga Reader permanece intacto**: no hay extracción gramatical, nuevos pedidos a la IA ni cambios en el caché de mangas.
+
+## Rapid Fire y My Study Time en v30
+
+- **Rapid Fire:** los segundos restantes se ven junto a una barra de progreso en Kana, Custom y Grammar. Al responder correctamente, incorrectamente o agotar el tiempo, la pregunta queda en pantalla con su corrección. Solo avanza al pulsar «Siguiente»; el temporizador por pregunta se detiene durante la corrección.
+- **My Study Time:** mientras el reloj general está corriendo, las sesiones de Kana, Custom y Grammar aportan intentos, aciertos, precisión, tarjetas guiadas, sesiones finalizadas y elementos con errores. El resumen separa cada actividad y muestra los elementos que más costaron.
+- **Manga Reader:** además del tiempo activo, cuenta páginas distintas visitadas, explicaciones reveladas, análisis completados, palabras/kanjis guardados y respuestas de los ejercicios de romaji con sus aciertos y errores. Solo se calculan porcentajes cuando el usuario respondió una pregunta; abrir una página no equivale a acertar o fallar una pregunta.
+- **Grammar:** desglosa también los aciertos de lectura en romaji y de significado por separado.
+- **Pausas:** no registra tiempo ni nuevas estadísticas cuando el reloj general está pausado o finalizado. Los contadores corresponden a la sesión actual, no a un histórico de todo el uso del sitio.
+- Los cambios son locales a la interfaz y el resumen; no requieren SQL nuevo ni borrar datos existentes. El módulo Grammar sigue sin conectarse a los análisis del Manga Reader.
+
+## Instalación
+
+Reemplazá los archivos de la versión anterior por el contenido de este ZIP y publicá en GitHub/Vercel. El footer y el service worker identifican `v30.0`. No borres los datos del sitio ni la caché local de los mangas.
+
+## Archivos nuevos
+
+- `grammar-data.js`: temario bilingüe y oraciones de práctica.
+- `grammar.js`: selección, presentación de lecciones, ejercicios y resultados.
+- `tests/grammar-v30.test.cjs`: comprobaciones de contenidos, navegación y compatibilidad con la PWA.
+
+---
+
 ## v29.2 — Custom practice UI parity and bulk deletion
 
 - Custom collection now follows the main selection-page layout, with compact selectable tiles on the left and a complete session settings panel on the right.

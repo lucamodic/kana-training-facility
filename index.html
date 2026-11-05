@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#d9cae9">
-  <meta name="description" content="Kana Training Facility: learn hiragana, katakana, kanji and Japanese words at your own pace.">
+  <meta name="description" content="Kana Training Facility: learn hiragana, katakana, kanji and Japanese words and grammar at your own pace.">
   <title>Kana Training Facility</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
@@ -13,15 +13,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=29.2">
-  <script src="./app.js?v=29.2" defer></script>
-  <script src="./study-clock.js?v=29.2" defer></script>
-  <script src="./config.js?v=29.2" defer></script>
-  <script src="./cloud-sync.js?v=29.2" defer></script>
-  <script src="./learning-progress.js?v=29.2" defer></script>
-  <script src="./manga-cache.js?v=29.2" defer></script>
-  <script src="./manga-reader.js?v=29.2" defer></script>
-  <script src="./custom-collection.js?v=29.2" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=30.0">
+  <script src="./app.js?v=30.0" defer></script>
+  <script src="./study-clock.js?v=30.0" defer></script>
+  <script src="./config.js?v=30.0" defer></script>
+  <script src="./cloud-sync.js?v=30.0" defer></script>
+  <script src="./learning-progress.js?v=30.0" defer></script>
+  <script src="./manga-cache.js?v=30.0" defer></script>
+  <script src="./manga-reader.js?v=30.0" defer></script>
+  <script src="./custom-collection.js?v=30.0" defer></script>
+  <script src="./grammar-data.js?v=30.0" defer></script>
+  <script src="./grammar.js?v=30.0" defer></script>
 </head>
 <body>
   <header class="top">
@@ -70,7 +72,7 @@
 
     <section class="global-study shell is-floating is-minimized" id="globalStudyClock" aria-label="Study time tracker">
       <div class="study-clock-card">
-        <div class="study-clock-titlebar"><span aria-hidden="true">✦</span> <strong id="studyClockTitle">MY STUDY TIME</strong><span class="study-clock-title-deco" aria-hidden="true">✧ ✧</span><span class="study-clock-mini-time" id="studyClockMiniTime" aria-hidden="true">--:--:--</span><div class="study-clock-window-actions"><button type="button" id="studyClockMinimize" class="study-clock-window-button" aria-label="Minimize study clock" title="Minimize study clock" hidden>−</button></div></div>
+        <div class="study-clock-titlebar"><span aria-hidden="true">✦</span><span class="study-clock-grip" aria-hidden="true">⠿</span> <strong id="studyClockTitle">MY STUDY TIME</strong><span class="study-clock-title-deco" aria-hidden="true">✧ ✧</span><span class="study-clock-mini-time" id="studyClockMiniTime" aria-hidden="true">--:--:--</span><div class="study-clock-window-actions"><button type="button" id="studyClockMinimize" class="study-clock-window-button" aria-label="Minimize study clock" title="Minimize study clock" hidden>−</button></div></div>
         <div class="study-clock-body">
           <div class="study-clock-intro"><div><strong id="studyClockSubtitle">Your own little study session</strong><p id="studyClockDescription">Choose your hours and minutes. Your timer follows you across lessons.</p></div><span class="study-clock-flower" aria-hidden="true">✿</span></div>
           <div class="study-clock-grid">
@@ -95,6 +97,7 @@
         </div>
         <div class="manga-launch-group">
           <button type="button" id="openCustomButton" class="words-launch custom-launch" aria-controls="customScreen" aria-label="Open Custom Characters &amp; Words"><span class="words-launch-icon" aria-hidden="true">字</span><span id="customNavLabel">Custom</span><span class="words-count" id="customCount">0</span><span aria-hidden="true">↗</span></button>
+          <button type="button" id="openGrammarButton" class="words-launch grammar-launch" aria-controls="grammarScreen" aria-label="Open Grammar"><span class="words-launch-icon" aria-hidden="true">文</span><span id="grammarNavLabel">Grammar</span><span aria-hidden="true">↗</span></button>
           <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
         </div>
           </div>
@@ -143,7 +146,7 @@
                     <label for="rapidFireSeconds" id="rapidFireSecondsLabel">Seconds per answer</label>
                     <div class="rapid-fire-number"><input id="rapidFireSeconds" type="number" min="1" max="300" step="1" inputmode="numeric" value="10"><span id="rapidFireSecondsUnit">sec</span></div>
                   </div>
-                  <p class="rapid-fire-help" id="rapidFireHelp">If time runs out, it counts as a mistake and the next question appears.</p>
+                  <p class="rapid-fire-help" id="rapidFireHelp">If time runs out, it counts as a mistake. The answer stays visible until you press Next.</p>
                   <p id="rapidFireError" class="timer-error" role="alert" hidden>Choose between 1 and 300 seconds.</p>
                 </div>
               </div>
@@ -218,6 +221,56 @@
         <section class="manga-reading-column" aria-label="Japanese dialogue and reading practice"><div class="manga-pane-head"><div><strong id="mangaRightHeading">Recognized dialogue</strong><span id="mangaRightCount">—</span></div></div><div class="manga-readings-scroll"><div class="manga-reading-controls" id="mangaControls"><button type="button" id="mangaAnalyze" class="button-primary">Analyze this page</button><button type="button" id="mangaAnalyzeAll" class="button-secondary">Analyze all pages</button><button type="button" id="mangaReanalyze" class="button-secondary" hidden>Reanalyze with AI</button><button type="button" id="mangaCancel" class="button-secondary" hidden>Stop analyzing</button><button type="button" id="mangaLogin" class="button-secondary">Sign in with Google to analyze</button><button type="button" id="mangaManual" class="button-secondary">Add a text manually</button></div><p class="manga-reading-help" id="mangaNoSave">Try romaji first, then reveal readings and explanations.</p><p class="manga-text-empty" id="mangaTextEmpty"></p><div id="mangaReadings" class="manga-readings" aria-live="off"></div></div></section>
       </div>
       </div>
+    </section>
+
+    <section id="grammarScreen" class="grammar-screen" aria-label="Japanese grammar lessons" hidden>
+      <div class="grammar-top" id="grammarTop"><button type="button" class="back" id="grammarBack">← Back to selection</button><span class="quiz-pill" id="grammarCourseCount">12 lessons · 36 sentences</span></div>
+      <div class="grammar-browse" id="grammarBrowse">
+        <div class="grammar-main">
+          <div class="tabs grammar-tabs" role="tablist" aria-label="Grammar topics" id="grammarTabs">
+            <button type="button" class="tab" role="tab" data-grammar-tab="basics" aria-selected="true" aria-controls="grammarLessons">Basics</button>
+            <button type="button" class="tab" role="tab" data-grammar-tab="particles" aria-selected="false" aria-controls="grammarLessons">Particles</button>
+            <button type="button" class="tab" role="tab" data-grammar-tab="verbs" aria-selected="false" aria-controls="grammarLessons">Verbs</button>
+            <button type="button" class="tab" role="tab" data-grammar-tab="adjectives" aria-selected="false" aria-controls="grammarLessons">Adjectives</button>
+            <button type="button" class="tab" role="tab" data-grammar-tab="all" aria-selected="false" aria-controls="grammarLessons">All</button>
+          </div>
+          <div class="main-panel grammar-library" role="tabpanel" aria-label="Grammar lessons" id="grammarLibrary">
+            <div class="grammar-library-heading"><div><h2 id="grammarHeading">Learn how Japanese sentences work</h2><p class="subtle" id="grammarSubtitle">Choose lessons and practice both the romaji and the meaning. No handwriting required.</p></div><span id="grammarSelectedBadge" class="quiz-pill">0 selected</span></div>
+            <div class="grammar-toolbar"><input type="search" id="grammarSearch" class="search" aria-label="Find a grammar lesson" placeholder="Search a grammar topic…"><div><button type="button" id="grammarSelectVisible" class="mini-button">Select visible</button><button type="button" id="grammarClearVisible" class="mini-button">Deselect visible</button></div></div>
+            <div id="grammarLessons" class="grammar-lessons"></div>
+          </div>
+        </div>
+        <aside class="side-panel grammar-side-panel" aria-label="Grammar practice options">
+          <div class="side-grid">
+            <div><span class="side-label" id="grammarSelectionTitle">YOUR SELECTION</span><div class="big-number"><strong id="grammarSelectedCount">0</strong><span id="grammarSelectedUnit">lessons selected</span></div><p class="subtle" id="grammarSelectedHint">Choose one or more lessons to begin.</p></div>
+            <div class="side-rule"></div>
+            <div class="grammar-options"><span class="side-label" id="grammarSettingsTitle">YOUR SESSION.INI</span>
+              <label><span id="grammarTimerLabel">Session timer</span><select class="setting-select" id="grammarTimerMode"><option value="off">No limit</option><option value="timer">Timer</option><option value="guesses">Guess limit</option></select></label>
+              <div class="grammar-timer-inputs" id="grammarTimerInputs" hidden><label><span id="grammarMinutesLabel">Minutes</span><input id="grammarTimerMinutes" type="number" value="5" min="1" max="120" inputmode="numeric"></label></div>
+              <div class="grammar-timer-inputs" id="grammarGuessInputs" hidden><label><span id="grammarGuessLabel">Questions</span><input id="grammarGuessLimit" type="number" value="20" min="1" max="1000" inputmode="numeric"></label></div>
+              <label class="grammar-rapid-toggle"><span id="grammarRapidLabel">Rapid Fire</span><input id="grammarRapidEnabled" type="checkbox" role="switch"></label>
+              <div class="grammar-timer-inputs" id="grammarRapidInputs" hidden><label><span id="grammarSecondsLabel">Seconds per question</span><input id="grammarRapidSeconds" type="number" value="30" min="5" max="300" inputmode="numeric"></label></div>
+              <p class="choice-explanation" id="grammarSessionHint">Romaji and meaning are always answered separately.</p>
+            </div>
+            <div class="grammar-modes session-choices"><button type="button" class="button-secondary" id="grammarLearn" disabled>Learn my selection →</button><p class="choice-explanation" id="grammarLearnHelp">3 guided passes, then 3 memory passes.</p><button type="button" class="button-primary" id="grammarInfinite" disabled>Infinite practice →</button><p class="choice-explanation" id="grammarInfiniteHelp">Continue until you decide to finish.</p><button type="button" class="button-secondary" id="grammarOnePass" disabled>One Pass →</button><p class="choice-explanation" id="grammarOnePassHelp">Each sentence appears once, then your results.</p></div>
+          </div>
+        </aside>
+      </div>
+      <div class="quiz-wrap grammar-practice" id="grammarPractice" hidden>
+        <div class="quiz-top"><button type="button" class="back" id="grammarExit">← Finish lesson</button><div class="quiz-top-right"><span class="quiz-pill" id="grammarSessionType">One Pass</span><span class="quiz-pill" id="grammarQuestionCounter">Question 1</span><span class="quiz-pill" id="grammarClock">00:00</span><button type="button" class="mini-button" id="grammarPause">Pause</button></div></div>
+        <div class="stats grammar-stats"><div class="stat"><span id="grammarAnsweredLabel">Answered</span><b id="grammarAnswered">0</b></div><div class="stat"><span id="grammarCorrectLabel">Both correct</span><b id="grammarCorrect">0</b></div><div class="stat"><span id="grammarAccuracyLabel">Accuracy</span><b id="grammarAccuracy">—</b></div></div>
+        <p class="quiz-sublabel" id="grammarLessonTag">Grammar · One Pass</p>
+        <div class="quiz-panel grammar-question-panel"><div class="rapid-fire-indicator" id="grammarRapidIndicator" role="group" aria-label="Rapid Fire countdown" hidden><div class="rapid-fire-indicator-top"><span class="rapid-fire-indicator-label" id="grammarRapidIndicatorTitle">Time left for this answer</span><span class="rapid-fire-indicator-tools"><strong id="grammarRapidRemaining">30s</strong></span></div><div class="rapid-fire-track" id="grammarRapidProgress" role="progressbar" aria-label="Time left for this answer" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="grammarRapidBar"></span></div><p class="rapid-fire-status" id="grammarRapidStatus" aria-live="polite"></p></div><div class="quiz-head" id="grammarQuestionHeader">Read the sentence and write both answers</div><div class="grammar-japanese" id="grammarJapanese" lang="ja">猫が寝ています。</div>
+          <div class="guided-block grammar-guided" id="grammarGuided" hidden><span class="guided-caption" id="grammarGuidedTitle">GUIDED LEARNING</span><p id="grammarGuidedReading"></p><p id="grammarGuidedMeaning"></p><button type="button" id="grammarGuidedNext" class="button-primary">Got it, next →</button></div>
+          <div class="quiz-bottom grammar-answer-area" id="grammarAnswerArea"><form id="grammarAnswerForm" autocomplete="off">
+            <div class="grammar-answers"><label for="grammarRomaji" id="grammarRomajiLabel">1. Romaji reading</label><input type="text" id="grammarRomaji" class="answer-input" autocapitalize="off" spellcheck="false" autocomplete="off" required placeholder="neko ga nete imasu"><label for="grammarMeaning" id="grammarMeaningLabel">2. Meaning</label><input type="text" id="grammarMeaning" class="answer-input" autocomplete="off" spellcheck="false" required placeholder="The cat is sleeping"></div>
+            <div class="quiz-actions" id="grammarAnswerActions"><button type="submit" id="grammarCheck" class="button-primary">Check both ↵</button><button type="button" id="grammarSkip" class="button-secondary">I don't know</button></div>
+          </form><div id="grammarFeedback" class="grammar-feedback" role="status" aria-live="polite" hidden></div><div class="grammar-follow-up" id="grammarFollowUp" hidden><button type="button" class="button-secondary" id="grammarAcceptMeaning" hidden>My translation is valid</button><button type="button" class="button-primary" id="grammarNext">Next question →</button></div></div>
+        </div>
+        <p class="quiz-hint" id="grammarQuizHint">Read, understand, then check both answers.</p><button type="button" class="button-secondary end-lesson" id="grammarFinish">Finish lesson &amp; view results</button>
+      </div>
+      <div class="summary-wrap grammar-summary" id="grammarSummary" hidden><div class="summary-card"><span class="eyebrow" id="grammarSummaryEyebrow">GRAMMAR SESSION COMPLETE</span><div class="summary-intro"><h2 id="grammarSummaryTitle">Here's how you did.</h2><p class="subtle" id="grammarSummarySubtitle">Each sentence needed correct romaji and meaning.</p></div><div class="stats summary-stats"><div class="stat"><span id="grammarSummaryAnsweredLabel">Answered</span><b id="grammarSummaryAnswered">0</b></div><div class="stat"><span id="grammarSummaryCorrectLabel">Both correct</span><b id="grammarSummaryCorrect">0</b></div><div class="stat"><span id="grammarSummaryAccuracyLabel">Accuracy</span><b id="grammarSummaryAccuracy">—</b></div></div><h3 class="hardest-heading" id="grammarErrorsTitle">Sentences to review</h3><div id="grammarErrors"></div><div class="summary-actions"><button type="button" id="grammarSummaryBack" class="button-secondary">Back to lessons</button><button type="button" id="grammarRepeat" class="button-primary">Practice again →</button></div></div></div>
+      <dialog id="grammarLessonDialog" class="review-dialog grammar-lesson-dialog" aria-labelledby="grammarLessonTitle"><div class="review-dialog-head"><div><span class="eyebrow" id="grammarLessonEyebrow">✦ SHORT GRAMMAR LESSON</span><h2 id="grammarLessonTitle">Lesson</h2></div><button type="button" class="mini-button" id="grammarLessonClose" aria-label="Close lesson">✕</button></div><p class="grammar-concept" id="grammarLessonConcept"></p><p class="subtle" id="grammarLessonDescription"></p><div id="grammarLessonExamples" class="grammar-lesson-examples"></div><div class="grammar-lesson-actions"><button type="button" class="button-primary" id="grammarLessonAdd">Select for practice</button></div></dialog>
     </section>
 
     <section id="customScreen" class="custom-screen" aria-label="Custom characters and vocabulary" hidden>
@@ -296,6 +349,7 @@
         <div class="stats" id="customPracticeStats"><div class="stat"><span class="stat-answered" id="customStatsAnsweredLabel">Answered</span><b id="customStatsAnswered">0</b></div><div class="stat"><span class="stat-correct" id="customStatsCorrectLabel">Correct</span><b id="customStatsCorrect">0</b></div><div class="stat"><span class="stat-accuracy" id="customStatsAccuracyLabel">Accuracy</span><b id="customStatsAccuracy">—</b></div></div>
         <p class="quiz-sublabel" id="customPracticeProgress">Question 1</p>
         <div class="quiz-panel custom-practice-card" id="customPracticeCard">
+          <div class="rapid-fire-indicator" id="customRapidIndicator" role="group" aria-label="Rapid Fire countdown" hidden><div class="rapid-fire-indicator-top"><span class="rapid-fire-indicator-label" id="customRapidIndicatorTitle">Time left for this answer</span><span class="rapid-fire-indicator-tools"><strong id="customRapidRemaining">10s</strong></span></div><div class="rapid-fire-track" id="customRapidProgress" role="progressbar" aria-label="Time left for this answer" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span id="customRapidBar"></span></div><p class="rapid-fire-status" id="customRapidStatus" aria-live="polite"></p></div>
           <div class="quiz-head"><h3 id="customPracticeQuestion">Write the reading</h3></div>
           <div class="kana-display"><div class="quiz-symbol custom-practice-symbol" id="customPracticeSymbol" lang="ja">字</div><p class="printed-note" id="customPracticeInfo"></p></div>
           <div id="customGuidedBlock" class="guided-block custom-guided" hidden><span class="guided-caption" id="customGuidedLabel">GUIDED LEARNING</span><strong class="guided-reading" id="customGuidedAnswer"></strong><p class="guided-tip" id="customGuidedTip">Look at the reading and meaning, then continue.</p><button type="button" class="button-primary" id="customGuidedNext">Got it, next →</button></div>
@@ -340,7 +394,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v29.2</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v30.0</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

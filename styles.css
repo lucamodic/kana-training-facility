@@ -1956,3 +1956,107 @@ html[lang='es'] .custom-screen .custom-practice .custom-practice-card::before{co
 .custom-screen .custom-summary .hardest-item .hardest-glyph{flex:0 1 auto;min-width:75px;max-width:150px;font-size:clamp(22px,3vw,34px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
 
 @media(max-width:480px){.custom-screen .custom-practice .quiz-top-right{display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px}.custom-screen .custom-practice .quiz-top-right .quiz-pill{height:42px;min-height:42px;align-self:flex-start;flex:0 1 auto}.custom-screen .custom-practice .quiz-top-right .custom-session-clock{flex:1 1 100%;min-height:42px;flex-wrap:nowrap;justify-content:space-between;padding:5px 8px}.custom-screen .custom-practice .quiz-top-right .custom-session-clock .mini-button{padding:6px 7px}}
+
+.grammar-screen{padding:18px 0 65px;min-width:0}
+.grammar-screen[hidden],.grammar-browse[hidden],.grammar-practice[hidden],.grammar-summary[hidden],.grammar-guided[hidden],.grammar-answer-area[hidden],.grammar-follow-up[hidden],.grammar-feedback[hidden],.grammar-timer-inputs[hidden]{display:none!important}
+.grammar-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.grammar-browse{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,320px);gap:20px;align-items:start}
+.grammar-main{min-width:0}
+.grammar-tabs{display:flex;align-items:stretch;gap:5px;width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;white-space:nowrap;box-sizing:border-box}
+.grammar-tabs .tab{flex:0 0 auto;min-height:49px;padding:10px 16px;font-size:13px}
+.grammar-library{box-sizing:border-box;min-width:0;padding:24px}
+.grammar-library::before{content:'▣  GRAMMAR LESSONS.EXE';margin:-24px -24px 23px}
+.grammar-library-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.grammar-library-heading h2{font-size:clamp(22px,2.2vw,27px);margin:0 0 6px}
+.grammar-library-heading p{max-width:520px;margin:0;font-size:12px;line-height:1.65}
+.grammar-library-heading .quiz-pill{flex:none;white-space:nowrap}
+.grammar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:21px 0 19px}
+.grammar-toolbar .search{height:43px;min-width:0;flex:1 1 auto;border:1px solid var(--retro-deep);padding:9px 11px}
+.grammar-toolbar>div{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+.grammar-toolbar .mini-button{min-height:43px;padding:9px 11px;font-size:11px;white-space:nowrap}
+.grammar-lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,195px),1fr));gap:11px}
+.grammar-lesson-card{display:flex;flex-direction:column;min-width:0;min-height:185px;position:relative;border:1px solid var(--line);background:var(--retro-tile);border-radius:4px;box-shadow:2px 2px 0 var(--retro-shadow);overflow:hidden}
+.grammar-lesson-card:hover{border-color:var(--retro-deep)}
+.grammar-lesson-card.is-selected{border-color:var(--green);background:var(--retro-selected);box-shadow:inset 0 0 0 1px var(--green),2px 2px 0 var(--retro-shadow)}
+.grammar-lesson-choice{color:var(--ink);font:inherit;background:transparent;border:0;text-align:left;padding:17px 12px 10px;display:flex;align-items:flex-start;flex-direction:column;gap:8px;width:100%;flex:1;cursor:pointer}
+.grammar-lesson-choice strong{font:800 16px Georgia,serif;line-height:1.3;margin-right:24px}
+.grammar-lesson-choice small{font-size:12px;line-height:1.6;color:var(--muted);font-weight:500;overflow-wrap:anywhere}
+.grammar-lesson-pick{position:absolute;right:10px;top:10px;font:800 13px 'Courier New',monospace;border:1px solid var(--retro-deep);border-radius:3px;width:23px;height:23px;display:grid;place-items:center;background:var(--paper)}
+.grammar-lesson-card.is-selected .grammar-lesson-pick{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+.grammar-lesson-progress{margin-top:auto;padding-top:3px;font:700 10px 'Courier New',monospace;color:var(--muted)}
+.grammar-lesson-read{margin:0 11px 11px;min-height:33px;padding:7px 11px;font-size:11px;width:calc(100% - 22px)}
+.grammar-side-panel{padding:24px;position:sticky;top:18px;min-width:0;box-sizing:border-box}
+.grammar-side-panel::before{content:'▣  YOUR GRAMMAR SESSION.INI'}
+.grammar-side-panel .side-grid{gap:15px}
+.grammar-side-panel .big-number strong{font-size:52px}
+.grammar-side-panel .subtle{font-size:12px;line-height:1.65}
+.grammar-options{display:grid;gap:11px;min-width:0}
+.grammar-options label:not(.grammar-rapid-toggle),.grammar-timer-inputs label{display:grid;gap:6px;color:var(--muted);font:700 11px 'Courier New',monospace}
+.grammar-options select,.grammar-timer-inputs input{width:100%;min-height:44px;min-width:0;background:var(--paper);color:var(--ink);border:1px solid var(--retro-deep);border-radius:4px;padding:9px 10px;box-sizing:border-box}
+.grammar-options .side-label{margin-bottom:3px}
+.grammar-rapid-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid var(--retro-deep);border-radius:5px;background:var(--retro-cream);font:700 12px 'Courier New',monospace;color:var(--ink);cursor:pointer}
+.grammar-rapid-toggle input{accent-color:var(--accent);width:19px;height:19px;flex:none}
+.grammar-options .choice-explanation{font-size:11px;line-height:1.6;margin:0}
+.grammar-modes{display:grid;gap:5px;margin:0}
+.grammar-modes button{width:100%;min-height:45px;padding:10px 11px;font-size:12px}
+.grammar-modes .choice-explanation{font-size:11px;line-height:1.5;margin:1px 0 10px}
+.grammar-practice .quiz-top-right{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.grammar-practice .stats{margin-top:15px}
+.grammar-practice .quiz-panel{padding:0;overflow:hidden}
+.grammar-practice .quiz-panel::before{content:'▣  GRAMMAR PRACTICE.EXE'}
+.grammar-practice .quiz-head{padding:14px 18px;font-size:14px}
+.grammar-japanese{min-height:155px;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px 23px;font:700 clamp(25px,3.5vw,46px)/1.65 'Yu Gothic','Noto Sans JP',sans-serif;color:var(--ink);overflow-wrap:anywhere;background:var(--paper)}
+.grammar-answer-area{padding:23px;max-width:100%}
+.grammar-answer-area form{max-width:650px;margin:auto}
+.grammar-answers{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}
+.grammar-answers label{font:700 12px 'Courier New',monospace;color:var(--ink);margin-top:4px}
+.grammar-answers .answer-input{width:100%;min-height:47px;padding:10px 12px;box-sizing:border-box;font-size:15px}
+.grammar-answers .answer-input:focus{outline:2px solid var(--accent);outline-offset:2px}
+.grammar-answer-area .quiz-actions{margin-top:18px}
+.grammar-feedback{margin:17px 0 12px;padding:13px;border:1px solid var(--line);border-radius:4px;background:var(--retro-cream);display:grid;gap:10px}
+.grammar-feedback>div{display:grid;gap:5px;font-size:12px;line-height:1.6}
+.grammar-feedback strong{font-size:12px}
+.grammar-feedback .is-correct strong{color:var(--green)}
+.grammar-feedback .is-incorrect strong{color:var(--accent)}
+.grammar-feedback .grammar-explain{border-top:1px dashed var(--line);padding-top:10px}
+.grammar-follow-up{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:16px}
+.grammar-follow-up>button{width:auto;min-height:45px;font-size:12px}
+.grammar-rapid-warning{color:var(--accent);font-weight:800}
+.grammar-guided{max-width:670px;margin:0 auto 18px;padding:20px 22px}
+.grammar-guided>p{line-height:1.7;overflow-wrap:anywhere}
+.grammar-guided .guided-reading{display:block}
+.grammar-guided #grammarGuidedNext{width:100%;margin-top:15px}
+.grammar-summary .hardest-glyph{font-family:'Yu Gothic','Noto Sans JP',sans-serif;font-size:20px;max-width:200px;overflow-wrap:anywhere}
+.grammar-summary .hardest-info{min-width:0;overflow-wrap:anywhere}
+.grammar-lesson-dialog{width:min(660px,calc(100% - 26px));max-height:88dvh;overflow-y:auto;padding:22px}
+.grammar-lesson-dialog .review-dialog-head{padding:0 0 12px}
+.grammar-lesson-dialog .review-dialog-head h2{font-size:25px}
+.grammar-lesson-dialog .grammar-concept{line-height:1.75;font-size:14px;margin:17px 0}
+.grammar-lesson-dialog .subtle{font-size:12px;line-height:1.65}
+.grammar-lesson-examples{display:grid;gap:10px;margin:17px 0 20px}
+.grammar-lesson-examples article{border:1px solid var(--line);background:var(--soft);padding:12px;border-radius:4px}
+.grammar-lesson-examples article>strong{display:block;font:700 22px 'Yu Gothic','Noto Sans JP',sans-serif;margin-bottom:5px}
+.grammar-lesson-examples details summary{cursor:pointer;font:700 12px 'Courier New',monospace;color:var(--accent);padding:7px 0}
+.grammar-lesson-examples details p{margin:5px 0;font-size:13px}
+.grammar-lesson-examples details small{display:block;line-height:1.7;color:var(--muted)}
+.grammar-lesson-actions{display:flex;justify-content:flex-end}
+.grammar-lesson-actions button{width:auto}
+.study-switcher .manga-launch-group .grammar-launch{background:var(--retro-cream);min-height:49px;flex:0 0 auto}
+.study-switcher .manga-launch-group .grammar-launch:hover{background:var(--retro-ribbon)}
+@media(max-width:1370px){.study-switcher{display:flex;flex-wrap:wrap;align-items:stretch;gap:7px}.study-switcher>.tabs{flex:0 1 auto}.study-switcher>.manga-launch-group{margin-left:0;display:flex;flex:0 1 auto;max-width:100%;width:auto;flex-wrap:wrap;justify-content:flex-start}}
+@media(max-width:1120px){.study-switcher>.tabs{width:100%;flex:0 0 100%}.study-switcher>.manga-launch-group{width:100%;flex:1 1 100%;gap:7px}.study-switcher .manga-launch-group .words-launch{min-width:0;flex:1 1 0;margin:0;height:45px;min-height:45px;border-radius:4px;box-sizing:border-box}}
+@media(max-width:1050px){.grammar-browse{grid-template-columns:minmax(0,1fr)}.grammar-side-panel{position:static;top:auto;margin:0}.grammar-side-panel .side-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:15px}.grammar-side-panel .side-rule{display:none}.grammar-side-panel .grammar-modes{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:9px}.grammar-side-panel .grammar-modes .choice-explanation{grid-row:2}.grammar-side-panel .grammar-modes button{min-height:48px}}
+@media(max-width:650px){.grammar-screen{padding-top:12px}.grammar-tabs{width:100%;overflow-x:auto;display:flex;gap:5px}.grammar-tabs .tab{font-size:12px;min-height:46px;padding:9px 12px;flex:0 0 auto}.grammar-library{padding:17px}.grammar-library::before{margin:-17px -17px 20px}.grammar-library-heading{flex-wrap:wrap}.grammar-toolbar{flex-wrap:wrap;gap:7px}.grammar-toolbar .search{flex:1 1 100%;order:0}.grammar-toolbar>div{width:100%;order:1}.grammar-toolbar .mini-button{flex:1 1 0;white-space:normal}.grammar-lessons{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grammar-lesson-card{min-height:178px}.grammar-lesson-choice{padding:12px 9px 9px}.grammar-lesson-choice strong{font-size:14px}.grammar-lesson-choice small{font-size:11px}.grammar-side-panel{padding:17px}.grammar-side-panel::before{margin:-17px -17px 19px}.grammar-side-panel .side-grid{display:grid;grid-template-columns:minmax(0,1fr)}.grammar-side-panel .grammar-modes{grid-column:auto;display:grid;grid-template-columns:minmax(0,1fr)}.grammar-side-panel .grammar-modes .choice-explanation{grid-row:auto}.grammar-practice .quiz-top-right{width:100%;justify-content:flex-start}.grammar-japanese{min-height:125px;padding:22px 14px}.grammar-answer-area{padding:16px}.grammar-answer-area .quiz-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grammar-answer-area .quiz-actions button{min-width:0}.grammar-follow-up>button{flex:1 1 145px}.grammar-top{flex-wrap:wrap}.study-switcher>.manga-launch-group{display:flex;align-items:stretch;justify-content:stretch;width:100%;margin:0;gap:5px}.study-switcher .manga-launch-group .words-launch{flex:1 1 0;min-width:0;max-width:none;padding:7px 5px;gap:4px;font-size:clamp(10px,2.7vw,12px);white-space:normal;justify-content:center;line-height:1.25}.study-switcher .manga-launch-group .words-launch .words-launch-icon{font-size:15px}.study-switcher .manga-launch-group .words-launch>span:last-child{display:none}.study-switcher .manga-launch-group #customCount{display:none}.study-switcher .manga-launch-group .grammar-launch{flex:1 1 0;min-height:45px}}
+@media(max-width:380px){.grammar-lessons{grid-template-columns:minmax(0,1fr)}.grammar-library-heading .quiz-pill{font-size:10px}.grammar-question-panel .quiz-head{font-size:12px}.study-switcher .manga-launch-group .words-launch .words-launch-icon{display:none}}
+@media(max-width:1050px){.grammar-browse>.grammar-main{order:1}.grammar-browse>.grammar-side-panel{order:2}}
+
+#customPracticeCard .rapid-fire-indicator,#grammarPractice .rapid-fire-indicator{margin:14px 16px 4px;text-align:left}
+#customPracticeCard .rapid-fire-indicator[hidden],#grammarPractice .rapid-fire-indicator[hidden]{display:none!important}
+#customPracticeCard .rapid-fire-indicator-label,#grammarPractice .rapid-fire-indicator-label{line-height:1.4}
+@media(max-width:600px){#customPracticeCard .rapid-fire-indicator,#grammarPractice .rapid-fire-indicator{margin:12px 10px 4px}}
+
+.study-clock-activity{grid-column:1/-1;display:grid;gap:9px;border-top:1px dashed var(--retro-deep);padding-top:12px}
+.study-clock-activity h3{margin:0 0 2px;font:700 14px Georgia,serif}
+.study-clock-activity-row{display:grid;gap:5px;background:var(--retro-cream);border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+.study-clock-activity-row strong{font:700 13px Georgia,serif}
+.study-clock-activity-row span{font:11px/1.6 'Courier New',monospace;color:var(--ink)}

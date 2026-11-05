@@ -43,12 +43,12 @@ test('Version 29 keeps old manga data and uses new PWA assets', () => {
   const sw = read('sw.js');
   const cache = read('manga-cache.js');
   const packageJson = JSON.parse(read('package.json'));
-  assert.equal(packageJson.version,'29.2.0');
-  assert.match(html,/id="appVersion">v29\.2</);
-  assert.match(sw,/kana-training-facility-offline-v29-2-custom-main-parity/);
+  assert.equal(packageJson.version,'30.0.0');
+  assert.match(html,/id="appVersion">v30\.0</);
+  assert.match(sw,/kana-training-facility-offline-v30-grammar-foundations/);
   assert.match(cache,/ktf-manga-reader-cache/);
   for (const filename of ['app.js','styles.css','manga-reader.js','custom-collection.js']) {
-    assert.ok(html.includes(`${filename}?v=29.2`));
-    assert.ok(sw.includes(`${filename}?v=29.2`));
+    assert.ok(html.includes(`${filename}?v=30.0`));
+    assert.ok(sw.includes(`${filename}?v=30.0`));
   }
 });

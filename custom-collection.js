@@ -40,7 +40,7 @@
       
       add:'Add a character or word',addButton:'Add custom',closeEditor:'Close editor',kind:'Type',kanji:'Kanji / character',word:'Word / expression',japanese:'Japanese text',reading:'Romaji reading (optional)',kana:'Kana reading (optional)',meaning:'Meaning (optional)',notes:'Notes (optional)',save:'Save to collection',update:'Save changes',cancel:'Cancel edit',source:'Source',manual:'Added manually',manga:'Manga Reader',list:'Your collection',all:'All',onlyKanji:'Characters',onlyWords:'Words',search:'Find a character, reading or meaning…',empty:'No saved items match this filter. Add some here or save them directly from a manga.',
       total:'saved',selectAll:'Select visible',selectNone:'Deselect visible',selected:'selected',study:'Practice selected',mode:'Practice mode',mixed:'Mixed',readingMode:'Romaji reading',meaningMode:'Meaning',edit:'Edit',remove:'Remove',confirm:'Remove this item from your custom collection?',duplicates:'This item is already in your collection.',added:'Added to your custom collection.',saved:'Changes saved.',deleted:'Removed from your custom collection.',invalid:'Enter a Japanese character or word.',
-      sessionLabel:'YOUR SESSION.INI',timerLabel:'Session timer',timerNone:'No limit',timerCustom:'Timer',timerGuesses:'Guess limit',hoursLabel:'Hours',minutesLabel:'Minutes',guessLabel:'Number of guesses',rapidTitle:'Rapid Fire',rapidSubtitle:'A timed challenge for each answer',rapidSecondsLabel:'Seconds per answer',settingsNote:'Your custom session uses the same practice options as the main trainer.',learnButton:'Learn my selection →',learnHelp:'3 guided passes followed by 3 memory-test passes.',infiniteButton:'Infinite practice →',infiniteHelp:'Shuffled questions until you decide to finish.',onePassButton:'One Pass · Daily review →',onePassHelp:'Each selected item appears once, across all tabs. Timer and guess limit do not apply.',guidedLabel:'GUIDED LEARNING',guidedTip:'Study the reading and meaning before continuing.',guidedNext:'Got it, next →',memoryPass:'Memory test',guidedPass:'Guided pass',infiniteTitle:'Infinite practice',learnTitle:'Guided learning',onePassTitle:'One Pass · Daily review',statsAnswered:'Answered',statsCorrect:'Correct',statsAccuracy:'Accuracy',pause:'Pause',resume:'Resume',endSession:'Finish lesson & view results',timeUp:'Time is up!',guessComplete:'Guess limit reached',rapidTimeUp:'Time is up! This counts as a mistake.',hideClock:'Hide clock',showClock:'Show clock',settingsInvalid:'Check the timer, guess limit or Rapid Fire values.',sessionDuration:'Study time',sessionReason:'Session finished',timedOutCount:'Rapid Fire timeouts',
+      sessionLabel:'YOUR SESSION.INI',timerLabel:'Session timer',timerNone:'No limit',timerCustom:'Timer',timerGuesses:'Guess limit',hoursLabel:'Hours',minutesLabel:'Minutes',guessLabel:'Number of guesses',rapidTitle:'Rapid Fire',rapidSubtitle:'A timed challenge for each answer',rapidSecondsLabel:'Seconds per answer',settingsNote:'Your custom session uses the same practice options as the main trainer.',learnButton:'Learn my selection →',learnHelp:'3 guided passes followed by 3 memory-test passes.',infiniteButton:'Infinite practice →',infiniteHelp:'Shuffled questions until you decide to finish.',onePassButton:'One Pass · Daily review →',onePassHelp:'Each selected item appears once, across all tabs. Timer and guess limit do not apply.',guidedLabel:'GUIDED LEARNING',guidedTip:'Study the reading and meaning before continuing.',guidedNext:'Got it, next →',memoryPass:'Memory test',guidedPass:'Guided pass',infiniteTitle:'Infinite practice',learnTitle:'Guided learning',onePassTitle:'One Pass · Daily review',statsAnswered:'Answered',statsCorrect:'Correct',statsAccuracy:'Accuracy',pause:'Pause',resume:'Resume',endSession:'Finish lesson & view results',timeUp:'Time is up!',guessComplete:'Guess limit reached',rapidTimeUp:'Time is up! This counts as a mistake.',rapidTimeLeft:'Time left for this answer',rapidWaiting:'Time stopped. Press Next when ready.',hideClock:'Hide clock',showClock:'Show clock',settingsInvalid:'Check the timer, guess limit or Rapid Fire values.',sessionDuration:'Study time',sessionReason:'Session finished',timedOutCount:'Rapid Fire timeouts',
       practiceTitle:'Personal practice',question:'Question',askReading:'Write the romaji reading',askMeaning:'Write the meaning',answer:'Your answer',check:'Check',skip:'I do not know',next:'Next question →',finish:'Finish practice',end:'Back to collection',sideSelection:'YOUR SELECTION',sideUnit:'items selected',sideHint:'Choose the characters and words you want to practice.',deleteSelected:'Delete selected',confirmDelete:'Delete {count} selected items? This cannot be undone.',deletedBatch:'Deleted {count} items from your collection.',finishLesson:'← Finish lesson',summaryTitle:"Here’s how you did.",summaryDescription:'Your results from this session.',hardestTitle:'Your trickiest items',hardestHelp:'Ranked by incorrect and skipped answers.',summaryBack:'Back to collection',summaryAgain:'Try again →',summaryReview:'Practice my toughest items →',attemptSingle:'attempt',attemptPlural:'attempts',mistakeSingle:'mistake',mistakePlural:'mistakes',summaryFlawless:'Amazing! No mistakes this time.',summaryEmpty:'No answers yet. Try a round.',correct:'Correct!',wrong:'Not quite',answerWas:'Expected answer:',noQuestions:'Choose at least one item with a meaning or romaji reading.',result:'Session completed',success:'Correct answers',attempts:'Attempts',practiceHint:'Practice results are saved in your account too.',count:'correct',review:'Review',imported:'Saved from manga', select:'Select for practice', remaining:'questions remaining'
     },
     es: {
@@ -48,7 +48,7 @@
       
       add:'Agregar carácter o palabra',addButton:'Agregar custom',closeEditor:'Cerrar editor',kind:'Tipo',kanji:'Kanji / carácter',word:'Palabra / expresión',japanese:'Texto japonés',reading:'Lectura en romaji (opcional)',kana:'Lectura en kana (opcional)',meaning:'Significado (opcional)',notes:'Notas (opcional)',save:'Guardar en mi colección',update:'Guardar cambios',cancel:'Cancelar edición',source:'Origen',manual:'Agregado manualmente',manga:'Manga Reader',list:'Mi colección',all:'Todos',onlyKanji:'Caracteres',onlyWords:'Palabras',search:'Buscar carácter, lectura o significado…',empty:'No hay elementos con ese filtro. Agregá uno acá o guardalo directamente desde un manga.',
       total:'guardados',selectAll:'Seleccionar visibles',selectNone:'Deseleccionar visibles',selected:'seleccionados',study:'Practicar seleccionados',mode:'Modo de práctica',mixed:'Mixto',readingMode:'Lectura en romaji',meaningMode:'Significado',edit:'Editar',remove:'Eliminar',confirm:'¿Eliminar este elemento de tu colección?',duplicates:'Ya tenés este elemento guardado.',added:'Agregado a tus caracteres custom.',saved:'Cambios guardados.',deleted:'Eliminado de tus caracteres custom.',invalid:'Ingresá un carácter o una palabra japonesa.',
-      sessionLabel:'TU SESIÓN.INI',timerLabel:'Temporizador',timerNone:'Sin límite',timerCustom:'Temporizador',timerGuesses:'Límite de intentos',hoursLabel:'Horas',minutesLabel:'Minutos',guessLabel:'Cantidad de intentos',rapidTitle:'Ráfaga',rapidSubtitle:'Un desafío contrarreloj por respuesta',rapidSecondsLabel:'Segundos por respuesta',settingsNote:'Tu colección custom tiene las mismas opciones que la práctica principal.',learnButton:'Aprender mi selección →',learnHelp:'3 pasadas guiadas y 3 pasadas de memoria.',infiniteButton:'Práctica infinita →',infiniteHelp:'Preguntas mezcladas hasta que decidas terminar.',onePassButton:'Una pasada · Repaso diario →',onePassHelp:'Cada elemento seleccionado aparece una vez, incluso en otras pestañas. Sin temporizador ni límite de intentos.',guidedLabel:'APRENDIZAJE GUIADO',guidedTip:'Estudiá la lectura y el significado antes de continuar.',guidedNext:'Entendido, siguiente →',memoryPass:'Prueba de memoria',guidedPass:'Pasada guiada',infiniteTitle:'Práctica infinita',learnTitle:'Aprendizaje guiado',onePassTitle:'Una pasada · Repaso diario',statsAnswered:'Respondidas',statsCorrect:'Correctas',statsAccuracy:'Precisión',pause:'Pausar',resume:'Reanudar',endSession:'Terminar y ver resultados',timeUp:'¡Se acabó el tiempo!',guessComplete:'Límite de intentos alcanzado',rapidTimeUp:'¡Tiempo agotado! Cuenta como error.',hideClock:'Ocultar reloj',showClock:'Mostrar reloj',settingsInvalid:'Revisá los valores del temporizador, intentos o Ráfaga.',sessionDuration:'Tiempo de estudio',sessionReason:'Sesión terminada',timedOutCount:'Respuestas agotadas por tiempo',
+      sessionLabel:'TU SESIÓN.INI',timerLabel:'Temporizador',timerNone:'Sin límite',timerCustom:'Temporizador',timerGuesses:'Límite de intentos',hoursLabel:'Horas',minutesLabel:'Minutos',guessLabel:'Cantidad de intentos',rapidTitle:'Ráfaga',rapidSubtitle:'Un desafío contrarreloj por respuesta',rapidSecondsLabel:'Segundos por respuesta',settingsNote:'Tu colección custom tiene las mismas opciones que la práctica principal.',learnButton:'Aprender mi selección →',learnHelp:'3 pasadas guiadas y 3 pasadas de memoria.',infiniteButton:'Práctica infinita →',infiniteHelp:'Preguntas mezcladas hasta que decidas terminar.',onePassButton:'Una pasada · Repaso diario →',onePassHelp:'Cada elemento seleccionado aparece una vez, incluso en otras pestañas. Sin temporizador ni límite de intentos.',guidedLabel:'APRENDIZAJE GUIADO',guidedTip:'Estudiá la lectura y el significado antes de continuar.',guidedNext:'Entendido, siguiente →',memoryPass:'Prueba de memoria',guidedPass:'Pasada guiada',infiniteTitle:'Práctica infinita',learnTitle:'Aprendizaje guiado',onePassTitle:'Una pasada · Repaso diario',statsAnswered:'Respondidas',statsCorrect:'Correctas',statsAccuracy:'Precisión',pause:'Pausar',resume:'Reanudar',endSession:'Terminar y ver resultados',timeUp:'¡Se acabó el tiempo!',guessComplete:'Límite de intentos alcanzado',rapidTimeUp:'¡Tiempo agotado! Cuenta como error.',rapidTimeLeft:'Tiempo restante para responder',rapidWaiting:'Tiempo detenido. Tocá Siguiente cuando quieras continuar.',hideClock:'Ocultar reloj',showClock:'Mostrar reloj',settingsInvalid:'Revisá los valores del temporizador, intentos o Ráfaga.',sessionDuration:'Tiempo de estudio',sessionReason:'Sesión terminada',timedOutCount:'Respuestas agotadas por tiempo',
       practiceTitle:'Práctica personalizada',question:'Pregunta',askReading:'Escribí la lectura en romaji',askMeaning:'Escribí el significado',answer:'Tu respuesta',check:'Comprobar',skip:'No sé',next:'Siguiente →',finish:'Terminar práctica',end:'Volver a la colección',sideSelection:'TU SELECCIÓN',sideUnit:'elementos seleccionados',sideHint:'Elegí los caracteres y palabras que querés practicar.',deleteSelected:'Borrar seleccionados',confirmDelete:'¿Eliminar {count} elementos seleccionados? No se puede deshacer.',deletedBatch:'Se eliminaron {count} elementos de tu colección.',finishLesson:'← Terminar lección',summaryTitle:'Así te fue.',summaryDescription:'Los resultados de esta sesión.',hardestTitle:'Tus elementos más difíciles',hardestHelp:'Ordenados por errores y respuestas omitidas.',summaryBack:'Volver a la colección',summaryAgain:'Practicar de nuevo →',summaryReview:'Practicar los más difíciles →',attemptSingle:'intento',attemptPlural:'intentos',mistakeSingle:'error',mistakePlural:'errores',summaryFlawless:'¡Excelente! No tuviste errores.',summaryEmpty:'Todavía no respondiste. Probá una ronda.',correct:'¡Correcto!',wrong:'No del todo',answerWas:'Respuesta esperada:',noQuestions:'Seleccioná al menos un elemento con significado o lectura en romaji.',result:'Práctica terminada',success:'Respuestas correctas',attempts:'Intentos',practiceHint:'Tus resultados también se guardan en tu cuenta.',count:'aciertos',review:'Repaso',imported:'Guardado desde el manga',select:'Seleccionar para practicar',remaining:'preguntas restantes'
     }
   };
@@ -374,8 +374,20 @@
     $('customClockToggle').textContent=t(session.showClock?'hideClock':'showClock');
     $('customClockToggle').setAttribute('aria-pressed',String(session.showClock));
     $('customPracticeClock').classList.toggle('is-urgent',session.timerSeconds!==null && session.timerSeconds*1000-session.elapsedMs<=30000);
-    const rapidActive=session.rapidSeconds!==null && !session.guided && !session.checked && !session.done;
-    $('customPracticeProgress').textContent=session.done ? '' : `${session.mode==='learn' ? `${session.round<=3?t('guidedPass'):t('memoryPass')} ${session.round<=3?session.round:session.round-3}/3 · ` : ''}${t('question')} ${session.index}${session.mode!=='infinite'?` / ${session.mode==='learn'?session.pool.length*6:session.pool.length}`:''}${rapidActive ? ` · ${Math.max(0,Math.ceil((session.rapidSeconds*1000-session.rapidElapsedMs)/1000))}s` : ''}`;
+    const rapidVisible=session.rapidSeconds!==null && !session.guided && !session.done;
+    const remaining=rapidVisible?Math.max(0,session.rapidSeconds*1000-session.rapidElapsedMs):0;
+    const percent=rapidVisible?Math.round(remaining/(session.rapidSeconds*1000)*100):0;
+    $('customRapidIndicator').hidden=!rapidVisible;
+    if(rapidVisible){
+      $('customRapidIndicatorTitle').textContent=t('rapidTimeLeft');
+      $('customRapidRemaining').textContent=`${Math.ceil(remaining/1000)}s`;
+      $('customRapidBar').style.width=`${percent}%`;
+      $('customRapidProgress').setAttribute('aria-valuenow',String(percent));
+      $('customRapidIndicator').classList.toggle('is-urgent',!session.checked&&remaining<=Math.min(5000,session.rapidSeconds*300));
+      $('customRapidIndicator').classList.toggle('is-expired',session.rapidTimedOut===true);
+      $('customRapidStatus').textContent=session.rapidTimedOut?t('rapidTimeUp'):(session.checked?t('rapidWaiting'):'');
+    }
+    $('customPracticeProgress').textContent=session.done ? '' : `${session.mode==='learn' ? `${session.round<=3?t('guidedPass'):t('memoryPass')} ${session.round<=3?session.round:session.round-3}/3 · ` : ''}${t('question')} ${session.index}${session.mode!=='infinite'?` / ${session.mode==='learn'?session.pool.length*6:session.pool.length}`:''}`;
     $('customPauseSession').textContent=t(session.paused?'resume':'pause');
     $('customPauseSession').setAttribute('aria-pressed',String(session.paused));
     $('customPracticeCard').classList.toggle('is-paused',session.paused);
@@ -408,6 +420,7 @@
     $('customQuizHint').hidden=false;
     $('customFinishLesson').hidden=false;
     showSessionStats(practice);
+    window.KTFStudyClock?.onQuizStart({source:'custom',kind:'custom',mode});
     nextSessionQuestion();
     if (practice && !practice.done) {
       practice.lastTick=performance.now();
@@ -459,8 +472,10 @@
     session.lastItem=session.current.item.id;
     session.index++;
     session.guided=session.mode==='learn' && session.round<=3;
+    if(session.guided)window.KTFStudyClock?.onGuided({id:session.current.item.id,kana:session.current.item.surface},'custom');
     session.checked=false;
     session.rapidElapsedMs=0;
+    session.rapidTimedOut=false;
     if (session.advanceTimeout!==null) {clearTimeout(session.advanceTimeout);session.advanceTimeout=null;}
     $('customPracticeForm').hidden=session.guided;
     $('customGuidedBlock').hidden=!session.guided;
@@ -487,9 +502,11 @@
     if (!skipped && !answer.trim()) return;
     const correct=!skipped && accepted(answer,expected,question.type);
     session.checked=true;
+    session.rapidTimedOut=timedOut;
     session.answered++;
     if(correct) session.correct++;
     session.history.push({item:question.item,correct,answer,expected,type:question.type,skipped,timedOut});
+    window.KTFStudyClock?.onAnswer({source:'custom',kind:question.item.kind,item:{id:question.item.id,kana:question.item.surface},correct});
     if(timedOut)session.rapidTimeouts++;
     const feedback=$('customPracticeFeedback');
     feedback.hidden=false;
@@ -507,13 +524,13 @@
     try {await persist('custom_review',{itemId:question.item.id,correct,mode:question.type,answeredAt:new Date().toISOString()});}
     catch(error){notify(error.message || String(error),true);}
     if(practice!==session || session.done)return;
-    if(timedOut) session.advanceTimeout=setTimeout(()=>{if(practice===session && !session.paused)nextSessionQuestion();},850);
-    else $('customPracticeNext').focus({preventScroll:true});
+    $('customPracticeNext').focus({preventScroll:true});
   }
   function completeSession(reason='') {
     const session=practice;
     if(!session || session.done)return;
     stopSessionClock();
+    window.KTFStudyClock?.onQuizFinish({source:'custom',kind:'custom',mode:session.mode});
     session.done=true;
     session.paused=false;
     session.finishReason=reason;

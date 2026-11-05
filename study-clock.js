@@ -17,6 +17,7 @@
       time: 'Time studied', answers: 'Answers', accurate: 'Accuracy', words: 'Word answers',
       kana: 'Character answers', guided: 'Guided cards seen', lessons: 'Lessons finished',
       unique: 'Different items', mistakes: 'Need another look', noMistakes: 'No mistakes recorded this session.',
+      activity: 'Your activities', activityTime: 'Active time', activityAccuracy: 'Accuracy', activityAnswers: 'answers', activityGuided: 'guided cards', activityLessons: 'sessions', activityRead: 'pages read', activityExplanations: 'explanations opened', activityAnalyzed: 'analyses completed', activitySaved: 'items saved', activityDifficult: 'Review', activityReading: 'romaji correct', activityMeaning: 'meanings correct', activityManga: 'Manga Reader', activityCustom: 'Custom', activityGrammar: 'Grammar', activityKana: 'Kana', activityWords: 'Word Challenge',
       close: 'Done →',
       confirm: 'Finish this study session early and see your progress?',
       announcement: 'Study time remaining', minimize: 'Minimize study clock', expand: 'Expand study clock', dock: 'Keep clock in the lesson', float: 'Float study clock', drag: 'Drag to move the clock. Use arrow keys to adjust its position.'
@@ -33,6 +34,7 @@
       time: 'Tiempo estudiado', answers: 'Respuestas', accurate: 'Precisión', words: 'Palabras respondidas',
       kana: 'Caracteres respondidos', guided: 'Tarjetas guiadas vistas', lessons: 'Lecciones terminadas',
       unique: 'Elementos diferentes', mistakes: 'Para seguir repasando', noMistakes: 'No tuviste errores en esta sesión.',
+      activity: 'Tus actividades', activityTime: 'Tiempo activo', activityAccuracy: 'Precisión', activityAnswers: 'respuestas', activityGuided: 'tarjetas guiadas', activityLessons: 'sesiones', activityRead: 'páginas leídas', activityExplanations: 'explicaciones abiertas', activityAnalyzed: 'análisis completados', activitySaved: 'elementos guardados', activityDifficult: 'Para repasar', activityReading: 'lecturas correctas', activityMeaning: 'significados correctos', activityManga: 'Manga Reader', activityCustom: 'Custom', activityGrammar: 'Gramática', activityKana: 'Kana', activityWords: 'Word Challenge',
       close: 'Listo →',
       confirm: '¿Querés terminar antes esta sesión y ver tu progreso?',
       announcement: 'Tiempo restante de estudio', minimize: 'Minimizar reloj de estudio', expand: 'Expandir reloj de estudio', dock: 'Dejar el reloj dentro de la lección', float: 'Hacer flotar el reloj', drag: 'Arrastrá para mover el reloj. Usá las flechas para ajustar su posición.'
@@ -40,12 +42,25 @@
   };
   const lang = () => document.documentElement.lang === 'es' ? 'es' : 'en';
   const t = key => dictionary[lang()][key];
+  const sectionNames = ['kana','words','custom','grammar','manga'];
+  const defaultSection = () => ({answers:0,correct:0,guided:0,started:0,finished:0,activeMs:0,pages:0,analyzed:0,saved:0,readingCorrect:0,meaningCorrect:0});
   const defaultStats = () => ({ answers: 0, correct: 0, words: 0, characters: 0,
     guided: 0, started: 0, finished: 0, byScript: {hiragana:0,katakana:0,kanji:0},
-    uniqueIds: [], errors: {} });
+    uniqueIds: [], mangaPageIds:[], errors: {}, sections:Object.fromEntries(sectionNames.map(name=>[name,defaultSection()])) });
+  const restoreStats = source => {
+    const original=source&&typeof source==='object'?source:{};
+    const defaults=defaultStats();
+    return {...defaults,...original,uniqueIds:Array.isArray(original.uniqueIds)?original.uniqueIds:[],
+      mangaPageIds:Array.isArray(original.mangaPageIds)?original.mangaPageIds:[],
+      errors:original.errors&&typeof original.errors==='object'?original.errors:{},
+      byScript:{...defaults.byScript,...(original.byScript||{})},
+      sections:Object.fromEntries(sectionNames.map(name=>[name,{...defaultSection(),...(original.sections?.[name]||{})}]))};
+  };
   const blank = () => ({ status: 'idle', savedHours:'', savedMinutes:'', durationMs:0,
     startedAt:null, deadlineAt:null, remainingMs:0, stats: defaultStats() });
   let clock = blank();
+  let lastActivityAt = Date.now();
+  let activeQuizSection = 'kana';
   const clockElement = $('globalStudyClock');
   const homeMarker = document.createComment('study clock position');
   clockElement.before(homeMarker);
@@ -184,7 +199,7 @@
         Number.isFinite(saved.durationMs) && saved.durationMs > 0 && saved.durationMs <= MAX_MS &&
         Number.isFinite(saved.remainingMs) && saved.remainingMs >= 0 &&
         Number.isFinite(saved.startedAt)) {
-        clock = { ...clock, ...saved, stats: {...defaultStats(), ...(saved.stats || {})} };
+        clock = { ...clock, ...saved, stats: restoreStats(saved.stats) };
       }
     }
   } catch (_) {}
@@ -196,6 +211,35 @@
   const remaining = () => clock.status === 'running' ? Math.max(0,clock.deadlineAt - Date.now()) : clock.remainingMs;
   const running = () => clock.status === 'running';
   const track = () => clock.status === 'running' && remaining() > 0;
+  const visible = id => {const node=$(id);return Boolean(node&&!node.hidden);};
+  function currentSection() {
+    if(visible('grammarScreen'))return 'grammar';
+    if(visible('customScreen'))return 'custom';
+    if(visible('mangaScreen'))return 'manga';
+    if(visible('quizScreen'))return activeQuizSection;
+    if(visible('setupScreen'))return 'kana';
+    return null;
+  }
+  function accumulateTime() {
+    const now=Date.now();
+    const delta=Math.max(0,Math.min(1200,now-lastActivityAt));
+    lastActivityAt=now;
+    if(!track() || document.hidden || delta===0)return;
+    const section=currentSection();
+    if(section&&clock.stats.sections[section])clock.stats.sections[section].activeMs+=delta;
+  }
+  function sectionFor(kind,source) {
+    if(sectionNames.includes(source))return source;
+    return kind==='words'?'words':'kana';
+  }
+  function activeStats(source) {return clock.stats.sections[source]||clock.stats.sections.kana;}
+  function addUnique(item,source='kana') {
+    const id=item?.id;
+    if(id===undefined||id===null)return;
+    const key=`${source}:${id}`;
+    if(!clock.stats.uniqueIds.includes(key))clock.stats.uniqueIds.push(key);
+  }
+
   function reflectLabels() {
     $('studyClockTitle').textContent = t('title');
     $('studyClockSubtitle').textContent = t('subtitle');
@@ -279,6 +323,25 @@
     const unique = Array.isArray(stats.uniqueIds) ? stats.uniqueIds.length : 0;
     const errors = Object.entries(stats.errors || {}).sort((a,b)=>b[1].count-a[1].count).slice(0,3);
     const mistakes = errors.length ? errors.map(([id, value]) => `${value.kana} (${value.count})`).join(' · ') : t('noMistakes');
+    const activityRows=sectionNames.map(name=>{
+      const row=stats.sections?.[name]||defaultSection();
+      const values=[];
+      if(row.activeMs>0)values.push(`${t('activityTime')}: ${format(row.activeMs)}`);
+      if(row.answers>0)values.push(`${row.correct}/${row.answers} ${t('activityAnswers')} · ${Math.round(row.correct/row.answers*100)}% ${t('activityAccuracy').toLowerCase()}`);
+      if(row.guided>0)values.push(`${row.guided} ${t(name==='manga'?'activityExplanations':'activityGuided')}`);
+      if(row.finished>0)values.push(`${row.finished} ${t('activityLessons')}`);
+      if(name==='grammar'&&row.answers>0)values.push(`${row.readingCorrect} ${t('activityReading')} · ${row.meaningCorrect} ${t('activityMeaning')}`);
+      if(name==='manga'){
+        if(row.pages>0)values.push(`${row.pages} ${t('activityRead')}`);
+        if(row.analyzed>0)values.push(`${row.analyzed} ${t('activityAnalyzed')}`);
+        if(row.saved>0)values.push(`${row.saved} ${t('activitySaved')}`);
+      }
+      const weak=errors.filter(([key])=>key.startsWith(`${name}:`)).map(([,value])=>`${value.kana} (${value.count})`).slice(0,3);
+      if(weak.length)values.push(`${t('activityDifficult')}: ${weak.join(', ')}`);
+      if(!values.length)return '';
+      const title=t({kana:'activityKana',words:'activityWords',custom:'activityCustom',grammar:'activityGrammar',manga:'activityManga'}[name]);
+      return `<div class="study-clock-activity-row"><strong>${safeText(title)}</strong><span>${safeText(values.join(' · '))}</span></div>`;
+    }).filter(Boolean).join('');
     $('studyClockSummary').innerHTML =
       summaryCard(format(elapsedMs),t('time'))+
       summaryCard(stats.answers,t('answers'))+
@@ -288,6 +351,7 @@
       summaryCard(stats.guided,t('guided'))+
       summaryCard(stats.finished,t('lessons'))+
       summaryCard(unique,t('unique'))+
+      (activityRows?`<section class="study-clock-activity"><h3>${safeText(t('activity'))}</h3>${activityRows}</section>`:'')+
       `<div class="study-clock-summary-note"><strong>${safeText(t('mistakes'))}:</strong> ${safeText(mistakes)}</div>`;
     const dialog = $('studyClockCompleteDialog');
     if (!dialog.open) dialog.showModal();
@@ -295,6 +359,7 @@
   }
   function finish(natural=false) {
     if (clock.status === 'idle') return;
+    accumulateTime();
     const duration = clock.durationMs;
     const elapsed = natural ? duration : duration - remaining();
     const stats = clock.stats;
@@ -306,6 +371,7 @@
     showSummary(stats,Math.max(0,elapsed),natural);
   }
   function tick() {
+    accumulateTime();
     if (running() && remaining() <= 0) { finish(true); return; }
     if (clock.status !== 'idle') render();
   }
@@ -329,10 +395,12 @@
     unlockBellAudio();
     clock = { ...clock, status:'running', durationMs, remainingMs:durationMs,
       startedAt:Date.now(), deadlineAt:Date.now()+durationMs, stats:defaultStats() };
+    lastActivityAt=Date.now();
     persist();
     render();
   }
   function pauseResume() {
+    accumulateTime();
     if (clock.status === 'running') {
       clock.remainingMs = remaining();
       clock.deadlineAt = null;
@@ -342,46 +410,82 @@
       clock.deadlineAt = Date.now() + clock.remainingMs;
       clock.status = 'running';
     }
+    lastActivityAt=Date.now();
     persist();
     render();
   }
-  function onQuizStart() {
-    viewChanged(true);
-    if (!track()) return;
+  function onQuizStart({kind,source}={}) {
+    accumulateTime();
+    const section=sectionFor(kind,source);
+    if(section==='kana'||section==='words')viewChanged(true);
+    activeQuizSection=section;
+    lastActivityAt=Date.now();
+    if(!track())return;
     clock.stats.started++;
+    activeStats(section).started++;
     persist();
   }
-  function onGuided(item) {
-    if (!track()) return;
+  function onGuided(item,source=activeQuizSection) {
+    if(!track())return;
     clock.stats.guided++;
-    addUnique(item);
+    activeStats(source).guided++;
+    addUnique(item,source);
     persist();
   }
-  function addUnique(item) {
-    if (item?.id && !clock.stats.uniqueIds.includes(item.id)) clock.stats.uniqueIds.push(item.id);
-  }
-  function onAnswer({item,kind,correct}) {
-    if (!track()) return;
-    const stats = clock.stats;
+  function onAnswer({item,kind,correct,source,readingCorrect,meaningCorrect}) {
+    if(!track())return;
+    const section=sectionFor(kind,source);
+    const stats=clock.stats;
+    const row=activeStats(section);
     stats.answers++;
-    if (correct) stats.correct++;
-    if (kind === 'words') stats.words++;
-    else { stats.characters++; if (Object.hasOwn(stats.byScript,item.script)) stats.byScript[item.script]++; }
-    addUnique(item);
-    if (!correct) {
-      const error = stats.errors[item.id] || {kana:item.kana,count:0};
+    row.answers++;
+    if(correct){stats.correct++;row.correct++;}
+    if(section==='words'||(section==='custom'&&kind==='word'))stats.words++;
+    else if(section==='kana'||section==='custom')stats.characters++;
+    if(section==='kana'&&item&&Object.hasOwn(stats.byScript,item.script))stats.byScript[item.script]++;
+    if(section==='grammar'){
+      if(readingCorrect)row.readingCorrect++;
+      if(meaningCorrect)row.meaningCorrect++;
+    }
+    addUnique(item,section);
+    if(!correct&&item?.id){
+      const key=`${section}:${item.id}`;
+      const error=stats.errors[key]||{kana:item.kana||item.surface||item.japanese||item.id,count:0};
       error.count++;
-      stats.errors[item.id] = error;
+      stats.errors[key]=error;
     }
     persist();
   }
-  function onQuizFinish() {
-    viewChanged(false);
-    if (!track()) return;
+  function onQuizFinish({kind,source}={}) {
+    accumulateTime();
+    const section=sectionFor(kind,source||activeQuizSection);
+    if(section==='kana'||section==='words')viewChanged(false);
+    lastActivityAt=Date.now();
+    if(!track())return;
     clock.stats.finished++;
+    activeStats(section).finished++;
     persist();
   }
-  window.KTFStudyClock = {onQuizStart,onGuided,onAnswer,onQuizFinish,onViewChange: viewChanged};
+  function onMangaPage({id,name}={}) {
+    if(!track()||!id)return;
+    const key=String(id);
+    if(clock.stats.mangaPageIds.includes(key))return;
+    clock.stats.mangaPageIds.push(key);
+    activeStats('manga').pages++;
+    addUnique({id:key},'manga');
+    persist();
+  }
+  function onMangaAnalysis() {
+    if(!track())return;
+    activeStats('manga').analyzed++;
+    persist();
+  }
+  function onMangaSaved() {
+    if(!track())return;
+    activeStats('manga').saved++;
+    persist();
+  }
+  window.KTFStudyClock = {onQuizStart,onGuided,onAnswer,onQuizFinish,onMangaPage,onMangaAnalysis,onMangaSaved,onViewChange:viewChanged};
   $('studyHours').value = clock.savedHours;
   $('studyMinutes').value = clock.savedMinutes;
   $('studyHours').addEventListener('input',saveInput);

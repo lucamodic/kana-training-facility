@@ -557,6 +557,7 @@
     renderStrip();
     const page=currentPage();
     renderMangaView();
+    if(page && mangaView==='read' && !$('mangaScreen').hidden)window.KTFStudyClock?.onMangaPage({id:page.id,name:page.name});
     $('mangaWorkspace').hidden=!page;
     $('mangaEmpty').hidden=Boolean(page);
     $('mangaControls').hidden=!page;
@@ -937,6 +938,7 @@
       toast(all?`${t('processingMany')} ${ix} ${t('of')} ${queue.length}: ${page.name}`:t('working'));
       try{
         await analyzePage(page,force);
+        window.KTFStudyClock?.onMangaAnalysis();
         toast(`${t('done')} ${page.name}`);
       }
       catch(err){if(page.status==='processing')page.status='pending';toast(`${t('error')} ${err.message||err}`,true);if(all)break;}
@@ -1009,6 +1011,7 @@
         const isSaved=Boolean(window.KTFCustomCollection.isSaved(kind,data));
         updateSaveButton(button,kind,isSaved,saved);
         if (isSaved) {
+          if(saved)window.KTFStudyClock?.onMangaSaved();
           const row=button.closest('.manga-word, .manga-kanji');
           if (row) {
             let feedback=row.querySelector('.manga-save-feedback');
@@ -1044,7 +1047,10 @@
     const action=['reveal','words','edit','cancelEdit'].find(key=>button.dataset[key]);
     if(!action)return;
     const item=page.items.find(x=>x.id===button.dataset[action]);if(!item)return;
-    if(action==='reveal')item.revealed=!item.revealed;
+    if(action==='reveal'){
+      item.revealed=!item.revealed;
+      if(item.revealed)window.KTFStudyClock?.onGuided({id:`${page.id}:${item.id}`,kana:item.japanese},'manga');
+    }
     if(action==='words')item.showWords=!item.showWords;
     if(action==='edit')item.editing=!item.editing;
     if(action==='cancelEdit'){if(item.manual&&!item.romaji){page.items=page.items.filter(x=>x.id!==item.id);}else{item.editing=false;}}
@@ -1134,6 +1140,7 @@
         const text=form.querySelector('input')?.value||'';
         item.answer=text;
         item.check=normalize(text) && normalize(text)===normalize(item.romaji)?'correct':'wrong';
+        window.KTFStudyClock?.onAnswer({source:'manga',kind:'manga',item:{id:`${currentPage()?.hash||currentPage()?.id||''}:${item.id}`,kana:item.japanese},correct:item.check==='correct'});
         render();
         const next=$(`manga-answer-${item.id}`);next?.focus({preventScroll:true});
       }

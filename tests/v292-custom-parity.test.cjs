@@ -69,15 +69,15 @@ test('custom quiz and results reuse the classes of the main trainer and finish c
   assert.match(js,/session\.history\.push/);
 });
 
-test('v29.2 packages the complete release with updated PWA references', () => {
+test('v30.0 packages the complete release with updated PWA references', () => {
   const html = read('index.html');
   const sw = read('sw.js');
-  assert.equal(JSON.parse(read('package.json')).version,'29.2.0');
-  assert.match(html,/id="appVersion">v29\.2</);
-  assert.match(sw,/offline-v29-2-custom-main-parity/);
+  assert.equal(JSON.parse(read('package.json')).version,'30.0.0');
+  assert.match(html,/id="appVersion">v30\.0</);
+  assert.match(sw,/offline-v30-grammar-foundations/);
   for (const asset of ['styles.css','custom-collection.js','cloud-sync.js','manga-reader.js']) {
-    assert.ok(html.includes(`${asset}?v=29.2`));
-    assert.ok(sw.includes(`${asset}?v=29.2`));
+    assert.ok(html.includes(`${asset}?v=30.0`));
+    assert.ok(sw.includes(`${asset}?v=30.0`));
   }
   assert.match(read('manga-cache.js'),/ktf-manga-reader-cache/);
 });

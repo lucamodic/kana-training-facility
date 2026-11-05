@@ -1208,7 +1208,7 @@ const UI_EN = {
   choose:'Choose your {script}', chooseVisible:'Select visible', clearVisible:'Clear visible',
   noneFound:'No characters match this search.', groupSelect:'Select', groupClear:'Clear', selected:'selected', notSelected:'not selected',
   timerGuess:'✧ Little steps, big progress!', toastBadGuesses:'Please enter a number of guesses between 1 and 10,000.',
-  rapidFireIndicatorTitle:'Rapid Fire',rapidFireTimeout:'Time’s up! This counts as a mistake.',rapidFireWaiting:'Next one coming up…',rapidFirePaused:'Take your time — paused.',rapidFireBonus:'{count} timed out',toastBadRapidFire:'Choose a Rapid Fire limit between 1 and 300 seconds.',
+  rapidFireIndicatorTitle:'Rapid Fire',rapidFireTimeout:'Time’s up! This counts as a mistake.',rapidFireWaiting:'Time stopped. Press Next when ready.',rapidFirePaused:'Take your time — paused.',rapidFireBonus:'{count} timed out',toastBadRapidFire:'Choose a Rapid Fire limit between 1 and 300 seconds.',
   guessProgress:'{done} / {total} guesses', guessReached:'Guess goal reached!',
   summaryGuessGoal:'Finished {attempts} of {goal} guesses{timing}.',
   timerNone:'✧ Infinite Practice shows an optional study clock.', timerUp:'✧ Every little minute counts.', timerReady:'✧ You’ve got this!',
@@ -1249,7 +1249,7 @@ const UI_ES = {
   choose:'Elegí tus caracteres de {script}', chooseVisible:'Seleccionar visibles', clearVisible:'Borrar visibles',
   noneFound:'No hay caracteres que coincidan con la búsqueda.', groupSelect:'Seleccionar', groupClear:'Borrar', selected:'seleccionado', notSelected:'sin seleccionar',
   timerGuess:'✧ ¡De a poquito, llegás lejos!', toastBadGuesses:'Ingresá una cantidad de respuestas entre 1 y 10.000.',
-  rapidFireIndicatorTitle:'Ráfaga',rapidFireTimeout:'¡Se acabó el tiempo! Cuenta como error.',rapidFireWaiting:'Ya viene la siguiente…',rapidFirePaused:'Pausa activada.',rapidFireBonus:'{count} sin responder a tiempo',toastBadRapidFire:'Elegí un límite de Ráfaga entre 1 y 300 segundos.',
+  rapidFireIndicatorTitle:'Ráfaga',rapidFireTimeout:'¡Se acabó el tiempo! Cuenta como error.',rapidFireWaiting:'Tiempo detenido. Tocá Siguiente cuando quieras continuar.',rapidFirePaused:'Pausa activada.',rapidFireBonus:'{count} sin responder a tiempo',toastBadRapidFire:'Elegí un límite de Ráfaga entre 1 y 300 segundos.',
   guessProgress:'{done} / {total} respuestas', guessReached:'¡Objetivo de respuestas cumplido!',
   summaryGuessGoal:'Completaste {attempts} de {goal} respuestas{timing}.',
   timerNone:'✧ En práctica infinita aparece un reloj opcional.', timerUp:'✧ Cada minutito cuenta.', timerReady:'✧ ¡Vos podés!',
@@ -2047,7 +2047,7 @@ function updateRapidFireDisplay(quiz) {
   $('rapidFirePause').textContent = quiz.paused ? t('resume') : t('pause');
   // Both controls pause the same timers; don't duplicate them when a global timer is visible.
   $('rapidFirePause').hidden = quiz.timerMode !== 'off';
-  $('rapidFireStatus').textContent = quiz.rapidExpired ? t('rapidFireTimeout') : (quiz.paused ? t('rapidFirePaused') : '');
+  $('rapidFireStatus').textContent = quiz.rapidExpired ? t('rapidFireTimeout') : (quiz.phase === 'result' ? t('rapidFireWaiting') : (quiz.paused ? t('rapidFirePaused') : ''));
 }
 function expireRapidFire(quiz) {
   if (state.quiz !== quiz || !rapidFireActive(quiz) || quiz.paused || quiz.rapidExpired) return;
@@ -2058,13 +2058,6 @@ function expireRapidFire(quiz) {
   reveal(true);
   if (state.quiz !== quiz) return;
   updateRapidFireDisplay(quiz);
-  if (!quiz.guessLimitReached) {
-    quiz.rapidAdvanceTimeout = setTimeout(function tryAdvance() {
-      if (state.quiz !== quiz || quiz.phase !== 'result') return;
-      if (quiz.paused) { quiz.rapidAdvanceTimeout = setTimeout(tryAdvance, 180); return; }
-      advanceQuestion();
-    }, 1500);
-  }
 }
 function tickQuizTimers(quiz) {
   if (state.quiz !== quiz || quiz.paused) return;
@@ -2259,19 +2252,10 @@ function reveal(skipped = false) {
   updateStats();
   if (quiz.mode === 'daily' && !quiz.deck.length) {
     $('checkButton').textContent = t('seeResults');
-    // Let the final answer remain visible briefly before completing the one-pass review.
-    quiz.limitEndTimeout = setTimeout(() => {
-      if (state.quiz === quiz && quiz.phase === 'result') stopQuiz(true);
-    }, 1700);
   }
   if (quiz.guessLimit !== null && quiz.attempts >= quiz.guessLimit) {
     quiz.guessLimitReached = true;
     $('checkButton').textContent = t('seeResults');
-    // Leave the final answer (and the English meaning in Word Challenge) on
-    // screen briefly before taking the student to the results automatically.
-    quiz.limitEndTimeout = setTimeout(() => {
-      if (state.quiz === quiz && quiz.phase === 'result') stopQuiz(false,false,true);
-    }, 1250);
   }
   $('checkButton').focus({preventScroll:true});
 }

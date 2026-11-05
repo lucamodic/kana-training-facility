@@ -37,15 +37,15 @@
   const dictionaries = {
     en: {
       nav:'Custom', back:'← Back to selection',backManga:'← Back to Manga Reader', eyebrow:'✦ YOUR PERSONAL STUDY DECK',title:'Custom Characters & Words',intro:'Save kanji and vocabulary from Manga Reader, or add your own, and practice them anytime.',
-      account:'Sign in with Google from My Progress to keep your collection synced across devices.', cloud:'Saved in your account · synchronization active',local:'Saved on this device · sign in to sync',offline:'Saved locally · waiting for internet',syncing:'Syncing your collection…',error:'Saved locally · cloud sync needs attention. Check My Progress.',
-      add:'Add a character or word',kind:'Type',kanji:'Kanji / character',word:'Word / expression',japanese:'Japanese text',reading:'Romaji reading (optional)',kana:'Kana reading (optional)',meaning:'Meaning (optional)',notes:'Notes (optional)',save:'Save to collection',update:'Save changes',cancel:'Cancel edit',source:'Source',manual:'Added manually',manga:'Manga Reader',list:'Your collection',all:'All',onlyKanji:'Characters',onlyWords:'Words',search:'Find a character, reading or meaning…',empty:'No saved items match this filter. Add some here or save them directly from a manga.',
+      
+      add:'Add a character or word',addButton:'Add custom',closeEditor:'Close editor',kind:'Type',kanji:'Kanji / character',word:'Word / expression',japanese:'Japanese text',reading:'Romaji reading (optional)',kana:'Kana reading (optional)',meaning:'Meaning (optional)',notes:'Notes (optional)',save:'Save to collection',update:'Save changes',cancel:'Cancel edit',source:'Source',manual:'Added manually',manga:'Manga Reader',list:'Your collection',all:'All',onlyKanji:'Characters',onlyWords:'Words',search:'Find a character, reading or meaning…',empty:'No saved items match this filter. Add some here or save them directly from a manga.',
       total:'saved',selectAll:'Select visible',selectNone:'Deselect visible',selected:'selected',study:'Practice selected',mode:'Practice mode',mixed:'Mixed',readingMode:'Romaji reading',meaningMode:'Meaning',edit:'Edit',remove:'Remove',confirm:'Remove this item from your custom collection?',duplicates:'This item is already in your collection.',added:'Added to your custom collection.',saved:'Changes saved.',deleted:'Removed from your custom collection.',invalid:'Enter a Japanese character or word.',
       practiceTitle:'Personal practice',question:'Question',askReading:'Write the romaji reading',askMeaning:'Write the meaning',answer:'Your answer',check:'Check',skip:'I do not know',next:'Next question →',finish:'Finish practice',end:'Back to collection',correct:'Correct!',wrong:'Not quite',answerWas:'Expected answer:',noQuestions:'Choose at least one item with a meaning or romaji reading.',result:'Session completed',success:'Correct answers',attempts:'Attempts',practiceHint:'Practice results are saved in your account too.',count:'correct',review:'Review',imported:'Saved from manga', select:'Select for practice', remaining:'questions remaining'
     },
     es: {
       nav:'Custom',back:'← Volver a selección',backManga:'← Volver al lector de manga',eyebrow:'✦ TU MAZO PERSONAL',title:'Caracteres y palabras custom',intro:'Guardá kanjis y vocabulario del Manga Reader, o agregá los que quieras, y practicalos cuando quieras.',
-      account:'Iniciá sesión con Google desde Mi progreso para sincronizar tu colección entre dispositivos.',cloud:'Guardado en tu cuenta · sincronización activa',local:'Guardado en este dispositivo · iniciá sesión para sincronizar',offline:'Guardado localmente · esperando conexión',syncing:'Sincronizando tu colección…',error:'Guardado localmente · error de sincronización. Revisá Mi progreso.',
-      add:'Agregar carácter o palabra',kind:'Tipo',kanji:'Kanji / carácter',word:'Palabra / expresión',japanese:'Texto japonés',reading:'Lectura en romaji (opcional)',kana:'Lectura en kana (opcional)',meaning:'Significado (opcional)',notes:'Notas (opcional)',save:'Guardar en mi colección',update:'Guardar cambios',cancel:'Cancelar edición',source:'Origen',manual:'Agregado manualmente',manga:'Manga Reader',list:'Mi colección',all:'Todos',onlyKanji:'Caracteres',onlyWords:'Palabras',search:'Buscar carácter, lectura o significado…',empty:'No hay elementos con ese filtro. Agregá uno acá o guardalo directamente desde un manga.',
+      
+      add:'Agregar carácter o palabra',addButton:'Agregar custom',closeEditor:'Cerrar editor',kind:'Tipo',kanji:'Kanji / carácter',word:'Palabra / expresión',japanese:'Texto japonés',reading:'Lectura en romaji (opcional)',kana:'Lectura en kana (opcional)',meaning:'Significado (opcional)',notes:'Notas (opcional)',save:'Guardar en mi colección',update:'Guardar cambios',cancel:'Cancelar edición',source:'Origen',manual:'Agregado manualmente',manga:'Manga Reader',list:'Mi colección',all:'Todos',onlyKanji:'Caracteres',onlyWords:'Palabras',search:'Buscar carácter, lectura o significado…',empty:'No hay elementos con ese filtro. Agregá uno acá o guardalo directamente desde un manga.',
       total:'guardados',selectAll:'Seleccionar visibles',selectNone:'Deseleccionar visibles',selected:'seleccionados',study:'Practicar seleccionados',mode:'Modo de práctica',mixed:'Mixto',readingMode:'Lectura en romaji',meaningMode:'Significado',edit:'Editar',remove:'Eliminar',confirm:'¿Eliminar este elemento de tu colección?',duplicates:'Ya tenés este elemento guardado.',added:'Agregado a tus caracteres custom.',saved:'Cambios guardados.',deleted:'Eliminado de tus caracteres custom.',invalid:'Ingresá un carácter o una palabra japonesa.',
       practiceTitle:'Práctica personalizada',question:'Pregunta',askReading:'Escribí la lectura en romaji',askMeaning:'Escribí el significado',answer:'Tu respuesta',check:'Comprobar',skip:'No sé',next:'Siguiente →',finish:'Terminar práctica',end:'Volver a la colección',correct:'¡Correcto!',wrong:'No del todo',answerWas:'Respuesta esperada:',noQuestions:'Seleccioná al menos un elemento con significado o lectura en romaji.',result:'Práctica terminada',success:'Respuestas correctas',attempts:'Intentos',practiceHint:'Tus resultados también se guardan en tu cuenta.',count:'aciertos',review:'Repaso',imported:'Guardado desde el manga',select:'Seleccionar para practicar',remaining:'preguntas restantes'
     }
@@ -77,8 +77,12 @@
     target.textContent = text;
     target.hidden = !text;
     target.classList.toggle('is-error', isError);
+    const editorNotice = $('customEditorNotice');
+    editorNotice.textContent = text;
+    editorNotice.hidden = !text || !$('customEditorDialog').open;
+    editorNotice.classList.toggle('is-error', isError);
     clearTimeout(messageTimeout);
-    if (text) messageTimeout = setTimeout(() => {target.hidden = true;}, 5500);
+    if (text) messageTimeout = setTimeout(() => {target.hidden = true;editorNotice.hidden = true;}, 5500);
   }
   function fold(events) {
     const collection = new Map();
@@ -114,12 +118,7 @@
     loaded = true;
     $('customCount').textContent = String(items.length);
     if (isOpen() && !practice) renderList();
-    updateStatus();
     document.dispatchEvent(new CustomEvent('ktf:custom-collection-changed',{detail:{owner:activeOwner,count:items.length}}));
-  }
-  function updateStatus() {
-    const state = cloud.getStatus();
-    $('customStatus').textContent = t(state.status === 'error' ? 'error' : !state.user ? 'local' : !state.online ? 'offline' : state.status === 'syncing' || state.status === 'connecting' ? 'syncing' : 'cloud');
   }
   function visible() {
     return items.filter(item => (filter === 'all' || item.kind === filter) && (!search || [item.surface,item.romaji,item.kana,item.meaning,item.notes].some(text => normalize(text).includes(normalize(search)))));
@@ -136,13 +135,13 @@
     $('customSearch').placeholder = t('search');
     $('customSave').textContent = editId ? t('update') : t('save');
     $('customCancel').textContent = t('cancel');
-    $('customAccountHelp').textContent = t('account');
+    $('customAddButtonLabel').textContent = t('addButton');
+    $('customEditorClose').setAttribute('aria-label',t('closeEditor'));
     $('customPracticeExit').textContent = t('end');
     $('customPracticeCheck').textContent = t('check');
     $('customPracticeAnswerLabel').textContent = t('answer');
     $('customPracticeSkip').textContent = t('skip');
     $('customPracticeNext').textContent = t('next');
-    updateStatus();
   }
   function renderList() {
     labelText();
@@ -167,6 +166,19 @@
         <div class="custom-item-actions"><button type="button" class="mini-button" data-custom-edit="${escapeHtml(item.id)}">${t('edit')}</button><button type="button" class="mini-button" data-custom-remove="${escapeHtml(item.id)}">${t('remove')}</button></div>
       </article>`;
     }).join('') : `<p class="subtle custom-empty">${t('empty')}</p>`;
+  }
+  function showEditor(item = null) {
+    if (!item) resetForm();
+    const dialog = $('customEditorDialog');
+    if (!dialog.open) dialog.showModal();
+    $('customEditorNotice').hidden = true;
+    $('customJapanese').focus({preventScroll:true});
+  }
+  function hideEditor() {
+    const dialog = $('customEditorDialog');
+    if (dialog.open) dialog.close();
+    $('customEditorNotice').hidden = true;
+    resetForm();
   }
   function resetForm() {
     editId = null;
@@ -217,11 +229,13 @@
     $('customPractice').hidden = true;
     $('customBrowse').hidden = false;
     practice = null;
+    hideEditor();
     renderList();
     refresh().catch(error => notify(error.message || String(error),true));
     $('customScreen').scrollIntoView({block:'start',behavior:'instant'});
   }
   function close(forceSetup = false) {
+    hideEditor();
     $('customScreen').hidden = true;
     const backToManga = !forceSetup && returnView === 'manga' && !$('openMangaButton').hidden;
     $('mangaScreen').hidden = !backToManga;
@@ -326,14 +340,20 @@
     $('openCustomButton').addEventListener('click',open);
     $('mangaOpenCustom').addEventListener('click',open);
     $('customBack').addEventListener('click',()=>close());
+    $('customAddButton').addEventListener('click',()=>showEditor());
+    $('customEditorClose').addEventListener('click',hideEditor);
+    $('customEditorDialog').addEventListener('click',event => {
+      if (event.target === $('customEditorDialog')) hideEditor();
+    });
+    $('customEditorDialog').addEventListener('close',resetForm);
     $('homeLink').addEventListener('click',()=>{if(isOpen())close(true);},true);
     $('customForm').addEventListener('submit',async event => {
       event.preventDefault();
       const raw = {kind:$('customKind').value,surface:$('customJapanese').value,romaji:$('customRomaji').value,kana:$('customKana').value,meaning:$('customMeaning').value,notes:$('customNotes').value};
       const ok = await save(raw);
-      if (ok) resetForm();
+      if (ok) hideEditor();
     });
-    $('customCancel').addEventListener('click',resetForm);
+    $('customCancel').addEventListener('click',hideEditor);
     $('customSearch').addEventListener('input',event => {search = event.target.value;renderList();});
     document.querySelectorAll('[data-custom-filter]').forEach(button => button.addEventListener('click',() => {filter = button.dataset.customFilter;renderList();}));
     $('customItems').addEventListener('change',event => {
@@ -358,13 +378,12 @@
         $('customMeaning').value = item.meaning;
         $('customNotes').value = item.notes;
         labelText();
-        $('customForm').scrollIntoView({behavior:'smooth',block:'center'});
-        $('customJapanese').focus({preventScroll:true});
+        showEditor(item);
       }
       if (remove && window.confirm(t('confirm'))) {
         const id = remove.dataset.customRemove;
         await persist('custom_delete',{id});
-        if (editId === id) resetForm();
+        if (editId === id) hideEditor();
         notify(t('deleted'));
       }
     });
@@ -376,12 +395,12 @@
     $('customPracticeNext').addEventListener('click',()=>{if (!practice)return;practice.index++;renderPractice();});
     $('customPracticeExit').addEventListener('click',finishPractice);
     cloud.subscribe(() => {
-      if (owner !== currentOwner()) {loaded = false;practice = null;if(isOpen()){ $('customBrowse').hidden=false;$('customPractice').hidden=true;resetForm(); }}
+      if (owner !== currentOwner()) {loaded = false;practice = null;if(isOpen()){ $('customBrowse').hidden=false;$('customPractice').hidden=true;hideEditor(); }}
       refresh().catch(() => {});
     });
     document.addEventListener('ktf:languagechange',()=>{labelText();if (isOpen() && !practice) renderList();if (practice)renderPractice();});
     window.addEventListener('ktf:custom-added',event => {addFromManga(event.detail.kind,event.detail.item,event.detail.source).catch(error => notify(String(error.message||error),true));});
-    document.addEventListener('keydown',event => {if(isOpen() && event.key === 'Escape' && !practice) close();});
+    document.addEventListener('keydown',event => {if(isOpen() && event.key === 'Escape' && !practice && !$('customEditorDialog').open) close();});
   }
   window.KTFCustomCollection = {addFromManga,refresh,open,isSaved};
   attach();

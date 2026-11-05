@@ -51,8 +51,8 @@
   clockElement.before(homeMarker);
   let lesson = $('quizScreen');
   let lessonOpen = false;
-  let isDocked = false;
-  let isMinimized = false;
+  let isMinimized = true;
+  try { isMinimized = localStorage.getItem('ktf-study-clock-window-minimized') !== 'false'; } catch (_) {}
   const titlebar = clockElement.querySelector('.study-clock-titlebar');
   let floatingPosition = null;
   let activeDrag = null;
@@ -107,30 +107,18 @@
     try { localStorage.setItem(POSITION_KEY, JSON.stringify(floatingPosition)); } catch (_) {}
   }
   function placeClock() {
-    const lessonActive = lessonOpen && clock.status !== 'idle';
-    const floating = lessonActive && !isDocked;
-    const docked = lessonActive && isDocked;
-    if (docked) {
-      if (clockElement.parentNode !== lesson || lesson.firstChild !== clockElement) lesson.prepend(clockElement);
-    } else if (clockElement.previousSibling !== homeMarker) homeMarker.after(clockElement);
-    clockElement.classList.toggle('is-floating', floating);
-    clockElement.classList.toggle('is-docked', docked);
-    clockElement.classList.toggle('is-minimized', floating && isMinimized);
+    clockElement.classList.add('is-floating');
+    clockElement.classList.remove('is-docked');
+    clockElement.classList.toggle('is-minimized', isMinimized);
     clockElement.classList.toggle('is-active', clock.status !== 'idle');
-    $('studyClockMinimize').hidden = !floating;
-    $('studyClockDock').hidden = !floating;
-    $('studyClockFloat').hidden = !docked;
-    titlebar.tabIndex = floating ? 0 : -1;
-    titlebar.title = floating ? t('drag') : '';
+    $('studyClockMinimize').hidden = false;
+    titlebar.tabIndex = 0;
+    titlebar.title = t('drag');
     applyFloatingPosition();
   }
   function viewChanged(open, mode = 'practice') {
     lesson = mode === 'exam' ? $('examScreen') : $('quizScreen');
     lessonOpen = open;
-    if (open) {
-      isDocked = false;
-      isMinimized = matchMedia('(max-width: 680px)').matches;
-    }
     placeClock();
   }
   function pointerStart(event) {
@@ -224,10 +212,6 @@
     minimize.setAttribute('aria-label', t(isMinimized ? 'expand' : 'minimize'));
     minimize.title = t(isMinimized ? 'expand' : 'minimize');
     minimize.textContent = isMinimized ? '+' : '−';
-    $('studyClockDock').setAttribute('aria-label',t('dock'));
-    $('studyClockDock').title = t('dock');
-    $('studyClockFloat').setAttribute('aria-label',t('float'));
-    $('studyClockFloat').title = t('float');
   }
   function render() {
     const active = clock.status !== 'idle';
@@ -406,9 +390,7 @@
   $('studyClockPause').addEventListener('click',pauseResume);
   $('studyClockFinish').addEventListener('click',() => { if (window.confirm(t('confirm'))) finish(false); });
   $('studyClockDismiss').addEventListener('click',() => $('studyClockCompleteDialog').close());
-  $('studyClockMinimize').addEventListener('click', () => { isMinimized = !isMinimized; render(); });
-  $('studyClockDock').addEventListener('click', () => { isDocked = true; isMinimized = false; render(); });
-  $('studyClockFloat').addEventListener('click', () => { isDocked = false; isMinimized = false; render(); });
+  $('studyClockMinimize').addEventListener('click', () => { isMinimized = !isMinimized; try { localStorage.setItem('ktf-study-clock-window-minimized', String(isMinimized)); } catch (_) {} render(); });
   document.addEventListener('ktf:languagechange',render);
   document.addEventListener('visibilitychange',() => { if (!document.hidden) tick(); });
   document.addEventListener('pointerdown', () => { if (clock.status !== 'idle') unlockBellAudio(); }, {passive:true});

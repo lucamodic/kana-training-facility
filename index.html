@@ -13,15 +13,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=28.4">
-  <script src="./app.js?v=28.4" defer></script>
-  <script src="./study-clock.js?v=28.4" defer></script>
-  <script src="./config.js?v=28.4" defer></script>
-  <script src="./cloud-sync.js?v=28.4" defer></script>
-  <script src="./learning-progress.js?v=28.4" defer></script>
-  <script src="./manga-cache.js?v=28.4" defer></script>
-  <script src="./manga-reader.js?v=28.4" defer></script>
-  <script src="./custom-collection.js?v=28.4" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=28.5">
+  <script src="./app.js?v=28.5" defer></script>
+  <script src="./study-clock.js?v=28.5" defer></script>
+  <script src="./config.js?v=28.5" defer></script>
+  <script src="./cloud-sync.js?v=28.5" defer></script>
+  <script src="./learning-progress.js?v=28.5" defer></script>
+  <script src="./manga-cache.js?v=28.5" defer></script>
+  <script src="./manga-reader.js?v=28.5" defer></script>
+  <script src="./custom-collection.js?v=28.5" defer></script>
 </head>
 <body>
   <header class="top">
@@ -68,9 +68,9 @@
   </header>
 
 
-    <section class="global-study shell" id="globalStudyClock" aria-label="Study time tracker">
+    <section class="global-study shell is-floating is-minimized" id="globalStudyClock" aria-label="Study time tracker">
       <div class="study-clock-card">
-        <div class="study-clock-titlebar"><span aria-hidden="true">✦</span><span class="study-clock-grip" aria-hidden="true">⠿</span> <strong id="studyClockTitle">MY STUDY TIME</strong><span class="study-clock-title-deco" aria-hidden="true">✧ ✧</span><span class="study-clock-mini-time" id="studyClockMiniTime" aria-hidden="true">--:--:--</span><div class="study-clock-window-actions"><button type="button" id="studyClockMinimize" class="study-clock-window-button" aria-label="Minimize study clock" title="Minimize study clock" hidden>−</button><button type="button" id="studyClockDock" class="study-clock-window-button" aria-label="Move clock into page" title="Move clock into page" hidden>×</button><button type="button" id="studyClockFloat" class="study-clock-window-button" aria-label="Float study clock" title="Float study clock" hidden>↗</button></div></div>
+        <div class="study-clock-titlebar"><span aria-hidden="true">✦</span><span class="study-clock-grip" aria-hidden="true">⠿</span> <strong id="studyClockTitle">MY STUDY TIME</strong><span class="study-clock-title-deco" aria-hidden="true">✧ ✧</span><span class="study-clock-mini-time" id="studyClockMiniTime" aria-hidden="true">--:--:--</span><div class="study-clock-window-actions"><button type="button" id="studyClockMinimize" class="study-clock-window-button" aria-label="Minimize study clock" title="Minimize study clock" hidden>−</button></div></div>
         <div class="study-clock-body">
           <div class="study-clock-intro"><div><strong id="studyClockSubtitle">Your own little study session</strong><p id="studyClockDescription">Choose your hours and minutes. Your timer follows you across lessons.</p></div><span class="study-clock-flower" aria-hidden="true">✿</span></div>
           <div class="study-clock-grid">
@@ -205,7 +205,7 @@
       </div>
       <div class="manga-page-strip" id="mangaPageStrip" hidden></div>
       <p id="mangaOrderHint" class="manga-privacy-subtle" hidden>Arrastrá las miniaturas o usá las flechas para ordenar las páginas.</p>
-      <p id="mangaUploadHint" class="manga-privacy-subtle">When you analyze, the image is sent to OpenAI GPT-6 Luna through your protected Supabase function.</p>
+      
       <p id="mangaNotice" class="manga-notice" role="status" aria-live="polite" hidden></p>
       <div class="manga-empty" id="mangaEmpty"><span aria-hidden="true">✿</span><p>Drop some manga pages here or choose files to begin.</p></div>
       <div class="manga-workspace" id="mangaWorkspace" hidden>
@@ -216,12 +216,12 @@
 
     <section id="customScreen" class="custom-screen" aria-label="Custom characters and vocabulary" hidden>
       <div class="custom-top"><button class="back" type="button" id="customBack">← Back to selection</button><span class="quiz-pill" id="customTotal">0 saved</span></div>
-      <div class="manga-header"><div><span class="eyebrow" id="customEyebrow">✦ YOUR PERSONAL STUDY DECK</span><h2 id="customTitle">Custom Characters &amp; Words</h2><p class="subtle" id="customIntro">Build your own practice library.</p></div><div class="manga-header-deco" lang="ja">字</div></div>
-      <p class="custom-status" id="customStatus" role="status"></p>
-      <p class="subtle custom-account-help" id="customAccountHelp">Sign in with Google to sync.</p>
+      <header class="custom-heading"><span class="eyebrow" id="customEyebrow">✦ YOUR PERSONAL STUDY DECK</span><h2 id="customTitle">Custom Characters &amp; Words</h2><p class="subtle" id="customIntro">Save characters and words you find in manga, then practice them here.</p></header>
       <p class="manga-notice" id="customNotice" role="status" aria-live="polite" hidden></p>
       <div id="customBrowse" class="custom-browse">
-        <section class="custom-editor"><h3 id="customAddTitle">Add a character or word</h3>
+        <dialog id="customEditorDialog" class="custom-editor custom-editor-dialog" aria-labelledby="customAddTitle">
+          <div class="custom-dialog-title"><h3 id="customAddTitle">Add a character or word</h3><button type="button" class="mini-button" id="customEditorClose" aria-label="Close editor">✕</button></div>
+          <p class="custom-editor-notice" id="customEditorNotice" role="status" hidden></p>
           <form id="customForm" class="custom-form" autocomplete="off">
             <label><span id="customKindLabel">Type</span><select id="customKind"><option value="kanji">Kanji / character</option><option value="word">Word / expression</option></select></label>
             <label><span id="customJapaneseLabel">Japanese text</span><input id="customJapanese" lang="ja" maxlength="120" required placeholder="例: 好き / 気"></label>
@@ -231,10 +231,13 @@
             <label class="custom-notes"><span id="customNotesLabel">Notes (optional)</span><textarea id="customNotes" rows="2" maxlength="300"></textarea></label>
             <div class="custom-form-actions"><button type="submit" class="button-primary" id="customSave">Save to collection</button><button type="button" class="button-secondary" id="customCancel">Cancel edit</button></div>
           </form>
-        </section>
-        <section class="custom-library"><div class="custom-library-head"><h3 id="customListTitle">Your collection</h3><span class="quiz-pill" id="customSelected">0 selected</span></div>
-          <div class="custom-filters"><button class="mini-button is-active" type="button" data-custom-filter="all" aria-pressed="true">All</button><button class="mini-button" type="button" data-custom-filter="kanji" aria-pressed="false">Characters</button><button class="mini-button" type="button" data-custom-filter="word" aria-pressed="false">Words</button><input type="search" id="customSearch" placeholder="Search collection…" aria-label="Search custom collection"></div>
-          <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button></div>
+        </dialog>
+        <section class="custom-library"><div class="custom-library-head"><div class="custom-library-title"><h3 id="customListTitle">Your collection</h3><span class="quiz-pill" id="customSelected">0 selected</span></div><button type="button" class="button-primary custom-add-button" id="customAddButton" aria-haspopup="dialog" aria-controls="customEditorDialog"><span aria-hidden="true">＋</span><span id="customAddButtonLabel">Add custom</span></button></div>
+          <div class="custom-toolbar">
+            <div class="custom-filters"><button class="mini-button is-active" type="button" data-custom-filter="all" aria-pressed="true">All</button><button class="mini-button" type="button" data-custom-filter="kanji" aria-pressed="false">Characters</button><button class="mini-button" type="button" data-custom-filter="word" aria-pressed="false">Words</button></div>
+            <input type="search" id="customSearch" class="custom-search" placeholder="Search collection…" aria-label="Search custom collection">
+            <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button></div>
+          </div>
           <div id="customItems" class="custom-items"></div>
           <div class="custom-study-actions"><label><span id="customModeLabel">Practice mode</span><select id="customMode"><option value="mixed">Mixed</option><option value="romaji">Romaji reading</option><option value="meaning">Meaning</option></select></label><button type="button" class="button-primary" id="customPracticeButton">Practice selected</button></div>
         </section>
@@ -266,7 +269,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v28.4</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v28.5</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

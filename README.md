@@ -1,3 +1,12 @@
+## v28.5 — Interfaz Custom compacta y timer flotante
+
+- **Custom** utiliza el mismo estilo retro de los paneles de práctica. Los filtros, la búsqueda y los botones de selección comparten una barra horizontal cuando entra en pantalla y se adaptan en filas ordenadas en dispositivos pequeños. Los elementos guardados aparecen como tarjetas seleccionables.
+- **Agregar custom** abre un modal; el mismo modal permite editar. Guardar o cancelar lo cierra correctamente, y los mensajes del editor aparecen dentro del modal.
+- **My Study Time** es una ventana flotante y arrastrable desde el inicio, minimizada por defecto; se puede expandir, configurar y minimizar sin ocupar espacio en el flujo de la página. Recuerda su posición y su estado minimizado en este navegador. Sigue funcionando durante cualquier sección de la app.
+- **Manga Reader** tiene paneles de lectura más altos y ya no muestra las dos leyendas solicitadas sobre envío a OpenAI o apertura sin tokens.
+- Se retiraron los dos textos de ayuda/sincronización de la vista Custom. Esto **no corrige ni cambia** el estado real de sincronización; los mensajes de errores de guardado siguen apareciendo cuando corresponde.
+- Actualizados los recursos de la PWA, su caché y el footer a `v28.5`. El almacenamiento y las tablas SQL no cambian respecto a v28.4.
+
 ## v28.4 — Colección Custom y guardado desde Manga Reader
 
 - El botón Custom abre una pantalla funcional de colección, con regreso a la pantalla de origen.
@@ -57,7 +66,7 @@ A retro-inspired Japanese study website. Everything runs in your browser, with *
 
 ## Features
 
-- **Global study clock:** restored full-size study timer on the home screen, with description, custom hours and minutes, a large countdown and visible controls. When a running or paused clock is active during a lesson, it becomes a floating, non-blocking widget. Minimize it to a title bar or close the floating view to dock the clock inside the lesson; use the ↗ button to float it again. On small screens the widget starts minimized to avoid covering answer fields. The countdown and study summary continue uninterrupted when moved or minimized.
+- **Global study clock:** the study timer is a compact, floating and movable window on every screen, minimized by default and expandable to set hours and minutes. Its position and minimized preference persist locally. The countdown and study summary continue uninterrupted while moving or minimizing it.
 
 
 - **Hiragana, katakana, and beginner kanji** with individual selection, group selection, and click-and-drag painting to select or deselect multiple characters at once (mouse, pen, or finger). Touch taps and keyboard selection also work.
@@ -190,7 +199,7 @@ resumen de las actividades. No hay botón de audio japonés.
 
 ## Draggable floating study clock
 
-While studying, the active global clock floats above the lesson. Drag its title bar (the area with the `⠿` grip) with a mouse or finger to reposition it. The location is stored in this browser, and automatically clamped to the visible viewport. The title bar can also be focused and moved with arrow keys (Shift + arrow for smaller steps). The minimize and close/dock buttons still work, and the large timer on the home screen has not changed. The clock keeps running while you move it. This release bumps the service-worker cache to `v15`.
+The global clock floats from the start on all screens, minimized by default. Expand the window to set a duration or inspect the current countdown. Drag its title bar (`⠿`) to move it; the location is saved and clamped to the visible viewport. For keyboard positioning, focus the title bar and use arrow keys (Shift + arrow for smaller steps). Minimizing the window does not pause the countdown.
 
 ## Learning Progress and Google sync
 

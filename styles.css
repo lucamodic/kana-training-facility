@@ -1692,3 +1692,68 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .manga-kanji .manga-save-feedback{width:100%;text-align:right}
 @keyframes ktf-save-confirm{0%{transform:scale(.9)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.manga-save-custom.just-saved{animation:none}}
+
+
+.custom-screen{padding:15px 0 65px}
+.custom-top{margin-bottom:13px}
+.custom-heading{padding:7px 2px 20px}
+.custom-heading .eyebrow{margin-bottom:9px}
+.custom-heading h2{font-size:clamp(23px,3vw,30px);margin:0 0 7px}
+.custom-heading .subtle{margin:0;font-size:13px}
+.custom-browse{display:block}
+.custom-library{padding:22px 24px 26px;background:var(--paper);border:2px solid var(--retro-deep);border-radius:4px;box-shadow:var(--shadow)}
+.custom-library::before{content:"▣  CUSTOM COLLECTION.EXE";display:block;margin:-22px -24px 21px;padding:10px 14px;border-bottom:2px solid var(--retro-deep);background:linear-gradient(90deg,var(--retro-main),var(--retro-ribbon));font:bold 12px "Courier New",monospace;letter-spacing:.04em}
+.custom-library-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.custom-library-title{display:flex;gap:12px;align-items:center;flex-wrap:wrap;min-width:0}
+.custom-library-title h3{margin:0;font:bold 21px Georgia,serif}
+.custom-add-button{min-height:43px;width:auto;padding:10px 14px;display:inline-flex;justify-content:center;align-items:center;gap:8px;white-space:nowrap;font-size:13px}
+.custom-toolbar{display:grid;grid-template-columns:auto minmax(150px,1fr) auto;gap:9px;margin:20px 0 17px;align-items:stretch}
+.custom-filters{display:flex;gap:6px;flex-wrap:nowrap;margin:0;align-items:stretch}
+.custom-filters .mini-button,.custom-select-actions .mini-button{white-space:nowrap;min-height:41px;font-size:12px;padding:9px 11px}
+.custom-search{min-width:0;width:100%;height:41px;padding:9px 12px;border:2px inset var(--line);border-radius:3px;background:var(--paper);color:var(--ink);font:13px Verdana,sans-serif}
+.custom-select-actions{display:flex;flex-wrap:nowrap;justify-content:flex-end;gap:7px;margin:0;align-items:stretch}
+.custom-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,238px),1fr));gap:12px;max-height:none;overflow:visible;padding:0}
+.custom-item{display:flex;flex-direction:column;gap:6px;position:relative;min-width:0;min-height:185px;padding:13px;background:var(--retro-tile);border:2px solid var(--line);border-radius:4px;box-shadow:2px 2px 0 var(--retro-shadow)}
+.custom-item:has(.custom-item-select input:checked){border-color:var(--green);background:var(--retro-selected)}
+.custom-item-select{position:absolute;top:11px;right:12px;padding:0}
+.custom-item-body{padding-right:23px;flex:1}
+.custom-item-heading{gap:8px;align-items:center;flex-wrap:wrap}
+.custom-item-japanese{font-size:30px}
+.custom-type{padding:3px 6px}
+.custom-item-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:auto}
+.custom-item-actions .mini-button{padding:7px 11px}
+.custom-study-actions{margin-top:23px;padding-top:19px;border-top:1px dashed var(--retro-deep);justify-content:flex-end}
+.custom-study-actions label{flex:0 1 230px}
+.custom-study-actions button{flex:0 1 240px}
+.custom-editor-dialog{display:none;position:fixed;max-width:min(490px,calc(100% - 30px));width:100%;max-height:min(90dvh,770px);overflow-y:auto;margin:auto;padding:0 20px 20px;border:2px solid var(--retro-deep);border-radius:5px;box-shadow:5px 5px 0 var(--retro-shadow);color:var(--ink);background:var(--paper)}
+.custom-editor-dialog[open]{display:block}
+.custom-editor-dialog::backdrop{background:rgba(29,21,43,.55);backdrop-filter:blur(3px)}
+.custom-dialog-title{position:sticky;top:0;z-index:1;background:linear-gradient(90deg,var(--retro-main),var(--retro-ribbon));padding:14px 17px;margin:0 -20px 18px;border-bottom:2px solid var(--retro-deep);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.custom-dialog-title h3{font:700 20px Georgia,serif;margin:0}
+.custom-dialog-title button{width:36px;height:34px;flex:none;display:grid;place-items:center;padding:0}
+.custom-form-actions{justify-content:flex-end}
+.custom-form-actions>*{flex:1 1 135px}
+.global-study.is-floating{width:min(324px,calc(100vw - 24px));z-index:45}
+.global-study.is-floating .study-clock-inputs{display:flex;gap:8px}
+.global-study.is-floating.is-active .study-clock-inputs{display:none}
+.global-study.is-floating .study-clock-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.global-study.is-floating:not(.is-active) .study-clock-status{display:none}
+.global-study.is-floating .study-clock-inputs input{height:42px;font-size:21px}
+.global-study.is-floating .study-clock-colon{padding-bottom:6px}
+.global-study.is-floating .study-clock-window-actions{margin-left:auto}
+.global-study.is-floating .study-clock-body{padding:12px 13px 13px}
+.global-study.is-floating .study-clock-titlebar{gap:7px}
+.global-study.is-floating .study-clock-titlebar strong{font-size:11px}
+@media(max-width:1180px){.custom-toolbar{grid-template-columns:minmax(0,1fr) auto}.custom-filters{grid-column:1}.custom-select-actions{grid-column:2;grid-row:1}.custom-search{grid-column:1/-1;grid-row:2}}
+@media(max-width:680px){.custom-library{padding:16px}.custom-library::before{margin:-16px -16px 17px}.custom-toolbar{display:flex;flex-wrap:wrap;gap:8px}.custom-filters{flex:1 1 auto}.custom-filters .mini-button{flex:1 1 auto;padding:8px 7px}.custom-search{order:2;flex:1 1 100%}.custom-select-actions{flex:1 1 100%;justify-content:flex-start}.custom-select-actions .mini-button{flex:1 1 auto}.custom-library-head{gap:11px}.custom-add-button{width:auto}.custom-item{min-height:170px}.custom-study-actions label,.custom-study-actions button{flex:1 1 100%}}
+@media(max-width:430px){.custom-library-head{align-items:stretch}.custom-library-title{width:100%}.custom-add-button{width:100%}.custom-items{grid-template-columns:1fr}.global-study.is-floating{right:10px;left:auto;width:min(320px,calc(100vw - 20px))}}
+.manga-image-scroller{max-height:min(90dvh,1200px);min-height:min(65dvh,650px)}
+.manga-readings-scroll{height:min(90dvh,1200px);min-height:min(65dvh,650px)}
+@media(max-width:800px){.manga-image-scroller{max-height:90dvh;min-height:min(55dvh,600px)}.manga-readings-scroll{height:85dvh;max-height:none;min-height:340px}}
+
+.custom-browse[hidden],.custom-practice[hidden],.custom-editor-notice[hidden]{display:none!important}
+.custom-editor-notice{border:1px solid var(--line);border-radius:3px;background:var(--retro-cream);color:var(--ink);font-size:12px;font-weight:700;padding:10px 12px;margin:0 0 13px}
+.custom-editor-notice.is-error{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.custom-practice-card{padding:0 22px 26px;border:2px solid var(--retro-deep);box-shadow:var(--shadow)}
+.custom-practice-card::before{content:"▣  PERSONAL PRACTICE.EXE";display:block;margin:0 -22px 24px;padding:10px 14px;border-bottom:2px solid var(--retro-deep);background:linear-gradient(90deg,var(--retro-main),var(--retro-ribbon));font:bold 12px "Courier New",monospace;letter-spacing:.04em;text-align:left}
+@media(max-width:600px){.custom-practice-card{padding:0 14px 20px}.custom-practice-card::before{margin:0 -14px 20px}}

@@ -1,3 +1,13 @@
+## v28.3 — Word Challenge en el panel derecho y actualización PWA
+
+- Word Challenge ahora aparece una sola vez, debajo de One Pass, junto a los otros modos de práctica del panel derecho. No está en la barra superior.
+- Se corrigió el ID duplicado de la v28.2 para que el botón abra el diálogo correctamente.
+- El pie de página y la versión del paquete se actualizaron a v28.3.
+- Se cambió el identificador del caché del service worker y se usa primero la red para obtener archivos frescos, con respaldo offline. Esto evita que la PWA siga sirviendo archivos viejos cuando ya existe una versión nueva.
+- No requiere SQL nuevo ni modifica datos, IndexedDB, historial de manga, Supabase o la lógica de práctica.
+- Subí **todos los archivos del ZIP**, incluidos `index.html`, `styles.css`, `sw.js` y `package.json`, al repositorio vinculado con Vercel. El deploy debe contener esos archivos en la raíz configurada del proyecto.
+- Si el navegador mantiene la versión vieja, aceptá el aviso de actualización de la PWA. Para verificar qué está publicado, probá primero en incógnito. No uses «Borrar datos del sitio», porque la biblioteca del Manga Reader puede estar guardada localmente.
+
 ## v28.0 — Caracteres y palabras personalizadas
 
 Ahora hay una sección **Caracteres custom**, junto a Kanji, Manga Reader y Word Challenge. Podés agregar cualquier carácter, kanji, palabra o expresión japonesa; guardar la lectura en romaji y kana, el significado y una nota; editar, borrar, buscar y filtrar elementos. Desde el desglose de palabras y kanjis del Manga Reader se pueden guardar directamente con **+ Guardar** y queda registrado el manga/capítulo de origen. Guardar un elemento no llama a OpenAI ni consume tokens. Los duplicados del mismo tipo y texto se evitan.

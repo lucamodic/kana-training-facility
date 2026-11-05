@@ -1,10 +1,9 @@
-const CACHE_NAME = 'kana-training-facility-offline-v28-custom-collection-1';
+const CACHE_NAME = 'kana-training-facility-offline-v28-3-word-challenge-side';
 const SHELL = [
   './', './index.html', './styles.css', './app.js', './study-clock.js', './config.js', './cloud-sync.js', './learning-progress.js', './manga-cache.js', './manga-reader.js', './custom-collection.js', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];
-const SHELL_URLS = new Set(SHELL.map(path => new URL(path, self.registration.scope).href));
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
@@ -28,10 +27,6 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin || !url.href.startsWith(self.registration.scope)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
-    if (SHELL_URLS.has(url.href)) {
-      const cached = await cache.match(request);
-      if (cached) return cached;
-    }
     try {
       const response = await fetch(request);
       if (response.ok) cache.put(request, response.clone()).catch(() => {});

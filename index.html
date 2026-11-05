@@ -96,7 +96,6 @@
         <div class="manga-launch-group">
           <button type="button" id="openCustomButton" class="words-launch custom-launch" aria-controls="customScreen"><span class="words-launch-icon" aria-hidden="true">字</span><span id="customNavLabel">Custom</span><span class="words-count" id="customCount">0</span><span aria-hidden="true">↗</span></button>
           <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
-        <button type="button" id="openWordsButton" class="words-launch" aria-haspopup="dialog" aria-controls="wordsDialog"><span class="words-launch-icon" aria-hidden="true">✎</span> <span id="wordsLaunchText">Word Challenge</span> <span class="words-count" id="wordAvailableCount">0</span> <span aria-hidden="true">↗</span></button>
         </div>
           </div>
         <div class="main-panel" id="characterPanel" role="tabpanel" aria-labelledby="tabHiragana">
@@ -148,16 +147,17 @@
                   <p id="rapidFireError" class="timer-error" role="alert" hidden>Choose between 1 and 300 seconds.</p>
                 </div>
               </div>
-              <div class="word-challenge-panel">
-                <span class="side-label">WORD CHALLENGE</span>
-                <button type="button" id="openWordsButton" class="button-secondary word-challenge-button" aria-haspopup="dialog" aria-controls="wordsDialog"><span class="word-challenge-button-main"><span class="word-challenge-icon" aria-hidden="true">✎</span><span id="wordsLaunchText">Word Challenge</span></span><span class="words-count" id="wordAvailableCount">0</span></button>
-                <p class="choice-explanation" id="wordChallengeHelp">Practice the words you unlocked or saved separately from character drills.</p>
-              </div>
+
             </div>
             <div class="session-choices">
               <button type="button" class="button-secondary" id="learnButton" disabled>Learn my selection →</button><p class="choice-explanation" id="learnHelp">3 guided passes showing the answer, followed by 3 memory-test passes.</p>
               <button type="button" class="button-primary" id="startButton" disabled>Infinite character practice →</button><p class="choice-explanation" id="practiceHelp">Shuffled questions until you decide to finish.</p>
               <button type="button" class="button-secondary one-pass-button" id="onePassButton" disabled>One Pass · Daily review →</button><p class="choice-explanation" id="onePassHelp">Each selected character from all three tabs appears once, then your results.</p>
+              <div class="word-challenge-panel">
+                <span class="side-label">WORD CHALLENGE</span>
+                <button type="button" id="openWordsButton" class="button-secondary word-challenge-button" aria-haspopup="dialog" aria-controls="wordsDialog"><span class="word-challenge-button-main"><span class="word-challenge-icon" aria-hidden="true">✎</span><span id="wordsLaunchText">Word Challenge</span></span><span class="words-count" id="wordAvailableCount">0</span></button>
+                <p class="choice-explanation" id="wordChallengeHelp">Practice words unlocked by your current character selection.</p>
+              </div>
             </div>
           </div>
         </aside>
@@ -266,7 +266,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v28.0</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v28.3</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kana-training-facility-offline-v30-grammar-foundations';
+const CACHE_NAME = 'kana-training-facility-offline-v30-1-grammar-tabs-and-clock';
 const SHELL = [
-  './', './index.html', './styles.css?v=30.0', './app.js?v=30.0', './study-clock.js?v=30.0', './config.js?v=30.0', './cloud-sync.js?v=30.0', './learning-progress.js?v=30.0', './manga-cache.js?v=30.0', './manga-reader.js?v=30.0', './custom-collection.js?v=30.0', './grammar-data.js?v=30.0', './grammar.js?v=30.0', './manifest.webmanifest',
+  './', './index.html', './styles.css?v=30.1', './app.js?v=30.1', './study-clock.js?v=30.1', './config.js?v=30.1', './cloud-sync.js?v=30.1', './learning-progress.js?v=30.1', './manga-cache.js?v=30.1', './manga-reader.js?v=30.1', './custom-collection.js?v=30.1', './grammar-data.js?v=30.1', './grammar.js?v=30.1', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

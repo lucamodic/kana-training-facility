@@ -1138,8 +1138,6 @@ html[lang="es"] .summary-card::before {content:"▣ RESULTADOS.TXT";}
   outline-offset: -4px;
 }
 .global-study.is-floating .study-clock-titlebar button { cursor: pointer; touch-action: manipulation; }
-.global-study .study-clock-grip { display:none; font-size:15px; line-height:1; opacity:.8; }
-.global-study.is-floating .study-clock-grip {display:inline;}
 
 .word-library-launch {
   display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:49px;
@@ -2060,3 +2058,44 @@ html[lang='es'] .custom-screen .custom-practice .custom-practice-card::before{co
 .study-clock-activity-row{display:grid;gap:5px;background:var(--retro-cream);border:1px solid var(--line);border-radius:4px;padding:10px 12px}
 .study-clock-activity-row strong{font:700 13px Georgia,serif}
 .study-clock-activity-row span{font:11px/1.6 'Courier New',monospace;color:var(--ink)}
+
+
+.grammar-screen .grammar-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+  white-space: normal;
+  margin: 0 0 -2px;
+}
+.grammar-screen .grammar-tabs .tab {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  min-width: 86px;
+  min-height: 49px;
+  height: auto;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+@media (max-width: 650px) {
+  .grammar-screen .grammar-tabs {
+    gap: 7px;
+    margin: 0 0 9px;
+  }
+  .grammar-screen .grammar-tabs .tab {
+    flex: 1 1 90px;
+    min-width: 0;
+    min-height: 44px;
+    padding: 9px 8px;
+    border-radius: 6px;
+    border-bottom-color: var(--retro-deep);
+    font-size: 12px;
+  }
+  .grammar-screen .grammar-tabs .tab[aria-selected="true"] {
+    border-bottom-color: var(--retro-deep);
+  }
+}

@@ -90,6 +90,17 @@
       .map(row => ({...row.payload,id:row.id}))
       .sort((a,b) => (b.completedAt || '').localeCompare(a.completedAt || ''));
   }
+  async function addCustomEvent(type,payload) {
+    if (!['custom_upsert','custom_delete','custom_review'].includes(type)) throw new Error('Unsupported custom event.');
+    const record = newEvent(type,payload);
+    await putMany([record]);
+    notify();
+    scheduleSync(200);
+    return record;
+  }
+  async function getCustomEvents() {
+    return (await readAll()).filter(row => row.owner === owner && ['custom_upsert','custom_delete','custom_review'].includes(row.type));
+  }
   function hasMeaningfulSettings(settings) {
     return Object.values(settings.selected || {}).some(values => Array.isArray(values) && values.length > 0);
   }
@@ -214,7 +225,7 @@
     notify();
     const records = await readAll();
     if (previousOwner === 'guest') {
-      const guestAttempts = records.filter(row => row.owner === 'guest' && row.type === 'exam_attempt');
+      const guestAttempts = records.filter(row => row.owner === 'guest' && ['exam_attempt','custom_upsert','custom_delete','custom_review'].includes(row.type));
       await putMany(guestAttempts.map(row => ({...row,owner, synced:false})));
     }
     await sync();
@@ -359,7 +370,7 @@
     return data.session.access_token;
   }
   window.KTFCloud = {
-    addAttempt,getAttempts,signIn,signOut,sync,initialize,updateNickname,getNickname:nicknameForAccount,getAccessToken,
+    addAttempt,getAttempts,addCustomEvent,getCustomEvents,signIn,signOut,sync,initialize,updateNickname,getNickname:nicknameForAccount,getAccessToken,
     subscribe(callback){listeners.add(callback);return()=>listeners.delete(callback);},
     getStatus(){return {status,details:statusDetails,user,owner,online:navigator.onLine};}
   };

@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kana-training-facility-offline-v27-manga-dedupe-1';
+const CACHE_NAME = 'kana-training-facility-offline-v28-custom-collection-1';
 const SHELL = [
-  './', './index.html', './styles.css', './app.js', './study-clock.js', './config.js', './cloud-sync.js', './learning-progress.js', './manga-cache.js', './manga-reader.js', './manifest.webmanifest',
+  './', './index.html', './styles.css', './app.js', './study-clock.js', './config.js', './cloud-sync.js', './learning-progress.js', './manga-cache.js', './manga-reader.js', './custom-collection.js', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

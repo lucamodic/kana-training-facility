@@ -21,6 +21,7 @@
   <script src="./learning-progress.js" defer></script>
   <script src="./manga-cache.js" defer></script>
   <script src="./manga-reader.js" defer></script>
+  <script src="./custom-collection.js" defer></script>
 </head>
 <body>
   <header class="top">
@@ -93,6 +94,7 @@
           <button type="button" id="tabKanji" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="kanji">Kanji <span class="tab-counter" id="jCount">0</span></button>
         </div>
         <div class="manga-launch-group">
+          <button type="button" id="openCustomButton" class="words-launch custom-launch" aria-controls="customScreen"><span class="words-launch-icon" aria-hidden="true">字</span><span id="customNavLabel">Custom Characters</span><span class="words-count" id="customCount">0</span><span aria-hidden="true">↗</span></button>
           <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
         <button type="button" id="openWordsButton" class="words-launch" aria-haspopup="dialog" aria-controls="wordsDialog"><span class="words-launch-icon" aria-hidden="true">✎</span> <span id="wordsLaunchText">Word Challenge</span> <span class="words-count" id="wordAvailableCount">0</span> <span aria-hidden="true">↗</span></button>
         </div>
@@ -207,6 +209,34 @@
       </div>
     </section>
 
+    <section id="customScreen" class="custom-screen" aria-label="Custom characters and vocabulary" hidden>
+      <div class="custom-top"><button class="back" type="button" id="customBack">← Back to selection</button><span class="quiz-pill" id="customTotal">0 saved</span></div>
+      <div class="manga-header"><div><span class="eyebrow" id="customEyebrow">✦ YOUR PERSONAL STUDY DECK</span><h2 id="customTitle">Custom Characters &amp; Words</h2><p class="subtle" id="customIntro">Build your own practice library.</p></div><div class="manga-header-deco" lang="ja">字</div></div>
+      <p class="custom-status" id="customStatus" role="status"></p>
+      <p class="subtle custom-account-help" id="customAccountHelp">Sign in with Google to sync.</p>
+      <p class="manga-notice" id="customNotice" role="status" aria-live="polite" hidden></p>
+      <div id="customBrowse" class="custom-browse">
+        <section class="custom-editor"><h3 id="customAddTitle">Add a character or word</h3>
+          <form id="customForm" class="custom-form" autocomplete="off">
+            <label><span id="customKindLabel">Type</span><select id="customKind"><option value="kanji">Kanji / character</option><option value="word">Word / expression</option></select></label>
+            <label><span id="customJapaneseLabel">Japanese text</span><input id="customJapanese" lang="ja" maxlength="120" required placeholder="例: 好き / 気"></label>
+            <label><span id="customRomajiLabel">Romaji reading (optional)</span><input id="customRomaji" maxlength="200" placeholder="suki"></label>
+            <label><span id="customKanaLabel">Kana reading (optional)</span><input id="customKana" maxlength="200" lang="ja" placeholder="すき"></label>
+            <label><span id="customMeaningLabel">Meaning (optional)</span><input id="customMeaning" maxlength="300" placeholder="like / affection"></label>
+            <label class="custom-notes"><span id="customNotesLabel">Notes (optional)</span><textarea id="customNotes" rows="2" maxlength="300"></textarea></label>
+            <div class="custom-form-actions"><button type="submit" class="button-primary" id="customSave">Save to collection</button><button type="button" class="button-secondary" id="customCancel">Cancel edit</button></div>
+          </form>
+        </section>
+        <section class="custom-library"><div class="custom-library-head"><h3 id="customListTitle">Your collection</h3><span class="quiz-pill" id="customSelected">0 selected</span></div>
+          <div class="custom-filters"><button class="mini-button is-active" type="button" data-custom-filter="all" aria-pressed="true">All</button><button class="mini-button" type="button" data-custom-filter="kanji" aria-pressed="false">Characters</button><button class="mini-button" type="button" data-custom-filter="word" aria-pressed="false">Words</button><input type="search" id="customSearch" placeholder="Search collection…" aria-label="Search custom collection"></div>
+          <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button></div>
+          <div id="customItems" class="custom-items"></div>
+          <div class="custom-study-actions"><label><span id="customModeLabel">Practice mode</span><select id="customMode"><option value="mixed">Mixed</option><option value="romaji">Romaji reading</option><option value="meaning">Meaning</option></select></label><button type="button" class="button-primary" id="customPracticeButton">Practice selected</button></div>
+        </section>
+      </div>
+      <div id="customPractice" class="custom-practice" hidden><div class="custom-practice-header"><span id="customPracticeTitle">Personal practice</span><span id="customPracticeProgress"></span></div><div class="custom-practice-card"><h3 id="customPracticeQuestion">Write the reading</h3><div class="custom-practice-symbol" id="customPracticeSymbol" lang="ja">字</div><p class="subtle" id="customPracticeInfo"></p><form id="customPracticeForm"><label for="customPracticeAnswer" id="customPracticeAnswerLabel">Your answer</label><input id="customPracticeAnswer" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"><p id="customPracticeFeedback" class="custom-feedback" role="status" hidden></p><div class="custom-practice-actions"><button type="submit" id="customPracticeCheck" class="button-primary">Check</button><button type="button" id="customPracticeSkip" class="button-secondary">I do not know</button></div></form><button type="button" id="customPracticeNext" class="button-primary" hidden>Next question →</button></div><button type="button" class="button-secondary" id="customPracticeExit">Back to collection</button></div>
+    </section>
+
     <section id="examScreen" class="quiz-wrap exam-session" aria-label="Skill exam" hidden>
       <div class="quiz-top">
         <button type="button" class="back" id="examExit">← Back to progress</button>
@@ -231,7 +261,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v27.0</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v28.0</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

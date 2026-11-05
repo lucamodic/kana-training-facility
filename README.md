@@ -1,3 +1,13 @@
+## v28.0 — Caracteres y palabras personalizadas
+
+Ahora hay una sección **Caracteres custom**, junto a Kanji, Manga Reader y Word Challenge. Podés agregar cualquier carácter, kanji, palabra o expresión japonesa; guardar la lectura en romaji y kana, el significado y una nota; editar, borrar, buscar y filtrar elementos. Desde el desglose de palabras y kanjis del Manga Reader se pueden guardar directamente con **+ Guardar** y queda registrado el manga/capítulo de origen. Guardar un elemento no llama a OpenAI ni consume tokens. Los duplicados del mismo tipo y texto se evitan.
+
+La colección permite seleccionar elementos y practicar hasta 20 por sesión con respuestas escritas, usando lectura en romaji, significado o modo mixto. Guarda cada respuesta, incluso los errores, para mostrar **aciertos / intentos** por elemento. Cuando solo hay lectura en kana, se genera una transliteración básica a romaji; podés corregirla desde **Editar**. Si no hay romaji ni significado, el elemento se guarda pero todavía no participa en las preguntas.
+
+El almacenamiento utiliza el historial offline de `cloud-sync.js`, separado por User ID. Con sesión de Google, sincroniza con la tabla ya existente `public.ktf_progress_events` y sus políticas RLS. Sin sesión, guarda localmente y migra los elementos de invitado a la cuenta al iniciar sesión. **Para activar la sincronización**, ejecutá una vez `setup/custom-collection.sql` en el SQL Editor de Supabase antes de publicar esta versión. Ese SQL extiende únicamente los tipos de eventos permitidos: **no borra las selecciones, los exámenes, las imágenes ni los análisis guardados del Manga Reader**. No hacen falta cambios en la Edge Function ni en OpenAI.
+
+Para desplegar en Vercel, reemplazá los archivos del proyecto por los de este ZIP, conservando tu `config.js` y cualquier configuración de despliegue propia. La PWA actualiza el caché al identificador v28 para descargar `custom-collection.js`. Tus mangas siguen guardándose localmente como antes, mientras que la colección custom se sincroniza entre dispositivos cuando iniciás sesión.
+
 # Kana Training Facility v27.0 — OCR sin duplicados y eliminación de textos
 
 - Los resultados OCR nuevos se limpian antes de solicitar explicaciones, descartando bloques que son la concatenación exacta de dos o más bloques ya detectados. También se eliminan duplicados idénticos cuando provienen de la misma región; textos iguales en posiciones claramente diferentes se conservan.

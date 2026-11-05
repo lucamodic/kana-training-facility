@@ -1,7 +1,7 @@
 create table if not exists public.ktf_progress_events (
   id uuid primary key,
   user_id uuid not null references auth.users(id) on delete cascade,
-  event_type text not null check (event_type in ('exam_attempt','settings')),
+  event_type text not null check (event_type in ('exam_attempt','settings','custom_upsert','custom_delete','custom_review')),
   payload jsonb not null,
   client_time timestamptz not null,
   created_at timestamptz not null default now()

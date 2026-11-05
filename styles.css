@@ -1602,3 +1602,61 @@ body,dialog,.review-dialog,.progress-dialog,.exam-dialog,.guide-dialog,#examResu
 .manga-image-frame.is-locating>img{cursor:crosshair;touch-action:none;user-select:none;-webkit-user-select:none}
 .manga-location-hint{margin:9px 12px;padding:9px 11px;background:var(--retro-cream);border:1px dashed var(--retro-deep);font-size:12px;line-height:1.5;color:var(--ink)}
 .manga-locate-button[aria-pressed="true"]{background:var(--retro-cream);border-color:var(--retro-deep)}
+
+.custom-launch .words-launch-icon{font-family:"Yu Gothic","Noto Sans JP",sans-serif;font-weight:800}
+.custom-screen{padding:24px 0 65px}
+.custom-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.custom-status{display:inline-flex;margin:15px 0 2px;padding:8px 13px;border:1px solid var(--line);border-radius:5px;background:var(--soft);color:var(--ink);font-size:12px;font-weight:700}
+.custom-account-help{font-size:12px;margin:7px 0 23px}
+.custom-screen h3{font-size:20px;margin:0 0 17px;font-weight:800}
+.custom-browse{display:grid;grid-template-columns:minmax(270px,360px) minmax(0,1fr);gap:21px;align-items:start}
+.custom-editor,.custom-library{border:1px solid var(--line);background:var(--paper);border-radius:5px;padding:21px;min-width:0}
+.custom-form{display:grid;gap:12px}
+.custom-form label,.custom-study-actions label{display:grid;gap:6px;font-size:12px;font-weight:700;color:var(--muted)}
+.custom-form input,.custom-form select,.custom-form textarea,.custom-study-actions select,.custom-filters input,.custom-practice-form input,.custom-practice input{width:100%;min-width:0;padding:12px 11px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);font:inherit;outline-offset:2px}
+.custom-form textarea{resize:vertical}
+.custom-form-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.custom-form-actions>*{flex:1 1 130px}
+.custom-library-head,.custom-select-actions,.custom-study-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.custom-library-head h3{margin:0}
+.custom-filters{display:flex;gap:7px;flex-wrap:wrap;margin-top:18px}
+.custom-filters .mini-button.is-active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.custom-filters input{flex:1 1 180px;padding:9px 10px;font-size:13px}
+.custom-select-actions{justify-content:flex-start;margin:12px 0}
+.custom-items{display:grid;gap:8px;max-height:680px;overflow-y:auto;padding:1px 3px 1px 1px}
+.custom-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:11px;border:1px solid var(--line);background:var(--soft);border-radius:4px;padding:13px}
+.custom-item-select{padding-top:8px;cursor:pointer}
+.custom-item-select input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
+.custom-item-body{min-width:0}
+.custom-item-heading{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.custom-item-japanese{font-family:"Yu Gothic","Noto Sans JP",sans-serif;font-size:29px;font-weight:650;overflow-wrap:anywhere;line-height:1.4}
+.custom-type{font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.07em;background:var(--paper);color:var(--muted);border:1px solid var(--line);padding:4px 8px;border-radius:3px}
+.custom-item-fields{display:flex;gap:9px 15px;align-items:baseline;flex-wrap:wrap;margin-top:5px;font-size:12px;overflow-wrap:anywhere}
+.custom-item-fields span{font-family:"Courier New",monospace;font-weight:700}
+.custom-item-fields strong{font-weight:650}
+.custom-item-body small,.custom-item-notes{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin:5px 0}
+.custom-item-meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px;color:var(--muted);font-size:10px}
+.custom-item-actions{display:grid;gap:6px}
+.custom-item-actions .mini-button{padding:7px 9px;font-size:11px}
+.custom-study-actions{border-top:1px solid var(--line);padding-top:15px;margin-top:17px}
+.custom-study-actions label{flex:1 1 160px}
+.custom-study-actions button{min-height:45px;flex:1 1 170px}
+.custom-empty{text-align:center;padding:40px 14px}
+.custom-practice{max-width:670px;margin:0 auto}
+.custom-practice-header{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;font-weight:800}
+.custom-practice-card{text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:26px 25px;margin-bottom:15px}
+.custom-practice-card h3{color:var(--muted);font-size:16px;font-weight:650}
+.custom-practice-symbol{font-family:"Yu Gothic","Noto Sans JP",sans-serif;font-size:clamp(45px,11vw,100px);line-height:1.4;overflow-wrap:anywhere;margin:15px 0}
+.custom-practice-card form{display:grid;gap:12px;max-width:450px;margin:23px auto 0;text-align:left}
+.custom-practice-card form label{font-size:12px;font-weight:750}
+.custom-practice-card input{font-size:18px}
+.custom-practice-actions{display:flex;gap:9px}
+.custom-practice-actions>*{flex:1}
+.custom-practice-card #customPracticeNext{margin-top:16px}
+.custom-feedback{border-radius:4px;padding:13px;font-size:13px;font-weight:700;line-height:1.6;overflow-wrap:anywhere}
+.custom-feedback.is-correct{background:var(--green-soft);color:var(--green)}
+.custom-feedback.is-wrong{background:var(--accent-soft);color:var(--accent)}
+.manga-word .manga-save-custom{grid-column:2;justify-self:start;padding:7px 10px;margin-top:4px;font-size:11px}
+.manga-kanji .manga-save-custom{margin-left:auto;flex:0 0 auto;max-width:110px;font-size:11px}
+@media(max-width:850px){.custom-browse{grid-template-columns:minmax(0,1fr)}.custom-editor,.custom-library{padding:16px}}
+@media(max-width:600px){.custom-screen{padding-top:10px}.custom-form{grid-template-columns:minmax(0,1fr)}.custom-item{grid-template-columns:auto minmax(0,1fr)}.custom-item-actions{grid-column:2;display:flex;justify-content:flex-end}.manga-kanji{flex-wrap:wrap}.manga-kanji .manga-save-custom{margin-left:auto}.custom-practice-card{padding:20px 14px}.custom-practice-actions{flex-wrap:wrap}}

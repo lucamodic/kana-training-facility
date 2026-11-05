@@ -234,6 +234,7 @@
     page='exam';
     get('progressDialog').close();
     get('setupScreen').hidden=true;
+    get('customScreen').hidden=true;
     get('quizScreen').hidden=true;
     get('summaryScreen').hidden=true;
     get('examScreen').hidden=false;

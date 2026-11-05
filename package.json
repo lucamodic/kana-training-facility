@@ -1,11 +1,13 @@
 {
   "name": "kana-training-facility",
-  "version": "30.1.0",
+  "version": "31.0.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/*.test.cjs"
+    "test": "node scripts/test.cjs",
+    "test:browser": "node scripts/browser-test.cjs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "typescript": "^5.9.3"
   }
 }

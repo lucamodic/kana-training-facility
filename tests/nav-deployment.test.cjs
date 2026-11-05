@@ -1,3 +1,4 @@
+const release=require('./release-info.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -18,9 +19,9 @@ test('Word Challenge appears only once and is inside the right-hand practice con
 });
 
 test('version, package, and updated offline cache match this release', () => {
-  assert.match(html, /id="appVersion">v30\.0</);
-  assert.equal(pkg.version, '30.0.0');
-  assert.match(sw, /offline-v30-grammar-foundations/);
+  assert.match(html, release.labelPattern);
+  assert.equal(pkg.version, release.packageVersion);
+  assert.match(sw, release.cachePattern);
   assert.doesNotMatch(sw, /if \(SHELL_URLS\.has\(url\.href\)\)/);
   assert.match(sw, /await cache\.match\(request\)/);
 });

@@ -2006,6 +2006,7 @@ function startQuiz(mode = 'practice', suppliedPool = null, kindOverride = null, 
     guessLimit, guessLimitReached: false, limitEndTimeout: null,
     rapidFireSeconds: rapidLimit, rapidElapsedMs: 0, rapidTimeouts: 0, rapidAdvanceTimeout: null, rapidExpired: false };
   state.quiz = quiz;
+  window.KTFNavigation?.track('quizScreen');
   window.KTFStudyClock?.onQuizStart({kind, mode});
   $('setupScreen').hidden = true;
   $('summaryScreen').hidden = true;
@@ -2231,7 +2232,7 @@ function reveal(skipped = false) {
   }
   const entered = normalized($('answerInput').value);
   if (!skipped && !entered) { $('answerInput').focus(); return; }
-  const correct = !skipped && answersFor(quiz, quiz.current).some(answer => normalized(answer) === entered);
+  const correct = !skipped && answersFor(quiz, quiz.current).some(answer => quiz.kind !== 'words' || quiz.wordAnswerMode === 'reading' ? window.KTFRomaji.matches($('answerInput').value, answer) : normalized(answer) === entered);
   quiz.attempts++;
   if (correct) quiz.correct++;
   const item = quiz.current;
@@ -2378,6 +2379,7 @@ function renderSummary(s) {
   $('practiceAgain').textContent = t(s.mode==='learn'?'repeatLesson':'repeatPractice');
 }
 function backToSelection() {
+  window.KTFNavigation?.remember();
   window.KTFStudyClock?.onViewChange(false);
   if (state.quiz) clearQuizTimers(state.quiz);
   state.quiz = null;
@@ -2385,8 +2387,8 @@ function backToSelection() {
   $('quizScreen').hidden = true;
   $('summaryScreen').hidden = true;
   $('setupScreen').hidden = false;
-  window.scrollTo({top:0,behavior:'instant'});
   render();
+  window.KTFNavigation?.reveal('setupScreen',{restore:true});
 }
 function openReviewDialog() {
   if (!state.lastSummary || !state.lastSummary.hardest.length) return;
@@ -2685,6 +2687,7 @@ $('beginReview').addEventListener('click',beginReview);
 window.KTFBridge = {
   catalog,
   words,
+  renderKanjiBreakdown,
   eligibleWords,
   getSettings: () => structuredClone(payload()),
   getLanguage: () => state.language,

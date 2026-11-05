@@ -130,13 +130,6 @@
     node.dataset.type = isError ? 'error' : 'info';
     node.hidden = !message;
   }
-  function normalize(text) {
-    return String(text||'').normalize('NFKC').toLowerCase()
-      .replace(/[āâ]/g,'aa').replace(/[īî]/g,'ii').replace(/[ūû]/g,'uu')
-      .replace(/[ēê]/g,'ee').replace(/[ōô]/g,'ou')
-      .replace(/[^a-z]/g,'').replace(/shi/g,'si').replace(/chi/g,'ti')
-      .replace(/tsu/g,'tu').replace(/fu/g,'hu').replace(/ji/g,'zi');
-  }
   function mangaTextKey(value) {
     return String(value || '').normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu, '');
   }
@@ -299,8 +292,10 @@
       chapterReady = Promise.resolve();
       $('mangaSeriesName').value = chapter.mangaTitle;
       $('mangaChapterName').value = chapter.chapterTitle;
-      activeId = pages[0]?.id || null;
-      selectedItem = pages[0]?.items[0]?.id || null;
+      const savedPage=pages.find(page=>page.hash===chapter.position?.hash)||pages[0];
+      activeId = savedPage?.id || null;
+      selectedItem = (savedPage?.items.find(item=>item.japanese===chapter.position?.text)||savedPage?.items[0])?.id || null;
+      pendingPosition=chapter.position?.hash===savedPage?.hash?chapter.position:null;
       libraryOpen = false;
       mangaView = pages.length ? 'read' : 'manage';
       render();
@@ -458,8 +453,9 @@
     renderHistory();
   }
   function showReader() {
+    window.KTFNavigation?.remember();
     if (!authorized) return;
-    if (bridge.isQuizActive() || !$('examScreen').hidden) {
+    if ((window.KTFNavigation?.active() ?? bridge.isQuizActive()) || !$('examScreen').hidden) {
       toast(lang()==='es'?'Terminá tu práctica o examen antes de abrir el lector.':'Finish your practice or exam before opening the reader.',true);
       return;
     }
@@ -473,10 +469,12 @@
     updateText();
     render();
     refreshHistory().catch(() => {});
-    $('mangaScreen').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal('mangaScreen',{restore:true});
     document.dispatchEvent(new CustomEvent('ktf:mangascreenchange',{detail:{active:true}}));
   }
   function closeReader() {
+    window.KTFNavigation?.remember();
+    rememberPosition();
     analyzeAll=false;
     if(aborter)aborter.abort();
     running=false;
@@ -486,7 +484,7 @@
     $('setupScreen').hidden=false;
     toast('');
     document.dispatchEvent(new CustomEvent('ktf:mangascreenchange',{detail:{active:false}}));
-    $('setupScreen').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal('setupScreen',{restore:true});
   }
   async function persistChapterOrder() {
     const id = activeChapterId;
@@ -550,13 +548,14 @@
       refreshHistory().catch(() => {});
     }
     render();
-    $('mangaScreen').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal('mangaScreen');
   }
   function render() {
     updateText();
     renderStrip();
     const page=currentPage();
     renderMangaView();
+    readerControls();
     if(page && mangaView==='read' && !$('mangaScreen').hidden)window.KTFStudyClock?.onMangaPage({id:page.id,name:page.name});
     $('mangaWorkspace').hidden=!page;
     $('mangaEmpty').hidden=Boolean(page);
@@ -574,7 +573,12 @@
     if(locatingItemId && !page.items.some(item=>item.id===locatingItemId)){locatingItemId=null;regionPointer=null;}
     if(!selectedItem && page.items.length)selectedItem=page.items[0].id;
     const img=$('mangaImage');
-    if(img.dataset.page!==page.id){img.dataset.page=page.id;img.src=page.url;img.alt=page.name;}
+    if(img.dataset.page!==page.id){
+      img.dataset.page=page.id;img.src=page.url;img.alt=page.name;
+      const position=pendingPosition;pendingPosition=null;restoringPosition=true;
+      const restore=()=>{if(img.dataset.page!==page.id)return;const pane=$('mangaImageScroller');pane.scrollTop=position?.top||0;pane.scrollLeft=position?.left||0;$('mangaReadingsScroll').scrollTop=position?.dialogTop||0;restoringPosition=false;rememberPosition();};
+      if(img.complete)requestAnimationFrame(restore);else img.onload=restore;
+    }
     $('mangaPageName').textContent=page.name;
     $('mangaRemove').textContent=t('remove');
     $('mangaPageState').textContent=page.status==='completed'?`${t('completed')} · ${page.items.length}`:page.status==='processing'?t('working'):page.status==='transcribed'?t('ocrDone'):t('pending');
@@ -663,7 +667,7 @@
     const start=image.offsetTop+image.clientHeight*box[0]/1000;
     const end=image.offsetTop+image.clientHeight*box[2]/1000;
     const target=Math.max(0,(start+end-scroller.clientHeight)/2);
-    scroller.scrollTo({top:target,behavior:'smooth'});
+    scroller.scrollTo({top:target,behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   }
   function regionPoint(event) {
     const rect=$('mangaImage').getBoundingClientRect?.();
@@ -685,6 +689,7 @@
     if(!page||!page.items.some(item=>item.id===id))return;
     if(locatingItemId&&locatingItemId!==id){locatingItemId=null;regionPointer=null;}
     selectedItem=id;
+    schedulePosition();
     document.querySelectorAll('.manga-item').forEach(node=>node.classList.toggle('is-selected',node.dataset.item===selectedItem));
     highlightRegion(page,scroll);
     const selected=page.items.find(item=>item.id===selectedItem);
@@ -1057,7 +1062,45 @@
     if (action==='cancelEdit') rememberPage(page).catch(() => {});
     render();
   }
+  let zoom=100,pendingPosition=null,restoringPosition=false,positionTimer=null;
+  function sourceName(){return [String($('mangaSeriesName').value||'').trim(),String($('mangaChapterName').value||'').trim()].filter(Boolean).join(' · ')||'Manga Reader';}
+  function rememberPosition(){
+    const page=currentPage(),uid=ownerId(),id=activeChapterId;
+    if(restoringPosition||!authorized||!page?.hash||!id)return;
+    const pane=$('mangaImageScroller');
+    const position={hash:page.hash,text:page.items.find(item=>item.id===selectedItem)?.japanese||'',top:pane.scrollTop,left:pane.scrollLeft,dialogTop:$('mangaReadingsScroll').scrollTop};
+    cache.savePosition(uid,id,position).catch(cacheWarning);
+  }
+  function schedulePosition(){clearTimeout(positionTimer);positionTimer=setTimeout(rememberPosition,200);}
+  function changePage(id){if(!pages.some(page=>page.id===id))return;rememberPosition();activeId=id;selectedItem=null;locatingItemId=null;regionPointer=null;render();schedulePosition();}
+  function stepPage(delta){const index=pages.findIndex(page=>page.id===activeId);const next=pages[index+delta];if(next)changePage(next.id);}
+  function setZoom(value){zoom=Math.max(100,Math.min(300,value));$('mangaImageFrame').style.width=zoom+'%';$('mangaImageFrame').style.maxWidth='none';$('mangaZoomValue').textContent=zoom+'%';$('mangaZoomOut').disabled=zoom===100;$('mangaZoomIn').disabled=zoom===300;}
+  function toggleWide(){const wide=$('mangaScreen').classList.toggle('is-reading-wide');$('mangaWide').setAttribute('aria-pressed',String(wide));}
+  function readerControls(){
+    const es=lang()==='es',index=pages.findIndex(page=>page.id===activeId);
+    const labels={mangaPrevious:es?'← Anterior':'← Previous',mangaNextPage:es?'Siguiente →':'Next →',mangaWide:es?'Lectura amplia':'Wide reading',mangaPracticeChapter:es?'Practicar lo guardado':'Practice saved words',mangaExportLibrary:es?'Exportar biblioteca':'Export library',mangaImportLibrary:es?'Importar biblioteca':'Import library'};
+    for(const [id,label] of Object.entries(labels))$(id).textContent=label;
+    $('mangaPrevious').disabled=index<=0;$('mangaNextPage').disabled=index<0||index>=pages.length-1;
+    $('mangaPageCounter').textContent=pages.length?`${index+1} / ${pages.length}`:'';
+    $('mangaPracticeChapter').disabled=!pages.length;
+    $('mangaExportLibrary').disabled=!authorized||running;$('mangaImportLibrary').disabled=!authorized||running;
+  }
+  async function exportLibrary(){
+    const uid=ownerId();if(!authorized||running)return;
+    try{await awaitPendingSaves();const backup=await cache.exportLibrary(uid);if(uid!==ownerId()||!authorized)return;const url=URL.createObjectURL(new Blob([JSON.stringify(backup)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='kana-manga-library.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000);}catch(error){toast(String(error.message||error),true);}
+  }
+  async function importLibrary(file){
+    if(!file||!authorized||running)return;
+    const uid=ownerId();
+    try{if(file.size>200*1024*1024)throw Error(lang()==='es'?'La copia supera 200 MB.':'Backup exceeds 200 MB.');const data=JSON.parse(await file.text());if(uid!==ownerId()||!authorized)return;const count=await cache.importLibrary(uid,data);if(uid!==ownerId())return;await refreshHistory();toast(lang()==='es'?`Biblioteca importada: ${count} registros nuevos. Se conservaron los existentes.`:`Library imported: ${count} new records. Existing records were preserved.`);}catch(error){toast(String(error.message||error),true);}
+  }
   function attach() {
+    $('mangaPrevious').addEventListener('click',()=>stepPage(-1));$('mangaNextPage').addEventListener('click',()=>stepPage(1));
+    $('mangaZoomOut').addEventListener('click',()=>setZoom(zoom-25));$('mangaZoomIn').addEventListener('click',()=>setZoom(zoom+25));$('mangaWide').addEventListener('click',toggleWide);
+    $('mangaPracticeChapter').addEventListener('click',()=>window.KTFCustomCollection.practiceSource(sourceName()));
+    $('mangaImageScroller').addEventListener('scroll',schedulePosition,{passive:true});$('mangaReadingsScroll').addEventListener('scroll',schedulePosition,{passive:true});
+    window.addEventListener('pagehide',rememberPosition);
+    $('mangaExportLibrary').addEventListener('click',exportLibrary);$('mangaImportLibrary').addEventListener('click',()=>$('mangaImportFile').click());$('mangaImportFile').addEventListener('change',event=>{importLibrary(event.target.files[0]);event.target.value='';});
     $('openMangaButton').addEventListener('click',showReader);
     $('mangaBack').addEventListener('click',closeReader);
     $('mangaManageToggle').addEventListener('click',()=>switchMangaView('manage'));
@@ -1073,7 +1116,7 @@
       if(right){moveOnePage(right.dataset.moveRight,1);return;}
       const btn=event.target.closest('[data-page]');
       if(!btn)return;
-      activeId=btn.dataset.page;selectedItem=null;locatingItemId=null;regionPointer=null;render();
+      changePage(btn.dataset.page);
     });
     $('mangaPageStrip').addEventListener('dragstart',event=>{
       const card=event.target.closest('[data-page-card]');
@@ -1139,7 +1182,7 @@
         const item=currentPage()?.items.find(x=>x.id===form.dataset.check);if(!item)return;
         const text=form.querySelector('input')?.value||'';
         item.answer=text;
-        item.check=normalize(text) && normalize(text)===normalize(item.romaji)?'correct':'wrong';
+        item.check=window.KTFRomaji.matches(text,item.romaji)?'correct':'wrong';
         window.KTFStudyClock?.onAnswer({source:'manga',kind:'manga',item:{id:`${currentPage()?.hash||currentPage()?.id||''}:${item.id}`,kana:item.japanese},correct:item.check==='correct'});
         render();
         const next=$(`manga-answer-${item.id}`);next?.focus({preventScroll:true});
@@ -1153,7 +1196,13 @@
     const login=async()=>{try{if(pages.length){alert(lang()==='es'?'El inicio de sesión recarga la página y borra las imágenes temporales. Volvé a subirlas después de iniciar sesión.':'Sign-in reloads the app and clears temporary images. Add them again after signing in.');}await cloud.signIn();}catch(err){toast(err.message||String(err),true);}};
     $('mangaLogin').addEventListener('click',login);
     $('mangaLoginTop').addEventListener('click',login);
-    $('mangaScreen').addEventListener('keydown',event=>{if(event.key==='Escape'){event.stopPropagation();closeReader();}});
+    $('mangaScreen').addEventListener('keydown',event=>{
+      if(event.target.closest('input,textarea,select,[contenteditable=true],dialog'))return;
+      if(event.key==='Escape'){event.stopPropagation();if($('mangaScreen').classList.contains('is-reading-wide'))toggleWide();else closeReader();}
+      if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();stepPage(event.key==='ArrowRight'?1:-1);}
+      if(event.key==='+'||event.key==='='){event.preventDefault();setZoom(zoom+25);}
+      if(event.key==='-'){event.preventDefault();setZoom(zoom-25);}
+    });
     document.addEventListener('ktf:languagechange',()=>{if(!$('mangaScreen').hidden)render();else updateText();});
     cloud?.subscribe?.(() => {
       refreshAccess().catch(() => {});

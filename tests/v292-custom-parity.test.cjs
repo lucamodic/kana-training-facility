@@ -1,3 +1,4 @@
+const release=require('./release-info.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -72,12 +73,12 @@ test('custom quiz and results reuse the classes of the main trainer and finish c
 test('v30.0 packages the complete release with updated PWA references', () => {
   const html = read('index.html');
   const sw = read('sw.js');
-  assert.equal(JSON.parse(read('package.json')).version,'30.0.0');
-  assert.match(html,/id="appVersion">v30\.0</);
-  assert.match(sw,/offline-v30-grammar-foundations/);
+  assert.equal(JSON.parse(read('package.json')).version,release.packageVersion);
+  assert.match(html,release.labelPattern);
+  assert.match(sw,release.cachePattern);
   for (const asset of ['styles.css','custom-collection.js','cloud-sync.js','manga-reader.js']) {
-    assert.ok(html.includes(`${asset}?v=30.0`));
-    assert.ok(sw.includes(`${asset}?v=30.0`));
+    assert.ok(html.includes(`${asset}?v=${release.version}`));
+    assert.ok(sw.includes(`${asset}?v=${release.version}`));
   }
   assert.match(read('manga-cache.js'),/ktf-manga-reader-cache/);
 });

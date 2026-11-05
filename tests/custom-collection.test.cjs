@@ -1,3 +1,4 @@
+const release=require('./release-info.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -13,6 +14,7 @@ const source = fs.readFileSync(filename,'utf8').replace(
 function load() {
   const window = {KTFCloud:{},KTFBridge:{isQuizActive:()=>false}};
   const context = vm.createContext({window,document:{documentElement:{lang:'es'}},crypto:{randomUUID:()=> 'test-id'},console});
+  vm.runInContext(fs.readFileSync(path.join(root,'romaji.js'),'utf8'),context);
   vm.runInContext(source,context,{filename});
   return window.KTFCustomTest;
 }
@@ -59,7 +61,7 @@ test('reader and navigation include custom collection hooks',()=>{
   const cloud=fs.readFileSync(path.join(root,'cloud-sync.js'),'utf8');
   assert.match(html,/id="customScreen"/);
   assert.match(html,/id="openCustomButton"/);
-  assert.match(html,/src="\.\/custom-collection\.js\?v=30\.0"/);
+  assert.match(html,new RegExp(`src="\\./custom-collection\\.js\\?v=${release.version.replace(/\./g,'\\.')}"`));
   assert.match(reader,/data-custom-word/);
   assert.match(reader,/data-custom-kanji/);
   assert.match(cloud,/addCustomEvent,addCustomEvents,getCustomEvents/);

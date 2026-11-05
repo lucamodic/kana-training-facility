@@ -1,4 +1,30 @@
-# Kana Training Facility v30.0 — Grammar Foundations
+# Kana Training Facility v31.0
+
+- Navegación compartida entre las bibliotecas, transición breve y recuperación del scroll al volver. El historial del navegador acompaña los cambios de sección; las prácticas activas deben finalizar antes de cambiar a otra actividad.
+- Custom y Grammar usan las tarjetas de temporizador y Rapid Fire del diseño original. Los paneles de biblioteca y configuración quedan alineados en escritorio y se apilan en móvil. El panel original del home conserva su estructura.
+- Custom: progreso de aprendizaje, contador del límite de respuestas, resumen de avance, selección de errores para repasar y sesiones guardadas en Mi progreso. El feedback de palabras conocidas reutiliza el desglose del catálogo; para palabras propias conserva las notas disponibles.
+- Grammar: horas/minutos, hasta 10.000 intentos, Rapid Fire desde 1 segundo, preferencias persistentes y reloj ocultable. Estadísticas de lectura/significado por separado, puntaje parcial corregido y repaso de frases sin duplicados.
+- Romaji: un corrector compartido en Kana, palabras, Custom, Grammar, Manga y exámenes. Acepta macrones (también Unicode descompuesto) y circunflejos frente a la escritura equivalente: `gakkō/gakkou`, `ōkii/ookii`, `sū/suu`, etc. Conserva las diferencias entre vocal corta y larga y entre `oo/ou` o `ee/ei` escritos literalmente. La equivalencia con macrones se aplica cuando alguna de las dos lecturas los usa; no se modifica el significado de las respuestas.
+- Exámenes: desglose por habilidad/categoría, repaso seleccionable con feedback, reintento, siguiente examen recomendado y detalle de intentos anteriores. Los repasos se guardan aparte y no acreditan un examen.
+- Manga: página y diálogo recientes por capítulo, posición de lectura local, anterior/siguiente, zoom, lectura amplia y atajos (`←`, `→`, `+`, `-`; `Esc` cierra la lectura amplia). No intercepta esos atajos cuando escribís una respuesta.
+- Exportación/importación de la biblioteca de manga con imágenes y análisis. La importación es una combinación atómica por cuenta: conserva los registros existentes y rechaza copias inválidas antes de escribir. El límite del archivo de importación es 200 MB. Las páginas siguen siendo locales; no se agregó sincronización de imágenes ni llamadas a la IA.
+- Desde el lector se puede practicar la colección guardada con el origen del capítulo actual.
+
+No requiere migraciones SQL ni cambios de configuración en Vercel/Supabase. Las sesiones usan el evento existente `exam_attempt`; se conserva la base IndexedDB del lector. Los recursos y el service worker están versionados como `31.0`.
+
+## Desarrollo y verificación
+
+```sh
+npm ci
+npm test
+npm run test:browser
+```
+
+Los tests de navegador levantan un servidor estático local y lo cierran al terminar. En Windows utilizan Edge o Chrome instalado; en otros entornos se puede instalar Chromium con `npx playwright install chromium`. Las pruebas usan datos locales y respuestas simuladas para el permiso del lector; no consumen análisis de IA ni escriben en Supabase. `node scripts/serve.cjs` permite revisar el sitio en `http://127.0.0.1:4173`.
+
+Los tests cubren equivalencias de romaji, sesiones guiadas y con límites, resultados y repasos, navegación y scroll, layout móvil/escritorio, recuperación de lectura y combinación de copias de biblioteca.
+
+## Historial: v30.0 — Grammar Foundations
 
 ## Novedades
 

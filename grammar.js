@@ -8,8 +8,7 @@
   const tr=(en,es)=>lang()==='es'?es:en;
   const html=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const txt=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[¿?!¡.,;:。、！？]/g,'').replace(/\s+/g,' ').trim();
-  const roma=value=>txt(value).replace(/ō/g,'ou').replace(/ū/g,'uu').replace(/ī/g,'ii').replace(/[\s.'-]/g,'').replace(/ou|oo/g,'o').replace(/uu/g,'u');
-  const matchReading=(input,expected)=>roma(input)===roma(expected);
+  const matchReading=(input,expected)=>window.KTFRomaji.matches(input,expected);
   const matchMeaning=(input,variants)=>variants.some(value=>txt(input)===txt(value));
   const lessons=data.lessons;
   const groups=data.groups;
@@ -68,7 +67,7 @@
     $('grammarHeading').textContent=t('heading');$('grammarSubtitle').textContent=t('subtitle');
     $('grammarSearch').placeholder=t('find');$('grammarSelectVisible').textContent=t('selectAll');$('grammarClearVisible').textContent=t('deselect');
     $('grammarSelectionTitle').textContent=t('selection');$('grammarSelectedUnit').textContent=t('lessonUnit');$('grammarSelectedHint').textContent=t('emptySelection');
-    $('grammarSettingsTitle').textContent=t('settings');$('grammarTimerLabel').textContent=t('timer');$('grammarMinutesLabel').textContent=t('minutes');$('grammarGuessLabel').textContent=t('questions');$('grammarRapidLabel').textContent=t('rapid');$('grammarSecondsLabel').textContent=t('seconds');$('grammarSessionHint').textContent=t('hint');
+    $('grammarHoursLabel').textContent=tr('Hours','Horas');$('grammarSettingsTitle').textContent=t('settings');$('grammarTimerLabel').textContent=t('timer');$('grammarMinutesLabel').textContent=t('minutes');$('grammarGuessLabel').textContent=t('questions');$('grammarRapidLabel').textContent=t('rapid');$('grammarSecondsLabel').textContent=t('seconds');$('grammarSessionHint').textContent=t('hint');
     $('grammarLearn').textContent=t('learn');$('grammarInfinite').textContent=t('infinite');$('grammarOnePass').textContent=t('onepass');
     $('grammarLearnHelp').textContent=t('learnHelp');$('grammarInfiniteHelp').textContent=t('infiniteHelp');$('grammarOnePassHelp').textContent=t('onepassHelp');
     const options=$('grammarTimerMode').options;
@@ -93,16 +92,18 @@
   }
   function closeLesson(){if($('grammarLessonDialog').open)$('grammarLessonDialog').close();}
   function open(){
-    if(window.KTFBridge?.isQuizActive?.() || !$('examScreen').hidden) {window.alert(tr('Finish your current practice first.','Terminá la práctica actual antes de entrar.'));return;}
+    window.KTFNavigation?.remember();
+    if((window.KTFNavigation?.active() ?? window.KTFBridge?.isQuizActive?.()) || !$('examScreen').hidden) {window.alert(tr('Finish your current practice first.','Terminá la práctica actual antes de entrar.'));return;}
     loadSelection();
     for(const id of ['setupScreen','quizScreen','summaryScreen','customScreen','mangaScreen','examScreen']) if($(id))$(id).hidden=true;
     $('grammarScreen').hidden=false;$('grammarBrowse').hidden=false;$('grammarPractice').hidden=true; $('grammarSummary').hidden=true;$('grammarTop').hidden=false;
-    stopTimer();session=null;labelsUpdate();renderBrowse();refreshHistory();$('grammarScreen').scrollIntoView({block:'start',behavior:'instant'});
+    stopTimer();session=null;labelsUpdate();renderBrowse();refreshHistory();window.KTFNavigation?.reveal('grammarScreen',{restore:true});
   }
   function close(){
+    window.KTFNavigation?.remember();
     stopTimer();closeLesson();session=null;
     $('grammarScreen').hidden=true;$('grammarBrowse').hidden=false;$('grammarPractice').hidden=true;$('grammarSummary').hidden=true;
-    $('setupScreen').hidden=false;$('setupScreen').scrollIntoView({block:'start',behavior:'instant'});
+    $('setupScreen').hidden=false;window.KTFNavigation?.reveal('setupScreen',{restore:true});
   }
   function refreshHistory(){
     const rv=++revision;
@@ -110,26 +111,30 @@
   }
   function opts(mode){
     const timerMode=mode==='onepass'?'off':$('grammarTimerMode').value;
-    const minutes=Number($('grammarTimerMinutes').value);
+    const hours=Number($('grammarTimerHours').value);
+    const minutePart=Number($('grammarTimerMinutes').value);
+    const minutes=hours*60+minutePart;
     const guesses=Number($('grammarGuessLimit').value);
     const rapid=Boolean($('grammarRapidEnabled').checked);
     const seconds=Number($('grammarRapidSeconds').value);
-    if(timerMode==='timer'&&(!Number.isInteger(minutes)||minutes<1||minutes>120)){window.alert(tr('Choose between 1 and 120 minutes.','Elegí entre 1 y 120 minutos.'));return null;}
-    if(timerMode==='guesses'&&(!Number.isInteger(guesses)||guesses<1||guesses>1000)){window.alert(tr('Choose between 1 and 1000 questions.','Elegí entre 1 y 1000 preguntas.'));return null;}
-    if(rapid&&(!Number.isInteger(seconds)||seconds<5||seconds>300)){window.alert(tr('Choose between 5 and 300 seconds.','Elegí entre 5 y 300 segundos.'));return null;}
+    if(timerMode==='timer'&&(!Number.isInteger(hours)||hours<0||hours>99||!Number.isInteger(minutePart)||minutePart<0||minutePart>59||minutes<1)){window.alert(tr('Choose between 00:01 and 99:59.','Elegí entre 00:01 y 99:59.'));return null;}
+    if(timerMode==='guesses'&&(!Number.isInteger(guesses)||guesses<1||guesses>10000)){window.alert(tr('Choose between 1 and 10000 questions.','Elegí entre 1 y 10000 preguntas.'));return null;}
+    if(rapid&&(!Number.isInteger(seconds)||seconds<1||seconds>300)){window.alert(tr('Choose between 1 and 300 seconds.','Elegí entre 1 y 300 segundos.'));return null;}
     return {timerMode,minutes,guesses,rapid,seconds};
   }
   function stopTimer(){clearInterval(timerId);timerId=null;}
-  function start(mode){
-    loadSelection();const pool=samples();if(!pool.length){window.alert(t('notReady'));return;}
+  function start(mode,overridePool=null){
+    loadSelection();const pool=overridePool||samples();if(!pool.length){window.alert(t('notReady'));return;}
     const settings=opts(mode);if(!settings)return;
+    window.KTFNavigation?.remember();
     stopTimer();
     session={mode,pool,settings,round:0,index:0,queue:shuffle(pool),current:null,answered:0,correct:0,results:[],phase:'question',paused:false,done:false,elapsedMs:0,rapidRemaining:settings.seconds*1000,lastItem:null};
     window.KTFStudyClock?.onQuizStart({source:'grammar',kind:'grammar',mode});
     lastTick=Date.now();
     $('grammarBrowse').hidden=true;$('grammarSummary').hidden=true;$('grammarPractice').hidden=false;$('grammarTop').hidden=true;
     timerId=setInterval(tick,200);
-    updateQuestion();$('grammarPractice').scrollIntoView({block:'start',behavior:'instant'});
+    updateQuestion();window.KTFNavigation?.reveal('grammarPractice');
+    (isGuided()?$('grammarGuidedNext'):$('grammarRomaji')).focus({preventScroll:true});
   }
   function isGuided(){return session?.mode==='learn'&&session.round<3;}
   function sessionName(){return t(session.mode==='learn'?'modeLearn':session.mode==='infinite'?'modeInfinite':'modeOne');}
@@ -141,7 +146,18 @@
     $('grammarAccuracy').textContent=session.answered?`${Math.round(session.correct/session.answered*100)}%`:'—';
     const sessionClock=session.settings.timerMode==='timer'?fmt(Math.max(0,session.settings.minutes*60000-session.elapsedMs)):fmt(session.elapsedMs);
     $('grammarClock').textContent=sessionClock;
+    $('grammarClock').hidden=!showClock&&session.settings.timerMode!=='timer';
+    $('grammarClockToggle').hidden=session.settings.timerMode==='timer';
+    $('grammarClockToggle').textContent=showClock?tr('Hide clock','Ocultar reloj'):tr('Show clock','Mostrar reloj');
+    $('grammarClockToggle').setAttribute('aria-pressed',String(showClock));
+    $('grammarGuessProgress').hidden=session.settings.timerMode!=='guesses';
+    $('grammarGuessProgress').textContent=`${session.answered} / ${session.settings.guesses} ${t('questions')}`;
+    const total=session.mode==='learn'?session.pool.length*6:session.mode==='onepass'?session.pool.length:0;
+    const done=session.round*session.pool.length+session.index+(session.phase==='feedback'?1:0);
+    window.KTFStudyUI?.progress('grammarLearningProgress',done,total,roundName());
+    $('grammarSkillStats').textContent=skillStats(session.results);
     $('grammarPause').textContent=session.paused?t('resume'):t('clock');
+    $('grammarPause').setAttribute('aria-pressed',String(session.paused));
     const rapidVisible=session.settings.rapid && !isGuided() && ['question','feedback'].includes(session.phase);
     $('grammarRapidIndicator').hidden=!rapidVisible;
     if(rapidVisible){
@@ -166,7 +182,7 @@
     $('grammarSessionType').textContent=sessionName();$('grammarQuestionCounter').textContent=roundName();$('grammarLessonTag').textContent=local(byId.get(ex.lessonId).title);
     $('grammarJapanese').textContent=ex.japanese;
     $('grammarGuided').hidden=!isGuided();$('grammarAnswerArea').hidden=isGuided();
-    $('grammarRomaji').value='';$('grammarMeaning').value='';for(const id of ['grammarRomaji','grammarMeaning','grammarCheck','grammarSkip','grammarGuidedNext']) $(id).disabled=false;$('grammarFeedback').hidden=true;$('grammarFollowUp').hidden=true;$('grammarAnswerForm').hidden=false;$('grammarAcceptMeaning').hidden=true;
+    $('grammarRomaji').value='';$('grammarMeaning').value='';for(const id of ['grammarRomaji','grammarMeaning','grammarCheck','grammarSkip','grammarGuidedNext','grammarNext','grammarAcceptMeaning']) $(id).disabled=false;$('grammarFeedback').hidden=true;$('grammarFollowUp').hidden=true;$('grammarAnswerForm').hidden=false;$('grammarAcceptMeaning').hidden=true;
     if(isGuided()){
       window.KTFStudyClock?.onGuided({id:ex.id,kana:ex.japanese},'grammar');
       $('grammarGuidedReading').textContent=`${t('expectedReading')} ${ex.reading}`;
@@ -179,11 +195,11 @@
   }
   function tick(){
     if(!session||session.done)return;
-    const now=Date.now();const delta=Math.min(2000,Math.max(0,now-lastTick));lastTick=now;
-    if(session.paused||session.phase==='feedback')return;
+    const now=Date.now();const delta=Math.max(0,now-lastTick);lastTick=now;
+    if(session.paused)return;
     session.elapsedMs+=delta;
     if(session.settings.timerMode==='timer'&&session.elapsedMs>=session.settings.minutes*60000){finish(t('timed'));return;}
-    if(session.settings.rapid&&!isGuided()){
+    if(session.settings.rapid&&session.phase==='question'){
       session.rapidRemaining=Math.max(0,session.rapidRemaining-delta);
       if(session.rapidRemaining<=0)grade(true,true);
     }
@@ -211,7 +227,7 @@
     updateStats();
   }
   function acceptMeaning(){
-    if(!session||session.phase!=='feedback')return;
+    if(!session||session.done||session.paused||session.phase!=='feedback')return;
     const last=session.results.at(-1);if(!last||last.meaningCorrect)return;
     last.meaningCorrect=true;
     last.correct=last.readingCorrect;
@@ -229,7 +245,7 @@
     window.KTFStudyClock?.onAnswer({source:'grammar',kind:'grammar',item:{id:attempt.id,kana:attempt.japanese},correct:attempt.correct,readingCorrect:attempt.readingCorrect,meaningCorrect:attempt.meaningCorrect});
   }
   function advance(){
-    if(!session||session.done)return;
+    if(!session||session.done||session.paused)return;
     if(session.phase!=='feedback'&&session.phase!=='guided')return;
     if(session.phase==='feedback')recordStudyAnswer();
     session.index++;
@@ -251,24 +267,39 @@
   }
   function finish(reason=''){
     if(!session||session.done)return;
+    window.KTFNavigation?.remember();
     if(session.phase==='feedback')recordStudyAnswer();
     window.KTFStudyClock?.onQuizFinish({source:'grammar',kind:'grammar',mode:session.mode});
     stopTimer();session.done=true;session.paused=false;
     $('grammarPractice').hidden=true;$('grammarBrowse').hidden=true;$('grammarSummary').hidden=false;$('grammarTop').hidden=true;
     const attempts=session.results;
-    $('grammarSummaryTitle').textContent=reason||t(session.mode==='onepass'?'sessionDone':'sessionStopped');
+    const completed=(session.mode==='onepass'&&session.answered===session.pool.length)||(session.mode==='learn'&&session.round>=6);
+    $('grammarSummaryTitle').textContent=reason||t(completed?'sessionDone':'sessionStopped');
     $('grammarSummaryAnswered').textContent=String(session.answered);$('grammarSummaryCorrect').textContent=String(session.correct);$('grammarSummaryAccuracy').textContent=session.answered?`${Math.round(session.correct/session.answered*100)}%`:'—';
-    const wrong=attempts.filter(a=>!a.correct);
-    $('grammarErrors').innerHTML=wrong.length?`<ol class="hardest-list">${wrong.slice(0,12).map(a=>`<li class="hardest-item"><span class="hardest-glyph" lang="ja">${html(a.japanese)}</span><div class="hardest-info"><strong>${html(local(byId.get(a.lessonId).title))}</strong><span>${html(a.expectedReading)}</span><span>${html(a.expectedMeaning)}</span></div><span class="hardest-count">${a.readingCorrect?'1/2':'0/2'}${a.meaningCorrect&&!a.readingCorrect?' +':''}</span></li>`).join('')}</ol>`:`<p class="summary-empty">${html(t('flawless'))}</p>`;
+    const wrong=[...new Map(attempts.filter(a=>!a.correct).map(a=>[a.id,a])).values()];
+    $('grammarSummarySkills').textContent=skillStats(attempts);
+    $('grammarSummaryProgress').textContent=`${sessionName()} · ${fmt(session.elapsedMs)} · ${t('answered')}: ${session.answered}${session.mode==='onepass'?'/'+session.pool.length:''}${session.mode==='learn'?' · '+t('round')+' '+Math.min(6,session.round+1)+'/6':''}`;
+    $('grammarReview').hidden=!wrong.length;
+    $('grammarReview').textContent=tr('Practice my mistakes →','Practicar mis errores →');
+    $('grammarErrors').innerHTML=wrong.length?`<ol class="hardest-list">${wrong.map(a=>`<li class="hardest-item"><span class="hardest-glyph" lang="ja">${html(a.japanese)}</span><div class="hardest-info"><strong>${html(local(byId.get(a.lessonId).title))}</strong><span>${html(a.expectedReading)}</span><span>${html(a.expectedMeaning)}</span></div><span class="hardest-count">${Number(a.readingCorrect)+Number(a.meaningCorrect)}/2</span></li>`).join('')}</ol>`:`<p class="summary-empty">${html(attempts.length?t('flawless'):tr('No answers yet.','Todavía no hay respuestas.'))}</p>`;
     if(attempts.length){
       const record={examId:'grammar-practice',kind:'grammar',questions:attempts,lessons:[...selected],correct:session.correct,total:session.answered,percent:Math.round(session.correct/session.answered*100),passed:session.correct/session.answered>=.9,startedAt:new Date(Date.now()-session.elapsedMs).toISOString(),completedAt:new Date().toISOString(),mode:session.mode};
       cloud()?.addAttempt?.(record).then(()=>refreshHistory()).catch(()=>{});
     }
-    $('grammarSummary').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal('grammarSummary');
   }
-  function backToLessons(){stopTimer();session=null;$('grammarBrowse').hidden=false;$('grammarSummary').hidden=true;$('grammarPractice').hidden=true;$('grammarTop').hidden=false;renderBrowse();$('grammarScreen').scrollIntoView({block:'start',behavior:'instant'});}
+  function backToLessons(){window.KTFNavigation?.remember();stopTimer();session=null;$('grammarBrowse').hidden=false;$('grammarSummary').hidden=true;$('grammarPractice').hidden=true;$('grammarTop').hidden=false;renderBrowse();window.KTFNavigation?.reveal('grammarScreen',{restore:true});}
   const openPanel=()=>!$('grammarScreen').hidden;
+  let showClock=true;
+  const optionIds=['grammarTimerMode','grammarTimerHours','grammarTimerMinutes','grammarGuessLimit','grammarRapidEnabled','grammarRapidSeconds'];
+  function saveOptions(){try{localStorage.setItem('ktf-grammar-settings-v1',JSON.stringify({showClock,...Object.fromEntries(optionIds.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]))}));}catch(_){}}
+  function skillStats(rows){const pct=field=>rows.length?Math.round(rows.filter(row=>row[field]).length/rows.length*100)+'%':'—';return `${tr('Reading','Lectura')}: ${pct('readingCorrect')} · ${tr('Meaning','Significado')}: ${pct('meaningCorrect')}`;}
   function init(){
+    try{const saved=JSON.parse(localStorage.getItem('ktf-grammar-settings-v1')||'{}');showClock=saved.showClock!==false;for(const id of optionIds)if(saved[id]!==undefined){if($(id).type==='checkbox')$(id).checked=saved[id]===true;else $(id).value=saved[id];}}catch(_){}
+    for(const id of optionIds)$(id).addEventListener('change',saveOptions);
+    $('grammarTimerInputs').hidden=$('grammarTimerMode').value!=='timer';$('grammarGuessInputs').hidden=$('grammarTimerMode').value!=='guesses';$('grammarRapidInputs').hidden=!$('grammarRapidEnabled').checked;
+    $('grammarClockToggle').addEventListener('click',()=>{showClock=!showClock;saveOptions();updateStats();});
+    $('grammarReview').addEventListener('click',()=>{const ids=new Set(session.results.filter(row=>!row.correct).map(row=>row.id));const pool=session.pool.filter(row=>ids.has(row.id));window.KTFStudyUI.review(pool.map(item=>({item,label:item.japanese+' · '+item.reading})),chosen=>start('onepass',chosen.map(row=>row.item)));});
     $('openGrammarButton').addEventListener('click',open);
     $('grammarBack').addEventListener('click',close);
     $('grammarTabs').addEventListener('click',e=>{const tab=e.target.closest('[data-grammar-tab]');if(!tab)return;currentGroup=tab.dataset.grammarTab;renderBrowse();});
@@ -289,15 +320,15 @@
     $('grammarGuidedNext').addEventListener('click',advance);
     $('grammarNext').addEventListener('click',advance);
     $('grammarAcceptMeaning').addEventListener('click',acceptMeaning);
-    $('grammarPause').addEventListener('click',()=>{if(!session||session.done)return;session.paused=!session.paused;lastTick=Date.now();$('grammarRomaji').disabled=session.paused;$('grammarMeaning').disabled=session.paused;$('grammarCheck').disabled=session.paused;$('grammarSkip').disabled=session.paused;$('grammarGuidedNext').disabled=session.paused;updateStats();});
+    $('grammarPause').addEventListener('click',()=>{if(!session||session.done)return;session.paused=!session.paused;lastTick=Date.now();$('grammarRomaji').disabled=session.paused;$('grammarMeaning').disabled=session.paused;$('grammarCheck').disabled=session.paused;$('grammarSkip').disabled=session.paused;$('grammarGuidedNext').disabled=session.paused;$('grammarNext').disabled=session.paused;$('grammarAcceptMeaning').disabled=session.paused;$('grammarPause').setAttribute('aria-pressed',String(session.paused));updateStats();});
     for(const id of ['grammarExit','grammarFinish'])$(id).addEventListener('click',endRequest);
     $('grammarSummaryBack').addEventListener('click',backToLessons);
-    $('grammarRepeat').addEventListener('click',()=>{const mode=session?.mode||'onepass';backToLessons();start(mode);});
+    $('grammarRepeat').addEventListener('click',()=>{const mode=session?.mode||'onepass';const pool=session?.pool;backToLessons();start(mode,pool);});
     $('homeLink').addEventListener('click',()=>{if(openPanel())close();},true);
     document.addEventListener('ktf:languagechange',()=>{labelsUpdate();if(openPanel()){if(lessonDialogId&&$('grammarLessonDialog').open){closeLesson();openLesson(lessonDialogId);}if(session){updateStats();if(!session.done && session.current){$('grammarLessonTag').textContent=local(byId.get(session.current.lessonId).title);if(isGuided()){ $('grammarGuidedMeaning').textContent=`${t('expectedMeaning')} ${session.current.meanings[lang()][0]}`; }}}}});
     document.addEventListener('keydown',e=>{if(!openPanel()||!session||session.done||e.key!=='Enter'||session.phase!=='feedback'||e.target.tagName==='BUTTON'||e.target.closest('dialog'))return;e.preventDefault();advance();});
     labelsUpdate();
   }
-  window.KTFGrammar={open,close,matchReading,matchMeaning,lessons};
+  window.KTFGrammar={open,close,matchReading,matchMeaning,lessons,isActive:()=>Boolean(session&&!session.done)};
   init();
 })();

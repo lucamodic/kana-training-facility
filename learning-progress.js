@@ -92,11 +92,13 @@
   }
   let attempts=[];
   let current=null;
+  let lastResult=null;
+  let saving=false;
   let page='dashboard';
   function t(key) {
     const texts={
-      en:{button:'My Progress',title:'Learning Progress',intro:'Check your skills, find your next step and continue from any device.',exams:'Skill exams',history:'Practice & exam history',account:'Cloud sync',guest:'Studying as a guest',signin:'Continue with Google',signout:'Sign out',sync:'Sync now',connected:'Signed in',offline:'Offline — changes are saved on this device',syncing:'Syncing your progress…',synced:'All changes synced',error:'Sync needs attention',local:'Saved locally',guide:'Learning Guide',start:'Take exam',review:'Retake exam',test:'Your exam',pass:'Passed',fail:'Keep practicing',correct:'Correct',answered:'answered',question:'Question',next:'Next question',finish:'See results',exit:'Leave exam',write:'Type your answer',meaning:'Write the meaning',reading:'Write the romaji reading',results:'Exam results',recommend:'Your next step',mistakes:'Review these questions',empty:'No exams yet. Take one whenever you feel ready.',noQuestions:'Not enough unlocked words for this exam. Select more characters first.',ready:'Exam ready',from:'from',syncHelp:'Study offline; your progress syncs when you reconnect.',guideLink:'Learning Guide',progressLink:'My Progress',again:'Take another exam',close:'Close',progressSaved:'Results saved on this device',cannotStart:'Finish your current lesson before taking an exam.',guideTitle:'Learning Guide',guideIntro:'Choose what to study, test your understanding, and use your results to guide your next practice.',howExams:'How exams work',howExamsBody:'Each skill exam draws from a larger question bank. Retakes use a different order and favor questions you did not see last time. The passing score is 90%. You can always retry.',howSelection:'Your selections',howSelectionBody:'The personalized exam checks the characters you marked. Context and reading exams use unlocked words from all three scripts. Selecting a kanji does not mean you know every way it is pronounced.',howSync:'Offline and syncing',howSyncBody:'Exams and selections are saved locally. Sign in with Google to sync between devices when online. Changes made on different devices may take time to appear; open the app online to sync.',howScoring:'Reading vs meaning',howScoringBody:'Reading questions expect romaji. Meaning questions expect the English meaning (or Spanish when using Español). Kanji can have several pronunciations, and words may use a different one.',notice:'You can start with whichever exam feels right. There are no forced levels.',pending:'Pending offline',weak:'Focus on',none:'None',signError:'Could not sign in',historyDetail:'Details',closeResult:'Back to progress',import:'Import backup',export:'Export backup',backupHelp:'Offline backup of exam attempts. Importing keeps unique attempts and does not erase others.',howProfile:'Your nickname',howProfileBody:'Your display name is separate from Google. Choose a nickname in My Progress; your Google email is only shown under Account details. Nickname changes save offline and sync when online.',howManga:'Manga Reader',howMangaBody:'Upload pages you already have access to, then analyze them online. Try writing the romaji before revealing readings, vocabulary and English translations. Pages are temporary, not stored or synced. Analysis sends the page to OpenAI GPT-6 Luna through a protected Supabase function and requires Google sign-in.'},
-      es:{button:'Mi progreso',title:'Progreso de aprendizaje',intro:'Evaluá lo que sabés, descubrí qué seguir y retomá desde cualquier dispositivo.',exams:'Exámenes por habilidad',history:'Historial de prácticas y exámenes',account:'Sincronización',guest:'Estudiando sin cuenta',signin:'Continuar con Google',signout:'Cerrar sesión',sync:'Sincronizar ahora',connected:'Sesión iniciada',offline:'Sin conexión: los cambios se guardan en este dispositivo',syncing:'Sincronizando progreso…',synced:'Todo sincronizado',error:'La sincronización necesita atención',local:'Guardado localmente',guide:'Guía de aprendizaje',start:'Rendir examen',review:'Repetir examen',test:'Tu examen',pass:'Aprobado',fail:'Seguí practicando',correct:'Correctas',answered:'respondidas',question:'Pregunta',next:'Siguiente pregunta',finish:'Ver resultados',exit:'Salir del examen',write:'Escribí tu respuesta',meaning:'Escribí el significado',reading:'Escribí la lectura en romaji',results:'Resultados del examen',recommend:'Tu próximo paso',mistakes:'Revisá estas preguntas',empty:'Todavía no rendiste exámenes. Empezá cuando quieras.',noQuestions:'No hay suficientes palabras desbloqueadas para este examen. Seleccioná más caracteres.',ready:'Examen disponible',from:'de',syncHelp:'Estudiá offline; tu progreso se sincroniza cuando vuelvas a conectarte.',guideLink:'Guía de aprendizaje',progressLink:'Mi progreso',again:'Rendir otro examen',close:'Cerrar',progressSaved:'Resultados guardados en este dispositivo',cannotStart:'Terminá la lección actual antes de rendir un examen.',guideTitle:'Guía de aprendizaje',guideIntro:'Elegí qué estudiar, evaluá lo que entendés y aprovechá los resultados para planear la próxima práctica.',howExams:'Cómo funcionan los exámenes',howExamsBody:'Cada examen usa un banco amplio de preguntas. Al repetirlo cambia el orden y prioriza las que no aparecieron la vez anterior. Se aprueba con 90%. Podés repetirlo cuando quieras.',howSelection:'Tus selecciones',howSelectionBody:'El examen personalizado utiliza los caracteres marcados. Los exámenes de contexto y lectura usan palabras desbloqueadas en los tres alfabetos. Seleccionar un kanji no significa dominar todas sus lecturas.',howSync:'Offline y sincronización',howSyncBody:'Los exámenes y selecciones se guardan localmente. Iniciá sesión con Google para sincronizar entre dispositivos cuando haya internet. Abrí la app con conexión para recibir cambios de la otra computadora.',howScoring:'Lectura y significado',howScoringBody:'Las preguntas de lectura esperan romaji. Las de significado aceptan inglés (o español cuando usás Español). Los kanji pueden tener varias lecturas y una palabra puede usar una distinta.',notice:'Podés empezar por cualquier examen. No hay niveles obligatorios.',pending:'Pendiente offline',weak:'Reforzá',none:'Ninguno',signError:'No se pudo iniciar sesión',historyDetail:'Detalles',closeResult:'Volver a progreso',import:'Importar respaldo',export:'Exportar respaldo',backupHelp:'Respaldo offline de intentos. Importar conserva los intentos únicos sin borrar otros.',howProfile:'Tu nickname',howProfileBody:'Tu nombre visible es independiente de Google. Elegí tu nickname en Mi progreso; el email solo aparece en Detalles de la cuenta. Los cambios se guardan offline y se sincronizan con conexión.',howManga:'Manga Reader',howMangaBody:'Subí páginas que ya tengas disponibles y analizalas online. Intentá escribir el romaji antes de revelar lecturas, vocabulario y traducción al inglés. Las páginas son temporales: no se guardan ni sincronizan. El análisis envía la imagen a OpenAI GPT-6 Luna mediante una función protegida de Supabase y requiere iniciar sesión con Google.'}
+      en:{button:'My Progress',title:'Learning Progress',intro:'Check your skills, find your next step and continue from any device.',exams:'Skill exams',history:'Practice & exam history',account:'Cloud sync',guest:'Studying as a guest',signin:'Continue with Google',signout:'Sign out',sync:'Sync now',connected:'Signed in',offline:'Offline — changes are saved on this device',syncing:'Syncing your progress…',synced:'All changes synced',error:'Sync needs attention',local:'Saved locally',guide:'Learning Guide',start:'Take exam',review:'Retake exam',test:'Your exam',pass:'Passed',fail:'Keep practicing',correct:'Correct',answered:'answered',question:'Question',next:'Next question',finish:'See results',exit:'Leave exam',write:'Type your answer',meaning:'Write the meaning',reading:'Write the romaji reading',results:'Exam results',recommend:'Your next step',mistakes:'Review these questions',empty:'No exams yet. Take one whenever you feel ready.',noQuestions:'Not enough unlocked words for this exam. Select more characters first.',ready:'Exam ready',from:'from',syncHelp:'Study offline; your progress syncs when you reconnect.',guideLink:'Learning Guide',progressLink:'My Progress',again:'Take another exam',close:'Close',progressSaved:'Results saved on this device',cannotStart:'Finish your current lesson before taking an exam.',guideTitle:'Learning Guide',guideIntro:'Choose what to study, test your understanding, and use your results to guide your next practice.',howExams:'How exams work',howExamsBody:'Each skill exam draws from a larger question bank. Retakes use a different order and favor questions you did not see last time. The passing score is 90%. You can always retry.',howSelection:'Your selections',howSelectionBody:'The personalized exam checks the characters you marked. Context and reading exams use unlocked words from all three scripts. Selecting a kanji does not mean you know every way it is pronounced.',howSync:'Offline and syncing',howSyncBody:'Exams and selections are saved locally. Sign in with Google to sync between devices when online. Changes made on different devices may take time to appear; open the app online to sync.',howScoring:'Reading vs meaning',howScoringBody:'Reading questions expect romaji. Meaning questions expect the English meaning (or Spanish when using Español). Kanji can have several pronunciations, and words may use a different one.',notice:'You can start with whichever exam feels right. There are no forced levels.',pending:'Pending offline',weak:'Focus on',none:'None',signError:'Could not sign in',historyDetail:'Details',closeResult:'Back to progress',import:'Import backup',export:'Export backup',backupHelp:'Offline backup of exam attempts. Importing keeps unique attempts and does not erase others.',howProfile:'Your nickname',howProfileBody:'Your display name is separate from Google. Choose a nickname in My Progress; your Google email is only shown under Account details. Nickname changes save offline and sync when online.',howManga:'Manga Reader',howMangaBody:'Upload pages you already have access to, then analyze them online. Try writing the romaji before revealing readings, vocabulary and English translations. Analyzed pages and explanations are saved in this browser. Export a library backup to move them to another device; pages do not sync automatically. Analysis sends the page to OpenAI GPT-6 Luna through a protected Supabase function and requires Google sign-in.'},
+      es:{button:'Mi progreso',title:'Progreso de aprendizaje',intro:'Evaluá lo que sabés, descubrí qué seguir y retomá desde cualquier dispositivo.',exams:'Exámenes por habilidad',history:'Historial de prácticas y exámenes',account:'Sincronización',guest:'Estudiando sin cuenta',signin:'Continuar con Google',signout:'Cerrar sesión',sync:'Sincronizar ahora',connected:'Sesión iniciada',offline:'Sin conexión: los cambios se guardan en este dispositivo',syncing:'Sincronizando progreso…',synced:'Todo sincronizado',error:'La sincronización necesita atención',local:'Guardado localmente',guide:'Guía de aprendizaje',start:'Rendir examen',review:'Repetir examen',test:'Tu examen',pass:'Aprobado',fail:'Seguí practicando',correct:'Correctas',answered:'respondidas',question:'Pregunta',next:'Siguiente pregunta',finish:'Ver resultados',exit:'Salir del examen',write:'Escribí tu respuesta',meaning:'Escribí el significado',reading:'Escribí la lectura en romaji',results:'Resultados del examen',recommend:'Tu próximo paso',mistakes:'Revisá estas preguntas',empty:'Todavía no rendiste exámenes. Empezá cuando quieras.',noQuestions:'No hay suficientes palabras desbloqueadas para este examen. Seleccioná más caracteres.',ready:'Examen disponible',from:'de',syncHelp:'Estudiá offline; tu progreso se sincroniza cuando vuelvas a conectarte.',guideLink:'Guía de aprendizaje',progressLink:'Mi progreso',again:'Rendir otro examen',close:'Cerrar',progressSaved:'Resultados guardados en este dispositivo',cannotStart:'Terminá la lección actual antes de rendir un examen.',guideTitle:'Guía de aprendizaje',guideIntro:'Elegí qué estudiar, evaluá lo que entendés y aprovechá los resultados para planear la próxima práctica.',howExams:'Cómo funcionan los exámenes',howExamsBody:'Cada examen usa un banco amplio de preguntas. Al repetirlo cambia el orden y prioriza las que no aparecieron la vez anterior. Se aprueba con 90%. Podés repetirlo cuando quieras.',howSelection:'Tus selecciones',howSelectionBody:'El examen personalizado utiliza los caracteres marcados. Los exámenes de contexto y lectura usan palabras desbloqueadas en los tres alfabetos. Seleccionar un kanji no significa dominar todas sus lecturas.',howSync:'Offline y sincronización',howSyncBody:'Los exámenes y selecciones se guardan localmente. Iniciá sesión con Google para sincronizar entre dispositivos cuando haya internet. Abrí la app con conexión para recibir cambios de la otra computadora.',howScoring:'Lectura y significado',howScoringBody:'Las preguntas de lectura esperan romaji. Las de significado aceptan inglés (o español cuando usás Español). Los kanji pueden tener varias lecturas y una palabra puede usar una distinta.',notice:'Podés empezar por cualquier examen. No hay niveles obligatorios.',pending:'Pendiente offline',weak:'Reforzá',none:'Ninguno',signError:'No se pudo iniciar sesión',historyDetail:'Detalles',closeResult:'Volver a progreso',import:'Importar respaldo',export:'Exportar respaldo',backupHelp:'Respaldo offline de intentos. Importar conserva los intentos únicos sin borrar otros.',howProfile:'Tu nickname',howProfileBody:'Tu nombre visible es independiente de Google. Elegí tu nickname en Mi progreso; el email solo aparece en Detalles de la cuenta. Los cambios se guardan offline y se sincronizan con conexión.',howManga:'Manga Reader',howMangaBody:'Subí páginas que ya tengas disponibles y analizalas online. Intentá escribir el romaji antes de revelar lecturas, vocabulario y traducción al inglés. Las páginas analizadas y sus explicaciones se guardan en este navegador. Podés exportar la biblioteca para llevarla a otro dispositivo; no se sincroniza automáticamente. El análisis envía la imagen a OpenAI GPT-6 Luna mediante una función protegida de Supabase y requiere iniciar sesión con Google.'}
     };
     return texts[L()]?.[key] || texts.en[key] || key;
   }
@@ -154,7 +156,7 @@
       renderDashboard();
     }
   }
-  function examLabel(id) {if(id==='grammar-practice')return L()==='es'?'Práctica de gramática':'Grammar practice';const def=byId[id];return def?def.name[L()==='es'?1:0]:id;}
+  function examLabel(id) {if(id==='custom-practice')return trans('Custom practice','Práctica custom');if(id==='exam-review')return trans('Exam mistakes practice','Repaso de errores');if(id==='grammar-practice')return L()==='es'?'Práctica de gramática':'Grammar practice';const def=byId[id];return def?def.name[L()==='es'?1:0]:id;}
   function statusText() {
     const s=cloud.getStatus();
     const labels={offline:t('offline'),syncing:t('syncing'),synced:t('synced'),error:t('error'),local:t('local'),connecting:t('syncing')};
@@ -210,7 +212,7 @@
     }).join('');
     get('progressEmpty').hidden=attempts.length>0;
     get('progressEmpty').textContent=t('empty');
-    get('progressHistory').innerHTML=attempts.slice(0,35).map(a=>`<article class="progress-history-row"><div><strong>${clean(examLabel(a.examId))}</strong><small>${new Date(a.completedAt).toLocaleString(L()==='es'?'es-AR':'en-US',{dateStyle:'medium',timeStyle:'short'})} · ${a.correct}/${a.total}</small></div><span class="progress-history-percent ${a.passed?'is-passed':''}">${a.percent}%</span></article>`).join('');
+    get('progressHistory').innerHTML=attempts.slice(0,35).map(a=>`<article class="progress-history-row"><div><strong>${clean(examLabel(a.examId))}</strong><small>${new Date(a.completedAt).toLocaleString(L()==='es'?'es-AR':'en-US',{dateStyle:'medium',timeStyle:'short'})} · ${a.correct}/${a.total}</small></div><span class="progress-history-percent ${a.passed?'is-passed':''}">${a.percent}%</span><button type="button" class="mini-button" data-attempt="${clean(a.id)}">${t('historyDetail')}</button></article>`).join('');
   }
   async function showProgress() {
     if(!get('examScreen').hidden){
@@ -222,19 +224,21 @@
     attempts=await cloud.getAttempts();
     renderDashboard();
   }
-  function startExam(id) {
-    if(bridge.isQuizActive()) {window.alert(t('cannotStart'));return;}
+  function startExam(id,reviewQuestions=null) {
+    if(window.KTFNavigation.active()) {window.alert(t('cannotStart'));return;}
     const def=byId[id];
     if(!def)return;
-    const bank=buildBank(id);
-    if(bank.length<Math.min(8,def.size)) {window.alert(t('noQuestions'));return;}
+    window.KTFNavigation.remember();
+    const bank=reviewQuestions||buildBank(id);
+    if(!reviewQuestions && bank.length<Math.min(8,def.size)) {window.alert(t('noQuestions'));return;}
     const previous=attempts.find(a=>a.examId===id);
-    const questions=sampleQuestions(bank,Math.min(def.size,bank.length),previous);
-    current={examId:id,questions,index:0,answers:[],startedAt:new Date().toISOString()};
+    const questions=reviewQuestions?shuffle(reviewQuestions):sampleQuestions(bank,Math.min(def.size,bank.length),previous);
+    current={examId:id,review:Boolean(reviewQuestions),checked:false,questions,index:0,answers:[],startedAt:new Date().toISOString()};
     page='exam';
     get('progressDialog').close();
     get('setupScreen').hidden=true;
     get('customScreen').hidden=true;
+    get('grammarScreen').hidden=true;get('mangaScreen').hidden=true;
     get('quizScreen').hidden=true;
     get('summaryScreen').hidden=true;
     get('examScreen').hidden=false;
@@ -243,11 +247,15 @@
     get('examHint').hidden=false;
     window.KTFStudyClock?.onViewChange(true,'exam');
     renderQuestion();
-    get('examScreen').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation.reveal('examScreen');
+    get('examInput').focus({preventScroll:true});
   }
   function renderQuestion() {
     const q=current?.questions[current.index];
     if(!q)return;
+    current.checked=false;
+    get('examReviewFeedback')?.remove();
+    get('examInput').disabled=false;get('examSkip').hidden=false;get('examNext').disabled=false;
     get('examTitle').textContent=examLabel(current.examId);
     get('examCounter').textContent=`${t('question')} ${current.index+1} ${t('from')} ${current.questions.length}`;
     const progress=Math.round(current.index/current.questions.length*100);
@@ -269,15 +277,22 @@
     get('examInput').value='';
     get('examNext').textContent=current.index===current.questions.length-1?t('finish'):t('next');
     get('examSkip').textContent=trans("I don't know",'No sé');
+    if(current.review){get('examModeBadge').textContent=trans('PRACTICE','PRÁCTICA');get('examSubtitle').textContent=trans('Review your mistakes with feedback after each answer.','Repasá tus errores con corrección después de cada respuesta.');get('examHint').textContent=window.KTFRomaji.hint();get('examPassingBadge').hidden=true;}else get('examPassingBadge').hidden=false;
     get('examInput').focus({preventScroll:true});
   }
   async function submitAnswer(event) {
     event.preventDefault();
-    if(!current)return;
+    if(!current||saving)return;
+    if(current.review&&current.checked){current.index++;if(current.index<current.questions.length)renderQuestion();else await finishExam();return;}
     const q=current.questions[current.index];
     const answer=get('examInput').value.trim();
-    const match=q.answers.some(candidate=>normalize(candidate)===normalize(answer));
-    current.answers.push({id:q.id,prompt:q.prompt,expected:q.answerText,answer,correct:match,type:q.type,category:q.category,script:q.script,meaning:q.meaning,reading:q.reading});
+    const match=q.answers.some(candidate=>q.type==='reading'?window.KTFRomaji.matches(answer,candidate):normalize(candidate)===normalize(answer));
+    current.answers.push({...q,id:q.id,prompt:q.prompt,expected:q.answerText,answer,correct:match,type:q.type,category:q.category,script:q.script,meaning:q.meaning,reading:q.reading});
+    if(current.review){
+      current.checked=true;get('examInput').disabled=true;get('examSkip').hidden=true;
+      const feedback=document.createElement('p');feedback.id='examReviewFeedback';feedback.className='feedback '+(match?'correct':'wrong');feedback.setAttribute('role','status');feedback.textContent=(match?trans('Correct!','¡Correcto!'):trans('Expected answer:','Respuesta esperada:'))+' '+q.answerText;get('examBody').append(feedback);
+      get('examNext').focus({preventScroll:true});return;
+    }
     current.index++;
     if(current.index<current.questions.length)renderQuestion();
     else await finishExam();
@@ -288,30 +303,54 @@
     const percent=Math.round(correct/total*100);
     const errors=current.answers.filter(a=>!a.correct);
     const weak=[...new Set(errors.map(e=>e.category))];
-    const result={examId:current.examId,questions:current.answers,correct,total,percent,passed:percent>=90,weak,startedAt:current.startedAt,completedAt:new Date().toISOString()};
-    await cloud.addAttempt(result);
-    attempts=await cloud.getAttempts();
+    const result={examId:current.review?'exam-review':current.examId,sourceExamId:current.examId,questions:current.answers,correct,total,percent,passed:percent>=90,weak,startedAt:current.startedAt,completedAt:new Date().toISOString()};
+    saving=true;get('examNext').disabled=true;
+    let saveError=false;
+    try{await cloud.addAttempt(result);}catch(error){saveError=true;console.warn('Could not save exam result',error);}
+    if(!saveError)attempts=await cloud.getAttempts().catch(()=>attempts);
+    saving=false;current=null;
+    showResult(result);
+    if(saveError){get('examResultNext').textContent=trans('Could not save this result. Keep this screen open and retry saving.','No se pudo guardar este resultado. Mantené esta pantalla abierta y reintentá.');get('examSaveRetry').hidden=false;}
+  }
+  function showResult(result){
+    lastResult=result;
+    const {correct,total,percent}=result;
+    const errors=(result.questions||[]).filter(q=>!q.correct);
+    const weak=result.weak||[];
+    get('examSaveRetry').hidden=true;
+    get('examTitle').textContent=examLabel(result.examId);
+    get('examModeBadge').textContent=trans('RESULTS','RESULTADOS');get('examPassingBadge').hidden=true;get('examSubtitle').textContent='';
     get('examQuestionPanel').hidden=true;
     get('examResult').hidden=false;
     get('examHint').hidden=true;
-    get('examResultTitle').textContent=t('results');
+    const isExam=Boolean(byId[result.examId]);
+    get('examResultTitle').textContent=isExam?t('results'):trans('Practice results','Resultados de práctica');
     get('examResultScore').textContent=`${percent}% · ${correct}/${total}`;
-    get('examResultPass').textContent=result.passed?t('pass'):t('fail');
+    get('examResultPass').textContent=isExam?(result.passed?t('pass'):t('fail')):trans('Session finished','Sesión terminada');
     get('examResultPass').className=result.passed?'exam-result-passed':'exam-result-review';
     get('examResultNext').textContent=result.passed && byId[result.examId]?.next
       ? `${t('recommend')}: ${examLabel(byId[result.examId].next)}`
       : errors.length?`${t('recommend')}: ${t('weak')} ${weak.slice(0,3).join(', ')}`
       : recommend();
-    get('examResultMistakes').innerHTML=errors.length?`<h3>${t('mistakes')}</h3>${errors.slice(0,15).map(q=>`<div class="exam-mistake"><strong lang="ja">${clean(q.prompt)}</strong><span>${clean(q.answer||'—')} → ${clean(q.expected)}</span></div>`).join('')}`:'';
+    get('examResultMistakes').innerHTML=errors.length?`<h3>${t('mistakes')}</h3>${errors.map(q=>`<div class="exam-mistake"><strong lang="ja">${clean(q.prompt||q.japanese||'')}</strong><span>${clean(q.answer||[q.reading,q.meaning].filter(Boolean).join(' · ')||'—')} → ${clean(q.expected||[q.expectedReading,q.expectedMeaning].filter(Boolean).join(' · '))}</span></div>`).join('')}`:'';
+    const groups=new Map();
+    for(const q of result.questions||[]){const keys=[q.type==='meaning'?trans('Meaning','Significado'):q.type==='romaji'||q.type==='reading'?trans('Reading','Lectura'):trans('Sentence','Oración'),q.category].filter(Boolean);for(const key of keys){const group=groups.get(key)||{correct:0,total:0};group.total++;if(q.correct)group.correct++;groups.set(key,group);}}
+    get('examResultBreakdown').innerHTML=[...groups].map(([label,g])=>`<p><strong>${clean(label)}</strong> · ${g.correct}/${g.total} · ${Math.round(g.correct/g.total*100)}%</p>`).join('');
+    const examId=result.sourceExamId||result.examId;
+    get('examRetry').hidden=!byId[examId];get('examRetry').textContent=t('again');
+    get('examReview').hidden=!errors.length||!byId[examId];get('examReview').textContent=trans('Practice my mistakes →','Practicar mis errores →');
+    get('examRecommended').hidden=!isExam||!result.passed||!byId[examId]?.next;get('examRecommended').textContent=trans('Next exam →','Siguiente examen →');
     get('examBack').textContent=t('closeResult');
     get('examProgressFill').style.width='100%';
     get('examProgressPercent').textContent='100%';
     get('examProgressTrack').setAttribute('aria-valuenow','100');
-    get('examResultsEyebrow').textContent=trans('✦ EXAM COMPLETE','✦ EXAMEN FINALIZADO');
-    get('examCounter').textContent=trans('Exam complete','Examen finalizado');
+    get('examResultsEyebrow').textContent=isExam?trans('✦ EXAM COMPLETE','✦ EXAMEN FINALIZADO'):trans('✦ SESSION COMPLETE','✦ SESIÓN FINALIZADA');
+    get('examCounter').textContent=isExam?trans('Exam complete','Examen finalizado'):trans('Session finished','Sesión terminada');
+    if(!isExam)get('examResultNext').textContent=errors.length?trans('Review the answers below.','Repasá las respuestas de abajo.'):trans('No mistakes this time.','Esta vez no hubo errores.');
     current=null;
   }
   function closeExamView() {
+    window.KTFNavigation.remember();
     current=null;
     page='dashboard';
     get('examScreen').hidden=true;
@@ -319,7 +358,7 @@
     get('quizScreen').hidden=true;
     get('summaryScreen').hidden=true;
     window.KTFStudyClock?.onViewChange(false);
-    window.scrollTo({top:0,behavior:'instant'});
+    window.KTFNavigation.reveal('setupScreen',{restore:true});
   }
   function renderGuide() {
     get('guideTitle').textContent=t('guideTitle');
@@ -339,6 +378,22 @@
     setTimeout(()=>URL.revokeObjectURL(url),1500);
   }
   function init() {
+    const saveRetry=document.createElement('button');saveRetry.id='examSaveRetry';saveRetry.type='button';saveRetry.className='button-secondary';saveRetry.hidden=true;saveRetry.textContent=trans('Retry saving','Reintentar guardado');get('examBack').before(saveRetry);
+    saveRetry.onclick=async()=>{saveRetry.disabled=true;try{await cloud.addAttempt(lastResult);saveRetry.hidden=true;get('examResultNext').textContent=t('progressSaved');}catch(_){saveRetry.disabled=false;}};
+    get('examRetry').addEventListener('click',()=>startExam(lastResult.sourceExamId||lastResult.examId));
+    get('examRecommended').addEventListener('click',()=>startExam(byId[lastResult.sourceExamId||lastResult.examId]?.next));
+    get('examReview').addEventListener('click',()=>{
+      const id=lastResult.sourceExamId||lastResult.examId;
+      const bank=buildBank(id);
+      const mistakes=lastResult.questions.filter(q=>!q.correct).map(q=>({question:bank.find(candidate=>candidate.id===q.id)||{...q,answerText:q.expected,answers:q.answers||[q.expected]},label:q.prompt+' · '+q.expected}));
+      window.KTFStudyUI.review(mistakes,chosen=>startExam(id,chosen.map(row=>row.question)));
+    });
+    get('progressHistory').addEventListener('click',event=>{
+      const button=event.target.closest('[data-attempt]');if(!button)return;
+      if(!window.KTFNavigation.canLeave())return;
+      const result=attempts.find(a=>a.id===button.dataset.attempt);if(!result)return;
+      get('progressDialog').close();window.KTFNavigation.remember();showResult(result);window.KTFNavigation.reveal('examScreen');
+    });
     get('progressOpen').addEventListener('click',showProgress);
     get('footerProgress').addEventListener('click',showProgress);
     get('progressClose').addEventListener('click',()=>get('progressDialog').close());
@@ -389,6 +444,6 @@
     get('footerGuide').textContent=t('guideLink');
     get('footerProgress').textContent=t('progressLink');
   }
-  window.KTFLearning = {definitions,buildBank,sampleQuestions,open:showProgress,leaveExam:closeExamView};
+  window.KTFLearning = {definitions,buildBank,sampleQuestions,open:showProgress,leaveExam:closeExamView,isActive:()=>Boolean(current)||saving};
   init();
 })();

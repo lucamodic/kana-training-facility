@@ -64,7 +64,7 @@
   let practice = null;
   let deleting = false;
   const sessionSettingsKey = 'ktf-custom-session-settings-v1';
-  const sessionDefaults = {timerMode:'off',hours:0,minutes:5,guesses:200,rapidFire:false,rapidSeconds:10,showClock:true};
+  const sessionDefaults = {timerMode:'off',hours:0,minutes:5,guesses:200,rapidFire:false,rapidSeconds:10,showClock:true,answerMode:'mixed'};
   let sessionSettings = {...sessionDefaults};
   try {
     const stored = JSON.parse(localStorage.getItem(sessionSettingsKey) || '{}');
@@ -203,6 +203,7 @@
     return types;
   }
   function restoreSessionOptions() {
+    $('customMode').value=sessionSettings.answerMode||'mixed';
     $('customTimerMode').value=['off','custom','guesses'].includes(sessionSettings.timerMode) ? sessionSettings.timerMode : 'off';
     $('customSessionHours').value=String(sessionSettings.hours);
     $('customSessionMinutes').value=String(sessionSettings.minutes);
@@ -239,7 +240,7 @@
     return {timerMode,timerSeconds,guessLimit,rapidSeconds};
   }
   function updateSessionSettings() {
-    sessionSettings={timerMode:$('customTimerMode').value,hours:$('customSessionHours').value,minutes:$('customSessionMinutes').value,guesses:$('customGuessCount').value,rapidFire:$('customRapidEnabled').checked,rapidSeconds:$('customRapidSeconds').value};
+    sessionSettings={...sessionSettings,answerMode:$('customMode').value,timerMode:$('customTimerMode').value,hours:$('customSessionHours').value,minutes:$('customSessionMinutes').value,guesses:$('customGuessCount').value,rapidFire:$('customRapidEnabled').checked,rapidSeconds:$('customRapidSeconds').value};
     saveSessionSettings();
     updateSessionFields();
   }
@@ -295,12 +296,13 @@
     return save(raw,source || t('manga'));
   }
   function open() {
-    if (window.KTFBridge?.isQuizActive?.() || !$('examScreen').hidden) {
+    if ((window.KTFNavigation?.active() ?? window.KTFBridge?.isQuizActive?.()) || !$('examScreen').hidden) {
       window.alert(language() === 'es' ? 'Terminá tu práctica antes de abrir Custom.' : 'Finish your practice before opening Custom.');
       return;
     }
+    window.KTFNavigation?.remember();
     returnView = !$('mangaScreen').hidden ? 'manga' : 'setup';
-    for (const name of ['setupScreen','quizScreen','summaryScreen','examScreen','mangaScreen']) if ($(name)) $(name).hidden = true;
+    for (const name of ['setupScreen','quizScreen','summaryScreen','examScreen','mangaScreen','grammarScreen']) if ($(name)) $(name).hidden = true;
     $('customScreen').hidden = false;
     $('customTop').hidden = false;
     $('customPractice').hidden = true;
@@ -311,9 +313,10 @@
     hideEditor();
     renderList();
     refresh().catch(error => notify(error.message || String(error),true));
-    $('customScreen').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal('customScreen',{restore:true});
   }
   function close(forceSetup = false) {
+    window.KTFNavigation?.remember();
     hideEditor();
     $('customScreen').hidden = true;
     $('customSummary').hidden = true;
@@ -324,14 +327,14 @@
     stopSessionClock();
     practice = null;
     returnView = 'setup';
-    (backToManga ? $('mangaScreen') : $('setupScreen')).scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal(backToManga?'mangaScreen':'setupScreen',{restore:true});
   }
   const splitAnswers = value => String(value || '').split(/[;,/|、，；]/g).map(normalize).filter(Boolean);
   function accepted(value, expected, kind) {
     const answer = normalize(value).replace(/[.!?。！？]+$/g,'');
     const options = splitAnswers(expected);
     if (!answer || !options.length) return false;
-    if (kind === 'romaji') return options.some(option => option.replace(/[\s.'-]/g,'') === answer.replace(/[\s.'-]/g,''));
+    if (kind === 'romaji') return options.some(option => window.KTFRomaji.matches(answer,option));
     return options.includes(answer);
   }
   function questionBank(answerMode) {
@@ -387,6 +390,10 @@
       $('customRapidIndicator').classList.toggle('is-expired',session.rapidTimedOut===true);
       $('customRapidStatus').textContent=session.rapidTimedOut?t('rapidTimeUp'):(session.checked?t('rapidWaiting'):'');
     }
+    $('customGuessProgress').hidden=session.guessLimit===null;
+    $('customGuessProgress').textContent=`${session.answered} / ${session.guessLimit} ${t('attempts')}`;
+    const total=session.mode==='learn'?session.pool.length*6:session.mode==='onepass'?session.pool.length:0;
+    window.KTFStudyUI?.progress('customLearningProgress',session.done?session.index:session.index-1,total,session.mode==='learn'?`${session.guided?t('guidedPass'):t('memoryPass')} · ${Math.min(6,session.round)}/6`:t('onePassTitle'));
     $('customPracticeProgress').textContent=session.done ? '' : `${session.mode==='learn' ? `${session.round<=3?t('guidedPass'):t('memoryPass')} ${session.round<=3?session.round:session.round-3}/3 · ` : ''}${t('question')} ${session.index}${session.mode!=='infinite'?` / ${session.mode==='learn'?session.pool.length*6:session.pool.length}`:''}`;
     $('customPauseSession').textContent=t(session.paused?'resume':'pause');
     $('customPauseSession').setAttribute('aria-pressed',String(session.paused));
@@ -403,8 +410,9 @@
     if (!pool.length) {notify(t('noQuestions'),true);return;}
     const options=readSessionOptions(mode);
     if (!options) {notify(t('settingsInvalid'),true);return;}
+    window.KTFNavigation?.remember();
     stopSessionClock();
-    practice={mode,answerMode,pool,showClock:sessionSettings.showClock!==false,deck:[],round:0,index:0,lastItem:null,current:null,checked:false,guided:false,done:false,paused:false,correct:0,answered:0,history:[],rapidTimeouts:0,elapsedMs:0,rapidElapsedMs:0,lastTick:performance.now(),interval:null,advanceTimeout:null,...options};
+    practice={startedAt:new Date().toISOString(),mode,answerMode,pool,showClock:sessionSettings.showClock!==false,deck:[],round:0,index:0,lastItem:null,current:null,checked:false,guided:false,done:false,paused:false,correct:0,answered:0,history:[],rapidTimeouts:0,elapsedMs:0,rapidElapsedMs:0,lastTick:performance.now(),interval:null,advanceTimeout:null,...options};
     $('customBrowse').hidden=true;
     $('customSummary').hidden=true;
     $('customTop').hidden=true;
@@ -426,7 +434,8 @@
       practice.lastTick=performance.now();
       practice.interval=setInterval(tickSession,100);
     }
-    $('customPractice').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal('customPractice');
+    (practice.guided?$('customGuidedNext'):$('customPracticeAnswer')).focus({preventScroll:true});
   }
   function tickSession() {
     const session=practice;
@@ -483,7 +492,7 @@
     $('customPracticeSymbol').textContent=session.current.item.surface;
     $('customPracticeInfo').textContent=`${session.current.item.kind==='kanji'?t('kanji'):t('word')} · ${t('review')}`;
     $('customPracticeQuestion').textContent=session.guided?t('guidedPass') : t(session.current.type==='romaji'?'askReading':'askMeaning');
-    $('customGuidedAnswer').textContent=[session.current.item.kana || session.current.item.romaji,session.current.item.meaning].filter(Boolean).join(' · ');
+    $('customGuidedAnswer').textContent=[...new Set([session.current.item.romaji,session.current.item.kana,session.current.item.meaning].filter(Boolean))].join(' · ');
     $('customPracticeAnswer').value='';
     $('customPracticeFeedback').hidden=true;
     $('customPracticeCheck').textContent=t('check');
@@ -515,6 +524,12 @@
     feedback.classList.toggle('correct',correct);
     feedback.classList.toggle('wrong',!correct);
     feedback.textContent=`${timedOut?t('rapidTimeUp'):(t(correct?'correct':'wrong'))} ${t('answerWas')} ${expected}${question.item.kana ? ` (${question.item.kana})` : ''}`;
+    if(question.item.kind==='word'){
+      const known=window.KTFBridge.words.find(word=>word.kana===question.item.surface);
+      const breakdown=known&&window.KTFBridge.renderKanjiBreakdown(known);
+      if(breakdown)feedback.append(breakdown);
+      else if(question.item.notes){const note=document.createElement('p');note.textContent=question.item.notes;feedback.append(note);}
+    }
     $('customPracticeSkip').hidden=true;
     $('customPracticeNext').hidden=false;
     $('customPracticeCheck').hidden=true;
@@ -529,16 +544,19 @@
   function completeSession(reason='') {
     const session=practice;
     if(!session || session.done)return;
+    window.KTFNavigation?.remember();
     stopSessionClock();
     window.KTFStudyClock?.onQuizFinish({source:'custom',kind:'custom',mode:session.mode});
     session.done=true;
     session.paused=false;
     session.finishReason=reason;
+    session.completed=(session.mode==='onepass'||session.mode==='learn')&&!session.deck.length&&session.checked&&(session.mode!=='learn'||session.round===6);
+    if(session.answered)cloud.addAttempt({examId:'custom-practice',kind:'custom',mode:session.mode,questions:session.history.map(row=>({id:row.item.id,prompt:row.item.surface,answer:row.answer,expected:row.expected,correct:row.correct,type:row.type})),correct:session.correct,total:session.answered,percent:Math.round(session.correct/session.answered*100),startedAt:session.startedAt,completedAt:new Date().toISOString(),elapsedMs:session.elapsedMs}).catch(error=>notify(String(error.message||error),true));
     $('customPractice').hidden=true;
     $('customBrowse').hidden=true;
     $('customSummary').hidden=false;
     renderSessionResult(session);
-    $('customSummary').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal('customSummary');
   }
   function renderSessionResult(session) {
     const history=session.history || [];
@@ -552,7 +570,8 @@
       else record.errors++;
     }
     const hardest=[...mistakeMap.values()].filter(item=>item.errors>0).sort((a,b)=>b.errors-a.errors||b.attempts-a.attempts||a.item.surface.localeCompare(b.item.surface));
-    $('customSummaryEyebrow').textContent=session.finishReason || t('result');
+    $('customSummaryEyebrow').textContent=session.finishReason || t(session.completed?'result':'sessionReason');
+    $('customSummaryDescription').textContent=session.mode==='learn'?`${t('question')}: ${Math.max(0,session.index-(session.checked?0:1))}/${session.pool.length*6} · ${t('guidedPass')} / ${t('memoryPass')}: ${session.round}/6`:session.mode==='onepass'?`${t('statsAnswered')}: ${session.answered}/${session.pool.length}`:t('summaryDescription');
     $('customSummaryAnswered').textContent=String(session.answered);
     $('customSummaryCorrect').textContent=String(session.correct);
     $('customSummaryAccuracy').textContent=session.answered?`${Math.round(session.correct/session.answered*100)}%`:'—';
@@ -561,6 +580,7 @@
     $('customSummaryReview').hidden=!hardest.length;
   }
   function backToCollection() {
+    window.KTFNavigation?.remember();
     stopSessionClock();
     practice=null;
     $('customBrowse').hidden=false;
@@ -568,7 +588,7 @@
     $('customSummary').hidden=true;
     $('customTop').hidden=false;
     renderList();
-    $('customBrowse').scrollIntoView({block:'start',behavior:'instant'});
+    window.KTFNavigation?.reveal('customScreen',{restore:true});
   }
   function finishPractice() {
     if(practice && !practice.done){completeSession();return;}
@@ -579,7 +599,8 @@
     const previous=practice;
     const pool=onlyMistakes?[...new Map((previous.history||[]).filter(row=>!row.correct).map(row=>[row.item.id,row.item])).values()]:previous.pool;
     if(!pool.length)return;
-    startPractice(onlyMistakes?'onepass':previous.mode,pool);
+    if(onlyMistakes){window.KTFStudyUI.review(pool.map(item=>({item,label:[item.surface,item.romaji,item.meaning].filter(Boolean).join(' · ')})),chosen=>startPractice('onepass',chosen.map(row=>row.item)));return;}
+    startPractice(previous.mode,pool);
   }
   async function deleteSelected() {
     if(deleting || !selected.size)return;
@@ -685,7 +706,7 @@
     $('customPracticeButton').addEventListener('click',()=>startPractice('infinite'));
     $('customLearnButton').addEventListener('click',()=>startPractice('learn'));
     $('customOnePassButton').addEventListener('click',()=>startPractice('onepass'));
-    $('customMode').addEventListener('change',updateActionAvailability);
+    $('customMode').addEventListener('change',()=>{updateActionAvailability();updateSessionSettings();});
     for(const id of ['customTimerMode','customSessionHours','customSessionMinutes','customGuessCount','customRapidEnabled','customRapidSeconds']) $(id).addEventListener(id==='customTimerMode'||id==='customRapidEnabled'?'change':'input',updateSessionSettings);
     $('customPauseSession').addEventListener('click',toggleSessionPause);
     $('customClockToggle').addEventListener('click',()=>{
@@ -712,7 +733,8 @@
     window.addEventListener('ktf:custom-added',event => {addFromManga(event.detail.kind,event.detail.item,event.detail.source).catch(error => notify(String(error.message||error),true));});
     document.addEventListener('keydown',event => {if(isOpen() && event.key === 'Escape' && !practice && !$('customEditorDialog').open) close();});
   }
-  window.KTFCustomCollection = {addFromManga,refresh,open,isSaved};
+  window.KTFCustomCollection = {addFromManga,refresh,open,isSaved,isActive:()=>Boolean(practice&&!practice.done),
+    practiceSource:async source=>{if(!window.KTFNavigation.canLeave())return;open();await refresh();const pool=items.filter(item=>item.source===source&&answerTypes(item,$('customMode').value).length);if(!pool.length){notify(t('noQuestions'),true);return;}selected=new Set(pool.map(item=>item.id));renderList();startPractice('onepass',pool);}};
   attach();
   refresh().catch(() => {});
 })();

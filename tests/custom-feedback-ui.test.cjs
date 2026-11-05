@@ -1,3 +1,4 @@
+const release=require('./release-info.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -34,10 +35,10 @@ test('Release assets are cache-busted together without changing existing manga c
   const html=read('index.html');
   const sw=read('sw.js');
   for (const file of ['styles.css','manga-reader.js','custom-collection.js','cloud-sync.js']) {
-    assert.ok(html.includes(file+'?v=30.0'));
-    assert.ok(sw.includes(file+'?v=30.0'));
+    assert.ok(html.includes(file+'?v='+release.version));
+    assert.ok(sw.includes(file+'?v='+release.version));
   }
-  assert.match(sw,/offline-v30-grammar-foundations/);
-  assert.match(html,/id="appVersion">v30\.0</);
+  assert.match(sw,release.cachePattern);
+  assert.match(html,release.labelPattern);
   assert.match(read('manga-cache.js'),/ktf-manga-reader-cache/);
 });

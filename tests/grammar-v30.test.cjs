@@ -1,3 +1,4 @@
+const release=require('./release-info.cjs');
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -17,11 +18,11 @@ test('v30 includes grammar navigation and all versioned assets without duplicati
   assert.ok(html.indexOf('id="openMangaButton"')>html.indexOf('id="openGrammarButton"'));
   assert.equal(new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1])).size,[...html.matchAll(/\bid="([^"]+)"/g)].length);
   for(const file of ['grammar.js','grammar-data.js','styles.css','custom-collection.js','manga-reader.js']){
-    assert.ok(html.includes(`${file}?v=30.0`));
-    assert.ok(sw.includes(`${file}?v=30.0`));
+    assert.ok(html.includes(`${file}?v=${release.version}`));
+    assert.ok(sw.includes(`${file}?v=${release.version}`));
   }
-  assert.match(html,/id="appVersion">v30\.0/);
-  assert.match(sw,/offline-v30-grammar-foundations/);
+  assert.match(html,release.labelPattern);
+  assert.match(sw,release.cachePattern);
 });
 
 test('13 grammar lessons contain valid examples with distinct IDs and both languages',()=>{

@@ -1,3 +1,4 @@
+const release=require('./release-info.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -43,12 +44,12 @@ test('Version 29 keeps old manga data and uses new PWA assets', () => {
   const sw = read('sw.js');
   const cache = read('manga-cache.js');
   const packageJson = JSON.parse(read('package.json'));
-  assert.equal(packageJson.version,'30.0.0');
-  assert.match(html,/id="appVersion">v30\.0</);
-  assert.match(sw,/kana-training-facility-offline-v30-grammar-foundations/);
+  assert.equal(packageJson.version,release.packageVersion);
+  assert.match(html,release.labelPattern);
+  assert.match(sw,release.cachePattern);
   assert.match(cache,/ktf-manga-reader-cache/);
   for (const filename of ['app.js','styles.css','manga-reader.js','custom-collection.js']) {
-    assert.ok(html.includes(`${filename}?v=30.0`));
-    assert.ok(sw.includes(`${filename}?v=30.0`));
+    assert.ok(html.includes(`${filename}?v=${release.version}`));
+    assert.ok(sw.includes(`${filename}?v=${release.version}`));
   }
 });

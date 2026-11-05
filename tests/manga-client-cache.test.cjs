@@ -14,7 +14,7 @@ test('a repeated uploaded manga image restores its complete local analysis witho
   let currentUser={id:uid};
   let postCalls=0;
   const original={hash:'a'.repeat(64),name:'page.png',imageBlob:new Blob(['small compressed jpeg']),ocrVersion:'vocr',explainVersion:'vexplain',updatedAt:Date.now(),items:[{japanese:'こんにちは',romaji:'konnichiwa',reading:'こんにちは',english:'Hello',words:[],kanji:[],bbox:null,manual:false}],status:'completed'};
-  const cache={OCR_VERSION:'vocr',EXPLAIN_VERSION:'vexplain',fileHash:async()=>original.hash,
+  const cache={savePosition:async()=>{},OCR_VERSION:'vocr',EXPLAIN_VERSION:'vexplain',fileHash:async()=>original.hash,
     read:async(account,hash)=>account===uid&&hash===original.hash?original:null,
     list:async()=>[original],save:async()=>{},remove:async()=>{},clear:async()=>{},
     listChapters:async()=>[{id:'chapter-a',owner:uid,mangaTitle:'Green Manga',chapterTitle:'Capítulo #1',pages:[{hash:original.hash,name:'page.png'}]}],

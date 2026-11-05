@@ -140,6 +140,56 @@
   });
   const removeChapter = (owner, id) => query('chapters', 'readwrite', store => store.delete(chapterKey(owner,id)));
 
+  const savePosition = (owner,id,position) => modifyChapter(owner,id,record=>({...record,position}));
+  async function exportLibrary(owner) {
+    const records=await list(owner);
+    const pages=[];
+    for(const record of records){
+      if(!record.imageBlob)continue;
+      const bytes=new Uint8Array(await record.imageBlob.arrayBuffer());
+      let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
+      const {imageBlob,key,owner:ignored,...data}=record;
+      pages.push({...data,image:{type:imageBlob.type,base64:btoa(binary)}});
+    }
+    const chapters=(await listChapters(owner)).map(({key,owner:ignored,...record})=>record);
+    return {type:'ktf-manga-library',version:1,pages,chapters};
+  }
+  function validateBackup(data) {
+    if(data?.type!=='ktf-manga-library'||data.version!==1||!Array.isArray(data.pages)||!Array.isArray(data.chapters)||data.pages.length>2000||data.chapters.length>2000)throw Error('Invalid manga library backup');
+    const hashes=new Set(),ids=new Set();
+    const pages=data.pages.map(record=>{
+      if(typeof record.hash!=='string'||!record.hash||hashes.has(record.hash)||record.ocrVersion!==OCR_VERSION||!Array.isArray(record.items)||record.items.length>1000||!['image/jpeg','image/png','image/webp'].includes(record.image?.type)||typeof record.image?.base64!=='string'||record.image.base64.length>28000000)throw Error('Invalid manga page');
+      hashes.add(record.hash);
+      for(const item of record.items){
+        if(!item||typeof item.japanese!=='string'||['romaji','reading','english'].some(k=>item[k]!=null&&typeof item[k]!=='string')||['words','kanji'].some(k=>item[k]!=null&&(!Array.isArray(item[k])||item[k].some(row=>!row||typeof row!=='object'||Array.isArray(row)))))throw Error('Invalid manga dialogue');
+      }
+      const binary=atob(record.image.base64),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+      return {hash:record.hash,name:String(record.name||'manga.jpg'),items:record.items,status:record.status,ocrVersion:record.ocrVersion,explainVersion:record.explainVersion,imageBlob:new Blob([bytes],{type:record.image.type}),updatedAt:Date.now()};
+    });
+    const chapters=data.chapters.map(record=>{
+      if(typeof record.id!=='string'||!record.id||ids.has(record.id)||!Array.isArray(record.pages)||record.pages.some(page=>!page||typeof page.hash!=='string'))throw Error('Invalid manga chapter');
+      ids.add(record.id);
+      const position=record.position;
+      const safePosition=position&&typeof position.hash==='string'?{hash:position.hash,text:String(position.text||''),top:Math.max(0,Number(position.top)||0),left:Math.max(0,Number(position.left)||0),dialogTop:Math.max(0,Number(position.dialogTop)||0)}:null;
+      return {id:record.id,mangaTitle:String(record.mangaTitle||''),chapterTitle:String(record.chapterTitle||''),pages:record.pages.filter(page=>hashes.has(page.hash)).map(page=>({hash:page.hash,name:String(page.name||'manga.jpg')})),position:safePosition,createdAt:Date.now(),updatedAt:Date.now()};
+    });
+    return {pages,chapters};
+  }
+  async function importLibrary(owner,data) {
+    // Validate everything before opening a single atomic merge. Existing records win.
+    const prepared=validateBackup(data),db=await open();
+    return new Promise((resolve,reject)=>{
+      const tx=db.transaction(['pages','chapters'],'readwrite');
+      let added=0;
+      tx.oncomplete=()=>resolve(added);tx.onerror=tx.onabort=()=>reject(tx.error||Error('Library import failed'));
+      for(const [name,records,keyFor] of [['pages',prepared.pages,r=>ownerKey(owner,r.hash)],['chapters',prepared.chapters,r=>chapterKey(owner,r.id)]]){
+        const store=tx.objectStore(name);
+        for(const record of records){const key=keyFor(record),request=store.get(key);request.onsuccess=()=>{if(!request.result){store.put({...record,key,owner});added++;}};}
+      }
+    });
+  }
+
   window.KTFMangaCache = { OCR_VERSION, EXPLAIN_VERSION, fileHash, textHash, read, save, list, remove, clear, readText, saveText,
-    listChapters, readChapter, saveChapter, renameChapter, addPageToChapter, removePageFromChapter, reorderChapter, removeChapter };
+    listChapters, readChapter, saveChapter, renameChapter, addPageToChapter, removePageFromChapter, reorderChapter, removeChapter,
+    savePosition,exportLibrary,importLibrary,validateBackup };
 })();

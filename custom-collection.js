@@ -40,7 +40,7 @@
       
       add:'Add a character or word',addButton:'Add custom',closeEditor:'Close editor',kind:'Type',kanji:'Kanji / character',word:'Word / expression',japanese:'Japanese text',reading:'Romaji reading (optional)',kana:'Kana reading (optional)',meaning:'Meaning (optional)',notes:'Notes (optional)',save:'Save to collection',update:'Save changes',cancel:'Cancel edit',source:'Source',manual:'Added manually',manga:'Manga Reader',list:'Your collection',all:'All',onlyKanji:'Characters',onlyWords:'Words',search:'Find a character, reading or meaning…',empty:'No saved items match this filter. Add some here or save them directly from a manga.',
       total:'saved',selectAll:'Select visible',selectNone:'Deselect visible',selected:'selected',study:'Practice selected',mode:'Practice mode',mixed:'Mixed',readingMode:'Romaji reading',meaningMode:'Meaning',edit:'Edit',remove:'Remove',confirm:'Remove this item from your custom collection?',duplicates:'This item is already in your collection.',added:'Added to your custom collection.',saved:'Changes saved.',deleted:'Removed from your custom collection.',invalid:'Enter a Japanese character or word.',
-      sessionLabel:'YOUR SESSION.INI',timerLabel:'Session timer',timerNone:'No limit',timerCustom:'Timer',timerGuesses:'Guess limit',hoursLabel:'Hours',minutesLabel:'Minutes',guessLabel:'Number of guesses',rapidTitle:'Rapid Fire',rapidSubtitle:'A timed challenge for each answer',rapidSecondsLabel:'Seconds per answer',settingsNote:'Your custom session uses the same practice options as the main trainer.',learnButton:'Learn my selection →',learnHelp:'3 guided passes followed by 3 memory-test passes.',infiniteButton:'Infinite practice →',infiniteHelp:'Shuffled questions until you decide to finish.',onePassButton:'One Pass · Daily review →',onePassHelp:'Each selected item appears once, across all tabs. Timer and guess limit do not apply.',guidedLabel:'GUIDED LEARNING',guidedTip:'Study the reading and meaning before continuing.',guidedNext:'Got it, next →',memoryPass:'Memory test',guidedPass:'Guided pass',infiniteTitle:'Infinite practice',learnTitle:'Guided learning',onePassTitle:'One Pass · Daily review',statsAnswered:'Answered',statsCorrect:'Correct',statsAccuracy:'Accuracy',pause:'Pause',resume:'Resume',endSession:'Finish lesson & view results',timeUp:'Time is up!',guessComplete:'Guess limit reached',rapidTimeUp:'Time is up! This counts as a mistake.',rapidTimeLeft:'Time left for this answer',rapidWaiting:'Time stopped. Press Next when ready.',hideClock:'Hide clock',showClock:'Show clock',settingsInvalid:'Check the timer, guess limit or Rapid Fire values.',sessionDuration:'Study time',sessionReason:'Session finished',timedOutCount:'Rapid Fire timeouts',
+      sessionLabel:'YOUR SESSION.INI',timerLabel:'Session timer',timerNone:'No limit',timerCustom:'Timer',timerGuesses:'Guess limit',hoursLabel:'Hours',minutesLabel:'Minutes',guessLabel:'Number of guesses',rapidTitle:'Rapid Fire',rapidSubtitle:'A timed challenge for each answer',rapidSecondsLabel:'Seconds per answer',settingsNote:'Your custom session uses the same practice options as the main trainer.',learnButton:'Learn my selection →',learnHelp:'3 guided passes followed by 3 memory-test passes.',infiniteButton:'Infinite practice →',infiniteHelp:'Shuffled questions until you decide to finish.',onePassButton:'One Pass · Daily review →',onePassHelp:'Each selected item appears once, across all filters.',guidedLabel:'GUIDED LEARNING',guidedTip:'Study the reading and meaning before continuing.',guidedNext:'Got it, next →',memoryPass:'Memory test',guidedPass:'Guided pass',infiniteTitle:'Infinite practice',learnTitle:'Guided learning',onePassTitle:'One Pass · Daily review',statsAnswered:'Answered',statsCorrect:'Correct',statsAccuracy:'Accuracy',pause:'Pause',resume:'Resume',endSession:'Finish lesson & view results',timeUp:'Time is up!',guessComplete:'Guess limit reached',rapidTimeUp:'Time is up! This counts as a mistake.',rapidTimeLeft:'Time left for this answer',rapidWaiting:'Time stopped. Press Next when ready.',hideClock:'Hide clock',showClock:'Show clock',settingsInvalid:'Check the Rapid Fire duration.',sessionDuration:'Study time',sessionReason:'Session finished',timedOutCount:'Rapid Fire timeouts',
       practiceTitle:'Personal practice',question:'Question',askReading:'Write the romaji reading',askMeaning:'Write the meaning',answer:'Your answer',check:'Check',skip:'I do not know',next:'Next question →',finish:'Finish practice',end:'Back to collection',sideSelection:'YOUR SELECTION',sideUnit:'items selected',sideHint:'Choose the characters and words you want to practice.',deleteSelected:'Delete selected',confirmDelete:'Delete {count} selected items? This cannot be undone.',deletedBatch:'Deleted {count} items from your collection.',finishLesson:'← Finish lesson',summaryTitle:"Here’s how you did.",summaryDescription:'Your results from this session.',hardestTitle:'Your trickiest items',hardestHelp:'Ranked by incorrect and skipped answers.',summaryBack:'Back to collection',summaryAgain:'Try again →',summaryReview:'Practice my toughest items →',attemptSingle:'attempt',attemptPlural:'attempts',mistakeSingle:'mistake',mistakePlural:'mistakes',summaryFlawless:'Amazing! No mistakes this time.',summaryEmpty:'No answers yet. Try a round.',correct:'Correct!',wrong:'Not quite',answerWas:'Expected answer:',noQuestions:'Choose at least one item with a meaning or romaji reading.',result:'Session completed',success:'Correct answers',attempts:'Attempts',practiceHint:'Practice results are saved in your account too.',count:'correct',review:'Review',imported:'Saved from manga', select:'Select for practice', remaining:'questions remaining'
     },
     es: {
@@ -78,7 +78,7 @@
   let returnView = 'setup';
   const currentOwner = () => cloud.getStatus().owner || 'guest';
   const itemKey = item => `${item.kind}:${normalize(item.surface)}`;
-  const isOpen = () => !$('customScreen').hidden;
+  const isOpen = () => !$('customScreen').hidden || (!$('setupScreen').hidden && !$('customBrowse').hidden);
   const isSaved = (kind, data) => {
     if (!loaded || owner !== currentOwner()) return false;
     const surface = kind === 'word' ? data?.surface : data?.character;
@@ -173,12 +173,10 @@
     $('customSelected').textContent = `${selected.size} ${t('selected')}`;
     $('customSideSelected').textContent = String(selected.size);
     updateActionAvailability();
-    $('customCharacterCount').textContent = String(items.filter(item => item.kind === 'kanji' && selected.has(item.id)).length);
-    $('customWordCount').textContent = String(items.filter(item => item.kind === 'word' && selected.has(item.id)).length);
-    $('customAllCount').textContent = String(selected.size);
+    updateFilterCounts();
     document.querySelectorAll('[data-custom-filter]').forEach(button => {
       const active = button.dataset.customFilter === filter;
-      button.setAttribute('aria-selected',String(active));
+      button.setAttribute('aria-pressed',String(active));
       button.tabIndex = active ? 0 : -1;
     });
     $('customItems').innerHTML = displayed.length ? displayed.map(item => {
@@ -196,6 +194,11 @@
     for (const id of ['customPracticeButton','customLearnButton','customOnePassButton']) $(id).disabled = !allowed;
     $('customDeleteSelected').disabled = deleting || selected.size === 0;
   }
+  function updateFilterCounts(){
+    $('customCharacterCount').textContent=String(items.filter(item=>item.kind==='kanji').length);
+    $('customWordCount').textContent=String(items.filter(item=>item.kind==='word').length);
+    $('customAllCount').textContent=String(items.length);
+  }
   function answerTypes(item,answerMode) {
     const types=[];
     if (answerMode !== 'meaning' && item.romaji) types.push('romaji');
@@ -204,7 +207,8 @@
   }
   function restoreSessionOptions() {
     $('customMode').value=sessionSettings.answerMode||'mixed';
-    $('customTimerMode').value=['off','custom','guesses'].includes(sessionSettings.timerMode) ? sessionSettings.timerMode : 'off';
+    sessionSettings.timerMode='off';
+    $('customTimerMode').value='off';
     $('customSessionHours').value=String(sessionSettings.hours);
     $('customSessionMinutes').value=String(sessionSettings.minutes);
     $('customGuessCount').value=String(sessionSettings.guesses);
@@ -223,7 +227,7 @@
     return /^\d+$/.test(text) && Number.isSafeInteger(Number(text)) && Number(text)>=minimum && Number(text)<=maximum ? Number(text) : null;
   }
   function readSessionOptions(mode) {
-    const timerMode=mode==='onepass'?'off':$('customTimerMode').value;
+    const timerMode='off';
     let timerSeconds=null,guessLimit=null;
     if (timerMode === 'custom') {
       const hours=validInteger($('customSessionHours').value,0,99);
@@ -302,9 +306,9 @@
     }
     window.KTFNavigation?.remember();
     returnView = !$('mangaScreen').hidden ? 'manga' : 'setup';
-    for (const name of ['setupScreen','quizScreen','summaryScreen','examScreen','mangaScreen','grammarScreen']) if ($(name)) $(name).hidden = true;
-    $('customScreen').hidden = false;
-    $('customTop').hidden = false;
+    $('customScreen').hidden = true;
+    $('customTop').hidden = returnView !== 'manga';
+    $('customBrowse').prepend($('customNotice'));
     $('customPractice').hidden = true;
     $('customSummary').hidden = true;
     $('customBrowse').hidden = false;
@@ -313,7 +317,7 @@
     hideEditor();
     renderList();
     refresh().catch(error => notify(error.message || String(error),true));
-    window.KTFNavigation?.reveal('customScreen',{restore:true});
+    window.KTFNavigation?.openCustom();
   }
   function close(forceSetup = false) {
     window.KTFNavigation?.remember();
@@ -327,7 +331,7 @@
     stopSessionClock();
     practice = null;
     returnView = 'setup';
-    window.KTFNavigation?.reveal(backToManga?'mangaScreen':'setupScreen',{restore:true});
+    window.KTFNavigation?.reveal(backToManga?'mangaScreen':'setupScreen',{restore:true,selection:'kana'});
   }
   const splitAnswers = value => String(value || '').split(/[;,/|、，；]/g).map(normalize).filter(Boolean);
   function accepted(value, expected, kind) {
@@ -414,6 +418,7 @@
     stopSessionClock();
     practice={startedAt:new Date().toISOString(),mode,answerMode,pool,showClock:sessionSettings.showClock!==false,deck:[],round:0,index:0,lastItem:null,current:null,checked:false,guided:false,done:false,paused:false,correct:0,answered:0,history:[],rapidTimeouts:0,elapsedMs:0,rapidElapsedMs:0,lastTick:performance.now(),interval:null,advanceTimeout:null,...options};
     $('customBrowse').hidden=true;
+    $('customScreen').prepend($('customNotice'));
     $('customSummary').hidden=true;
     $('customTop').hidden=true;
     $('customNotice').hidden=true;
@@ -586,9 +591,10 @@
     $('customBrowse').hidden=false;
     $('customPractice').hidden=true;
     $('customSummary').hidden=true;
-    $('customTop').hidden=false;
+    $('customTop').hidden=returnView!=='manga';
+    $('customBrowse').prepend($('customNotice'));
     renderList();
-    window.KTFNavigation?.reveal('customScreen',{restore:true});
+    window.KTFNavigation?.openCustom();
   }
   function finishPractice() {
     if(practice && !practice.done){completeSession();return;}
@@ -641,9 +647,7 @@
     $('customSelected').textContent = `${selected.size} ${t('selected')}`;
     $('customSideSelected').textContent = String(selected.size);
     updateActionAvailability();
-    $('customCharacterCount').textContent = String(items.filter(item => item.kind === 'kanji' && selected.has(item.id)).length);
-    $('customWordCount').textContent = String(items.filter(item => item.kind === 'word' && selected.has(item.id)).length);
-    $('customAllCount').textContent = String(selected.size);
+    updateFilterCounts();
   }
   function attach() {
     restoreSessionOptions();

@@ -6,11 +6,11 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root,name),'utf8');
 
-test('Custom has tabs like the kana selector, a modal, and click or drag multi-selection', () => {
+test('Custom has compact category filters, a modal, and click or drag multi-selection', () => {
   const html = read('index.html');
   const custom = read('custom-collection.js');
   const styles = read('styles.css');
-  for (const filter of ['kanji','word','all']) assert.match(html,new RegExp(`role="tab" data-custom-filter="${filter}"`));
+  for (const filter of ['kanji','word','all']) assert.match(html,new RegExp(`class="custom-filter" data-custom-filter="${filter}"`));
   assert.match(html,/id="customEditorDialog"/);
   assert.match(html,/id="customAddButton"/);
   assert.match(custom,/data-custom-tile=/);

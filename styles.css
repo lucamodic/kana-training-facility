@@ -2117,7 +2117,7 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
 .custom-screen .custom-summary.summary-wrap{padding:52px 0 76px}
 .custom-screen .custom-summary .summary-actions,.exam-results-card .summary-actions{flex-wrap:wrap}
 .custom-screen .custom-summary .summary-actions>button,.exam-results-card .summary-actions>button{flex:1 1 180px}
-.custom-screen .study-switcher,.grammar-screen .study-switcher{margin-bottom:14px}
+.grammar-screen .study-switcher{margin-bottom:14px}
 .custom-screen .custom-browse>.study-switcher,.grammar-browse>.study-switcher{grid-column:1;grid-row:1;margin-bottom:0}
 .custom-screen .custom-content,.grammar-browse>.grammar-main{grid-column:1;grid-row:2}
 .custom-screen .custom-side-panel,.grammar-browse>.grammar-side-panel{grid-column:2;grid-row:2;margin-top:0}
@@ -2142,3 +2142,20 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
 @media(max-width:980px){.custom-screen .custom-side-panel{grid-column:1;grid-row:3;margin-top:17px}}
 @media(max-width:600px){.custom-screen .custom-practice.quiz-wrap{padding-top:5px}.custom-screen .custom-practice .quiz-bottom{padding:23px 17px 26px}.manga-reader-screen.is-reading-wide{padding:10px}.manga-reader-screen.is-reading-wide .manga-workspace{grid-template-columns:minmax(0,1fr)}.manga-reader-tools{gap:6px}.manga-reader-tools button{font-size:11px;padding:8px}.grammar-summary .hardest-item{flex-wrap:wrap}.grammar-summary .hardest-glyph{flex-basis:100%;max-width:none;text-align:left}}
 @media(prefers-reduced-motion:reduce){.manga-image-highlight{transition:none}}
+
+/* Custom is a collection tab inside the existing home layout. */
+#setupScreen.custom-screen{padding:23px 0 0}
+#setupScreen #customBrowse{display:block;min-width:0}
+#setupScreen #customBrowse[hidden],#setupScreen #customSessionOptions[hidden]{display:none!important}
+#setupScreen .custom-content{display:block}
+#setupScreen #customSessionOptions{grid-column:auto;grid-row:auto;order:initial}
+#setupScreen .custom-library{margin-top:0}
+#setupScreen .custom-tabs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;width:auto;margin:0 0 18px;position:static}
+.custom-filter{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:7px 12px;border:1px solid var(--retro-deep);border-radius:4px;background:var(--paper);color:var(--ink);font:700 12px 'Courier New',monospace;box-shadow:2px 2px 0 var(--retro-shadow)}
+.custom-filter[aria-pressed='true']{background:var(--retro-main);box-shadow:inset 0 0 0 1px var(--retro-deep)}
+.custom-filter:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+#studyTabs{flex-wrap:nowrap}
+#studyTabs #openCustomButton{white-space:nowrap}
+@media(max-width:900px){#setupScreen #customSessionOptions{margin-top:17px!important}}
+@media(max-width:720px){#setupScreen.custom-screen{padding-top:17px}}
+@media(max-width:600px){#studyTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%}#studyTabs .tab{min-width:0;padding:10px 4px;gap:3px;font-size:11px}#studyTabs .tab-counter{font-size:9px;padding:2px 3px}#setupScreen .custom-filter{flex:1 1 0;min-width:0;padding:7px 5px;font-size:11px}}

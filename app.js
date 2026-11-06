@@ -1905,8 +1905,9 @@ function render() {
   const selected = state.selected[script];
   SCRIPTS.forEach(s => {
     const tab = $(`tab${s[0].toUpperCase()}${s.slice(1)}`);
-    tab.setAttribute('aria-selected', String(s === script));
-    tab.tabIndex = s === script ? 0 : -1;
+    const active=s===script&&!window.KTFNavigation?.isCustomSelected();
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
   });
   $('characterPanel').setAttribute('aria-labelledby', `tab${script[0].toUpperCase()}${script.slice(1)}`);
   $('selectionHeading').textContent = t('choose',{script:script[0].toUpperCase()+script.slice(1)});

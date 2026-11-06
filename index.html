@@ -13,19 +13,19 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=31.1">
-  <script src="./romaji.js?v=31.1" defer></script>
-  <script src="./study-ui.js?v=31.1" defer></script>
-  <script src="./app.js?v=31.1" defer></script>
-  <script src="./study-clock.js?v=31.1" defer></script>
-  <script src="./config.js?v=31.1" defer></script>
-  <script src="./cloud-sync.js?v=31.1" defer></script>
-  <script src="./learning-progress.js?v=31.1" defer></script>
-  <script src="./manga-cache.js?v=31.1" defer></script>
-  <script src="./manga-reader.js?v=31.1" defer></script>
-  <script src="./custom-collection.js?v=31.1" defer></script>
-  <script src="./grammar-data.js?v=31.1" defer></script>
-  <script src="./grammar.js?v=31.1" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=31.2">
+  <script src="./romaji.js?v=31.2" defer></script>
+  <script src="./study-ui.js?v=31.2" defer></script>
+  <script src="./app.js?v=31.2" defer></script>
+  <script src="./study-clock.js?v=31.2" defer></script>
+  <script src="./config.js?v=31.2" defer></script>
+  <script src="./cloud-sync.js?v=31.2" defer></script>
+  <script src="./learning-progress.js?v=31.2" defer></script>
+  <script src="./manga-cache.js?v=31.2" defer></script>
+  <script src="./manga-reader.js?v=31.2" defer></script>
+  <script src="./custom-collection.js?v=31.2" defer></script>
+  <script src="./grammar-data.js?v=31.2" defer></script>
+  <script src="./grammar.js?v=31.2" defer></script>
 </head>
 <body>
   <header class="top">
@@ -92,13 +92,13 @@
       <div class="layout">
         <div class="study-content">
           <div class="study-switcher">
-        <div class="tabs" role="tablist" aria-label="Writing system">
+        <div class="tabs" id="studyTabs" role="tablist" aria-label="Study collection">
           <button type="button" id="tabHiragana" class="tab" role="tab" aria-selected="true" aria-controls="characterPanel" data-script="hiragana">Hiragana <span class="tab-counter" id="hCount">0</span></button>
           <button type="button" id="tabKatakana" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="katakana">Katakana <span class="tab-counter" id="kCount">0</span></button>
           <button type="button" id="tabKanji" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="kanji">Kanji <span class="tab-counter" id="jCount">0</span></button>
+          <button type="button" id="openCustomButton" class="tab" role="tab" aria-selected="false" aria-controls="customBrowse" tabindex="-1"><span id="customNavLabel">Custom</span> <span class="tab-counter" id="customCount">0</span></button>
         </div>
         <div class="manga-launch-group">
-          <button type="button" id="openCustomButton" class="words-launch custom-launch" aria-controls="customScreen" aria-label="Open Custom Characters &amp; Words"><span class="words-launch-icon" aria-hidden="true">字</span><span id="customNavLabel">Custom</span><span class="words-count" id="customCount">0</span><span aria-hidden="true">↗</span></button>
           <button type="button" id="openGrammarButton" class="words-launch grammar-launch" aria-controls="grammarScreen" aria-label="Open Grammar"><span class="words-launch-icon" aria-hidden="true">文</span><span id="grammarNavLabel">Grammar</span><span aria-hidden="true">↗</span></button>
           <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
         </div>
@@ -113,8 +113,45 @@
           </div>
           <div id="categories"></div>
         </div>
+      <div id="customBrowse" class="custom-browse" role="tabpanel" aria-labelledby="openCustomButton" hidden>
+      <div class="custom-top" id="customTop"><button class="back" type="button" id="customBack">← Back to selection</button><span class="quiz-pill" id="customTotal">0 saved</span></div>
+      <p class="manga-notice" id="customNotice" role="status" aria-live="polite" hidden></p>
+      <header class="custom-heading" hidden><span id="customEyebrow"></span><h2 id="customTitle"></h2><p id="customIntro"></p></header>
+
+        <dialog id="customEditorDialog" class="custom-editor custom-editor-dialog" aria-labelledby="customAddTitle">
+          <div class="custom-dialog-title"><h3 id="customAddTitle">Add a character or word</h3><button type="button" class="mini-button" id="customEditorClose" aria-label="Close editor">✕</button></div>
+          <p class="custom-editor-notice" id="customEditorNotice" role="status" hidden></p>
+          <form id="customForm" class="custom-form" autocomplete="off">
+            <label><span id="customKindLabel">Type</span><select id="customKind"><option value="kanji">Kanji / character</option><option value="word">Word / expression</option></select></label>
+            <label><span id="customJapaneseLabel">Japanese text</span><input id="customJapanese" lang="ja" maxlength="120" required placeholder="例: 好き / 気"></label>
+            <label><span id="customRomajiLabel">Romaji reading (optional)</span><input id="customRomaji" maxlength="200" placeholder="suki"></label>
+            <label><span id="customKanaLabel">Kana reading (optional)</span><input id="customKana" maxlength="200" lang="ja" placeholder="すき"></label>
+            <label><span id="customMeaningLabel">Meaning (optional)</span><input id="customMeaning" maxlength="300" placeholder="like / affection"></label>
+            <label class="custom-notes"><span id="customNotesLabel">Notes (optional)</span><textarea id="customNotes" rows="2" maxlength="300"></textarea></label>
+            <div class="custom-form-actions"><button type="submit" class="button-primary" id="customSave">Save to collection</button><button type="button" class="button-secondary" id="customCancel">Cancel edit</button></div>
+          </form>
+        </dialog>
+        <div class="custom-content">
+
+        <section class="custom-library" role="tabpanel" aria-label="Custom items">
+        <div class="custom-tabs" role="group" aria-label="Custom collection categories">
+          <button type="button" class="custom-filter" data-custom-filter="kanji" aria-pressed="true" aria-controls="customItems"><span id="customTabCharacters">Characters</span> <span class="tab-counter" id="customCharacterCount">0</span></button>
+          <button type="button" class="custom-filter" data-custom-filter="word" aria-pressed="false" aria-controls="customItems"><span id="customTabWords">Words</span> <span class="tab-counter" id="customWordCount">0</span></button>
+          <button type="button" class="custom-filter" data-custom-filter="all" aria-pressed="false" aria-controls="customItems"><span id="customTabAll">All</span> <span class="tab-counter" id="customAllCount">0</span></button>
+        </div>
+<div class="custom-library-head"><div class="custom-library-title"><h3 id="customListTitle">Your collection</h3><span class="quiz-pill" id="customSelected">0 selected</span></div><button type="button" class="button-primary custom-add-button" id="customAddButton" aria-haspopup="dialog" aria-controls="customEditorDialog"><span aria-hidden="true">＋</span><span id="customAddButtonLabel">Add custom</span></button></div>
+          <div class="custom-toolbar">
+            <input type="search" id="customSearch" class="custom-search" placeholder="Search collection…" aria-label="Search custom collection">
+            <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button><button class="mini-button custom-delete-button" type="button" id="customDeleteSelected" aria-label="Delete selected items" title="Delete selected items" disabled><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M5 6l1 14h12l1-14M10 10v7m4-7v7"/></svg><span id="customDeleteLabel" class="custom-delete-label">Delete selected</span></button></div>
+          </div>
+          <div id="customItems" class="custom-items"></div>
+
+        </section>
+        </div>
+
+      </div>
         </div><!-- /study-content -->
-        <aside class="side-panel" aria-label="Session options">
+        <aside class="side-panel" id="originalSessionOptions" aria-label="Session options">
           <div class="side-grid">
             <div><span class="side-label">YOUR SELECTION</span><div class="big-number"><strong id="selectedCount">0</strong><span id="selectedUnit">characters on this tab</span></div><p id="selectedDescription" class="subtle">Pick at least one to begin.</p></div>
             <div class="side-rule"></div>
@@ -168,6 +205,36 @@
             </div>
           </div>
         </aside>
+        <aside id="customSessionOptions" class="side-panel custom-side-panel" hidden aria-label="Custom session options">
+          <div class="side-grid">
+            <div class="custom-side-selection"><span class="side-label" id="customSideSelectionLabel">YOUR SELECTION</span><div class="big-number"><strong id="customSideSelected">0</strong><span id="customSideSelectedUnit">items selected</span></div><p id="customSideSelectionHint" class="subtle">Choose the characters and words you want to practice.</p></div>
+            <div class="side-rule"></div>
+                      <div class="custom-study-actions">
+            <div class="custom-session-settings">
+              <span class="side-label" id="customSessionLabel">YOUR SESSION.INI</span>
+              <div class="custom-session-fields">
+                <label><span id="customModeLabel">Practice mode</span><select id="customMode" class="setting-select"><option value="mixed">Mixed</option><option value="romaji">Romaji reading</option><option value="meaning">Meaning</option></select></label>
+              </div><div id="legacyCustomSessionTimer" class="timer-card" hidden><div class="timer-card-head"><span class="timer-clock" aria-hidden="true">◷</span><span class="timer-card-title" data-focus-label>Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div><label><span id="customTimerLabel">Session timer</span><select id="customTimerMode" class="setting-select"><option value="off">No limit</option><option value="custom">Timer</option><option value="guesses">Guess limit</option></select></label>
+              <div id="customSessionTimerFields" class="custom-duration-fields" hidden>
+                <label><span id="customHoursLabel">Hours</span><input type="number" id="customSessionHours" min="0" max="99" step="1" value="0" inputmode="numeric"></label>
+                <span aria-hidden="true">:</span>
+                <label><span id="customMinutesLabel">Minutes</span><input type="number" id="customSessionMinutes" min="0" max="59" step="1" value="5" inputmode="numeric"></label>
+              </div>
+              <div id="customGuessFields" class="custom-guess-fields" hidden><label><span id="customGuessLabel">Number of guesses</span><input type="number" id="customGuessCount" min="1" max="10000" step="1" value="200" inputmode="numeric"></label></div>
+              </div><div class="custom-rapid-card rapid-fire-card">
+                <label class="custom-rapid-toggle rapid-fire-toggle" for="customRapidEnabled"><span class="rapid-fire-symbol" aria-hidden="true">✦</span><span class="custom-rapid-title rapid-fire-copy"><strong id="customRapidTitle">Rapid Fire</strong><small id="customRapidSubtitle">A timed challenge for each answer</small></span><input id="customRapidEnabled" type="checkbox" role="switch" aria-controls="customRapidFields" aria-expanded="false"></label>
+                <div id="customRapidFields" class="custom-rapid-fields" hidden><label><span id="customRapidSecondsLabel">Seconds per answer</span><input type="number" id="customRapidSeconds" min="1" max="300" value="10" step="1" inputmode="numeric"></label></div>
+              </div>
+              <p class="custom-settings-note" id="customSettingsNote">Study settings apply to your custom collection.</p>
+            </div>
+            <div class="custom-session-choices session-choices">
+              <button type="button" class="button-secondary" id="customLearnButton">Learn my selection →</button><p class="choice-explanation" id="customLearnHelp">3 guided passes and 3 memory-test passes.</p>
+              <button type="button" class="button-primary" id="customPracticeButton">Infinite practice →</button><p class="choice-explanation" id="customInfiniteHelp">Shuffled questions until you decide to finish.</p>
+              <button type="button" class="button-secondary" id="customOnePassButton">One Pass · Daily review →</button><p class="choice-explanation" id="customOnePassHelp">Each selected custom item appears once.</p>
+            </div>
+          </div>
+          </div>
+        </aside>
       </div>
     </section>
 
@@ -193,7 +260,7 @@
 
 
     <section id="mangaScreen" class="manga-reader-screen" aria-label="Manga Reader" hidden>
-      <div class="manga-top-bar"><button class="back" type="button" id="mangaBack">← Back to selection</button><div class="manga-top-actions"><button type="button" class="button-secondary manga-open-custom" id="mangaOpenCustom" aria-controls="customScreen"><span aria-hidden="true">字</span> <span id="mangaCustomLinkLabel">My Custom Collection</span> <span aria-hidden="true">↗</span></button><button class="button-secondary" type="button" id="mangaLoginTop">Sign in with Google first</button><span class="quiz-pill" id="mangaPrivacyEyebrow">PRIVATE READING SPACE</span></div></div>
+      <div class="manga-top-bar"><button class="back" type="button" id="mangaBack">← Back to selection</button><div class="manga-top-actions"><button type="button" class="button-secondary manga-open-custom" id="mangaOpenCustom" aria-controls="customBrowse"><span aria-hidden="true">字</span> <span id="mangaCustomLinkLabel">My Custom Collection</span> <span aria-hidden="true">↗</span></button><button class="button-secondary" type="button" id="mangaLoginTop">Sign in with Google first</button><span class="quiz-pill" id="mangaPrivacyEyebrow">PRIVATE READING SPACE</span></div></div>
       <div id="mangaManageView" class="manga-manage-view">
         <div class="manga-manage-heading"><span class="eyebrow" id="mangaLibraryTitle">MANGA LIBRARY</span><button type="button" id="mangaContinue" class="button-primary" hidden>Continue reading →</button></div>
       <div class="manga-header"><div><span class="eyebrow">✦ JAPANESE READING STUDIO</span><h2 id="mangaTitle">Manga Reader</h2><p class="subtle" id="mangaIntro">Read real Japanese pages at your own pace</p></div><div class="manga-header-deco" lang="ja">読</div></div>
@@ -279,71 +346,6 @@
     </section>
 
     <section id="customScreen" class="custom-screen" aria-label="Custom characters and vocabulary" hidden>
-      <div class="custom-top" id="customTop"><button class="back" type="button" id="customBack">← Back to selection</button><span class="quiz-pill" id="customTotal">0 saved</span></div>
-      <p class="manga-notice" id="customNotice" role="status" aria-live="polite" hidden></p>
-      <header class="custom-heading" hidden><span id="customEyebrow"></span><h2 id="customTitle"></h2><p id="customIntro"></p></header>
-      <div id="customBrowse" class="custom-browse">
-        <dialog id="customEditorDialog" class="custom-editor custom-editor-dialog" aria-labelledby="customAddTitle">
-          <div class="custom-dialog-title"><h3 id="customAddTitle">Add a character or word</h3><button type="button" class="mini-button" id="customEditorClose" aria-label="Close editor">✕</button></div>
-          <p class="custom-editor-notice" id="customEditorNotice" role="status" hidden></p>
-          <form id="customForm" class="custom-form" autocomplete="off">
-            <label><span id="customKindLabel">Type</span><select id="customKind"><option value="kanji">Kanji / character</option><option value="word">Word / expression</option></select></label>
-            <label><span id="customJapaneseLabel">Japanese text</span><input id="customJapanese" lang="ja" maxlength="120" required placeholder="例: 好き / 気"></label>
-            <label><span id="customRomajiLabel">Romaji reading (optional)</span><input id="customRomaji" maxlength="200" placeholder="suki"></label>
-            <label><span id="customKanaLabel">Kana reading (optional)</span><input id="customKana" maxlength="200" lang="ja" placeholder="すき"></label>
-            <label><span id="customMeaningLabel">Meaning (optional)</span><input id="customMeaning" maxlength="300" placeholder="like / affection"></label>
-            <label class="custom-notes"><span id="customNotesLabel">Notes (optional)</span><textarea id="customNotes" rows="2" maxlength="300"></textarea></label>
-            <div class="custom-form-actions"><button type="submit" class="button-primary" id="customSave">Save to collection</button><button type="button" class="button-secondary" id="customCancel">Cancel edit</button></div>
-          </form>
-        </dialog>
-        <div class="custom-content">
-
-        <section class="custom-library" role="tabpanel" aria-label="Custom items">
-        <div class="tabs custom-tabs" role="tablist" aria-label="Custom collection categories">
-          <button type="button" class="tab" role="tab" data-custom-filter="kanji" aria-selected="true" aria-controls="customItems"><span id="customTabCharacters">Characters</span> <span class="tab-counter" id="customCharacterCount">0</span></button>
-          <button type="button" class="tab" role="tab" data-custom-filter="word" aria-selected="false" aria-controls="customItems"><span id="customTabWords">Words</span> <span class="tab-counter" id="customWordCount">0</span></button>
-          <button type="button" class="tab" role="tab" data-custom-filter="all" aria-selected="false" aria-controls="customItems"><span id="customTabAll">All</span> <span class="tab-counter" id="customAllCount">0</span></button>
-        </div>
-<div class="custom-library-head"><div class="custom-library-title"><h3 id="customListTitle">Your collection</h3><span class="quiz-pill" id="customSelected">0 selected</span></div><button type="button" class="button-primary custom-add-button" id="customAddButton" aria-haspopup="dialog" aria-controls="customEditorDialog"><span aria-hidden="true">＋</span><span id="customAddButtonLabel">Add custom</span></button></div>
-          <div class="custom-toolbar">
-            <input type="search" id="customSearch" class="custom-search" placeholder="Search collection…" aria-label="Search custom collection">
-            <div class="custom-select-actions"><button class="mini-button" type="button" id="customSelectAll">Select visible</button><button class="mini-button" type="button" id="customSelectNone">Deselect visible</button><button class="mini-button custom-delete-button" type="button" id="customDeleteSelected" aria-label="Delete selected items" title="Delete selected items" disabled><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M5 6l1 14h12l1-14M10 10v7m4-7v7"/></svg><span id="customDeleteLabel" class="custom-delete-label">Delete selected</span></button></div>
-          </div>
-          <div id="customItems" class="custom-items"></div>
-
-        </section>
-        </div>
-        <aside class="side-panel custom-side-panel" aria-label="Custom session options">
-          <div class="side-grid">
-            <div class="custom-side-selection"><span class="side-label" id="customSideSelectionLabel">YOUR SELECTION</span><div class="big-number"><strong id="customSideSelected">0</strong><span id="customSideSelectedUnit">items selected</span></div><p id="customSideSelectionHint" class="subtle">Choose the characters and words you want to practice.</p></div>
-            <div class="side-rule"></div>
-                      <div class="custom-study-actions">
-            <div class="custom-session-settings">
-              <span class="side-label" id="customSessionLabel">YOUR SESSION.INI</span>
-              <div class="custom-session-fields">
-                <label><span id="customModeLabel">Practice mode</span><select id="customMode" class="setting-select"><option value="mixed">Mixed</option><option value="romaji">Romaji reading</option><option value="meaning">Meaning</option></select></label>
-              </div><div class="timer-card"><div class="timer-card-head"><span class="timer-clock" aria-hidden="true">◷</span><span class="timer-card-title" data-focus-label>Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div><label><span id="customTimerLabel">Session timer</span><select id="customTimerMode" class="setting-select"><option value="off">No limit</option><option value="custom">Timer</option><option value="guesses">Guess limit</option></select></label>
-              <div id="customSessionTimerFields" class="custom-duration-fields" hidden>
-                <label><span id="customHoursLabel">Hours</span><input type="number" id="customSessionHours" min="0" max="99" step="1" value="0" inputmode="numeric"></label>
-                <span aria-hidden="true">:</span>
-                <label><span id="customMinutesLabel">Minutes</span><input type="number" id="customSessionMinutes" min="0" max="59" step="1" value="5" inputmode="numeric"></label>
-              </div>
-              <div id="customGuessFields" class="custom-guess-fields" hidden><label><span id="customGuessLabel">Number of guesses</span><input type="number" id="customGuessCount" min="1" max="10000" step="1" value="200" inputmode="numeric"></label></div>
-              </div><div class="custom-rapid-card rapid-fire-card">
-                <label class="custom-rapid-toggle rapid-fire-toggle" for="customRapidEnabled"><span class="rapid-fire-symbol" aria-hidden="true">✦</span><span class="custom-rapid-title rapid-fire-copy"><strong id="customRapidTitle">Rapid Fire</strong><small id="customRapidSubtitle">A timed challenge for each answer</small></span><input id="customRapidEnabled" type="checkbox" role="switch" aria-controls="customRapidFields" aria-expanded="false"></label>
-                <div id="customRapidFields" class="custom-rapid-fields" hidden><label><span id="customRapidSecondsLabel">Seconds per answer</span><input type="number" id="customRapidSeconds" min="1" max="300" value="10" step="1" inputmode="numeric"></label></div>
-              </div>
-              <p class="custom-settings-note" id="customSettingsNote">Study settings apply to your custom collection.</p>
-            </div>
-            <div class="custom-session-choices session-choices">
-              <button type="button" class="button-secondary" id="customLearnButton">Learn my selection →</button><p class="choice-explanation" id="customLearnHelp">3 guided passes and 3 memory-test passes.</p>
-              <button type="button" class="button-primary" id="customPracticeButton">Infinite practice →</button><p class="choice-explanation" id="customInfiniteHelp">Shuffled questions until you decide to finish.</p>
-              <button type="button" class="button-secondary" id="customOnePassButton">One Pass · Daily review →</button><p class="choice-explanation" id="customOnePassHelp">Each selected custom item appears once.</p>
-            </div>
-          </div>
-          </div>
-        </aside>
-      </div>
       <div id="customPractice" class="custom-practice quiz-wrap" hidden>
         <div class="quiz-top">
           <button type="button" class="back" id="customPracticeExit">← Finish lesson</button>
@@ -401,7 +403,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.1</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.2</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

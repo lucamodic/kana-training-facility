@@ -56,7 +56,7 @@ test('grammar partial scoring, pause, settings persistence and review',async({pa
   await page.reload();await page.locator('#openGrammarButton').click();
   await expect(page.locator('#grammarTimerHours')).toHaveValue('1');await expect(page.locator('#grammarTimerMinutes')).toHaveValue('2');
 });
-test('custom guided passes, rapid fire and guess limits retain the original session behavior',async({page})=>{
+test('custom guided passes and rapid fire work without hidden session limits',async({page})=>{
   await addCustom(page);
   await page.locator('#customMode').selectOption('romaji');
   await page.locator('#customRapidEnabled').check();await page.locator('#customRapidSeconds').fill('1');
@@ -71,10 +71,12 @@ test('custom guided passes, rapid fire and guess limits retain the original sess
   await expect(page.locator('#customPracticeNext')).toBeVisible();
   await expect(page.locator('#customLearningProgress [role=progressbar]')).toHaveAttribute('aria-valuemax','6');
   await page.locator('#customFinishLesson').click();await page.locator('#customSummaryBack').click();
-  await page.locator('#customRapidEnabled').uncheck();await page.locator('#customTimerMode').selectOption('guesses');await page.locator('#customGuessCount').fill('2');
-  await page.locator('#customPracticeButton').click();await expect(page.locator('#customGuessProgress')).toContainText('0 / 2');
+  await page.locator('#customRapidEnabled').uncheck();
+  await expect(page.locator('#legacyCustomSessionTimer')).toBeHidden();
+  await page.locator('#customPracticeButton').click();await expect(page.locator('#customGuessProgress')).toBeHidden();
   for(let i=0;i<2;i++){await page.locator('#customPracticeSkip').click();await page.locator('#customPracticeNext').click();}
-  await expect(page.locator('#customSummaryEyebrow')).toHaveText('Guess limit reached');
+  await expect(page.locator('#customPractice')).toBeVisible();
+  await page.locator('#customFinishLesson').click();await expect(page.locator('#customSummary')).toBeVisible();
   await page.reload();await page.locator('#openCustomButton').click();await expect(page.locator('#customMode')).toHaveValue('romaji');
 });
 test('original word practice uses the shared long-vowel matcher and keeps its panel',async({page})=>{
@@ -123,9 +125,9 @@ test('libraries and practice fit a mobile viewport',async({page})=>{
     await page.screenshot({path:`test-results/${id}-mobile.png`,fullPage:true});
     await page.setViewportSize({width:1440,height:1000});
     const layout=await page.evaluate(id=>{
-      const screen=document.getElementById(id==='openCustomButton'?'customScreen':'grammarScreen');
+      const screen=document.getElementById(id==='openCustomButton'?'setupScreen':'grammarScreen');
       const library=screen.querySelector('.custom-library,.grammar-library').getBoundingClientRect();
-      const sidebar=screen.querySelector('.side-panel').getBoundingClientRect();return {difference:Math.abs(library.top-sidebar.top),beside:sidebar.left>library.right};
+      const sidebar=screen.querySelector(id==='openCustomButton'?'#customSessionOptions':'.side-panel').getBoundingClientRect();return {difference:Math.abs(library.top-sidebar.top),beside:sidebar.left>library.right};
     },id);
     expect(layout.beside).toBe(true);expect(layout.difference).toBeLessThan(3);
     await page.screenshot({path:`test-results/${id}-desktop.png`,fullPage:true});

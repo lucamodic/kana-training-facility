@@ -2,12 +2,37 @@
 (() => {
   const $=id=>document.getElementById(id);
   const positions=new Map();
-  let current='setupScreen', pending=false, restoring=false;
-  const routes={setupScreen:'homeLink',customScreen:'openCustomButton',grammarScreen:'openGrammarButton',mangaScreen:'openMangaButton'};
+  let current='setupScreen', pending=false, restoring=false, library='kana';
+  const routes={setupScreen:'homeLink',grammarScreen:'openGrammarButton',mangaScreen:'openMangaButton'};
   const active=()=>Boolean(window.KTFBridge?.isQuizActive() || window.KTFCustomCollection?.isActive?.() || window.KTFGrammar?.isActive?.() || window.KTFLearning?.isActive?.());
   function remember(){if(!pending)positions.set(current,{x:window.scrollX,y:window.scrollY});pending=true;}
   function track(id){remember();current=id;pending=false;}
-  function reveal(id,{restore=false}={}) {
+  function alignCustomPanel(){
+    if(library!=='custom'||$('setupScreen').hidden)return;
+    const content=document.querySelector('.study-content');
+    $('customSessionOptions').style.marginTop=`${$('customBrowse').offsetTop-content.offsetTop}px`;
+  }
+  function syncTabs(){
+    document.querySelectorAll('#studyTabs [role=tab]').forEach(button=>{
+      const selected=library==='custom'?button.id==='openCustomButton':button.dataset.script===window.KTFBridge?.getSettings().script;
+      button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;
+    });
+  }
+  function selectLibrary(kind,updateHistory=true){
+    library=kind==='custom'?'custom':'kana';
+    const custom=library==='custom';
+    $('setupScreen').classList.toggle('custom-screen',custom);
+    $('setupScreen').dataset.library=library;
+    $('characterPanel').hidden=custom;$('originalSessionOptions').hidden=custom;
+    $('customBrowse').hidden=!custom;$('customSessionOptions').hidden=!custom;
+    syncTabs();alignCustomPanel();pending=false;
+    if(updateHistory&&!$('setupScreen').hidden&&!restoring)history.replaceState({...history.state,ktfView:'setupScreen',library},'');
+  }
+  function openCustom(){
+    if(!$('setupScreen').hidden){selectLibrary('custom');return;}
+    reveal('setupScreen',{restore:true,selection:'custom'});
+  }
+  function reveal(id,{restore=false,selection=library}={}) {
     const el=$(id);if(!el)return;
     if(!pending)remember();
     pending=false;current=id;
@@ -15,10 +40,11 @@
     for(const other of document.querySelectorAll('main > section'))other.hidden=other!==screen;
     // The existing study tabs move with the library; the original home panel is untouched.
     const switcher=document.querySelector('.study-switcher');
-    const host=id==='customScreen'?$('customBrowse'):id==='grammarScreen'?$('grammarBrowse'):document.querySelector('.study-content');
+    const host=id==='grammarScreen'?$('grammarBrowse'):document.querySelector('.study-content');
     if(host && switcher)host.prepend(switcher);
+    if(id==='setupScreen')selectLibrary(selection,false);
     if(switcher){
-      switcher.querySelectorAll('[data-script]').forEach(button=>button.setAttribute('aria-selected',String(id==='setupScreen' && button.dataset.script===window.KTFBridge?.getSettings().script)));
+      syncTabs();
       for(const [route,button] of Object.entries(routes))if($(button))$(button).setAttribute('aria-current',route===id?'page':'false');
     }
     const pos=restore?positions.get(id):null;
@@ -26,14 +52,14 @@
     if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)el.animate?.([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:180,easing:'ease-out'});
     if(!el.contains(document.activeElement)){el.setAttribute('tabindex','-1');el.focus({preventScroll:true});}
     const route=screen.id;
-    if(routes[route] && !restoring && history.state?.ktfView!==route)history.pushState({ktfView:route},'',`#${route.replace('Screen','')}`);
+    if(routes[route] && !restoring && history.state?.ktfView!==route)history.pushState({ktfView:route,library},'',`#${route.replace('Screen','')}`);
   }
   function canLeave(){
     if(!active())return true;
     window.alert(document.documentElement.lang==='es'?'Terminá la práctica actual para ver tus resultados antes de cambiar de sección.':'Finish your current practice and view your results before switching sections.');
     return false;
   }
-  window.KTFNavigation={remember,reveal,track,active,canLeave};
+  window.KTFNavigation={remember,reveal,track,active,canLeave,openCustom,selectLibrary,isCustomSelected:()=>library==='custom'};
   const tr=(en,es)=>document.documentElement.lang==='es'?es:en;
   function review(items,onStart) {
     const dialog=document.createElement('dialog');dialog.className='review-dialog';
@@ -75,10 +101,14 @@
     document.addEventListener('click',event=>{
       const button=event.target.closest('button,a');
       if(!button)return;
-      if(Object.values(routes).includes(button.id) || button.matches('[data-script]')){
+      if(Object.values(routes).includes(button.id) || button.id==='openCustomButton' || button.matches('[data-script]')){
         if(!canLeave()){event.preventDefault();event.stopImmediatePropagation();return;}
         remember();
-        if(button.matches('[data-script]') && $('setupScreen').hidden)reveal('setupScreen',{restore:true});
+        if(button.matches('[data-script]')){
+          if($('setupScreen').hidden)reveal('setupScreen',{restore:true,selection:'kana'});
+          else selectLibrary('kana');
+        }
+        if(button.id==='homeLink')library='kana';
       }
     },true);
     window.addEventListener('popstate',event=>{
@@ -87,8 +117,19 @@
       if(active()){history.pushState({ktfView:$(current)?.closest('main > section')?.id||'setupScreen'},'');canLeave();return;}
       const trigger=$(routes[route]);
       if(!trigger || trigger.hidden)return;
-      restoring=true;trigger.click();restoring=false;
+      restoring=true;library=event.state?.library||'kana';
+      if(route==='setupScreen')reveal('setupScreen',{restore:true});else trigger.click();
+      restoring=false;
     });
+    document.addEventListener('keydown',event=>{
+      const tab=event.target.closest('#studyTabs [role=tab]');
+      if(!tab||!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+      event.preventDefault();event.stopImmediatePropagation();
+      const tabs=[...document.querySelectorAll('#studyTabs [role=tab]')],index=tabs.indexOf(tab);
+      const target=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+      tabs[target].focus({preventScroll:true});tabs[target].click();
+    },true);
+    new ResizeObserver(alignCustomPanel).observe(document.querySelector('.study-switcher'));
     const hint=()=>{
       document.querySelectorAll('[data-romaji-hint]').forEach(el=>el.textContent=window.KTFRomaji.hint());
       document.querySelectorAll('[data-focus-label]').forEach(el=>el.textContent=tr('Focus time','Tiempo de estudio'));

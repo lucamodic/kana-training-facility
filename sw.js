@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kana-training-facility-offline-v31-1-home-timer';
+const CACHE_NAME = 'kana-training-facility-offline-v31-2-custom-tab';
 const SHELL = [
-  './', './index.html', './romaji.js?v=31.1', './study-ui.js?v=31.1', './styles.css?v=31.1', './app.js?v=31.1', './study-clock.js?v=31.1', './config.js?v=31.1', './cloud-sync.js?v=31.1', './learning-progress.js?v=31.1', './manga-cache.js?v=31.1', './manga-reader.js?v=31.1', './custom-collection.js?v=31.1', './grammar-data.js?v=31.1', './grammar.js?v=31.1', './manifest.webmanifest',
+  './', './index.html', './romaji.js?v=31.2', './study-ui.js?v=31.2', './styles.css?v=31.2', './app.js?v=31.2', './study-clock.js?v=31.2', './config.js?v=31.2', './cloud-sync.js?v=31.2', './learning-progress.js?v=31.2', './manga-cache.js?v=31.2', './manga-reader.js?v=31.2', './custom-collection.js?v=31.2', './grammar-data.js?v=31.2', './grammar.js?v=31.2', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

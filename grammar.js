@@ -95,19 +95,19 @@
     window.KTFNavigation?.remember();
     if((window.KTFNavigation?.active() ?? window.KTFBridge?.isQuizActive?.()) || !$('examScreen').hidden) {window.alert(tr('Finish your current practice first.','Terminá la práctica actual antes de entrar.'));return;}
     loadSelection();
-    for(const id of ['setupScreen','quizScreen','summaryScreen','customScreen','mangaScreen','examScreen']) if($(id))$(id).hidden=true;
-    $('grammarScreen').hidden=false;$('grammarBrowse').hidden=false;$('grammarPractice').hidden=true; $('grammarSummary').hidden=true;$('grammarTop').hidden=false;
-    stopTimer();session=null;labelsUpdate();renderBrowse();refreshHistory();window.KTFNavigation?.reveal('grammarScreen',{restore:true});
+
+    $('grammarScreen').hidden=true;$('grammarBrowse').hidden=false;$('grammarPractice').hidden=true; $('grammarSummary').hidden=true;$('grammarTop').hidden=true;
+    stopTimer();session=null;labelsUpdate();renderBrowse();refreshHistory();window.KTFNavigation?.openGrammar();
   }
   function close(){
     window.KTFNavigation?.remember();
     stopTimer();closeLesson();session=null;
     $('grammarScreen').hidden=true;$('grammarBrowse').hidden=false;$('grammarPractice').hidden=true;$('grammarSummary').hidden=true;
-    $('setupScreen').hidden=false;window.KTFNavigation?.reveal('setupScreen',{restore:true});
+    $('setupScreen').hidden=false;window.KTFNavigation?.reveal('setupScreen',{restore:true,selection:'kana'});
   }
   function refreshHistory(){
     const rv=++revision;
-    cloud()?.getAttempts?.().then(rows=>{if(rv!==revision)return;history=rows.filter(a=>a.examId==='grammar-practice');if(!$('grammarScreen').hidden && !session)renderBrowse();}).catch(()=>{});
+    cloud()?.getAttempts?.().then(rows=>{if(rv!==revision)return;history=rows.filter(a=>a.examId==='grammar-practice');if(openPanel() && !session)renderBrowse();}).catch(()=>{});
   }
   function opts(mode){
     const timerMode=mode==='onepass'?'off':$('grammarTimerMode').value;
@@ -288,8 +288,8 @@
     }
     window.KTFNavigation?.reveal('grammarSummary');
   }
-  function backToLessons(){window.KTFNavigation?.remember();stopTimer();session=null;$('grammarBrowse').hidden=false;$('grammarSummary').hidden=true;$('grammarPractice').hidden=true;$('grammarTop').hidden=false;renderBrowse();window.KTFNavigation?.reveal('grammarScreen',{restore:true});}
-  const openPanel=()=>!$('grammarScreen').hidden;
+  function backToLessons(){window.KTFNavigation?.remember();stopTimer();session=null;$('grammarBrowse').hidden=false;$('grammarSummary').hidden=true;$('grammarPractice').hidden=true;$('grammarTop').hidden=true;renderBrowse();window.KTFNavigation?.openGrammar();}
+  const openPanel=()=>!$('grammarScreen').hidden || (!$('setupScreen').hidden&&!$('grammarBrowse').hidden);
   let showClock=true;
   const optionIds=['grammarTimerMode','grammarTimerHours','grammarTimerMinutes','grammarGuessLimit','grammarRapidEnabled','grammarRapidSeconds'];
   function saveOptions(){try{localStorage.setItem('ktf-grammar-settings-v1',JSON.stringify({showClock,...Object.fromEntries(optionIds.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]))}));}catch(_){}}

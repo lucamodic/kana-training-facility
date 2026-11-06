@@ -13,19 +13,19 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=31.4">
-  <script src="./romaji.js?v=31.4" defer></script>
-  <script src="./study-ui.js?v=31.4" defer></script>
-  <script src="./app.js?v=31.4" defer></script>
-  <script src="./study-clock.js?v=31.4" defer></script>
-  <script src="./config.js?v=31.4" defer></script>
-  <script src="./cloud-sync.js?v=31.4" defer></script>
-  <script src="./learning-progress.js?v=31.4" defer></script>
-  <script src="./manga-cache.js?v=31.4" defer></script>
-  <script src="./manga-reader.js?v=31.4" defer></script>
-  <script src="./custom-collection.js?v=31.4" defer></script>
-  <script src="./grammar-data.js?v=31.4" defer></script>
-  <script src="./grammar.js?v=31.4" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=31.5">
+  <script src="./romaji.js?v=31.5" defer></script>
+  <script src="./study-ui.js?v=31.5" defer></script>
+  <script src="./app.js?v=31.5" defer></script>
+  <script src="./study-clock.js?v=31.5" defer></script>
+  <script src="./config.js?v=31.5" defer></script>
+  <script src="./cloud-sync.js?v=31.5" defer></script>
+  <script src="./learning-progress.js?v=31.5" defer></script>
+  <script src="./manga-cache.js?v=31.5" defer></script>
+  <script src="./manga-reader.js?v=31.5" defer></script>
+  <script src="./custom-collection.js?v=31.5" defer></script>
+  <script src="./grammar-data.js?v=31.5" defer></script>
+  <script src="./grammar.js?v=31.5" defer></script>
 </head>
 <body>
   <header class="top">
@@ -97,9 +97,10 @@
           <button type="button" id="tabKatakana" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="katakana">Katakana <span class="tab-counter" id="kCount">0</span></button>
           <button type="button" id="tabKanji" class="tab" role="tab" aria-selected="false" aria-controls="characterPanel" data-script="kanji">Kanji <span class="tab-counter" id="jCount">0</span></button>
           <button type="button" id="openCustomButton" class="tab" role="tab" aria-selected="false" aria-controls="customBrowse" tabindex="-1"><span id="customNavLabel">Custom</span> <span class="tab-counter" id="customCount">0</span></button>
+        <button type="button" id="openGrammarButton" class="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="grammarBrowse" aria-label="Open Grammar"><span id="grammarNavLabel">Grammar</span></button>
         </div>
         <div class="manga-launch-group">
-          <button type="button" id="openGrammarButton" class="tab words-launch grammar-launch" aria-controls="grammarScreen" aria-label="Open Grammar"><span id="grammarNavLabel">Grammar</span></button>
+
           <button type="button" id="openMangaButton" class="tab words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span id="mangaLaunchText">Manga Reader</span></button>
         </div>
           </div>
@@ -150,7 +151,25 @@
         </div>
 
       </div>
-        </div><!-- /study-content -->
+        <div class="grammar-browse" id="grammarBrowse" role="tabpanel" aria-labelledby="openGrammarButton" hidden>
+        <div class="grammar-main">
+
+          <div class="main-panel grammar-library" role="tabpanel" aria-label="Grammar lessons" id="grammarLibrary">
+          <div class="grammar-tabs" role="group" aria-label="Grammar topics" id="grammarTabs">
+            <button type="button" class="custom-filter" data-grammar-tab="basics" aria-pressed="true" aria-controls="grammarLessons">Basics</button>
+            <button type="button" class="custom-filter" data-grammar-tab="particles" aria-pressed="false" aria-controls="grammarLessons">Particles</button>
+            <button type="button" class="custom-filter" data-grammar-tab="verbs" aria-pressed="false" aria-controls="grammarLessons">Verbs</button>
+            <button type="button" class="custom-filter" data-grammar-tab="adjectives" aria-pressed="false" aria-controls="grammarLessons">Adjectives</button>
+            <button type="button" class="custom-filter" data-grammar-tab="all" aria-pressed="false" aria-controls="grammarLessons">All</button>
+          </div>
+            <div class="grammar-library-heading"><div><h2 id="grammarHeading">Learn how Japanese sentences work</h2><p class="subtle" id="grammarSubtitle">Choose lessons and practice both the romaji and the meaning. No handwriting required.</p></div><span id="grammarSelectedBadge" class="quiz-pill">0 selected</span></div>
+            <div class="grammar-toolbar"><input type="search" id="grammarSearch" class="search" aria-label="Find a grammar lesson" placeholder="Search a grammar topic…"><div><button type="button" id="grammarSelectVisible" class="mini-button">Select visible</button><button type="button" id="grammarClearVisible" class="mini-button">Deselect visible</button></div></div>
+            <div id="grammarLessons" class="grammar-lessons"></div>
+          </div>
+        </div>
+
+      </div><dialog id="grammarLessonDialog" class="review-dialog grammar-lesson-dialog" aria-labelledby="grammarLessonTitle"><div class="review-dialog-head"><div><span class="eyebrow" id="grammarLessonEyebrow">✦ SHORT GRAMMAR LESSON</span><h2 id="grammarLessonTitle">Lesson</h2></div><button type="button" class="mini-button" id="grammarLessonClose" aria-label="Close lesson">✕</button></div><p class="grammar-concept" id="grammarLessonConcept"></p><p class="subtle" id="grammarLessonDescription"></p><div id="grammarLessonExamples" class="grammar-lesson-examples"></div><div class="grammar-lesson-actions"><button type="button" class="button-primary" id="grammarLessonAdd">Select for practice</button></div></dialog>
+</div><!-- /study-content -->
         <aside class="side-panel" id="originalSessionOptions" aria-label="Session options">
           <div class="side-grid">
             <div><span class="side-label">YOUR SELECTION</span><div class="big-number"><strong id="selectedCount">0</strong><span id="selectedUnit">characters on this tab</span></div><p id="selectedDescription" class="subtle">Pick at least one to begin.</p></div>
@@ -203,6 +222,21 @@
                 <p class="choice-explanation" id="wordChallengeHelp">Practice words unlocked by your current character selection.</p>
               </div>
             </div>
+          </div>
+        </aside>
+<aside class="side-panel grammar-side-panel" id="grammarSessionOptions" hidden aria-label="Grammar practice options">
+          <div class="side-grid">
+            <div><span class="side-label" id="grammarSelectionTitle">YOUR SELECTION</span><div class="big-number"><strong id="grammarSelectedCount">0</strong><span id="grammarSelectedUnit">lessons selected</span></div><p class="subtle" id="grammarSelectedHint">Choose one or more lessons to begin.</p></div>
+            <div class="side-rule"></div>
+            <div class="grammar-options"><span class="side-label" id="grammarSettingsTitle">YOUR SESSION.INI</span>
+              <div class="timer-card"><div class="timer-card-head"><span class="timer-clock" aria-hidden="true">◷</span><span class="timer-card-title" data-focus-label>Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div><label><span id="grammarTimerLabel">Session timer</span><select class="setting-select" id="grammarTimerMode"><option value="off">No limit</option><option value="timer">Timer</option><option value="guesses">Guess limit</option></select></label>
+              <div class="grammar-timer-inputs" id="grammarTimerInputs" hidden><label><span id="grammarHoursLabel">Hours</span><input id="grammarTimerHours" type="number" value="0" min="0" max="99" inputmode="numeric"></label><label><span id="grammarMinutesLabel">Minutes</span><input id="grammarTimerMinutes" type="number" value="5" min="0" max="59" inputmode="numeric"></label></div>
+              <div class="grammar-timer-inputs" id="grammarGuessInputs" hidden><label><span id="grammarGuessLabel">Questions</span><input id="grammarGuessLimit" type="number" value="200" min="1" max="10000" inputmode="numeric"></label></div>
+              </div><div class="rapid-fire-card"><label class="grammar-rapid-toggle rapid-fire-toggle"><span class="rapid-fire-symbol" aria-hidden="true">✦</span><span class="rapid-fire-copy"><strong id="grammarRapidLabel">Rapid Fire</strong><small data-rapid-help>A timed challenge for each answer</small></span><input id="grammarRapidEnabled" type="checkbox" role="switch"></label>
+              <div class="grammar-timer-inputs" id="grammarRapidInputs" hidden><label><span id="grammarSecondsLabel">Seconds per question</span><input id="grammarRapidSeconds" type="number" value="10" min="1" max="300" inputmode="numeric"></label></div>
+              </div><p class="choice-explanation" id="grammarSessionHint">Romaji and meaning are always answered separately.</p>
+            </div>
+            <div class="grammar-modes session-choices"><button type="button" class="button-secondary" id="grammarLearn" disabled>Learn my selection →</button><p class="choice-explanation" id="grammarLearnHelp">3 guided passes, then 3 memory passes.</p><button type="button" class="button-primary" id="grammarInfinite" disabled>Infinite practice →</button><p class="choice-explanation" id="grammarInfiniteHelp">Continue until you decide to finish.</p><button type="button" class="button-secondary" id="grammarOnePass" disabled>One Pass →</button><p class="choice-explanation" id="grammarOnePassHelp">Each sentence appears once, then your results.</p></div>
           </div>
         </aside>
         <aside id="customSessionOptions" class="side-panel custom-side-panel" hidden aria-label="Custom session options">
@@ -284,7 +318,7 @@
         <div class="manga-reading-topline"><div class="manga-reading-chapter"><span class="eyebrow" id="mangaReadingLabel">NOW READING</span><strong id="mangaReadingChapter"></strong></div><button type="button" id="mangaManageToggle" class="button-secondary">Manage manga & chapters</button></div>
       <div class="manga-reader-tools"><button type="button" class="mini-button" id="mangaPrevious">← Previous</button><span id="mangaPageCounter" aria-live="polite"></span><button type="button" class="mini-button" id="mangaNextPage">Next →</button><button type="button" class="mini-button" id="mangaZoomOut" aria-label="Zoom out" disabled>−</button><output id="mangaZoomValue">100%</output><button type="button" class="mini-button" id="mangaZoomIn" aria-label="Zoom in">＋</button><button type="button" class="mini-button" id="mangaWide" aria-pressed="false">Wide reading</button><button type="button" class="mini-button" id="mangaPracticeChapter">Practice saved words</button></div><div class="manga-page-strip" id="mangaPageStrip" hidden></div>
       <p id="mangaOrderHint" class="manga-privacy-subtle" hidden>Arrastrá las miniaturas o usá las flechas para ordenar las páginas.</p>
-      
+
       <p id="mangaNotice" class="manga-notice" role="status" aria-live="polite" hidden></p>
       <div class="manga-empty" id="mangaEmpty"><span aria-hidden="true">✿</span><p>Drop some manga pages here or choose files to begin.</p></div>
       <div class="manga-workspace" id="mangaWorkspace" hidden>
@@ -296,38 +330,7 @@
 
     <section id="grammarScreen" class="grammar-screen" aria-label="Japanese grammar lessons" hidden>
       <div class="grammar-top" id="grammarTop"><button type="button" class="back" id="grammarBack">← Back to selection</button><span class="quiz-pill" id="grammarCourseCount">12 lessons · 36 sentences</span></div>
-      <div class="grammar-browse" id="grammarBrowse">
-        <div class="grammar-main">
 
-          <div class="main-panel grammar-library" role="tabpanel" aria-label="Grammar lessons" id="grammarLibrary">
-          <div class="grammar-tabs" role="group" aria-label="Grammar topics" id="grammarTabs">
-            <button type="button" class="custom-filter" data-grammar-tab="basics" aria-pressed="true" aria-controls="grammarLessons">Basics</button>
-            <button type="button" class="custom-filter" data-grammar-tab="particles" aria-pressed="false" aria-controls="grammarLessons">Particles</button>
-            <button type="button" class="custom-filter" data-grammar-tab="verbs" aria-pressed="false" aria-controls="grammarLessons">Verbs</button>
-            <button type="button" class="custom-filter" data-grammar-tab="adjectives" aria-pressed="false" aria-controls="grammarLessons">Adjectives</button>
-            <button type="button" class="custom-filter" data-grammar-tab="all" aria-pressed="false" aria-controls="grammarLessons">All</button>
-          </div>
-            <div class="grammar-library-heading"><div><h2 id="grammarHeading">Learn how Japanese sentences work</h2><p class="subtle" id="grammarSubtitle">Choose lessons and practice both the romaji and the meaning. No handwriting required.</p></div><span id="grammarSelectedBadge" class="quiz-pill">0 selected</span></div>
-            <div class="grammar-toolbar"><input type="search" id="grammarSearch" class="search" aria-label="Find a grammar lesson" placeholder="Search a grammar topic…"><div><button type="button" id="grammarSelectVisible" class="mini-button">Select visible</button><button type="button" id="grammarClearVisible" class="mini-button">Deselect visible</button></div></div>
-            <div id="grammarLessons" class="grammar-lessons"></div>
-          </div>
-        </div>
-        <aside class="side-panel grammar-side-panel" aria-label="Grammar practice options">
-          <div class="side-grid">
-            <div><span class="side-label" id="grammarSelectionTitle">YOUR SELECTION</span><div class="big-number"><strong id="grammarSelectedCount">0</strong><span id="grammarSelectedUnit">lessons selected</span></div><p class="subtle" id="grammarSelectedHint">Choose one or more lessons to begin.</p></div>
-            <div class="side-rule"></div>
-            <div class="grammar-options"><span class="side-label" id="grammarSettingsTitle">YOUR SESSION.INI</span>
-              <div class="timer-card"><div class="timer-card-head"><span class="timer-clock" aria-hidden="true">◷</span><span class="timer-card-title" data-focus-label>Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div><label><span id="grammarTimerLabel">Session timer</span><select class="setting-select" id="grammarTimerMode"><option value="off">No limit</option><option value="timer">Timer</option><option value="guesses">Guess limit</option></select></label>
-              <div class="grammar-timer-inputs" id="grammarTimerInputs" hidden><label><span id="grammarHoursLabel">Hours</span><input id="grammarTimerHours" type="number" value="0" min="0" max="99" inputmode="numeric"></label><label><span id="grammarMinutesLabel">Minutes</span><input id="grammarTimerMinutes" type="number" value="5" min="0" max="59" inputmode="numeric"></label></div>
-              <div class="grammar-timer-inputs" id="grammarGuessInputs" hidden><label><span id="grammarGuessLabel">Questions</span><input id="grammarGuessLimit" type="number" value="200" min="1" max="10000" inputmode="numeric"></label></div>
-              </div><div class="rapid-fire-card"><label class="grammar-rapid-toggle rapid-fire-toggle"><span class="rapid-fire-symbol" aria-hidden="true">✦</span><span class="rapid-fire-copy"><strong id="grammarRapidLabel">Rapid Fire</strong><small data-rapid-help>A timed challenge for each answer</small></span><input id="grammarRapidEnabled" type="checkbox" role="switch"></label>
-              <div class="grammar-timer-inputs" id="grammarRapidInputs" hidden><label><span id="grammarSecondsLabel">Seconds per question</span><input id="grammarRapidSeconds" type="number" value="10" min="1" max="300" inputmode="numeric"></label></div>
-              </div><p class="choice-explanation" id="grammarSessionHint">Romaji and meaning are always answered separately.</p>
-            </div>
-            <div class="grammar-modes session-choices"><button type="button" class="button-secondary" id="grammarLearn" disabled>Learn my selection →</button><p class="choice-explanation" id="grammarLearnHelp">3 guided passes, then 3 memory passes.</p><button type="button" class="button-primary" id="grammarInfinite" disabled>Infinite practice →</button><p class="choice-explanation" id="grammarInfiniteHelp">Continue until you decide to finish.</p><button type="button" class="button-secondary" id="grammarOnePass" disabled>One Pass →</button><p class="choice-explanation" id="grammarOnePassHelp">Each sentence appears once, then your results.</p></div>
-          </div>
-        </aside>
-      </div>
       <div class="quiz-wrap grammar-practice" id="grammarPractice" hidden>
         <div class="quiz-top"><button type="button" class="back" id="grammarExit">← Finish lesson</button><div class="quiz-top-right"><span class="quiz-pill" id="grammarSessionType">One Pass</span><span class="quiz-pill" id="grammarQuestionCounter">Question 1</span><span class="quiz-pill" id="grammarClock">00:00</span><button type="button" class="mini-button" id="grammarClockToggle">Hide clock</button><button type="button" class="mini-button" id="grammarPause">Pause</button></div></div>
         <div class="learning-progress" id="grammarLearningProgress" hidden></div><div class="quiz-pill" id="grammarGuessProgress" hidden></div><p id="grammarSkillStats" class="subtle"></p><div class="stats grammar-stats"><div class="stat"><span id="grammarAnsweredLabel">Answered</span><b id="grammarAnswered">0</b></div><div class="stat"><span id="grammarCorrectLabel">Both correct</span><b id="grammarCorrect">0</b></div><div class="stat"><span id="grammarAccuracyLabel">Accuracy</span><b id="grammarAccuracy">—</b></div></div>
@@ -342,7 +345,7 @@
         <p class="choice-explanation" data-romaji-hint></p><p class="quiz-hint" id="grammarQuizHint">Read, understand, then check both answers.</p><button type="button" class="button-secondary end-lesson" id="grammarFinish">Finish lesson &amp; view results</button>
       </div>
       <div class="summary-wrap grammar-summary" id="grammarSummary" hidden><div class="summary-card"><span class="eyebrow" id="grammarSummaryEyebrow">GRAMMAR SESSION COMPLETE</span><div class="summary-intro"><h2 id="grammarSummaryTitle">Here's how you did.</h2><p class="subtle" id="grammarSummarySubtitle">Each sentence needed correct romaji and meaning.</p></div><div class="stats summary-stats"><div class="stat"><span id="grammarSummaryAnsweredLabel">Answered</span><b id="grammarSummaryAnswered">0</b></div><div class="stat"><span id="grammarSummaryCorrectLabel">Both correct</span><b id="grammarSummaryCorrect">0</b></div><div class="stat"><span id="grammarSummaryAccuracyLabel">Accuracy</span><b id="grammarSummaryAccuracy">—</b></div></div><p id="grammarSummaryProgress" class="summary-progress"></p><p id="grammarSummarySkills" class="subtle"></p><h3 class="hardest-heading" id="grammarErrorsTitle">Sentences to review</h3><div id="grammarErrors"></div><div class="summary-actions"><button type="button" id="grammarSummaryBack" class="button-secondary">Back to lessons</button><button type="button" id="grammarReview" class="button-secondary" hidden>Practice my mistakes →</button><button type="button" id="grammarRepeat" class="button-primary">Practice again →</button></div></div></div>
-      <dialog id="grammarLessonDialog" class="review-dialog grammar-lesson-dialog" aria-labelledby="grammarLessonTitle"><div class="review-dialog-head"><div><span class="eyebrow" id="grammarLessonEyebrow">✦ SHORT GRAMMAR LESSON</span><h2 id="grammarLessonTitle">Lesson</h2></div><button type="button" class="mini-button" id="grammarLessonClose" aria-label="Close lesson">✕</button></div><p class="grammar-concept" id="grammarLessonConcept"></p><p class="subtle" id="grammarLessonDescription"></p><div id="grammarLessonExamples" class="grammar-lesson-examples"></div><div class="grammar-lesson-actions"><button type="button" class="button-primary" id="grammarLessonAdd">Select for practice</button></div></dialog>
+
     </section>
 
     <section id="customScreen" class="custom-screen" aria-label="Custom characters and vocabulary" hidden>
@@ -403,7 +406,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.4</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.5</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

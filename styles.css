@@ -2189,3 +2189,12 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
 @media(max-width:600px){.study-switcher .manga-launch-group .words-launch{font-size:11px;padding:10px 6px}}
 
 .study-switcher #grammarNavLabel,.study-switcher #mangaLaunchText{display:inline}
+
+/* Grammar shares the home collection frame and sidebar column. */
+#setupScreen #grammarBrowse{display:block;min-width:0}
+#setupScreen #grammarBrowse[hidden],#grammarSessionOptions[hidden]{display:none!important}
+#setupScreen #grammarSessionOptions{grid-column:auto;grid-row:auto;order:initial}
+#setupScreen .grammar-tabs{flex-wrap:wrap;overflow:visible}
+#studyTabs{flex-wrap:wrap}
+@media(max-width:900px){#setupScreen #grammarSessionOptions{margin-top:17px!important}}
+@media(max-width:600px){#studyTabs{grid-template-columns:repeat(5,minmax(0,1fr))}}

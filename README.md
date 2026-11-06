@@ -1,4 +1,8 @@
-# Kana Training Facility v31.4
+# Kana Training Facility v31.5
+
+Grammar es la quinta pesta?a del home, junto a Kana y Custom: comparte el marco y la columna de opciones sin cambiar la URL ni mover el scroll. Las pr?cticas y resultados regresan a esta pesta?a.
+
+### Cambios de v31.4
 
 Grammar y Manga Reader comparten tipograf?a, bordes y estado activo con las pesta?as de colecci?n. Se elimin? el espacio entre la navegaci?n de Grammar y su panel.
 

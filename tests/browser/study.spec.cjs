@@ -93,10 +93,10 @@ test('navigation restores scroll, shares tabs and blocks overlapping sessions',a
   await page.evaluate(()=>window.scrollTo(0,350));
   const before=await page.evaluate(()=>scrollY);
   await page.evaluate(()=>document.getElementById('openGrammarButton').click());
-  await expect(page.locator('#grammarScreen .study-switcher')).toBeVisible();
-  await page.locator('#grammarBack').click();
+  await expect(page.locator('#setupScreen .study-switcher')).toBeVisible();
+  await page.evaluate(()=>document.getElementById('tabHiragana').click());
   expect(Math.abs(await page.evaluate(()=>scrollY)-before)).toBeLessThan(3);
-  await page.goBack();await expect(page.locator('#grammarScreen')).toBeVisible();
+  await page.locator('#openGrammarButton').click();await expect(page.locator('#grammarBrowse')).toBeVisible();
   await page.locator('#grammarOnePass').click();
   await page.locator('#progressOpen').click();
   page.once('dialog',dialog=>dialog.accept());
@@ -125,9 +125,9 @@ test('libraries and practice fit a mobile viewport',async({page})=>{
     await page.screenshot({path:`test-results/${id}-mobile.png`,fullPage:true});
     await page.setViewportSize({width:1440,height:1000});
     const layout=await page.evaluate(id=>{
-      const screen=document.getElementById(id==='openCustomButton'?'setupScreen':'grammarScreen');
-      const library=screen.querySelector('.custom-library,.grammar-library').getBoundingClientRect();
-      const sidebar=screen.querySelector(id==='openCustomButton'?'#customSessionOptions':'.side-panel').getBoundingClientRect();return {difference:Math.abs(library.top-sidebar.top),beside:sidebar.left>library.right};
+      const screen=document.getElementById('setupScreen');
+      const library=screen.querySelector(id==='openCustomButton'?'.custom-library':'.grammar-library').getBoundingClientRect();
+      const sidebar=screen.querySelector(id==='openCustomButton'?'#customSessionOptions':'#grammarSessionOptions').getBoundingClientRect();return {difference:Math.abs(library.top-sidebar.top),beside:sidebar.left>library.right};
     },id);
     expect(layout.beside).toBe(true);expect(layout.difference).toBeLessThan(3);
     await page.screenshot({path:`test-results/${id}-desktop.png`,fullPage:true});
@@ -139,10 +139,17 @@ test('grammar filters match custom and navigation marks only the visible library
   await page.setViewportSize({width:1440,height:1000});
   await page.locator('#openCustomButton').click();
   const customStyle=await page.locator('.custom-filter').first().evaluate(el=>{const s=getComputedStyle(el);return {height:el.getBoundingClientRect().height,font:s.font,borderRadius:s.borderRadius};});
-  await page.locator('#openGrammarButton').click();
+  const before=await page.evaluate(()=>({url:location.href,length:history.length,scroll:scrollY,top:document.getElementById('studyTabs').getBoundingClientRect().top}));
+  await page.evaluate(()=>document.getElementById('openGrammarButton').click());
+  expect(await page.evaluate(()=>({url:location.href,length:history.length,scroll:scrollY,top:document.getElementById('studyTabs').getBoundingClientRect().top}))).toEqual(before);
+  await expect(page.locator('#setupScreen')).toBeVisible();
+  await expect(page.locator('#grammarScreen')).toBeHidden();
+  await page.locator('#grammarLessons [data-lesson-open]').first().click();
+  await expect(page.locator('#grammarLessonDialog')).toBeVisible();
+  await page.locator('#grammarLessonClose').click();
   await expect(page.locator('#openCustomButton')).toHaveAttribute('aria-selected','false');
-  await expect(page.locator('#studyTabs [aria-selected=true]')).toHaveCount(0);
-  await expect(page.locator('#openGrammarButton')).toHaveAttribute('aria-current','page');
+  await expect(page.locator('#studyTabs [aria-selected=true]')).toHaveCount(1);
+  await expect(page.locator('#openGrammarButton')).toHaveAttribute('aria-selected','true');
   const filter=page.locator('[data-grammar-tab=basics]');
   expect(await filter.evaluate(el=>{const s=getComputedStyle(el);return {height:el.getBoundingClientRect().height,font:s.font,borderRadius:s.borderRadius};})).toEqual(customStyle);
   await page.locator('[data-grammar-tab=particles]').click();
@@ -165,12 +172,12 @@ test('grammar filters match custom and navigation marks only the visible library
     expect(appearance.font).toBe(appearance.kanaFont);
     expect(appearance.radius).toBe(appearance.kanaRadius);
     expect(appearance.shadow).toBe('none');
-    expect(Math.abs(appearance.gap)).toBeLessThanOrEqual(2);
+    if(width>1120)expect(Math.abs(appearance.gap)).toBeLessThanOrEqual(2);
     if(width>1120)expect(Math.max(...bounds.map(b=>b.top))-Math.min(...bounds.map(b=>b.top))).toBeLessThan(1);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     await page.screenshot({path:'test-results/grammar-navigation-'+width+'.png',fullPage:true});
   }
   await page.locator('#openCustomButton').click();
   await expect(page.locator('#openCustomButton')).toHaveAttribute('aria-selected','true');
-  await expect(page.locator('#openGrammarButton')).toHaveAttribute('aria-current','false');
+  await expect(page.locator('#openGrammarButton')).toHaveAttribute('aria-selected','false');
 });

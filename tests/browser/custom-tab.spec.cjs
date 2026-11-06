@@ -19,7 +19,7 @@ test('populated custom collection is a stable fourth home tab with compact filte
   await expect(page.locator('#setupScreen')).toBeVisible();await expect(page.locator('#customScreen')).toBeHidden();
   await expect(page.locator('#legacyCustomSessionTimer')).toBeHidden();
   await expect(page.locator('#customTimerMode')).toHaveValue('off');
-  await expect(page.locator('#studyTabs > [role=tab]')).toHaveCount(4);
+  await expect(page.locator('#studyTabs > [role=tab]')).toHaveCount(5);
   await expect(page.locator('#studyTabs > [role=tab][aria-selected=true]')).toHaveAttribute('id','openCustomButton');
   const after=await page.evaluate(()=>({url:location.href,history:history.length,scroll:scrollY,top:document.getElementById('studyTabs').getBoundingClientRect().top}));
   expect(after).toEqual(before);

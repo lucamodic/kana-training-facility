@@ -3,36 +3,39 @@
   const $=id=>document.getElementById(id);
   const positions=new Map();
   let current='setupScreen', pending=false, restoring=false, library='kana';
-  const routes={setupScreen:'homeLink',grammarScreen:'openGrammarButton',mangaScreen:'openMangaButton'};
+  const routes={setupScreen:'homeLink',mangaScreen:'openMangaButton'};
   const active=()=>Boolean(window.KTFBridge?.isQuizActive() || window.KTFCustomCollection?.isActive?.() || window.KTFGrammar?.isActive?.() || window.KTFLearning?.isActive?.());
   function remember(){if(!pending)positions.set(current,{x:window.scrollX,y:window.scrollY});pending=true;}
   function track(id){remember();current=id;pending=false;}
   function alignCustomPanel(){
-    if(library!=='custom'||$('setupScreen').hidden)return;
+    if(library==='kana'||$('setupScreen').hidden)return;
     const content=document.querySelector('.study-content');
-    $('customSessionOptions').style.marginTop=`${$('customBrowse').offsetTop-content.offsetTop}px`;
+    $(library==='custom'?'customSessionOptions':'grammarSessionOptions').style.marginTop=`${$(library==='custom'?'customBrowse':'grammarBrowse').offsetTop-content.offsetTop}px`;
   }
   function syncTabs(){
     document.querySelectorAll('#studyTabs [role=tab]').forEach(button=>{
-      const selected=!$('setupScreen').hidden && (library==='custom'?button.id==='openCustomButton':button.dataset.script===window.KTFBridge?.getSettings().script);
+      const selected=!$('setupScreen').hidden && (library==='custom'?button.id==='openCustomButton':library==='grammar'?button.id==='openGrammarButton':button.dataset.script===window.KTFBridge?.getSettings().script);
       button.setAttribute('aria-selected',String(selected));button.tabIndex=selected||($('setupScreen').hidden&&button.id==='tabHiragana')?0:-1;
     });
   }
   function selectLibrary(kind,updateHistory=true){
-    library=kind==='custom'?'custom':'kana';
+    library=['custom','grammar'].includes(kind)?kind:'kana';
     const custom=library==='custom';
     $('setupScreen').classList.toggle('custom-screen',custom);
     $('setupScreen').dataset.library=library;
-    $('characterPanel').hidden=custom;$('originalSessionOptions').hidden=custom;
+    $('characterPanel').hidden=library!=='kana';$('originalSessionOptions').hidden=library!=='kana';
+    $('grammarBrowse').hidden=library!=='grammar';$('grammarSessionOptions').hidden=library!=='grammar';
     $('customBrowse').hidden=!custom;$('customSessionOptions').hidden=!custom;
     syncTabs();alignCustomPanel();pending=false;
     for(const [route,button] of Object.entries(routes))if($(button))$(button).setAttribute('aria-current',route==='setupScreen'?'page':'false');
     if(updateHistory&&!$('setupScreen').hidden&&!restoring)history.replaceState({...history.state,ktfView:'setupScreen',library},'');
   }
-  function openCustom(){
-    if(!$('setupScreen').hidden){selectLibrary('custom');return;}
-    reveal('setupScreen',{restore:true,selection:'custom'});
+  function openLibrary(kind){
+    if(!$('setupScreen').hidden){selectLibrary(kind);return;}
+    reveal('setupScreen',{restore:true,selection:kind});
   }
+  const openCustom=()=>openLibrary('custom');
+  const openGrammar=()=>openLibrary('grammar');
   function reveal(id,{restore=false,selection=library}={}) {
     const el=$(id);if(!el)return;
     if(!pending)remember();
@@ -41,7 +44,7 @@
     for(const other of document.querySelectorAll('main > section'))other.hidden=other!==screen;
     // The existing study tabs move with the library; the original home panel is untouched.
     const switcher=document.querySelector('.study-switcher');
-    const host=id==='grammarScreen'?$('grammarBrowse'):document.querySelector('.study-content');
+    const host=document.querySelector('.study-content');
     if(host && switcher)host.prepend(switcher);
     if(id==='setupScreen')selectLibrary(selection,false);
     if(switcher){
@@ -60,7 +63,7 @@
     window.alert(document.documentElement.lang==='es'?'Terminá la práctica actual para ver tus resultados antes de cambiar de sección.':'Finish your current practice and view your results before switching sections.');
     return false;
   }
-  window.KTFNavigation={remember,reveal,track,active,canLeave,openCustom,selectLibrary,isCustomSelected:()=>library==='custom'};
+  window.KTFNavigation={remember,reveal,track,active,canLeave,openCustom,openGrammar,selectLibrary,isCustomSelected:()=>library!=='kana'};
   const tr=(en,es)=>document.documentElement.lang==='es'?es:en;
   function review(items,onStart) {
     const dialog=document.createElement('dialog');dialog.className='review-dialog';
@@ -102,7 +105,7 @@
     document.addEventListener('click',event=>{
       const button=event.target.closest('button,a');
       if(!button)return;
-      if(Object.values(routes).includes(button.id) || button.id==='openCustomButton' || button.matches('[data-script]')){
+      if(Object.values(routes).includes(button.id) || button.id==='openCustomButton' || button.id==='openGrammarButton' || button.matches('[data-script]')){
         if(!canLeave()){event.preventDefault();event.stopImmediatePropagation();return;}
         remember();
         if(button.matches('[data-script]')){

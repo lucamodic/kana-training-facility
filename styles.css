@@ -2198,3 +2198,10 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
 #studyTabs{flex-wrap:wrap}
 @media(max-width:900px){#setupScreen #grammarSessionOptions{margin-top:17px!important}}
 @media(max-width:600px){#studyTabs{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.grammar-custom-picker { margin-top: 14px; font-size: 14px; }
+.grammar-custom-picker summary { cursor: pointer; }
+.grammar-custom-choices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.grammar-custom-editor { width: min(460px, calc(100vw - 32px)); }
+.grammar-custom-editor label { display: grid; gap: 6px; margin-top: 12px; }
+.grammar-custom-editor input, .grammar-custom-editor select { width: 100%; box-sizing: border-box; padding: 10px; }
+.grammar-japanese, .grammar-lesson-examples strong { user-select: text; -webkit-user-select: text; }

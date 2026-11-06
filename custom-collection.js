@@ -99,11 +99,15 @@
   }
   function fold(events) {
     const collection = new Map();
+    const addedAt = new Map();
     const scores = new Map();
     const sorted = events.slice().sort((a,b) => a.time.localeCompare(b.time) || a.id.localeCompare(b.id));
     for (const event of sorted) {
       const p = event.payload || {};
-      if (event.type === 'custom_upsert' && p.item && p.item.id) collection.set(p.item.id, p.item);
+      if (event.type === 'custom_upsert' && p.item && p.item.id) {
+        if (!addedAt.has(p.item.id)) addedAt.set(p.item.id,p.item.createdAt || event.time);
+        collection.set(p.item.id, p.item);
+      }
       if (event.type === 'custom_delete' && p.id) collection.delete(p.id);
       if (event.type === 'custom_review' && p.itemId) {
         const record = scores.get(p.itemId) || {correct:0,total:0};
@@ -114,7 +118,7 @@
     }
     const byKey = new Map();
     for (const item of collection.values()) byKey.set(itemKey(item), item);
-    return {items:[...byKey.values()].sort((a,b) => (b.updatedAt||'').localeCompare(a.updatedAt||'')),scores};
+    return {items:[...byKey.values()].sort((a,b) => addedAt.get(a.id).localeCompare(addedAt.get(b.id))),scores};
   }
   async function refresh() {
     const revision = ++renderRevision;
@@ -737,7 +741,7 @@
     window.addEventListener('ktf:custom-added',event => {addFromManga(event.detail.kind,event.detail.item,event.detail.source).catch(error => notify(String(error.message||error),true));});
     document.addEventListener('keydown',event => {if(isOpen() && event.key === 'Escape' && !practice && !$('customEditorDialog').open) close();});
   }
-  window.KTFCustomCollection = {addFromManga,refresh,open,isSaved,isActive:()=>Boolean(practice&&!practice.done),
+  window.KTFCustomCollection = {addFromManga,addFromGrammar:raw=>save(raw,'Grammar'),refresh,open,isSaved,isActive:()=>Boolean(practice&&!practice.done),
     practiceSource:async source=>{if(!window.KTFNavigation.canLeave())return;open();await refresh();const pool=items.filter(item=>item.source===source&&answerTypes(item,$('customMode').value).length);if(!pool.length){notify(t('noQuestions'),true);return;}selected=new Set(pool.map(item=>item.id));renderList();startPractice('onepass',pool);}};
   attach();
   refresh().catch(() => {});

@@ -80,6 +80,50 @@
     $('grammarSummaryEyebrow').textContent=t('summaryEyebrow');$('grammarSummaryTitle').textContent=t('summary');$('grammarSummarySubtitle').textContent=t('summarySub');$('grammarErrorsTitle').textContent=t('review');$('grammarSummaryAnsweredLabel').textContent=t('answered');$('grammarSummaryCorrectLabel').textContent=t('correct');$('grammarSummaryAccuracyLabel').textContent=t('accuracy');$('grammarSummaryBack').textContent=t('backLessons');$('grammarRepeat').textContent=t('repeat');
     if(!session)renderBrowse();
   }
+  function addCustomPicker(container,example){
+    const details=document.createElement('details');details.className='grammar-custom-picker';
+    const segments=typeof Intl.Segmenter==='function'?[...new Intl.Segmenter('ja',{granularity:'word'}).segment(example.japanese)].filter(part=>part.isWordLike).map(part=>part.segment):[example.japanese];
+    const choices=[...new Set([...segments,...example.japanese.match(/[\u3400-\u9fff]/gu)||[]])];
+    details.innerHTML=`<summary>${html(tr('Save words or kanji to Custom','Guardar palabras o kanjis en Custom'))}</summary><p class="subtle">${html(tr('Choose an item, or select text in the sentence and press “Selected text”.','Elegí un elemento, o seleccioná texto de la oración y tocá «Texto seleccionado».'))}</p><div class="grammar-custom-choices">${choices.map(surface=>`<button type="button" class="mini-button" data-grammar-surface="${html(surface)}" lang="ja">${html(surface)}</button>`).join('')}<button type="button" class="mini-button" data-grammar-selection>${html(tr('Selected text','Texto seleccionado'))}</button></div>`;
+    let selection='';
+    details.addEventListener('pointerdown',()=>{
+      const range=window.getSelection();
+      const scope=container.id==='grammarCustomPicker'?$('grammarJapanese'):container;
+      selection=range && scope.contains(range.anchorNode) && scope.contains(range.focusNode)?range.toString().trim():'';
+    });
+    details.addEventListener('click',event=>{
+      const button=event.target.closest('button');if(!button)return;
+      const surface=button.dataset.grammarSurface||selection;
+      if(!surface){window.alert(tr('Select text in the Japanese sentence first.','Seleccioná primero texto de la oración en japonés.'));return;}
+      openCustomEditor(surface,example);
+    });
+    container.append(details);
+  }
+  function openCustomEditor(surface,example){
+    const kind=/^[\u3400-\u9fff]$/u.test(surface)?'kanji':'word';
+    const bridge=window.KTFBridge;
+    const entry=kind==='kanji'?bridge?.catalog.kanji.find(item=>item.kana===surface):bridge?.words.find(item=>item.kana===surface);
+    const reading=surface===example.japanese?example.reading:(kind==='kanji'?entry?.answer:entry?.readings?.[0])||'';
+    const meaning=surface===example.japanese?example.meanings[lang()][0]:(kind==='kanji'?(lang()==='es'?entry?.meaningEs||entry?.meaning:entry?.meaning):(lang()==='es'?entry?.meaningsEs||entry?.meanings:entry?.meanings)?.[0])||'';
+    const dialog=document.createElement('dialog');dialog.className='review-dialog grammar-custom-editor';
+    dialog.innerHTML=`<form><h2>${html(tr('Save to Custom','Guardar en Custom'))}</h2><label>${html(tr('Japanese text','Texto japonés'))}<input name="surface" value="${html(surface)}" required maxlength="120"></label><label>${html(tr('Type','Tipo'))}<select name="kind"><option value="kanji" ${kind==='kanji'?'selected':''}>Kanji</option><option value="word" ${kind==='word'?'selected':''}>${html(tr('Word / expression','Palabra / expresión'))}</option></select></label><label>${html(tr('Romaji reading','Lectura en romaji'))}<input name="romaji" value="${html(reading)}" maxlength="200"></label><label>${html(tr('Meaning','Significado'))}<input name="meaning" value="${html(meaning)}" maxlength="300"></label><p class="subtle">${html(tr('Check the reading and meaning before saving. Fill in at least one to practice.','Revisá la lectura y el significado antes de guardar. Completá al menos uno para practicar.'))}</p><p role="status"></p><div class="grammar-custom-choices"><button type="submit" class="button-primary">${html(tr('Save to Custom','Guardar en Custom'))}</button><button type="button" class="mini-button" data-close>${html(t('close'))}</button></div></form>`;
+    document.body.append(dialog);
+    const wasPaused=session?.paused;
+    if(session&&!session.done&&!wasPaused)$('grammarPause').click();
+    dialog.addEventListener('close',()=>{dialog.remove();if(session&&!session.done&&!wasPaused&&session.paused)$('grammarPause').click();});
+    dialog.querySelector('[data-close]').onclick=()=>dialog.close();
+    dialog.querySelector('form').onsubmit=async event=>{
+      event.preventDefault();const form=event.currentTarget;const fields=new FormData(form);
+      const status=dialog.querySelector('[role=status]');
+      if(!String(fields.get('romaji')).trim()&&!String(fields.get('meaning')).trim()){status.textContent=tr('Add a reading or meaning.','Agregá una lectura o significado.');return;}
+      const button=form.querySelector('[type=submit]');button.disabled=true;
+      try{
+        const saved=await window.KTFCustomCollection.addFromGrammar({...Object.fromEntries(fields),notes:example.japanese});
+        status.textContent=saved?tr('Saved! You can practice it in Custom.','¡Guardado! Ya podés practicarlo en Custom.'):tr('This item is already in Custom.','Este elemento ya está en Custom.');
+      }catch(_){status.textContent=tr('Could not save. Try again.','No se pudo guardar. Intentá de nuevo.');button.disabled=false;}
+    };
+    dialog.showModal();
+  }
   function openLesson(id){
     const l=byId.get(id);if(!l)return;
     lessonDialogId=id;
@@ -87,6 +131,7 @@
     $('grammarLessonConcept').textContent=local(l.concept);
     $('grammarLessonDescription').textContent=local(l.description);
     $('grammarLessonExamples').innerHTML=l.examples.map(e=>`<article><strong lang="ja">${html(e.japanese)}</strong><details><summary>${html(tr('Show reading and meaning','Mostrar lectura y significado'))}</summary><p>${html(e.reading)}</p><p>${html(e.meanings[lang()][0])}</p><small>${html(local(e.breakdown))}</small></details></article>`).join('');
+    $('grammarLessonExamples').querySelectorAll('article').forEach((article,index)=>addCustomPicker(article,l.examples[index]));
     $('grammarLessonAdd').textContent=selected.has(id)?t('chosen'):t('choose');
     $('grammarLessonDialog').showModal();
   }
@@ -181,6 +226,9 @@
     const ex=session.current;
     $('grammarSessionType').textContent=sessionName();$('grammarQuestionCounter').textContent=roundName();$('grammarLessonTag').textContent=local(byId.get(ex.lessonId).title);
     $('grammarJapanese').textContent=ex.japanese;
+    $('grammarCustomPicker')?.remove();
+    const picker=document.createElement('div');picker.id='grammarCustomPicker';
+    $('grammarJapanese').after(picker);addCustomPicker(picker,ex);
     $('grammarGuided').hidden=!isGuided();$('grammarAnswerArea').hidden=isGuided();
     $('grammarRomaji').value='';$('grammarMeaning').value='';for(const id of ['grammarRomaji','grammarMeaning','grammarCheck','grammarSkip','grammarGuidedNext','grammarNext','grammarAcceptMeaning']) $(id).disabled=false;$('grammarFeedback').hidden=true;$('grammarFollowUp').hidden=true;$('grammarAnswerForm').hidden=false;$('grammarAcceptMeaning').hidden=true;
     if(isGuided()){

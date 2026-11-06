@@ -13,19 +13,21 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=31.5">
-  <script src="./romaji.js?v=31.5" defer></script>
-  <script src="./study-ui.js?v=31.5" defer></script>
-  <script src="./app.js?v=31.5" defer></script>
-  <script src="./study-clock.js?v=31.5" defer></script>
-  <script src="./config.js?v=31.5" defer></script>
-  <script src="./cloud-sync.js?v=31.5" defer></script>
-  <script src="./learning-progress.js?v=31.5" defer></script>
-  <script src="./manga-cache.js?v=31.5" defer></script>
-  <script src="./manga-reader.js?v=31.5" defer></script>
-  <script src="./custom-collection.js?v=31.5" defer></script>
-  <script src="./grammar-data.js?v=31.5" defer></script>
-  <script src="./grammar.js?v=31.5" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=31.6">
+  <script src="./romaji.js?v=31.6" defer></script>
+  <script src="./study-ui.js?v=31.6" defer></script>
+  <script src="./app.js?v=31.6" defer></script>
+  <script src="./study-clock.js?v=31.6" defer></script>
+  <script src="./config.js?v=31.6" defer></script>
+  <script src="./cloud-sync.js?v=31.6" defer></script>
+  <script src="./learning-progress.js?v=31.6" defer></script>
+  <script src="./manga-cache.js?v=31.6" defer></script>
+  <script src="./manga-reader.js?v=31.6" defer></script>
+  <script src="./custom-collection.js?v=31.6" defer></script>
+  <script src="./grammar-data.js?v=31.6" defer></script>
+  <script src="./grammar.js?v=31.6" defer></script>
+  <script src="./review-scheduler.js?v=31.6" defer></script>
+  <script src="./spaced-review.js?v=31.6" defer></script>
 </head>
 <body>
   <header class="top">
@@ -89,6 +91,7 @@
 
   <main class="shell">
     <section id="setupScreen" aria-label="Choose study material">
+      <div id="spacedReviewHome" class="review-home"></div>
       <div class="layout">
         <div class="study-content">
           <div class="study-switcher">
@@ -247,7 +250,7 @@
             <div class="custom-session-settings">
               <span class="side-label" id="customSessionLabel">YOUR SESSION.INI</span>
               <div class="custom-session-fields">
-                <label><span id="customModeLabel">Practice mode</span><select id="customMode" class="setting-select"><option value="mixed">Mixed</option><option value="romaji">Romaji reading</option><option value="meaning">Meaning</option></select></label>
+                <label><span id="customModeLabel">Practice mode</span><select id="customMode" class="setting-select"><option value="mixed">Mixed</option><option value="romaji">Romaji reading</option><option value="meaning">Meaning</option><option value="both">Romaji + meaning</option></select></label><p id="customBothHelp" class="subtle" hidden>Only items with a romaji reading and meaning are included.</p>
               </div><div id="legacyCustomSessionTimer" class="timer-card" hidden><div class="timer-card-head"><span class="timer-clock" aria-hidden="true">◷</span><span class="timer-card-title" data-focus-label>Focus time</span><span class="timer-sparkle" aria-hidden="true">✦</span></div><label><span id="customTimerLabel">Session timer</span><select id="customTimerMode" class="setting-select"><option value="off">No limit</option><option value="custom">Timer</option><option value="guesses">Guess limit</option></select></label>
               <div id="customSessionTimerFields" class="custom-duration-fields" hidden>
                 <label><span id="customHoursLabel">Hours</span><input type="number" id="customSessionHours" min="0" max="99" step="1" value="0" inputmode="numeric"></label>
@@ -366,7 +369,7 @@
           <div class="kana-display"><div class="quiz-symbol custom-practice-symbol" id="customPracticeSymbol" lang="ja">字</div><p class="printed-note" id="customPracticeInfo"></p></div>
           <div id="customGuidedBlock" class="guided-block custom-guided" hidden><span class="guided-caption" id="customGuidedLabel">GUIDED LEARNING</span><strong class="guided-reading" id="customGuidedAnswer"></strong><p class="guided-tip" id="customGuidedTip">Look at the reading and meaning, then continue.</p><button type="button" class="button-primary" id="customGuidedNext">Got it, next →</button></div>
           <div class="quiz-bottom" id="customPracticeAnswerArea">
-            <form id="customPracticeForm" autocomplete="off"><label for="customPracticeAnswer" id="customPracticeAnswerLabel">Your answer</label><input id="customPracticeAnswer" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required><p id="customPracticeFeedback" class="feedback custom-feedback" role="status" hidden></p><div class="quiz-actions custom-practice-actions"><button type="submit" id="customPracticeCheck" class="button-primary">Check ↵</button><button type="button" id="customPracticeSkip" class="button-secondary">I don't know</button></div></form>
+            <form id="customPracticeForm" autocomplete="off"><label for="customPracticeAnswer" id="customPracticeAnswerLabel">Your answer</label><input id="customPracticeAnswer" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required><div id="customPracticeMeaningArea" hidden><label for="customPracticeMeaning" id="customPracticeMeaningLabel">Write the meaning</label><input id="customPracticeMeaning" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div><p id="customPracticeFeedback" class="feedback custom-feedback" role="status" hidden></p><div class="quiz-actions custom-practice-actions"><button type="submit" id="customPracticeCheck" class="button-primary">Check ↵</button><button type="button" id="customPracticeSkip" class="button-secondary">I don't know</button></div></form>
             <button type="button" id="customPracticeNext" class="button-primary" hidden>Next question →</button>
           </div>
         </div>
@@ -406,7 +409,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.5</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.6</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

@@ -4,7 +4,7 @@
   const positions=new Map();
   let current='setupScreen', pending=false, restoring=false, library='kana';
   const routes={setupScreen:'homeLink',mangaScreen:'openMangaButton'};
-  const active=()=>Boolean(window.KTFBridge?.isQuizActive() || window.KTFCustomCollection?.isActive?.() || window.KTFGrammar?.isActive?.() || window.KTFLearning?.isActive?.());
+  const active=()=>Boolean(window.KTFReview?.isActive?.() || window.KTFBridge?.isQuizActive() || window.KTFCustomCollection?.isActive?.() || window.KTFGrammar?.isActive?.() || window.KTFLearning?.isActive?.());
   function remember(){if(!pending)positions.set(current,{x:window.scrollX,y:window.scrollY});pending=true;}
   function track(id){remember();current=id;pending=false;}
   function alignCustomPanel(){

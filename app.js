@@ -1121,6 +1121,10 @@ function detectBrowserLanguage() {
 }
 // Interface translations live alongside the English source strings.
 const ES_STATIC = {
+  'WORD CHALLENGE':'DESAFÍO DE PALABRAS',
+  'Practice words unlocked by your current character selection.':'Practicá las palabras disponibles con los caracteres que seleccionaste.',
+  'Made for curious minds · Works offline':'Para mentes curiosas · Funciona sin conexión',
+  '⌁ kana-training-facility / study-room':'⌁ kana-training-facility / sala-de-estudio',
   'your little Japanese study space':'tu rinconcito para estudiar japonés',
   'In a regular font':'Con una fuente normal', 'Check ↵':'Comprobar ↵', "I don't know":'No sé',
   'Finish lesson & view results':'Terminar y ver resultados',
@@ -1558,7 +1562,7 @@ const localKanjiCategory = {
 };
 const STATIC_SELECTOR = [
   '#brandSubtitle','#offlineText','#themeCaption','#browserReady','.theme-menu-label','.palette-name','#languageCaption',
-  '#wordsLaunchText','#dragHint','#randomTen','#selectedUnit','.side-label','.timer-card-title',
+  '#wordsLaunchText','#wordChallengeHelp','.browser-url','#dragHint','#randomTen','#selectedUnit','.side-label','.timer-card-title',
   '#rapidFireTitle','#rapidFireSubtitle','#rapidFireSecondsLabel','#rapidFireSecondsUnit','#rapidFireHelp','#rapidFireError',
   '#printedLabel','#checkButton','#skipButton','#guidedCaption','#finishLessonButton',
   '#timerSetting option','.time-caption','#customTimerError','#guessLimitError','#countdownHelp','#learnButton','#learnHelp','#startButton','#practiceHelp','#onePassButton','#onePassHelp',
@@ -2241,6 +2245,7 @@ function reveal(skipped = false) {
   if (correct) stats.correct++; else stats.errors++;
   quiz.perItem.set(item.id,stats);
   window.KTFStudyClock?.onAnswer({item, kind:quiz.kind, correct, skipped, timedOut:quiz.rapidExpired});
+  window.KTFReview?.recordMain(item,quiz.kind==='words'&&quiz.wordAnswerMode!=='reading'?'meaning':'romaji',correct);
   quiz.phase = 'result';
   updateRapidFireDisplay(quiz);
   $('answerInput').disabled = true;
@@ -2689,6 +2694,8 @@ window.KTFBridge = {
   words,
   renderKanjiBreakdown,
   eligibleWords,
+  wordMeanings,
+  itemMeaning,
   getSettings: () => structuredClone(payload()),
   getLanguage: () => state.language,
   isQuizActive: () => Boolean(state.quiz),

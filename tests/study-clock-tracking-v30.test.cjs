@@ -27,7 +27,7 @@ test('Manga Reader reports unique pages, successful analysis, exercises and new 
   assert.match(manga,/KTFStudyClock\?\.onMangaSaved\(/);
   assert.match(manga,/KTFStudyClock\?\.onAnswer\(\{source:'manga'/);
   assert.match(clock,/clock\.stats\.mangaPageIds\.includes\(key\)/);
-  assert.match(clock,/sectionNames = \['kana','words','custom','grammar','manga'\]/);
+  assert.match(clock,/sectionNames = \['kana','words','custom','grammar','manga','review'\]/);
 });
 
 test('My Study Time has per-source session details and does not tally while paused',()=>{

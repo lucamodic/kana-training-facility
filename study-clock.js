@@ -6,6 +6,7 @@
   const MAX_MS = (99 * 60 + 59) * 60000;
   const dictionary = {
     en: {
+      activityReview: 'Personalized practice',
       title: 'MY STUDY TIME', subtitle: 'Your own little study session',
       description: 'Set your own hours and minutes. The clock follows you across lessons.',
       hours: 'Hours', minutes: 'Minutes', setup: 'SET YOUR TIME', remaining: 'TIME LEFT', paused: 'PAUSED',
@@ -23,6 +24,7 @@
       announcement: 'Study time remaining', minimize: 'Minimize study clock', expand: 'Expand study clock', dock: 'Keep clock in the lesson', float: 'Float study clock', drag: 'Drag to move the clock. Use arrow keys to adjust its position.'
     },
     es: {
+      activityReview: 'Práctica personalizada',
       title: 'MI TIEMPO DE ESTUDIO', subtitle: 'Tu pequeña sesión de estudio',
       description: 'Elegí las horas y minutos que quieras. El reloj sigue activo entre lecciones.',
       hours: 'Horas', minutes: 'Minutos', setup: 'ELEGÍ TU TIEMPO', remaining: 'TIEMPO RESTANTE', paused: 'EN PAUSA',
@@ -34,7 +36,7 @@
       time: 'Tiempo estudiado', answers: 'Respuestas', accurate: 'Precisión', words: 'Palabras respondidas',
       kana: 'Caracteres respondidos', guided: 'Tarjetas guiadas vistas', lessons: 'Lecciones terminadas',
       unique: 'Elementos diferentes', mistakes: 'Para seguir repasando', noMistakes: 'No tuviste errores en esta sesión.',
-      activity: 'Tus actividades', activityTime: 'Tiempo activo', activityAccuracy: 'Precisión', activityAnswers: 'respuestas', activityGuided: 'tarjetas guiadas', activityLessons: 'sesiones', activityRead: 'páginas leídas', activityExplanations: 'explicaciones abiertas', activityAnalyzed: 'análisis completados', activitySaved: 'elementos guardados', activityDifficult: 'Para repasar', activityReading: 'lecturas correctas', activityMeaning: 'significados correctos', activityManga: 'Manga Reader', activityCustom: 'Custom', activityGrammar: 'Gramática', activityKana: 'Kana', activityWords: 'Word Challenge',
+      activity: 'Tus actividades', activityTime: 'Tiempo activo', activityAccuracy: 'Precisión', activityAnswers: 'respuestas', activityGuided: 'tarjetas guiadas', activityLessons: 'sesiones', activityRead: 'páginas leídas', activityExplanations: 'explicaciones abiertas', activityAnalyzed: 'análisis completados', activitySaved: 'elementos guardados', activityDifficult: 'Para repasar', activityReading: 'lecturas correctas', activityMeaning: 'significados correctos', activityManga: 'Lector de manga', activityCustom: 'Mi colección', activityGrammar: 'Gramática', activityKana: 'Kana', activityWords: 'Desafío de palabras',
       close: 'Listo →',
       confirm: '¿Querés terminar antes esta sesión y ver tu progreso?',
       announcement: 'Tiempo restante de estudio', minimize: 'Minimizar reloj de estudio', expand: 'Expandir reloj de estudio', dock: 'Dejar el reloj dentro de la lección', float: 'Hacer flotar el reloj', drag: 'Arrastrá para mover el reloj. Usá las flechas para ajustar su posición.'
@@ -42,7 +44,7 @@
   };
   const lang = () => document.documentElement.lang === 'es' ? 'es' : 'en';
   const t = key => dictionary[lang()][key];
-  const sectionNames = ['kana','words','custom','grammar','manga'];
+  const sectionNames = ['kana','words','custom','grammar','manga','review'];
   const defaultSection = () => ({answers:0,correct:0,guided:0,started:0,finished:0,activeMs:0,pages:0,analyzed:0,saved:0,readingCorrect:0,meaningCorrect:0});
   const defaultStats = () => ({ answers: 0, correct: 0, words: 0, characters: 0,
     guided: 0, started: 0, finished: 0, byScript: {hiragana:0,katakana:0,kanji:0},
@@ -213,6 +215,7 @@
   const track = () => clock.status === 'running' && remaining() > 0;
   const visible = id => {const node=$(id);return Boolean(node&&!node.hidden);};
   function currentSection() {
+    if(visible('spacedReviewScreen'))return 'review';
     if(visible('grammarScreen'))return 'grammar';
     if(visible('customScreen'))return 'custom';
     if(visible('mangaScreen'))return 'manga';
@@ -339,7 +342,7 @@
       const weak=errors.filter(([key])=>key.startsWith(`${name}:`)).map(([,value])=>`${value.kana} (${value.count})`).slice(0,3);
       if(weak.length)values.push(`${t('activityDifficult')}: ${weak.join(', ')}`);
       if(!values.length)return '';
-      const title=t({kana:'activityKana',words:'activityWords',custom:'activityCustom',grammar:'activityGrammar',manga:'activityManga'}[name]);
+      const title=t({kana:'activityKana',words:'activityWords',custom:'activityCustom',grammar:'activityGrammar',manga:'activityManga',review:'activityReview'}[name]);
       return `<div class="study-clock-activity-row"><strong>${safeText(title)}</strong><span>${safeText(values.join(' · '))}</span></div>`;
     }).filter(Boolean).join('');
     $('studyClockSummary').innerHTML =

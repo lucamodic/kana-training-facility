@@ -1,4 +1,20 @@
 
+    .review-home { margin: 0 0 24px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+    .review-home h2 { margin-bottom: 8px; }
+    .review-home-actions { display:flex; flex-wrap:wrap; align-items:end; gap:12px; margin:16px 0; }
+    .review-home-actions label { display:grid; gap:6px; }
+    .review-home-actions input { width:110px; padding:10px; background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:8px; }
+    .review-home summary { cursor:pointer; color:var(--muted); }
+    #spacedReviewNotice:empty { display:none; }
+    .review-screen { max-width:760px; margin:24px auto; }
+    .review-screen .quiz-card { padding:24px; background:var(--paper); border:1px solid var(--line); border-radius:14px; }
+    .review-prompt { font-size:clamp(28px,6vw,58px); overflow-wrap:anywhere; line-height:1.5; text-align:center; }
+    .review-screen label, #customPracticeMeaningLabel { display:block; margin:12px 0 8px; }
+    .review-screen .answer-input { width:100%; min-width:0; }
+    #spacedReviewFeedback .is-correct, #customPracticeFeedback .is-correct { color:var(--green); }
+    #spacedReviewFeedback .is-wrong, #customPracticeFeedback .is-wrong { color:var(--accent); }
+    #spacedReviewExit { margin-top:20px; }
+    @media(max-width:600px) { .review-home-actions { align-items:stretch; flex-direction:column; } .review-home-actions button { width:100%; } .review-screen .quiz-card { padding:16px; } }
     :root {
       --bg: #f7f6f0;
       --paper: #fffefa;

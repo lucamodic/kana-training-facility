@@ -1,4 +1,12 @@
-# Kana Training Facility v31.5
+# Kana Training Facility v31.6
+
+### Cambios de v31.6
+
+- Repaso espaciado por elemento y habilidad: los aciertos vencen a 1, 3, 7, 14, 30 y 60 días; un error vuelve a los 10 minutos. Repetir aciertos antes del vencimiento no aumenta el intervalo. Se registran respuestas nuevas de Kana, palabras, Custom, Grammar y exámenes; las pasadas guiadas no cuentan.
+- En el inicio, “Preparame una práctica” permite elegir entre 1 y 100 preguntas. Prioriza vencimientos y errores, e incorpora una porción de material nuevo seleccionado y de la colección Custom. “Repasar pendientes” incluye únicamente repasos vencidos. Puede ofrecer menos preguntas cuando no hay suficiente material elegible.
+- Los repasos se sincronizan mediante eventos `custom_review` con `studyReview: true` e identificadores separados de los elementos Custom. No requiere migración SQL. Las sesiones automáticas terminadas aparecen en Mi progreso. El calendario empieza con las respuestas realizadas desde esta versión; no reconstruye fechas históricas de dominio.
+- Custom incorpora “Romaji + significado”: dos campos y corrección separada, con acierto global solo cuando ambos son correctos. Incluye únicamente elementos que tienen ambas respuestas, también en aprendizaje guiado y una pasada. Se conserva la preferencia y el detalle de ambas respuestas en el historial.
+- Recursos y caché PWA actualizados a 31.6.
 
 Grammar es la quinta pesta?a del home, junto a Kana y Custom: comparte el marco y la columna de opciones sin cambiar la URL ni mover el scroll. Las pr?cticas y resultados regresan a esta pesta?a.
 

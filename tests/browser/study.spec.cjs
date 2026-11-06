@@ -134,3 +134,31 @@ test('libraries and practice fit a mobile viewport',async({page})=>{
     await page.setViewportSize({width:390,height:844});
   }
 });
+
+test('grammar filters match custom and navigation marks only the visible library',async({page})=>{
+  await page.setViewportSize({width:1440,height:1000});
+  await page.locator('#openCustomButton').click();
+  const customStyle=await page.locator('.custom-filter').first().evaluate(el=>{const s=getComputedStyle(el);return {height:el.getBoundingClientRect().height,font:s.font,borderRadius:s.borderRadius};});
+  await page.locator('#openGrammarButton').click();
+  await expect(page.locator('#openCustomButton')).toHaveAttribute('aria-selected','false');
+  await expect(page.locator('#studyTabs [aria-selected=true]')).toHaveCount(0);
+  await expect(page.locator('#openGrammarButton')).toHaveAttribute('aria-current','page');
+  const filter=page.locator('[data-grammar-tab=basics]');
+  expect(await filter.evaluate(el=>{const s=getComputedStyle(el);return {height:el.getBoundingClientRect().height,font:s.font,borderRadius:s.borderRadius};})).toEqual(customStyle);
+  await page.locator('[data-grammar-tab=particles]').click();
+  await expect(page.locator('[data-grammar-tab=particles]')).toHaveAttribute('aria-pressed','true');
+  await expect(filter).toHaveAttribute('aria-pressed','false');
+  // Include the permission-gated Manga launcher in this layout fixture.
+  await page.evaluate(()=>{const button=document.getElementById('openMangaButton');button.hidden=false;button.removeAttribute('aria-hidden');});
+  for(const width of [1440,1280,390]){
+    await page.setViewportSize({width,height:1000});
+    const bounds=await page.locator('.study-switcher button:visible').evaluateAll(buttons=>buttons.map(button=>{const r=button.getBoundingClientRect();return {top:r.top,height:r.height};}));
+    expect(new Set(bounds.map(b=>b.height)).size).toBe(1);
+    if(width>1120)expect(Math.max(...bounds.map(b=>b.top))-Math.min(...bounds.map(b=>b.top))).toBeLessThan(1);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    await page.screenshot({path:'test-results/grammar-navigation-'+width+'.png',fullPage:true});
+  }
+  await page.locator('#openCustomButton').click();
+  await expect(page.locator('#openCustomButton')).toHaveAttribute('aria-selected','true');
+  await expect(page.locator('#openGrammarButton')).toHaveAttribute('aria-current','false');
+});

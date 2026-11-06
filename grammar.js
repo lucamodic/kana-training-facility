@@ -59,7 +59,7 @@
     $('grammarSelectedCount').textContent=String(count);
     for(const id of ['grammarLearn','grammarInfinite','grammarOnePass']) $(id).disabled=!count;
     $('grammarCourseCount').textContent=`${lessons.length} ${t('lessonCount')} · ${lessons.reduce((n,l)=>n+l.examples.length,0)} ${t('sentenceCount')}`;
-    $('grammarTabs').querySelectorAll('[data-grammar-tab]').forEach(el=>el.setAttribute('aria-selected',String(el.dataset.grammarTab===currentGroup)));
+    $('grammarTabs').querySelectorAll('[data-grammar-tab]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.grammarTab===currentGroup)));
   }
   function labelsUpdate(){
     $('grammarNavLabel').textContent=t('nav');

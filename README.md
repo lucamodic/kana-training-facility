@@ -1,4 +1,8 @@
-# Kana Training Facility v31.2
+# Kana Training Facility v31.3
+
+Grammar usa filtros compactos como Custom. La navegaci?n superior comparte altura y alineaci?n, y el estado activo corresponde a la secci?n visible.
+
+### Cambios de v31.2
 
 Custom es la cuarta pestaña del selector del home, al lado de Hiragana, Katakana y Kanji. Cambia el contenido y las opciones en el mismo layout, sin navegación ni scroll programáticos. Characters/Words/All son filtros compactos con el total de elementos guardados; la selección se muestra aparte. Se verificó con una colección de 36 elementos en escritorio y móvil.
 

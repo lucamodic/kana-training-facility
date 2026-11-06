@@ -1905,7 +1905,7 @@ function render() {
   const selected = state.selected[script];
   SCRIPTS.forEach(s => {
     const tab = $(`tab${s[0].toUpperCase()}${s.slice(1)}`);
-    const active=s===script&&!window.KTFNavigation?.isCustomSelected();
+    const active=s===script&&!$('setupScreen').hidden&&!window.KTFNavigation?.isCustomSelected();
     tab.setAttribute('aria-selected', String(active));
     tab.tabIndex = active ? 0 : -1;
   });

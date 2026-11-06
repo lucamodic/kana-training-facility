@@ -14,8 +14,8 @@
   }
   function syncTabs(){
     document.querySelectorAll('#studyTabs [role=tab]').forEach(button=>{
-      const selected=library==='custom'?button.id==='openCustomButton':button.dataset.script===window.KTFBridge?.getSettings().script;
-      button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;
+      const selected=!$('setupScreen').hidden && (library==='custom'?button.id==='openCustomButton':button.dataset.script===window.KTFBridge?.getSettings().script);
+      button.setAttribute('aria-selected',String(selected));button.tabIndex=selected||($('setupScreen').hidden&&button.id==='tabHiragana')?0:-1;
     });
   }
   function selectLibrary(kind,updateHistory=true){
@@ -26,6 +26,7 @@
     $('characterPanel').hidden=custom;$('originalSessionOptions').hidden=custom;
     $('customBrowse').hidden=!custom;$('customSessionOptions').hidden=!custom;
     syncTabs();alignCustomPanel();pending=false;
+    for(const [route,button] of Object.entries(routes))if($(button))$(button).setAttribute('aria-current',route==='setupScreen'?'page':'false');
     if(updateHistory&&!$('setupScreen').hidden&&!restoring)history.replaceState({...history.state,ktfView:'setupScreen',library},'');
   }
   function openCustom(){

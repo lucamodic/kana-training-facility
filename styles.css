@@ -2159,3 +2159,10 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
 @media(max-width:900px){#setupScreen #customSessionOptions{margin-top:17px!important}}
 @media(max-width:720px){#setupScreen.custom-screen{padding-top:17px}}
 @media(max-width:600px){#studyTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%}#studyTabs .tab{min-width:0;padding:10px 4px;gap:3px;font-size:11px}#studyTabs .tab-counter{font-size:9px;padding:2px 3px}#setupScreen .custom-filter{flex:1 1 0;min-width:0;padding:7px 5px;font-size:11px}}
+
+/* Keep library filters compact and navigation buttons on a shared baseline. */
+.grammar-screen .grammar-tabs{align-items:center;gap:6px;margin:0 0 18px}
+.study-switcher #studyTabs{margin:0}
+.study-switcher #studyTabs .tab,.study-switcher .manga-launch-group .words-launch{box-sizing:border-box;height:49px;min-height:49px;margin:0}
+.study-switcher .manga-launch-group .words-launch[aria-current='page']{background:var(--paper);box-shadow:inset 0 0 0 1px var(--accent)}
+@media(max-width:600px){.study-switcher #studyTabs .tab,.study-switcher .manga-launch-group .words-launch{height:45px;min-height:45px}}

@@ -13,19 +13,19 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=31.2">
-  <script src="./romaji.js?v=31.2" defer></script>
-  <script src="./study-ui.js?v=31.2" defer></script>
-  <script src="./app.js?v=31.2" defer></script>
-  <script src="./study-clock.js?v=31.2" defer></script>
-  <script src="./config.js?v=31.2" defer></script>
-  <script src="./cloud-sync.js?v=31.2" defer></script>
-  <script src="./learning-progress.js?v=31.2" defer></script>
-  <script src="./manga-cache.js?v=31.2" defer></script>
-  <script src="./manga-reader.js?v=31.2" defer></script>
-  <script src="./custom-collection.js?v=31.2" defer></script>
-  <script src="./grammar-data.js?v=31.2" defer></script>
-  <script src="./grammar.js?v=31.2" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=31.3">
+  <script src="./romaji.js?v=31.3" defer></script>
+  <script src="./study-ui.js?v=31.3" defer></script>
+  <script src="./app.js?v=31.3" defer></script>
+  <script src="./study-clock.js?v=31.3" defer></script>
+  <script src="./config.js?v=31.3" defer></script>
+  <script src="./cloud-sync.js?v=31.3" defer></script>
+  <script src="./learning-progress.js?v=31.3" defer></script>
+  <script src="./manga-cache.js?v=31.3" defer></script>
+  <script src="./manga-reader.js?v=31.3" defer></script>
+  <script src="./custom-collection.js?v=31.3" defer></script>
+  <script src="./grammar-data.js?v=31.3" defer></script>
+  <script src="./grammar.js?v=31.3" defer></script>
 </head>
 <body>
   <header class="top">
@@ -300,12 +300,12 @@
         <div class="grammar-main">
 
           <div class="main-panel grammar-library" role="tabpanel" aria-label="Grammar lessons" id="grammarLibrary">
-          <div class="tabs grammar-tabs" role="tablist" aria-label="Grammar topics" id="grammarTabs">
-            <button type="button" class="tab" role="tab" data-grammar-tab="basics" aria-selected="true" aria-controls="grammarLessons">Basics</button>
-            <button type="button" class="tab" role="tab" data-grammar-tab="particles" aria-selected="false" aria-controls="grammarLessons">Particles</button>
-            <button type="button" class="tab" role="tab" data-grammar-tab="verbs" aria-selected="false" aria-controls="grammarLessons">Verbs</button>
-            <button type="button" class="tab" role="tab" data-grammar-tab="adjectives" aria-selected="false" aria-controls="grammarLessons">Adjectives</button>
-            <button type="button" class="tab" role="tab" data-grammar-tab="all" aria-selected="false" aria-controls="grammarLessons">All</button>
+          <div class="grammar-tabs" role="group" aria-label="Grammar topics" id="grammarTabs">
+            <button type="button" class="custom-filter" data-grammar-tab="basics" aria-pressed="true" aria-controls="grammarLessons">Basics</button>
+            <button type="button" class="custom-filter" data-grammar-tab="particles" aria-pressed="false" aria-controls="grammarLessons">Particles</button>
+            <button type="button" class="custom-filter" data-grammar-tab="verbs" aria-pressed="false" aria-controls="grammarLessons">Verbs</button>
+            <button type="button" class="custom-filter" data-grammar-tab="adjectives" aria-pressed="false" aria-controls="grammarLessons">Adjectives</button>
+            <button type="button" class="custom-filter" data-grammar-tab="all" aria-pressed="false" aria-controls="grammarLessons">All</button>
           </div>
             <div class="grammar-library-heading"><div><h2 id="grammarHeading">Learn how Japanese sentences work</h2><p class="subtle" id="grammarSubtitle">Choose lessons and practice both the romaji and the meaning. No handwriting required.</p></div><span id="grammarSelectedBadge" class="quiz-pill">0 selected</span></div>
             <div class="grammar-toolbar"><input type="search" id="grammarSearch" class="search" aria-label="Find a grammar lesson" placeholder="Search a grammar topic…"><div><button type="button" id="grammarSelectVisible" class="mini-button">Select visible</button><button type="button" id="grammarClearVisible" class="mini-button">Deselect visible</button></div></div>
@@ -403,7 +403,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.2</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.3</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

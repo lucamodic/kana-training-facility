@@ -13,19 +13,19 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kana Training">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=31.3">
-  <script src="./romaji.js?v=31.3" defer></script>
-  <script src="./study-ui.js?v=31.3" defer></script>
-  <script src="./app.js?v=31.3" defer></script>
-  <script src="./study-clock.js?v=31.3" defer></script>
-  <script src="./config.js?v=31.3" defer></script>
-  <script src="./cloud-sync.js?v=31.3" defer></script>
-  <script src="./learning-progress.js?v=31.3" defer></script>
-  <script src="./manga-cache.js?v=31.3" defer></script>
-  <script src="./manga-reader.js?v=31.3" defer></script>
-  <script src="./custom-collection.js?v=31.3" defer></script>
-  <script src="./grammar-data.js?v=31.3" defer></script>
-  <script src="./grammar.js?v=31.3" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=31.4">
+  <script src="./romaji.js?v=31.4" defer></script>
+  <script src="./study-ui.js?v=31.4" defer></script>
+  <script src="./app.js?v=31.4" defer></script>
+  <script src="./study-clock.js?v=31.4" defer></script>
+  <script src="./config.js?v=31.4" defer></script>
+  <script src="./cloud-sync.js?v=31.4" defer></script>
+  <script src="./learning-progress.js?v=31.4" defer></script>
+  <script src="./manga-cache.js?v=31.4" defer></script>
+  <script src="./manga-reader.js?v=31.4" defer></script>
+  <script src="./custom-collection.js?v=31.4" defer></script>
+  <script src="./grammar-data.js?v=31.4" defer></script>
+  <script src="./grammar.js?v=31.4" defer></script>
 </head>
 <body>
   <header class="top">
@@ -99,8 +99,8 @@
           <button type="button" id="openCustomButton" class="tab" role="tab" aria-selected="false" aria-controls="customBrowse" tabindex="-1"><span id="customNavLabel">Custom</span> <span class="tab-counter" id="customCount">0</span></button>
         </div>
         <div class="manga-launch-group">
-          <button type="button" id="openGrammarButton" class="words-launch grammar-launch" aria-controls="grammarScreen" aria-label="Open Grammar"><span class="words-launch-icon" aria-hidden="true">文</span><span id="grammarNavLabel">Grammar</span><span aria-hidden="true">↗</span></button>
-          <button type="button" id="openMangaButton" class="words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span class="words-launch-icon" aria-hidden="true">▤</span><span id="mangaLaunchText">Manga Reader</span><span aria-hidden="true">↗</span></button>
+          <button type="button" id="openGrammarButton" class="tab words-launch grammar-launch" aria-controls="grammarScreen" aria-label="Open Grammar"><span id="grammarNavLabel">Grammar</span></button>
+          <button type="button" id="openMangaButton" class="tab words-launch manga-launch" aria-controls="mangaScreen" hidden aria-hidden="true"><span id="mangaLaunchText">Manga Reader</span></button>
         </div>
           </div>
         <div class="main-panel" id="characterPanel" role="tabpanel" aria-labelledby="tabHiragana">
@@ -403,7 +403,7 @@
       </div>
     </section>
   </main>
-  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.3</span></footer>
+  <footer class="shell ktf-footer"><span>✦ KANA TRAINING FACILITY ✦</span><span id="footerText">Made for curious minds · Works offline</span><span class="footer-guide-links"><button type="button" id="footerGuide">Learning Guide</button><button type="button" id="footerProgress">My Progress</button></span><span class="ktf-footer-version" id="appVersion">v31.4</span></footer>
   <aside id="updateNotice" class="pwa-update-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
     <span class="pwa-update-symbol" aria-hidden="true">✦</span>
     <div class="pwa-update-copy">

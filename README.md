@@ -1,4 +1,8 @@
-# Kana Training Facility v31.3
+# Kana Training Facility v31.4
+
+Grammar y Manga Reader comparten tipograf?a, bordes y estado activo con las pesta?as de colecci?n. Se elimin? el espacio entre la navegaci?n de Grammar y su panel.
+
+### Cambios de v31.3
 
 Grammar usa filtros compactos como Custom. La navegaci?n superior comparte altura y alineaci?n, y el estado activo corresponde a la secci?n visible.
 

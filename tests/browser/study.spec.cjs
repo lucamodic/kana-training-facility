@@ -152,8 +152,20 @@ test('grammar filters match custom and navigation marks only the visible library
   await page.evaluate(()=>{const button=document.getElementById('openMangaButton');button.hidden=false;button.removeAttribute('aria-hidden');});
   for(const width of [1440,1280,390]){
     await page.setViewportSize({width,height:1000});
+    await expect(page.locator('#grammarNavLabel')).toBeVisible();
+    await expect(page.locator('#mangaLaunchText')).toBeVisible();
     const bounds=await page.locator('.study-switcher button:visible').evaluateAll(buttons=>buttons.map(button=>{const r=button.getBoundingClientRect();return {top:r.top,height:r.height};}));
     expect(new Set(bounds.map(b=>b.height)).size).toBe(1);
+    const appearance=await page.evaluate(()=>{
+      const grammar=document.getElementById('openGrammarButton'),kana=document.getElementById('tabHiragana');
+      const gs=getComputedStyle(grammar),ks=getComputedStyle(kana);
+      return {font:gs.font,kanaFont:ks.font,radius:gs.borderRadius,kanaRadius:ks.borderRadius,shadow:gs.boxShadow,
+        gap:document.getElementById('grammarLibrary').getBoundingClientRect().top-grammar.getBoundingClientRect().bottom};
+    });
+    expect(appearance.font).toBe(appearance.kanaFont);
+    expect(appearance.radius).toBe(appearance.kanaRadius);
+    expect(appearance.shadow).toBe('none');
+    expect(Math.abs(appearance.gap)).toBeLessThanOrEqual(2);
     if(width>1120)expect(Math.max(...bounds.map(b=>b.top))-Math.min(...bounds.map(b=>b.top))).toBeLessThan(1);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     await page.screenshot({path:'test-results/grammar-navigation-'+width+'.png',fullPage:true});

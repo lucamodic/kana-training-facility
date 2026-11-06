@@ -2164,5 +2164,28 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
 .grammar-screen .grammar-tabs{align-items:center;gap:6px;margin:0 0 18px}
 .study-switcher #studyTabs{margin:0}
 .study-switcher #studyTabs .tab,.study-switcher .manga-launch-group .words-launch{box-sizing:border-box;height:49px;min-height:49px;margin:0}
-.study-switcher .manga-launch-group .words-launch[aria-current='page']{background:var(--paper);box-shadow:inset 0 0 0 1px var(--accent)}
+
 @media(max-width:600px){.study-switcher #studyTabs .tab,.study-switcher .manga-launch-group .words-launch{height:45px;min-height:45px}}
+
+/* One tab treatment for collection and library navigation. */
+.study-switcher{column-gap:6px}
+.study-switcher .manga-launch-group{gap:6px}
+.study-switcher .manga-launch-group .words-launch{
+  border-radius:7px 7px 0 0;
+  padding:12px 20px;
+  font:bold 14px Georgia,serif;
+  background:var(--retro-main);
+  color:var(--ink);
+  box-shadow:none;
+}
+.study-switcher .manga-launch-group .words-launch[aria-current='page']{
+  background:var(--paper);
+  border-bottom-color:var(--paper);
+  box-shadow:none;
+}
+.grammar-browse{row-gap:0}
+.grammar-browse>.study-switcher{position:relative;z-index:1;margin-bottom:-2px}
+@media(max-width:1050px){.grammar-browse>.grammar-side-panel{margin-top:20px}}
+@media(max-width:600px){.study-switcher .manga-launch-group .words-launch{font-size:11px;padding:10px 6px}}
+
+.study-switcher #grammarNavLabel,.study-switcher #mangaLaunchText{display:inline}

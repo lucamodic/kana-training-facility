@@ -3,6 +3,7 @@
   const collection=window.KTFCustomCollection,cloud=window.KTFCloud;
   const tr=(en,es)=>document.documentElement.lang==='es'?es:en;
   const actions=document.createElement('div');actions.className='custom-json-actions';
+  actions.hidden=true;
   actions.innerHTML='<button type="button" class="mini-button" id="customJsonExport"></button><button type="button" class="mini-button" id="customJsonImport"></button><input type="file" id="customJsonFile" accept=".json,application/json" hidden><p id="customJsonStatus" role="status"></p>';
   document.querySelector('.custom-library-head').after(actions);
   const dialog=document.createElement('dialog');dialog.className='review-dialog';dialog.id='customJsonDialog';dialog.setAttribute('aria-labelledby','customJsonTitle');

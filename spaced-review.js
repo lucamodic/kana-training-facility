@@ -79,6 +79,7 @@
     const deck=engine.plan(cards(),states,limit,Date.now(),onlyDue);
     if(!deck.length){$('spacedReviewNotice').textContent=tr('No reviews ready. Select more study material or return when a review is due.','No hay repasos listos. Seleccioná más material o volvé cuando venza el próximo repaso.');return;}
     $('spacedReviewNotice').textContent='';
+    $('progressDialog').close();
     session={deck,index:0,correct:0,answered:0,checked:false,done:false,owner:account,history:[],startedAt:new Date().toISOString()};
     window.KTFStudyClock?.onQuizStart({source:'review',kind:'review',mode:'onepass'});
     window.KTFNavigation.reveal('spacedReviewScreen');showQuestion();
@@ -133,7 +134,7 @@
   }
   function resultLabels(){
     $('spacedReviewResult').hidden=false;$('spacedReviewResult').textContent=`${session.correct} / ${session.answered} ${tr('correct answers','respuestas correctas')} · ${tr('Your review schedule has been updated.','Tu calendario de repaso se actualizó.')}`;
-    $('spacedReviewExit').textContent=tr('Back to selection','Volver a selección');
+    $('spacedReviewExit').textContent=tr('Back to progress','Volver a Mi progreso');
   }
   $('spacedReviewHome').innerHTML=`<div><h2 id="spacedReviewTitle"></h2><p id="spacedReviewHelp" class="subtle"></p><p id="spacedReviewStatus" role="status"></p></div><div class="review-home-actions"><label><span id="spacedReviewCountLabel"></span><input id="spacedReviewCount" type="number" min="1" max="100" step="1" value="20" required></label><button id="spacedReviewAuto" class="button-primary" type="button"></button><button id="spacedReviewDue" class="button-secondary" type="button"></button></div><details><summary>${tr('How reviews work','Cómo funcionan los repasos')}</summary><p id="spacedReviewLocalHelp"></p></details><p id="spacedReviewNotice" role="status"></p>`;
   const screen=document.createElement('section');screen.id='spacedReviewScreen';screen.hidden=true;screen.className='review-screen';
@@ -142,7 +143,7 @@
   $('spacedReviewAuto').onclick=()=>start(false);$('spacedReviewDue').onclick=()=>start(true);
   $('spacedReviewForm').onsubmit=event=>{event.preventDefault();grade();};$('spacedReviewSkip').onclick=()=>grade(true);
   $('spacedReviewNext').onclick=()=>{if(!session?.checked||session.done)return;if(++session.index>=session.deck.length)finish();else showQuestion();};
-  $('spacedReviewExit').onclick=()=>{if(!session?.done){finish();return;}session=null;window.KTFNavigation.reveal('setupScreen',{restore:true});refresh();};
+  $('spacedReviewExit').onclick=()=>{if(!session?.done){finish();return;}session=null;window.KTFNavigation.reveal('setupScreen',{restore:true});$('progressOpen').click();};
   window.KTFReview={isActive:()=>Boolean(session&&!session.done),refresh,
     recordExam:(question,correct)=>{const item=[...Object.values(window.KTFBridge.catalog).flat(),...window.KTFBridge.words].find(item=>item.id===question.sourceId);if(item)record(mainCard(item,question.type==='meaning'?'meaning':'romaji'),correct);},
     recordMain:(item,type,correct)=>record(mainCard(item,type),correct),

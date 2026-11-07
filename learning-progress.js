@@ -196,7 +196,6 @@
     get('progressRecommendation').textContent=recommend();
     get('progressNotice').textContent=t('notice');
     get('progressExamsHeading').textContent=t('exams');
-    get('progressHistoryHeading').textContent=t('history');
     get('progressLogin').textContent=t('signin');
     get('progressLogout').textContent=t('signout');
     get('progressSync').textContent=t('sync');
@@ -210,9 +209,6 @@
       const previous=attempts.filter(a=>a.examId===def.id);
       return `<article class="progress-exam-card"><div class="progress-exam-head"><h3>${clean(def.name[L()==='es'?1:0])}</h3><span class="progress-exam-status">${passed.has(def.id)?t('pass'):previous.length?Math.max(...previous.map(x=>x.percent))+'%':count+' '+t('question').toLowerCase()+'s'}</span></div><p>${clean(def.description[L()==='es'?1:0])}</p><button type="button" class="button-secondary" data-exam="${def.id}" ${available?'':'disabled'}>${previous.length?t('review'):t('start')} →</button>${available?'':`<small>${t('noQuestions')}</small>`}</article>`;
     }).join('');
-    get('progressEmpty').hidden=attempts.length>0;
-    get('progressEmpty').textContent=t('empty');
-    get('progressHistory').innerHTML=attempts.slice(0,35).map(a=>`<article class="progress-history-row"><div><strong>${clean(examLabel(a.examId))}</strong><small>${new Date(a.completedAt).toLocaleString(L()==='es'?'es-AR':'en-US',{dateStyle:'medium',timeStyle:'short'})} · ${a.correct}/${a.total}</small></div><span class="progress-history-percent ${a.passed?'is-passed':''}">${a.percent}%</span><button type="button" class="mini-button" data-attempt="${clean(a.id)}">${t('historyDetail')}</button></article>`).join('');
   }
   async function showProgress() {
     if(!get('examScreen').hidden){
@@ -223,6 +219,7 @@
     if(!get('progressDialog').open)get('progressDialog').showModal();
     attempts=await cloud.getAttempts();
     renderDashboard();
+    window.KTFReview?.refresh();
   }
   function startExam(id,reviewQuestions=null) {
     if(window.KTFNavigation.active()) {window.alert(t('cannotStart'));return;}
@@ -388,12 +385,6 @@
       const bank=buildBank(id);
       const mistakes=lastResult.questions.filter(q=>!q.correct).map(q=>({question:bank.find(candidate=>candidate.id===q.id)||{...q,answerText:q.expected,answers:q.answers||[q.expected]},label:q.prompt+' · '+q.expected}));
       window.KTFStudyUI.review(mistakes,chosen=>startExam(id,chosen.map(row=>row.question)));
-    });
-    get('progressHistory').addEventListener('click',event=>{
-      const button=event.target.closest('[data-attempt]');if(!button)return;
-      if(!window.KTFNavigation.canLeave())return;
-      const result=attempts.find(a=>a.id===button.dataset.attempt);if(!result)return;
-      get('progressDialog').close();window.KTFNavigation.remember();showResult(result);window.KTFNavigation.reveal('examScreen');
     });
     get('progressOpen').addEventListener('click',showProgress);
     get('footerProgress').addEventListener('click',showProgress);

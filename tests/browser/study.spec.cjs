@@ -103,7 +103,7 @@ test('navigation restores scroll, shares tabs and blocks overlapping sessions',a
   await page.locator('[data-exam="kana-basics"]').click();
   await expect(page.locator('#examScreen')).toBeHidden();await expect(page.locator('#grammarPractice')).toBeVisible();
 });
-test('exam results lead to selectable feedback practice and historical detail',async({page})=>{
+test('exam results lead to selectable feedback practice and return to progress without history',async({page})=>{
   await page.locator('#progressOpen').click();await page.locator('[data-exam="kana-basics"]').click();
   for(let i=0;i<30;i++)await page.locator('#examSkip').click();
   await expect(page.locator('#examResult')).toBeVisible();
@@ -114,7 +114,9 @@ test('exam results lead to selectable feedback practice and historical detail',a
   await page.locator('dialog[open] .button-primary').click();
   await page.locator('#examSkip').click();await expect(page.locator('#examReviewFeedback')).toBeVisible();
   await page.locator('#examNext').click();await expect(page.locator('#examResult')).toBeVisible();
-  await page.locator('#examBack').click();await page.locator('[data-attempt]').first().click();await expect(page.locator('#examResult')).toBeVisible();
+  await page.locator('#examBack').click();await expect(page.locator('#progressDialog')).toBeVisible();
+  await expect(page.locator('#progressHistory')).toHaveCount(0);
+  await expect(page.locator('#progressDialog #spacedReviewHome')).toBeVisible();
 });
 test('libraries and practice fit a mobile viewport',async({page})=>{
   await page.setViewportSize({width:390,height:844});

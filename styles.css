@@ -1,5 +1,5 @@
 
-    .review-home { margin: 0 0 24px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+    .review-home { margin: 28px 0 0; padding: 24px 0 0; border-top: 1px solid var(--line); }
     .review-home h2 { margin-bottom: 8px; }
     .review-home-actions { display:flex; flex-wrap:wrap; align-items:end; gap:12px; margin:16px 0; }
     .review-home-actions label { display:grid; gap:6px; }

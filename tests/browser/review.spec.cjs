@@ -28,14 +28,20 @@ test('automatic practice handles dual answers, saves schedules and persists acro
     await KTFCloud.addCustomEvent('custom_review',{itemId:'study:custom:only:both',studyReview:true,key:'custom:only:both',correct:false});
     await KTFCustomCollection.refresh();await KTFReview.refresh();
   });
+  await expect(page.locator('#setupScreen #spacedReviewHome')).toHaveCount(0);
+  await expect(page.locator('#spacedReviewHome')).toBeHidden();
+  await page.locator('#progressOpen').click();
+  await expect(page.locator('#progressHistoryHeading')).toHaveCount(0);
   await page.locator('#spacedReviewCount').fill('1');await page.locator('#spacedReviewAuto').click();
+  await expect(page.locator('#progressDialog')).toBeHidden();
   await expect(page.locator('#spacedReviewPrompt')).toHaveText('猫');
   await page.locator('#spacedReviewReading').fill('neko');await page.locator('#spacedReviewMeaning').fill('cat');await page.locator('#spacedReviewCheck').click();
   await expect(page.locator('#spacedReviewFeedback')).toContainText('✓ Meaning');await page.locator('#spacedReviewNext').click();
   await expect(page.locator('#spacedReviewResult')).toContainText('1 / 1');
   await page.locator('#spacedReviewExit').click();
+  await expect(page.locator('#progressDialog')).toBeVisible();
   await expect.poll(()=>page.evaluate(async()=>(await KTFCloud.getCustomEvents()).filter(e=>e.payload.studyReview).length)).toBe(2);
-  await page.reload();await expect(page.locator('#spacedReviewDue')).toBeDisabled();await expect(page.locator('#spacedReviewStatus')).toContainText('Next review');
+  await page.reload();await page.locator('#progressOpen').click();await expect(page.locator('#spacedReviewDue')).toBeDisabled();await expect(page.locator('#spacedReviewStatus')).toContainText('Next review');
   for(const width of [390,768]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);}
   expect(errors).toEqual([]);
 });
@@ -47,6 +53,7 @@ test('due reviews honor the clock, deleted Custom items and account isolation',a
     await KTFCustomCollection.refresh();await KTFReview.refresh();
   });
   await expect(page.locator('#spacedReviewDue')).toBeDisabled();
+  await page.locator('#progressOpen').click();
   await page.clock.setSystemTime(new Date('2026-11-06T12:11:00Z'));
   await page.evaluate(()=>KTFReview.refresh());await expect(page.locator('#spacedReviewDue')).toBeEnabled();
   await page.locator('#spacedReviewDue').click();await expect(page.locator('#spacedReviewPrompt')).toHaveText('猫');

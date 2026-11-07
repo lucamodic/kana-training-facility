@@ -7,3 +7,11 @@ playwright-report/
 !.env.example
 .supabase/
 .DS_Store
+
+# Personal collection exports and one-off correction tools (local only)
+/json*.json
+/custom-*.json
+/aplicar-correcciones.js
+/scripts/correct-custom-json.cjs
+/REVISION-CUSTOM.md
+/COMO-APLICAR-CORRECCIONES.md

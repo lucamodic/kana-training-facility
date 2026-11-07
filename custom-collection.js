@@ -344,6 +344,7 @@
   }
   const splitAnswers = value => String(value || '').split(/[;,/|、，；]/g).map(normalize).filter(Boolean);
   function accepted(value, expected, kind) {
+    if(kind!=='romaji')return window.KTFMeaning.matches(value,expected);
     const answer = normalize(value).replace(/[.!?。！？]+$/g,'');
     const options = splitAnswers(expected);
     if (!answer || !options.length) return false;

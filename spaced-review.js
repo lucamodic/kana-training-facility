@@ -10,7 +10,7 @@
   const mainCard=(item,type='romaji',selected=false)=>({key:`main:${item.id}:${type}`,source:item.script||'words',prompt:item.kana,type,selected,
     readings:item.readings||item.answers||[],meanings:item.kind==='word'?window.KTFBridge.wordMeanings(item):split(window.KTFBridge.itemMeaning(item))});
   const customCard=(item,type='both',selected=false)=>({key:`custom:${item.id}:${type}`,source:'custom',prompt:item.surface,type,selected,
-    readings:split(item.romaji),meanings:split(item.meaning),note:item.notes||''});
+    readings:split(item.romaji),meanings:[item.meaning],note:item.notes||''});
   const grammarCard=(ex,selected=false)=>({key:`grammar:${ex.id}:both`,source:'grammar',prompt:ex.japanese,type:'both',selected,
     readings:[ex.reading],meanings:ex.meanings[lang()],note:ex.breakdown[lang()]});
   function cards(){
@@ -103,13 +103,12 @@
     $('spacedReviewCheck').textContent=tr('Check','Comprobar');$('spacedReviewSkip').textContent=tr('I do not know','No sé');
     $('spacedReviewNext').textContent=tr('Next →','Siguiente →');$('spacedReviewExit').textContent=tr('Finish practice','Terminar práctica');
   }
-  const normal=value=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[¿?!¡.,;:。！？]/g,'').replace(/\s+/g,' ').trim();
   async function grade(skip=false){
     const run=session;if(!run||run.done||run.checked||run.owner!==cloud.getStatus().owner)return;
     if(!skip&&!$('spacedReviewForm').reportValidity())return;
     const card=run.deck[run.index];
     const reading=card.type==='meaning'||(!skip&&card.readings.some(value=>window.KTFRomaji.matches($('spacedReviewReading').value,value)));
-    const meaning=card.type==='romaji'||(!skip&&card.meanings.some(value=>normal(value)===normal($('spacedReviewMeaning').value)));
+    const meaning=card.type==='romaji'||(!skip&&window.KTFMeaning.matches($('spacedReviewMeaning').value,card.meanings));
     const correct=!skip&&reading&&meaning;run.checked=true;run.answered++;if(correct)run.correct++;
     run.history.push({id:card.key,prompt:card.prompt,type:card.type,correct,answer:[$('spacedReviewReading').value,$('spacedReviewMeaning').value].filter(Boolean).join(' · '),expected:[card.type!=='meaning'?card.readings.join(' / '):'',card.type!=='romaji'?card.meanings.join(' / '):''].filter(Boolean).join(' · '),readingCorrect:reading,meaningCorrect:meaning});
     $('spacedReviewReading').disabled=true;$('spacedReviewMeaning').disabled=true;

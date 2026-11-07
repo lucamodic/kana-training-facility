@@ -15,6 +15,12 @@
     #spacedReviewFeedback .is-wrong, #customPracticeFeedback .is-wrong { color:var(--accent); }
     #spacedReviewExit { margin-top:20px; }
     @media(max-width:600px) { .review-home-actions { align-items:stretch; flex-direction:column; } .review-home-actions button { width:100%; } .review-screen .quiz-card { padding:16px; } }
+    .custom-json-actions { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    #customJsonStatus { flex-basis:100%; margin:0; }
+    #customJsonStatus:empty { display:none; }
+    #customJsonChanges { max-height:45vh; overflow:auto; padding-left:24px; overflow-wrap:anywhere; }
+    #customJsonChanges li { margin-bottom:16px; }
+    #customJsonChanges p { margin:6px 0; font-size:13px; }
     :root {
       --bg: #f7f6f0;
       --paper: #fffefa;

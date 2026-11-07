@@ -15,6 +15,7 @@ function load() {
   const window = {KTFCloud:{},KTFBridge:{isQuizActive:()=>false}};
   const context = vm.createContext({window,document:{documentElement:{lang:'es'}},crypto:{randomUUID:()=> 'test-id'},console});
   vm.runInContext(fs.readFileSync(path.join(root,'romaji.js'),'utf8'),context);
+  vm.runInContext(fs.readFileSync(path.join(root,'meaning.js'),'utf8'),context);
   vm.runInContext(source,context,{filename});
   return window.KTFCustomTest;
 }

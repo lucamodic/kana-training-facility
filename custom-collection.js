@@ -156,6 +156,7 @@
     $('customBothHelp').textContent=t('bothHelp');
     $('customPracticeMeaningLabel').textContent=t('askMeaning');
     $('customSearch').placeholder = t('search');
+    $('customAddTitle').textContent = editId ? t('edit') : t('add');
     $('customSave').textContent = editId ? t('update') : t('save');
     $('customCancel').textContent = t('cancel');
     $('customAddButtonLabel').textContent = t('addButton');
@@ -189,11 +190,14 @@
     $('customItems').innerHTML = displayed.length ? displayed.map(item => {
       const selectedItem = selected.has(item.id);
       const details = [item.romaji || item.kana,item.meaning].filter(Boolean);
-      return `<button type="button" class="kana-tile custom-item" data-custom-tile="${escapeHtml(item.id)}" aria-pressed="${selectedItem}" title="${escapeHtml([item.surface,...details,item.notes].filter(Boolean).join(' · '))}">
+      return `<div class="kana-tile custom-item" data-custom-tile="${escapeHtml(item.id)}" role="button" tabindex="0" aria-pressed="${selectedItem}" title="${escapeHtml([item.surface,...details,item.notes].filter(Boolean).join(' · '))}">
+        <button type="button" class="custom-item-edit" data-custom-edit="${escapeHtml(item.id)}" aria-label="${escapeHtml(`${t('edit')} ${item.surface}`)}" title="${escapeHtml(t('edit'))}">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Zm9.5-13.5 4 4M14.5 5.5l2-2a1.4 1.4 0 0 1 2 0l2 2a1.4 1.4 0 0 1 0 2l-2 2"/></svg>
+        </button>
         <span class="glyph custom-item-japanese" lang="ja">${escapeHtml(item.surface)}</span>
         ${item.romaji || item.kana ? `<span class="roman custom-item-reading">${escapeHtml(item.romaji || item.kana)}</span>` : ''}
         ${item.meaning ? `<span class="custom-item-meaning">${escapeHtml(item.meaning)}</span>` : ''}
-      </button>`;
+      </div>`;
     }).join('') : `<p class="subtle custom-empty">${t('empty')}</p>`;
   }
   function updateActionAvailability() {
@@ -258,7 +262,17 @@
     updateSessionFields();
   }
   function showEditor(item = null) {
-    if (!item) resetForm();
+    resetForm();
+    if (item) {
+      editId = item.id;
+      $('customKind').value = item.kind;
+      $('customJapanese').value = item.surface || '';
+      $('customRomaji').value = item.romaji || '';
+      $('customKana').value = item.kana || '';
+      $('customMeaning').value = item.meaning || '';
+      $('customNotes').value = item.notes || '';
+      labelText();
+    }
     const dialog = $('customEditorDialog');
     if (!dialog.open) dialog.showModal();
     $('customEditorNotice').hidden = true;
@@ -696,6 +710,13 @@
     $('customSearch').addEventListener('input',event => {search = event.target.value;renderList();});
     document.querySelectorAll('[data-custom-filter]').forEach(button => button.addEventListener('click',() => {filter = button.dataset.customFilter;renderList();}));
     $('customItems').addEventListener('click',event => {
+      const edit = event.target.closest('[data-custom-edit]');
+      if (edit) {
+        event.stopPropagation();
+        const item = items.find(row => row.id === edit.dataset.customEdit);
+        if (item) showEditor(item);
+        return;
+      }
       const tile = event.target.closest('[data-custom-tile]');
       if (!tile) return;
       if (pointerHandled && pointerHandled.id === tile.dataset.customTile && Date.now() - pointerHandled.time < 650) {
@@ -705,12 +726,19 @@
       toggleTile(tile.dataset.customTile);
     });
     $('customItems').addEventListener('pointerdown',event => {
-      if (event.button !== 0 || event.target.closest('[data-custom-tile]') === null) return;
+      if (event.button !== 0 || event.target.closest('[data-custom-edit]') || event.target.closest('[data-custom-tile]') === null) return;
       const tile = event.target.closest('[data-custom-tile]');
       dragState = {value:!selected.has(tile.dataset.customTile),seen:new Set()};
       applyDrag(tile);
       pointerHandled = {id:tile.dataset.customTile,time:Date.now()};
       event.preventDefault();
+    });
+    $('customItems').addEventListener('keydown',event => {
+      if (!['Enter',' '].includes(event.key) || event.target.closest('[data-custom-edit]')) return;
+      const tile=event.target.closest('[data-custom-tile]');
+      if (!tile) return;
+      event.preventDefault();
+      toggleTile(tile.dataset.customTile);
     });
     document.addEventListener('pointermove',event => {
       if (!dragState || !isOpen()) return;

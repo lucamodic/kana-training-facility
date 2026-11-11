@@ -18,7 +18,7 @@ test('Custom has compact category filters, a modal, and click or drag multi-sele
   assert.match(custom,/addEventListener\('pointerdown'/);
   assert.match(custom,/addEventListener\('pointermove'/);
   assert.match(custom,/function applyDrag\(tile\)/);
-  assert.doesNotMatch(custom,/data-custom-edit=/);
+  assert.match(custom,/data-custom-edit=/);
   assert.doesNotMatch(custom,/data-custom-remove=/);
   assert.doesNotMatch(custom,/score.correct.*score.total/);
   assert.match(styles,/\.custom-screen \.custom-items\{display:grid/);

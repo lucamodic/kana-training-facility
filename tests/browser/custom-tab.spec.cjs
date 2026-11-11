@@ -34,6 +34,16 @@ test('populated custom collection is a stable fourth home tab with compact filte
   await page.locator('#tabKatakana').click();await expect(page.locator('#characterPanel')).toBeVisible();await expect(page.locator('#customBrowse')).toBeHidden();await expect(page.locator('#originalSessionOptions')).toBeVisible();
   await page.locator('#tabKanji').focus();await page.keyboard.press('ArrowRight');await expect(page.locator('#openCustomButton')).toHaveAttribute('aria-selected','true');
   await expect(page.locator('#customSideSelected')).toHaveText('1');
+  const firstTile=page.locator('#customItems [data-custom-tile]').first();
+  const originalSurface=await firstTile.locator('.custom-item-japanese').textContent();
+  await firstTile.locator('[data-custom-edit]').click();
+  await expect(page.locator('#customEditorDialog')).toBeVisible();
+  await expect(page.locator('#customJapanese')).toHaveValue(originalSurface);
+  await page.locator('#customMeaning').fill('edited character');
+  await page.locator('#customSave').click();
+  await expect(page.locator('#customEditorDialog')).toBeHidden();
+  await expect(page.locator('#customItems [data-custom-tile]').first()).toContainText('edited character');
+  await expect(page.locator('#customSideSelected')).toHaveText('1');
   await page.locator('#customAddButton').click();await expect(page.locator('#customEditorDialog')).toBeVisible();await page.locator('#customEditorClose').click();
   for(const width of [390,768]){
     await page.setViewportSize({width,height:950});

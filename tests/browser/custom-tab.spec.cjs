@@ -26,6 +26,11 @@ test('populated custom collection is a stable fourth home tab with compact filte
   await expect(page.locator('#customCharacterCount')).toHaveText('11');await expect(page.locator('#customWordCount')).toHaveText('25');await expect(page.locator('#customAllCount')).toHaveText('36');
   await expect(page.locator('#customItems [data-custom-tile]')).toHaveCount(11);
   await page.locator('#customItems [data-custom-tile]').first().click();await expect(page.locator('#customSideSelected')).toHaveText('1');await expect(page.locator('#customCharacterCount')).toHaveText('11');
+  const selectedId=await page.locator('#customItems [data-custom-tile][aria-pressed=true]').getAttribute('data-custom-tile');
+  await page.reload();
+  await page.locator('#openCustomButton').click();
+  await expect(page.locator('#customSideSelected')).toHaveText('1');
+  await expect(page.locator(`[data-custom-tile="${selectedId}"]`)).toHaveAttribute('aria-pressed','true');
   await page.locator('[data-custom-filter=word]').click();await expect(page.locator('#customItems [data-custom-tile]')).toHaveCount(25);
   await page.locator('[data-custom-filter=all]').click();await expect(page.locator('#customItems [data-custom-tile]')).toHaveCount(36);
   await page.locator('#customSearch').fill('学校');await expect(page.locator('#customItems [data-custom-tile]')).toHaveCount(1);
@@ -48,7 +53,9 @@ test('populated custom collection is a stable fourth home tab with compact filte
   for(const width of [390,768]){
     await page.setViewportSize({width,height:950});
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-    const tops=await page.locator('#studyTabs > [role=tab]').evaluateAll(tabs=>tabs.map(tab=>tab.getBoundingClientRect().top));expect(Math.max(...tops)-Math.min(...tops)).toBeLessThan(2);
+    const tops=await page.locator('#studyTabs > [role=tab]').evaluateAll(tabs=>tabs.map(tab=>tab.getBoundingClientRect().top));
+    const rows=[...new Set(tops.map(top=>Math.round(top)))];
+    expect(rows).toHaveLength(width <= 480 ? 2 : 1);
     await page.screenshot({path:`test-results/custom-populated-${width}.png`,fullPage:true});
   }
   expect(errors).toEqual([]);

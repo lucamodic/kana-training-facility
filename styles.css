@@ -2230,3 +2230,160 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
 .grammar-custom-editor label { display: grid; gap: 6px; margin-top: 12px; }
 .grammar-custom-editor input, .grammar-custom-editor select { width: 100%; box-sizing: border-box; padding: 10px; }
 .grammar-japanese, .grammar-lesson-examples strong { user-select: text; -webkit-user-select: text; }
+
+/* Responsive consolidation: keep navigation visible and related controls together. */
+.study-switcher > #studyTabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(105px, 1fr));
+  flex: 1 1 680px;
+  width: auto;
+  min-width: 0;
+}
+.study-switcher > #studyTabs .tab {
+  min-width: 0;
+  justify-content: center;
+  text-align: center;
+}
+#studyTabs #customNavLabel {
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+@media (max-width: 900px) {
+  .header-actions .offline-pill { display: none; }
+  .top-inner .header-actions { flex-wrap: nowrap; justify-content: flex-end; }
+
+  /* Let the tab bar, the active session card and its content participate in
+     the same mobile grid, so the navigation is never buried below controls. */
+  .layout > .study-content { display: contents; }
+  .layout .study-switcher { order: -3; width: 100%; }
+  .layout > #originalSessionOptions,
+  .layout > #grammarSessionOptions,
+  .layout > #customSessionOptions { order: -2; }
+  .layout #characterPanel,
+  .layout #customBrowse,
+  .layout #grammarBrowse { order: 0; }
+  .study-switcher > #studyTabs .tab { gap: 5px; padding-inline: 8px; }
+}
+
+@media (max-width: 700px) {
+  .study-switcher > #studyTabs {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+    flex: 0 0 auto;
+    width: 100%;
+  }
+  .study-switcher > #studyTabs .tab:nth-child(-n+3) { grid-column: span 2; }
+  .study-switcher > #studyTabs .tab:nth-child(n+4) { grid-column: span 3; }
+}
+
+@media (max-width: 680px) {
+  .top-inner { gap: 9px; }
+  .header-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: stretch;
+    gap: 6px;
+  }
+  .header-actions .progress-open-button {
+    order: 0;
+    flex: 1 1 92px;
+    min-width: 0;
+    min-height: 42px;
+    padding: 6px 7px;
+    font-size: 11px;
+    line-height: 1.15;
+    white-space: normal;
+  }
+  .header-actions .install-app-button { order: 1; flex: 0 0 42px; }
+  .header-actions .language-picker { order: 2; flex: 1 1 105px; }
+  .header-actions .theme-picker { order: 3; flex: 0 1 auto; min-width: 0; }
+  .header-actions .theme-toggle { max-width: 105px; min-width: 0; }
+  .header-actions .theme-toggle #currentThemeName { display: none; }
+}
+
+@media (max-width: 820px) {
+  #setupScreen .custom-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+  #setupScreen .custom-search,
+  #setupScreen .custom-select-actions {
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+    min-width: 0;
+  }
+  #setupScreen .custom-select-actions { justify-content: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .study-switcher > #studyTabs {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+    flex: 0 0 auto;
+    width: 100%;
+  }
+  .study-switcher > #studyTabs .tab:nth-child(-n+3) { grid-column: span 2; }
+  .study-switcher > #studyTabs .tab:nth-child(n+4) { grid-column: span 3; }
+  .study-switcher > #studyTabs .tab {
+    height: auto;
+    min-height: 45px;
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+  #studyTabs #customNavLabel { max-width: none; text-overflow: clip; }
+
+  #setupScreen .grammar-tabs {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 6px;
+  }
+  #setupScreen .grammar-tabs .custom-filter:nth-child(-n+3) { grid-column: span 2; }
+  #setupScreen .grammar-tabs .custom-filter:nth-child(n+4) { grid-column: span 3; }
+  #setupScreen .grammar-tabs .custom-filter {
+    width: 100%;
+    min-width: 0;
+    min-height: 43px;
+    padding: 7px 5px;
+    line-height: 1.2;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 600px) {
+  #setupScreen .custom-select-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  #setupScreen .custom-select-actions .mini-button {
+    min-width: 0;
+    min-height: 48px;
+    padding: 7px 8px;
+    line-height: 1.25;
+    white-space: normal;
+  }
+  #setupScreen .custom-select-actions .custom-delete-button {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 42px;
+  }
+  #setupScreen .custom-delete-button .custom-delete-label { display: inline; }
+}
+
+@media (max-width: 360px) {
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .header-actions .progress-open-button,
+  .header-actions .install-app-button,
+  .header-actions .language-picker { width: 100%; }
+  .header-actions .install-app-button { min-width: 0; }
+  .header-actions .theme-picker { justify-self: stretch; }
+  .header-actions .theme-toggle { width: 100%; max-width: none; }
+}

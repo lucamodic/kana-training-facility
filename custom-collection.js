@@ -64,6 +64,7 @@
   let practice = null;
   let deleting = false;
   const sessionSettingsKey = 'ktf-custom-session-settings-v1';
+  const selectionStorageKey = activeOwner => `ktf-custom-selection-v1:${encodeURIComponent(activeOwner)}`;
   const sessionDefaults = {timerMode:'off',hours:0,minutes:5,guesses:200,rapidFire:false,rapidSeconds:10,showClock:true,answerMode:'mixed'};
   let sessionSettings = {...sessionDefaults};
   try {
@@ -72,6 +73,16 @@
   } catch (_) {}
   function saveSessionSettings() {
     try {localStorage.setItem(sessionSettingsKey,JSON.stringify(sessionSettings));} catch (_) {}
+  }
+  function storedSelection(activeOwner) {
+    try {
+      const stored = JSON.parse(localStorage.getItem(selectionStorageKey(activeOwner)) || '[]');
+      return new Set(Array.isArray(stored) ? stored.filter(id => typeof id === 'string') : []);
+    } catch (_) { return new Set(); }
+  }
+  function saveSelection() {
+    if (!owner) return;
+    try {localStorage.setItem(selectionStorageKey(owner),JSON.stringify([...selected]));} catch (_) {}
   }
   let renderRevision = 0;
   let messageTimeout = null;
@@ -131,7 +142,9 @@
     owner = activeOwner;
     items = output.items;
     stats = output.scores;
-    selected = wasLoaded ? new Set(items.filter(item => previous.has(item.id)).map(item => item.id)) : new Set();
+    const wanted = wasLoaded ? previous : storedSelection(activeOwner);
+    selected = new Set(items.filter(item => wanted.has(item.id)).map(item => item.id));
+    saveSelection();
     loaded = true;
     $('customCount').textContent = String(items.length);
     if (isOpen() && !practice) renderList();
@@ -310,6 +323,7 @@
     };
     await persist('custom_upsert',{item});
     selected.add(item.id);
+    saveSelection();
     if (isOpen()) renderList();
     notify(previous?t('saved'):t('added'));
     return true;
@@ -660,6 +674,7 @@
       if(typeof cloud.addCustomEvents==='function') await cloud.addCustomEvents(events);
       else for(const event of events) await cloud.addCustomEvent(event.type,event.payload);
       for(const item of targets) selected.delete(item.id);
+      saveSelection();
       await refresh();
       notify(t('deletedBatch').replace('{count}',String(targets.length)));
     } catch(error) {
@@ -674,6 +689,7 @@
   function toggleTile(id) {
     if (selected.has(id)) selected.delete(id);
     else selected.add(id);
+    saveSelection();
     renderList();
   }
   function applyDrag(tile) {
@@ -682,6 +698,7 @@
     dragState.seen.add(id);
     if (dragState.value) selected.add(id);
     else selected.delete(id);
+    saveSelection();
     tile.setAttribute('aria-pressed',String(selected.has(id)));
     $('customSelected').textContent = `${selected.size} ${t('selected')}`;
     $('customSideSelected').textContent = String(selected.size);
@@ -757,8 +774,8 @@
       tabs[next].click();
       tabs[next].focus();
     });
-    $('customSelectAll').addEventListener('click',()=>{visible().forEach(item => selected.add(item.id));renderList();});
-    $('customSelectNone').addEventListener('click',()=>{visible().forEach(item => selected.delete(item.id));renderList();});
+    $('customSelectAll').addEventListener('click',()=>{visible().forEach(item => selected.add(item.id));saveSelection();renderList();});
+    $('customSelectNone').addEventListener('click',()=>{visible().forEach(item => selected.delete(item.id));saveSelection();renderList();});
     $('customDeleteSelected').addEventListener('click',deleteSelected);
     $('customPracticeButton').addEventListener('click',()=>startPractice('infinite'));
     $('customLearnButton').addEventListener('click',()=>startPractice('learn'));
@@ -791,7 +808,7 @@
     document.addEventListener('keydown',event => {if(isOpen() && event.key === 'Escape' && !practice && !$('customEditorDialog').open) close();});
   }
   window.KTFCustomCollection = {getItems:()=>items.map(item=>({...item})),addFromManga,addFromGrammar:raw=>save(raw,'Grammar'),refresh,open,isSaved,isActive:()=>Boolean(practice&&!practice.done),
-    practiceSource:async source=>{if(!window.KTFNavigation.canLeave())return;open();await refresh();const pool=items.filter(item=>item.source===source&&answerTypes(item,$('customMode').value).length);if(!pool.length){notify(t('noQuestions'),true);return;}selected=new Set(pool.map(item=>item.id));renderList();startPractice('onepass',pool);}};
+    practiceSource:async source=>{if(!window.KTFNavigation.canLeave())return;open();await refresh();const pool=items.filter(item=>item.source===source&&answerTypes(item,$('customMode').value).length);if(!pool.length){notify(t('noQuestions'),true);return;}selected=new Set(pool.map(item=>item.id));saveSelection();renderList();startPractice('onepass',pool);}};
   attach();
   refresh().catch(() => {});
 })();

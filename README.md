@@ -1,4 +1,16 @@
-# Kana Training Facility v31.7
+# Kana Training Facility v31.9
+
+### Cambios de v31.9
+
+- Navegación principal visible antes de los controles de sesión en tablet y móvil.
+- Encabezado, pestañas y grupos de botones reorganizados para evitar cortes y solapamientos entre 320 px y escritorio.
+- Filtros de Custom y Gramática adaptados a dos filas cuando el espacio es reducido.
+- Recursos y caché PWA actualizados a 31.9.
+
+### Cambios de v31.8
+
+- La selección de elementos en Custom ahora se conserva al cerrar o recargar la PWA, separada por cuenta.
+- Recursos y caché PWA actualizados a 31.8.
 
 ### Cambios de v31.7
 

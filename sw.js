@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kana-training-facility-offline-v31-7-custom-edit';
+const CACHE_NAME = 'kana-training-facility-offline-v31-9-responsive-layout';
 const SHELL = [
-  './', './index.html', './romaji.js?v=31.7', './meaning.js?v=31.7', './study-ui.js?v=31.7', './styles.css?v=31.7', './app.js?v=31.7', './study-clock.js?v=31.7', './config.js?v=31.7', './cloud-sync.js?v=31.7', './learning-progress.js?v=31.7', './manga-cache.js?v=31.7', './manga-reader.js?v=31.7', './custom-collection.js?v=31.7', './custom-json.js?v=31.7', './grammar-data.js?v=31.7', './grammar.js?v=31.7', './review-scheduler.js?v=31.7', './spaced-review.js?v=31.7', './manifest.webmanifest',
+  './', './index.html', './romaji.js?v=31.9', './meaning.js?v=31.9', './study-ui.js?v=31.9', './styles.css?v=31.9', './app.js?v=31.9', './study-clock.js?v=31.9', './config.js?v=31.9', './cloud-sync.js?v=31.9', './learning-progress.js?v=31.9', './manga-cache.js?v=31.9', './manga-reader.js?v=31.9', './custom-collection.js?v=31.9', './custom-json.js?v=31.9', './grammar-data.js?v=31.9', './grammar.js?v=31.9', './review-scheduler.js?v=31.9', './spaced-review.js?v=31.9', './manifest.webmanifest',
   './favicon.svg', './favicon.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];

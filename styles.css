@@ -2387,3 +2387,147 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
   .header-actions .theme-picker { justify-self: stretch; }
   .header-actions .theme-toggle { width: 100%; max-width: none; }
 }
+
+/* ================================================================
+   MOBILE POLISH (only affects ≤900px; desktop is untouched)
+   - Collection tabs sit directly on top of their window, like
+     browser tabs, with the session options below the content.
+   - Tabs become a single scrollable strip instead of a 2-row grid.
+   ================================================================ */
+@media (max-width: 900px) {
+  /* Tabs → window → session options, with no gap between tabs and window. */
+  .layout { row-gap: 0; }
+  .layout .study-switcher { order: -3; margin: 0 !important; position: relative; z-index: 2; }
+  .layout #characterPanel,
+  .layout #customBrowse,
+  .layout #grammarBrowse { order: -2; }
+  .layout > #originalSessionOptions,
+  .layout > #grammarSessionOptions,
+  .layout > #customSessionOptions { order: 1; margin-top: 20px !important; }
+  #setupScreen #customBrowse > .custom-top:not([hidden]) { margin: 10px 0; }
+  #setupScreen #customBrowse > .custom-content > .custom-library,
+  #setupScreen #grammarBrowse .grammar-library { margin-top: 0; }
+}
+
+@media (max-width: 700px) {
+  /* ---------- Header ---------- */
+  .top-inner { padding-block: 10px 9px; gap: 9px; min-height: 0; }
+  .top-inner .brand { gap: 10px; }
+  .top-inner .brand-icon { width: 40px; height: 40px; font-size: 22px; flex: 0 0 40px; }
+  .top-inner .brand-title { font-size: clamp(15px, 4.4vw, 19px); }
+  .top-inner .brand-sub { font-size: 9.5px; margin-top: 2px; }
+  .top-inner .header-actions { display: flex; flex-wrap: nowrap; align-items: stretch; gap: 6px; width: 100%; }
+  .header-actions .progress-open-button,
+  .header-actions .install-app-button,
+  .header-actions .language-picker,
+  .header-actions .theme-toggle { height: 40px; min-height: 40px; box-sizing: border-box; border-radius: 3px; }
+  .header-actions .progress-open-button { flex: 1 1 0; min-width: 0; padding: 4px 6px; font-size: 11px; line-height: 1.15; white-space: normal; }
+  .header-actions .install-app-button { flex: 0 0 40px; width: 40px; min-width: 40px; }
+  .header-actions .language-picker { flex: 1 1 0; min-width: 0; padding: 3px 5px; }
+  .header-actions .language-picker select { min-width: 0; width: 100%; max-width: none; }
+  .header-actions .theme-picker { flex: 0 1 auto; min-width: 0; display: flex; }
+  .header-actions .theme-toggle { padding: 0 8px; max-width: none; }
+  .theme-menu { right: 0; left: auto; width: min(340px, calc(100vw - 22px)); max-height: 70dvh; overflow-y: auto; }
+  .retro-browser { min-height: 34px; gap: 8px; padding: 4px 8px; }
+  .retro-browser .browser-url { padding: 5px 8px; }
+
+  /* ---------- Collection tabs: one row of browser tabs ---------- */
+  .study-switcher > #studyTabs {
+    display: flex !important;
+    flex-wrap: nowrap;
+    gap: 4px;
+    width: 100%;
+    margin: 0 0 -2px !important;
+    padding: 6px 2px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 12px;
+  }
+  .study-switcher > #studyTabs::-webkit-scrollbar { display: none; }
+  .study-switcher > #studyTabs .tab {
+    flex: 0 0 auto;
+    grid-column: auto !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 12px !important;
+    gap: 6px;
+    font-size: 13px !important;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    border-bottom-width: 2px;
+    transform: translateY(3px);
+    transition: transform .12s ease;
+  }
+  .study-switcher > #studyTabs .tab[aria-selected="true"] { transform: none; height: 45px !important; min-height: 45px !important; margin-top: -3px; }
+  .study-switcher > #studyTabs .tab-counter { font-size: 10px; padding: 1px 5px; }
+  .study-switcher .manga-launch-group:not(:has(> :not([hidden]))) { display: none; }
+
+  /* Windows that sit under the tabs. */
+  #characterPanel, #setupScreen .custom-library, #setupScreen .grammar-library { border-top-left-radius: 0; }
+
+  /* ---------- Practice top bar: compact and in two tidy rows ---------- */
+  #quizScreen .quiz-top { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; padding: 7px; margin-bottom: 14px; }
+  #quizScreen .quiz-top-right { display: contents; }
+  #quizScreen .quiz-top .back { order: 0; min-height: 38px; padding: 6px 10px; font-size: 12px; }
+  #quizScreen .quiz-top #timerArea { order: 1; margin-left: auto; min-height: 38px; padding: 3px 4px 3px 9px; }
+  #quizScreen .quiz-top #timerArea #timerDisplay { font-size: 16px; min-width: 50px; }
+  #quizScreen .quiz-top #quizPoolLabel { order: 2; flex: 1 1 55%; min-width: 0; min-height: 34px; max-width: none; font-size: 11px; padding: 5px 9px; }
+  #quizScreen .quiz-top #guessProgress { order: 2; min-height: 34px; font-size: 11px; padding: 5px 9px; }
+  #quizScreen .quiz-top .elapsed-toggle { order: 3; min-height: 34px; padding: 5px 9px; }
+  #quizScreen .quiz-top #timerArea[hidden] + .elapsed-toggle,
+  #quizScreen .quiz-top #timerArea[hidden] ~ .elapsed-toggle { margin-left: 0; }
+
+  /* Practice card spacing */
+  .quiz-head { padding: 18px 14px 0; }
+  .quiz-symbol { min-height: 160px; font-size: clamp(92px, 28vw, 140px); }
+  .quiz-sublabel { margin-bottom: 14px; }
+  .stats { gap: 7px; }
+  .stat { padding: 10px 9px; }
+  .stat span { font-size: 9.5px; letter-spacing: .04em; }
+  .stat b { font-size: 20px; }
+  .quiz-actions { grid-template-columns: minmax(0, 1fr) minmax(0, auto); gap: 9px; }
+  .answer-input { font-size: 20px; height: 52px; }
+  .end-lesson { width: 100%; }
+
+  /* ---------- Dialogs: use the full phone width, scroll inside ---------- */
+  .review-dialog { width: calc(100vw - 16px); max-width: none; max-height: calc(100dvh - 24px); box-shadow: 4px 5px 0 var(--retro-shadow); }
+  .review-dialog-head h2 { font-size: 20px; }
+  .review-footer { flex-wrap: wrap; }
+  .review-buttons { width: 100%; }
+  .review-buttons > button { flex: 1 1 0; }
+
+  /* ---------- Summary ---------- */
+  .summary-actions > button, .summary-actions .button-primary { min-width: 0; width: 100%; }
+
+  /* Footer & floating clock: keep the last content reachable under the clock. */
+  footer.shell { gap: 8px 16px; padding: 11px 10px; }
+  body { padding-bottom: 64px; }
+}
+
+@media (max-width: 380px) {
+  .header-actions .progress-open-button { font-size: 10px; }
+  .header-actions .theme-toggle > span:nth-child(2) { display: none; }
+  .study-switcher > #studyTabs .tab { padding: 0 10px !important; font-size: 12px !important; }
+}
+
+@media (max-width: 700px) {
+  /* Grammar practice top bar: two compact rows instead of three. */
+  #grammarPractice .quiz-top { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-bottom: 14px; }
+  #grammarPractice .quiz-top-right { display: contents; }
+  #grammarPractice .quiz-top .back { order: 0; min-height: 38px; padding: 6px 10px; font-size: 12px; }
+  #grammarPractice .quiz-top #grammarClock { order: 1; margin-left: auto; min-height: 38px; padding: 5px 10px; font: 700 15px "Courier New", monospace; font-variant-numeric: tabular-nums; }
+  #grammarPractice .quiz-top #grammarPause { order: 1; min-height: 38px; padding: 5px 10px; }
+  #grammarPractice .quiz-top #grammarSessionType,
+  #grammarPractice .quiz-top #grammarQuestionCounter { order: 2; flex: 1 1 auto; min-height: 34px; max-width: none; padding: 5px 9px; font-size: 11px; justify-content: center; }
+  #grammarPractice .quiz-top #grammarClockToggle { order: 3; min-height: 34px; padding: 5px 9px; }
+  #grammarPractice .quiz-top #grammarClock[hidden] + #grammarClockToggle { margin-left: 0; }
+
+  /* Exam: keep the badges aligned with the back button. */
+  .exam-session .quiz-top { justify-content: flex-start; }
+  .exam-session .quiz-top .back { min-height: 38px; padding: 6px 10px; font-size: 12px; }
+  .exam-session .quiz-top-right { justify-content: flex-start; gap: 6px; }
+  .exam-session .quiz-top .quiz-pill { min-height: 32px; padding: 5px 8px; max-width: none; }
+}

@@ -2871,3 +2871,22 @@ if ('serviceWorker' in navigator && ['https:','http:'].includes(location.protoco
       .catch(error => console.warn('Offline cache could not be enabled:', error));
   });
 }
+
+// Mobile: the collection tabs become a horizontally scrollable strip.
+// Keep the active tab visible inside it (no effect when nothing overflows).
+(() => {
+  const strip = document.getElementById('studyTabs');
+  if (!strip || typeof MutationObserver !== 'function') return;
+  const reveal = () => {
+    if (strip.scrollWidth <= strip.clientWidth + 1) return;
+    const active = strip.querySelector('[aria-selected="true"]');
+    if (!active) return;
+    const left = active.offsetLeft - strip.offsetLeft;
+    const right = left + active.offsetWidth;
+    if (left < strip.scrollLeft) strip.scrollTo({left: Math.max(0, left - 12), behavior: 'smooth'});
+    else if (right > strip.scrollLeft + strip.clientWidth) strip.scrollTo({left: right - strip.clientWidth + 12, behavior: 'smooth'});
+  };
+  new MutationObserver(reveal).observe(strip, {subtree: true, attributes: true, attributeFilter: ['aria-selected']});
+  window.addEventListener('resize', reveal);
+  reveal();
+})();

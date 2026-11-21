@@ -2531,3 +2531,24 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
   .exam-session .quiz-top-right { justify-content: flex-start; gap: 6px; }
   .exam-session .quiz-top .quiz-pill { min-height: 32px; padding: 5px 8px; max-width: none; }
 }
+
+@media (max-width: 700px) {
+  /* Manga Reader (only shown to authorized users) sits ABOVE the tab strip as a
+     compact button, so the tabs stay attached to their window. */
+  #setupScreen .study-switcher { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+  #setupScreen .study-switcher > #studyTabs { order: 0; }
+  #setupScreen .study-switcher > .manga-launch-group { order: -1; width: 100%; margin: 0; gap: 6px; }
+  #setupScreen .study-switcher .manga-launch-group .words-launch {
+    flex: 1 1 0;
+    height: 38px !important;
+    min-height: 38px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    border: 1px solid var(--retro-deep);
+    border-radius: 3px;
+    background: var(--retro-cream);
+    box-shadow: 2px 2px 0 var(--retro-shadow);
+    font: bold 12px Georgia, serif;
+    justify-content: center;
+  }
+}

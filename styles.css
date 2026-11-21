@@ -2552,3 +2552,14 @@ html[lang='es'] .grammar-side-panel::before{content:'▣  TU SESIÓN.INI'}
     justify-content: center;
   }
 }
+
+@media (max-width: 700px) {
+  /* Tab strip flush with the window edges: no side gaps or rounded corners peeking out. */
+  .study-switcher > #studyTabs { padding: 6px 0 0 !important; scroll-padding-inline: 0; }
+  #characterPanel, #setupScreen .custom-library, #setupScreen .grammar-library { border-top-left-radius: 0; border-top-right-radius: 0; }
+}
+@media (max-width: 700px) {
+  .study-switcher > #studyTabs { align-items: flex-end; border-radius: 0 !important; }
+  .study-switcher > #studyTabs .tab { border-radius: 7px 7px 0 0 !important; transform: none !important; margin-top: 3px; border-bottom: 2px solid var(--retro-deep) !important; height: 42px !important; min-height: 42px !important; }
+  .study-switcher > #studyTabs .tab[aria-selected="true"] { margin-top: 0; border-bottom: 2px solid var(--paper) !important; height: 47px !important; min-height: 47px !important; }
+}

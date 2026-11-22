@@ -256,6 +256,11 @@
   async function startNewChapter() {
     if (!authorized || running) return;
     await awaitPendingSaves();
+    // Finish the current chapter transaction before detaching its pages. Without
+    // this, a fast click on "New chapter" can race the first chapter creation
+    // and subsequent page saves may still target the previous chapter.
+    await chapterReady;
+    await refreshHistory();
     const series = $('mangaSeriesName').value.trim();
     const numberForSeries = chapters.filter(chapter => chapter.mangaTitle.trim().toLowerCase() === series.toLowerCase())
       .map(chapter => Number((chapter.chapterTitle.match(/\d+/) || [])[0]) || 0);
